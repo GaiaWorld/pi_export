@@ -1,0 +1,11 @@
+[package]
+name = "pi_export_play"
+version = "0.1.0"
+authors = ["suncy <suncy@gmail.com>"]
+edition = "2021"
+
+[dependencies]
+paste = "0.1"
+json ="0.12"
+ordered-float = { version = "3.0"}
+pi_atom={version="0.2"}

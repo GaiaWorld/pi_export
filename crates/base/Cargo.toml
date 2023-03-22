@@ -1,0 +1,23 @@
+[package]
+name = "pi_export_base"
+version = "0.1.0"
+authors = ["suncy <suncy@gmail.com>"]
+edition = "2021"
+
+[features]
+default = ["pi_js_export", "wasm_bindgen"]
+pi_js_export = []
+wasm_bindgen = []
+
+[dependencies]
+paste = "0.1"
+pi_atom = "0.2"
+derive_deref = "1.1"
+pi_export_macro = {path="../macro"}
+pi_share = {version="0.4"}
+pi_assets = "0.10"
+
+[target.'cfg(target_arch = "wasm32")'.dependencies]
+wasm-bindgen = { version = "0.2", features = ["serde-serialize"]}
+js-sys = "0.3"
+

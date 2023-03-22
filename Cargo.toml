@@ -1,0 +1,12 @@
+[workspace]
+members = ["crates/*"]
+resolver="2"
+exclude = ["crates/gui/exports_macro"]
+
+# [patch.crates-io]
+[patch.crates-io]
+probabilistic-collections = { git = "https://github.com/GaiaWorld/pi_probabilistic_collections.git" }
+
+[net]
+git-fetch-with-cli = true
+offline = true

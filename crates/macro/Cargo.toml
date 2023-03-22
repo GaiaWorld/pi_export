@@ -1,0 +1,8 @@
+[package]
+name = "pi_export_macro"
+version = "0.1.0"
+authors = ["suncy <suncy@gmail.com>"]
+edition = "2021"
+
+[dependencies]
+paste = "0.1"
