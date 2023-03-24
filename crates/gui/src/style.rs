@@ -6266,29 +6266,57 @@
     #[allow(unused_attributes)]
     pub fn set_text_align(gui: &mut Gui, node_id: f64, v: f64) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands
-            .set_style(node_id, TextAlignType(unsafe { transmute(v as u8) }));
+        {
+            let v: TextAlign = unsafe { transmute(v as u8) };
+            gui.commands.set_style(node_id, TextAlignType(v));
+            gui.commands.set_style(
+                node_id,
+                JustifyContentType(match v {
+                    TextAlign::Left => JustifyContent::FlexStart,
+                    TextAlign::Right => JustifyContent::FlexEnd,
+                    TextAlign::Center => JustifyContent::Center,
+                    TextAlign::Justify => JustifyContent::SpaceBetween,
+                }),
+            );
+        };
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_text_align(gui: &mut Gui, node_id: f64, v: f64) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands
-            .set_style(node_id, TextAlignType(unsafe { transmute(v as u8) }));
+        {
+            let v: TextAlign = unsafe { transmute(v as u8) };
+            gui.commands.set_style(node_id, TextAlignType(v));
+            gui.commands.set_style(
+                node_id,
+                JustifyContentType(match v {
+                    TextAlign::Left => JustifyContent::FlexStart,
+                    TextAlign::Right => JustifyContent::FlexEnd,
+                    TextAlign::Center => JustifyContent::Center,
+                    TextAlign::Justify => JustifyContent::SpaceBetween,
+                }),
+            );
+        };
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn reset_text_align(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands.set_style(node_id, ResetTextAlignType);
+        {
+            gui.commands.set_style(node_id, ResetTextAlignType);
+            gui.commands.set_style(node_id, ResetJustifyContentType);
+        };
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_text_align(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands.set_style(node_id, ResetTextAlignType);
+        {
+            gui.commands.set_style(node_id, ResetTextAlignType);
+            gui.commands.set_style(node_id, ResetJustifyContentType);
+        };
     }
     #[allow(unused_variables)]
     #[allow(unused_assignments)]
@@ -6320,6 +6348,95 @@
             None => return,
         };
         set_text_align(gui, node, v);
+    }
+    #[cfg(feature = "pi_js_export")]
+    #[allow(unused_attributes)]
+    pub fn set_vertical_align(gui: &mut Gui, node_id: f64, v: f64) {
+        let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
+        {
+            let v: VerticalAlign = unsafe { transmute(v as u8) };
+            gui.commands.set_style(node_id, VerticalAlignType(v));
+            gui.commands.set_style(
+                node_id,
+                AlignSelfType(match v {
+                    VerticalAlign::Top => AlignSelf::FlexStart,
+                    VerticalAlign::Bottom => AlignSelf::FlexEnd,
+                    VerticalAlign::Middle => AlignSelf::Center,
+                }),
+            );
+        };
+    }
+    #[cfg(target_arch = "wasm32")]
+    #[wasm_bindgen]
+    #[allow(unused_attributes)]
+    pub fn set_vertical_align(gui: &mut Gui, node_id: f64, v: f64) {
+        let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
+        {
+            let v: VerticalAlign = unsafe { transmute(v as u8) };
+            gui.commands.set_style(node_id, VerticalAlignType(v));
+            gui.commands.set_style(
+                node_id,
+                AlignSelfType(match v {
+                    VerticalAlign::Top => AlignSelf::FlexStart,
+                    VerticalAlign::Bottom => AlignSelf::FlexEnd,
+                    VerticalAlign::Middle => AlignSelf::Center,
+                }),
+            );
+        };
+    }
+    #[cfg(feature = "pi_js_export")]
+    #[allow(unused_attributes)]
+    pub fn reset_vertical_align(gui: &mut Gui, node_id: f64) {
+        let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
+        {
+            gui.commands.set_style(node_id, ResetVerticalAlignType);
+            gui.commands.set_style(node_id, ResetAlignSelfType);
+        };
+    }
+    #[cfg(target_arch = "wasm32")]
+    #[wasm_bindgen]
+    #[allow(unused_attributes)]
+    pub fn reset_vertical_align(gui: &mut Gui, node_id: f64) {
+        let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
+        {
+            gui.commands.set_style(node_id, ResetVerticalAlignType);
+            gui.commands.set_style(node_id, ResetAlignSelfType);
+        };
+    }
+    #[allow(unused_variables)]
+    #[allow(unused_assignments)]
+    pub fn play_reset_vertical_align(
+        gui: &mut Gui,
+        context: &mut PlayContext,
+        json: &Vec<json::JsonValue>,
+    ) {
+        let node =
+            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
+        let node = match context.nodes.get(node as usize) {
+            Some(r) => r.clone(),
+            None => return,
+        };
+        reset_vertical_align(gui, node);
+    }
+    #[allow(unused_variables)]
+    #[allow(unused_assignments)]
+    pub fn play_vertical_align(
+        gui: &mut Gui,
+        context: &mut PlayContext,
+        json: &Vec<json::JsonValue>,
+    ) {
+        let mut i = 0;
+        let node =
+            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
+                .index();
+        i += 1;
+        let v = pi_export_play::as_value::<f64>(json, i).unwrap();
+        i += 1;
+        let node = match context.nodes.get(node as usize) {
+            Some(r) => r.clone(),
+            None => return,
+        };
+        set_vertical_align(gui, node, v);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
@@ -8140,12 +8257,24 @@
     }
     #[cfg(feature = "pi_js_export")]
     pub fn create_vnode(gui: &mut Gui) -> f64 {
-        create_node(gui)
+        {
+            let entity = gui.entitys.reserve_entity();
+            let mut node_bundle = NodeBundle::default();
+            node_bundle.node_state.set_vnode(true);
+            gui.commands.push_cmd(NodeCmd(node_bundle, entity));
+            unsafe { transmute(entity.to_bits()) }
+        }
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     pub fn create_vnode(gui: &mut Gui) -> f64 {
-        create_node(gui)
+        {
+            let entity = gui.entitys.reserve_entity();
+            let mut node_bundle = NodeBundle::default();
+            node_bundle.node_state.set_vnode(true);
+            gui.commands.push_cmd(NodeCmd(node_bundle, entity));
+            unsafe { transmute(entity.to_bits()) }
+        }
     }
     #[cfg(feature = "pi_js_export")]
     pub fn create_text_node(gui: &mut Gui) -> f64 {
@@ -8176,7 +8305,6 @@
     }
     #[cfg(feature = "pi_js_export")]
     pub fn destroy_node(gui: &mut Gui, node: f64) {
-        let node = unsafe { Entity::from_bits(transmute::<f64, u64>(node)) };
         {
             gui.commands
                 .destroy_node(Entity::from_bits(unsafe { transmute(node) }));
@@ -8185,7 +8313,6 @@
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     pub fn destroy_node(gui: &mut Gui, node: f64) {
-        let node = unsafe { Entity::from_bits(transmute::<f64, u64>(node)) };
         {
             gui.commands
                 .destroy_node(Entity::from_bits(unsafe { transmute(node) }));

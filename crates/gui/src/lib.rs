@@ -212,7 +212,7 @@ fn ab_query_func(arg: &mut AbQueryArgs, id: EntityKey, aabb: &Aabb2, _bind: &())
             // 检查是否有裁剪，及是否在裁剪范围内
             let mut inpass = inpass.0;
             while !inpass.is_null() {
-                if let Ok((parent, quad, oveflow)) = arg.query_parent.get(*id) {
+                if let Ok((parent, quad, oveflow)) = arg.query_parent.get(*inpass) {
                     inpass = parent.0;
                     if oveflow.0 {
                         if !intersects(&arg.aabb, quad) {

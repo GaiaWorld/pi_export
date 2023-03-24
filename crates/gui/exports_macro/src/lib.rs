@@ -154,6 +154,53 @@ macro_rules! style_out_export {
 		}
     };
 
+	(@owner $attr_name:ident, $expr:expr, $expr:resetexpr, $($name_ref: ident: &$ty_ref: ty,)*; $($name: ident: $ty: ty,)*) => {
+		$crate::paste::item! {
+			#[cfg(feature="pi_js_export")]
+			#[allow(unused_attributes)]
+       		#[wasm_bindgen]
+			pub fn [<set_ $attr_name>](gui: &mut Gui, node_id: f64, $($name_ref: &$ty_ref,)* $($name: $ty,)*) {
+				let node_id = unsafe {Entity::from_bits(transmute::<f64, u64>(node_id))};
+				$expr;
+			}
+
+			#[cfg(feature="pi_js_export")]
+			#[allow(unused_attributes)]
+       		#[wasm_bindgen]
+			pub fn [<reset_ $attr_name>](gui: &mut Gui, node_id: f64) {
+				let node_id = unsafe {Entity::from_bits(transmute::<f64, u64>(node_id))};
+				$resetexpr;
+			}
+
+			#[allow(unused_variables)]
+			#[allow(unused_assignments)]
+			pub fn [<play_reset_ $attr_name>](gui: &mut Gui, context: &mut PlayContext, json: &Vec<json::JsonValue>) {
+				let node = unsafe {Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))}.index();
+				let node = match context.nodes.get(node as usize) {
+					Some(r) => r.clone(),
+					None => return,
+				};
+				[<reset_ $attr_name>](gui, node);
+			}
+
+			#[allow(unused_variables)]
+			#[allow(unused_assignments)]
+			pub fn [<play_ $attr_name>](gui: &mut Gui, context: &mut PlayContext, json: &Vec<json::JsonValue>) {
+				let mut i = 0;
+				let node = unsafe {Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))}.index();
+				i += 1;
+				$(let $name_ref = super::json_parse::as_value::<$ty_ref>(json, i).unwrap(); i += 1;let $name_ref = &$name_ref;)*
+				$(let $name = super::json_parse::as_value::<$ty>(json, i).unwrap(); i += 1;)*
+				// let node = context.nodes.get(node).unwrap().clone();
+				let node = match context.nodes.get(node as usize) {
+					Some(r) => r.clone(),
+					None => return,
+				};
+				[<set_ $attr_name>](gui, node, $($name_ref,)* $($name,)*);
+			}
+		}
+    };
+
 	(@dimension_inner $attr_name:ident, $last_ty: ident, $expr: expr, $($name_ref: ident: &$ty_ref: ty,)*; $($name: ident: $ty: ty,)*) => {
 		$crate::paste::item! {
 			#[cfg(feature="pi_js_export")]
