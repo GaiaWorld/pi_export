@@ -68,7 +68,7 @@ macro_rules! other_out_export {
 		}
 
 		$crate::paste::item! {
-			pub fn [<play_ $func_name>](gui: &mut Gui, context: &mut PlayContext, json: &Vec<json::JsonValue>) {
+			pub fn [<play_ $func_name>](gui: &mut Gui, engine: &mut Engine, context: &mut PlayContext, json: &Vec<json::JsonValue>) {
 				let mut i = -1;
 				i += 1;
 				let node = unsafe {Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))}.index();
@@ -98,7 +98,7 @@ macro_rules! other_out_export {
 		}
 
 		$crate::paste::item! {
-			pub fn [<play_ $func_name>]($($context: $context_ty,)* _context: &mut PlayContext, _json: &Vec<json::JsonValue>) {
+			pub fn [<play_ $func_name>](gui: &mut Gui, engine: &mut Engine, _context: &mut PlayContext, _json: &Vec<json::JsonValue>) {
 				let mut _i = -1;
 				$(_i += 1; let $name_ref = pi_export_play::as_value::<$ty_ref>(_json, _i as usize).unwrap(); let $name_ref = &$name_ref;)*
 				$(_i += 1; let $name = pi_export_play::as_value::<$ty>(_json, _i as usize).unwrap();)*
@@ -122,7 +122,7 @@ macro_rules! other_out_export {
 
 		$crate::paste::item! {
 			#[allow(unused_variables)]
-			pub fn [<play_ $func_name>](gui: &mut Gui, context: &mut PlayContext, json: &Vec<json::JsonValue>) {
+			pub fn [<play_ $func_name>](gui: &mut Gui, engine: &mut Engine,  context: &mut PlayContext, json: &Vec<json::JsonValue>) {
 				let i = -1;
 				$(let i = i + 1; let $name_ref = pi_export_play::as_value::<$ty_ref>(json, i as usize).unwrap();let $name_ref = &$name_ref;)*
 				$(let i = i + 1; let $name = pi_export_play::as_value::<$ty>(json, i as usize).unwrap();)*
@@ -222,7 +222,7 @@ macro_rules! style_out_export {
 
 			#[allow(unused_variables)]
 			#[allow(unused_assignments)]
-			pub fn [<play_reset_ $attr_name>](gui: &mut Gui, context: &mut PlayContext, json: &Vec<json::JsonValue>) {
+			pub fn [<play_reset_ $attr_name>](gui: &mut Gui, engine: &mut Engine,  context: &mut PlayContext, json: &Vec<json::JsonValue>) {
 				let node = unsafe {Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))}.index();
 				let node = match context.nodes.get(node as usize) {
 					Some(r) => r.clone(),
@@ -233,7 +233,7 @@ macro_rules! style_out_export {
 
 			#[allow(unused_variables)]
 			#[allow(unused_assignments)]
-			pub fn [<play_ $attr_name>](gui: &mut Gui, context: &mut PlayContext, json: &Vec<json::JsonValue>) {
+			pub fn [<play_ $attr_name>](gui: &mut Gui, engine: &mut Engine,  context: &mut PlayContext, json: &Vec<json::JsonValue>) {
 				let mut i = 0;
 				let node = unsafe {Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))}.index();
 				i += 1;
@@ -248,6 +248,69 @@ macro_rules! style_out_export {
 			}
 		}
     };
+
+	(@owner $attr_name:ident, $expr:expr, $resetexpr:expr, $($name_ref: ident: &$ty_ref: ty,)*; $($name: ident: $ty: ty,)*) => {
+		$crate::paste::item! {
+			#[cfg(feature="pi_js_export")]
+			
+			#[allow(unused_attributes)]
+			pub fn [<set_ $attr_name>](gui: &mut Gui, node_id: f64, $($name_ref: &$ty_ref,)* $($name: $ty,)*) {
+				let node_id = unsafe {Entity::from_bits(transmute::<f64, u64>(node_id))};
+				$expr;
+			}
+
+			#[cfg(target_arch="wasm32")]
+			#[wasm_bindgen]
+			#[allow(unused_attributes)]
+			pub fn [<set_ $attr_name>](gui: &mut Gui, node_id: f64, $($name_ref: &$ty_ref,)* $($name: $ty,)*) {
+				let node_id = unsafe {Entity::from_bits(transmute::<f64, u64>(node_id))};
+				$expr;
+			}
+
+			#[cfg(feature="pi_js_export")]
+			
+			#[allow(unused_attributes)]
+			pub fn [<reset_ $attr_name>](gui: &mut Gui, node_id: f64) {
+				let node_id = unsafe {Entity::from_bits(transmute::<f64, u64>(node_id))};
+				$resetexpr;
+			}
+
+			#[cfg(target_arch="wasm32")]
+			#[wasm_bindgen]
+			#[allow(unused_attributes)]
+			pub fn [<reset_ $attr_name>](gui: &mut Gui, node_id: f64) {
+				let node_id = unsafe {Entity::from_bits(transmute::<f64, u64>(node_id))};
+				$resetexpr;
+			}
+
+			#[allow(unused_variables)]
+			#[allow(unused_assignments)]
+			pub fn [<play_reset_ $attr_name>](gui: &mut Gui, engine: &mut Engine,  context: &mut PlayContext, json: &Vec<json::JsonValue>) {
+				let node = unsafe {Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))}.index();
+				let node = match context.nodes.get(node as usize) {
+					Some(r) => r.clone(),
+					None => return,
+				};
+				[<reset_ $attr_name>](gui, node);
+			}
+
+			#[allow(unused_variables)]
+			#[allow(unused_assignments)]
+			pub fn [<play_ $attr_name>](gui: &mut Gui, engine: &mut Engine,  context: &mut PlayContext, json: &Vec<json::JsonValue>) {
+				let mut i = 0;
+				let node = unsafe {Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))}.index();
+				i += 1;
+				$(let $name_ref = pi_export_play::as_value::<$ty_ref>(json, i).unwrap(); i += 1;let $name_ref = &$name_ref;)*
+				$(let $name = pi_export_play::as_value::<$ty>(json, i).unwrap(); i += 1;)*
+				// let node = context.nodes.get(node).unwrap().clone();
+				let node = match context.nodes.get(node as usize) {
+					Some(r) => r.clone(),
+					None => return,
+				};
+				[<set_ $attr_name>](gui, node, $($name_ref,)* $($name,)*);
+			}
+		}
+	};
 
 	(@dimension_inner $attr_name:ident, $last_ty: ident, $expr: expr, $($name_ref: ident: &$ty_ref: ty,)*; $($name: ident: $ty: ty,)*) => {
 		$crate::paste::item! {
@@ -323,7 +386,7 @@ macro_rules! style_out_export {
 
 			#[allow(unused_variables)]
 			#[allow(unused_assignments)]
-			pub fn [<play_reset_ $attr_name>](gui: &mut Gui, context: &mut PlayContext, json: &Vec<json::JsonValue>) {
+			pub fn [<play_reset_ $attr_name>](gui: &mut Gui, engine: &mut Engine,  context: &mut PlayContext, json: &Vec<json::JsonValue>) {
 				let node = unsafe {Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))}.index();
 				let edge = pi_export_play::as_value::<f64>(json, 1).unwrap();
 				let node = match context.nodes.get(node as usize) {
@@ -334,7 +397,7 @@ macro_rules! style_out_export {
 			}
 
 			#[allow(unused_variables)]
-			pub fn [<play_ $attr_name>](gui: &mut Gui, context: &mut PlayContext, json: &Vec<json::JsonValue>) {
+			pub fn [<play_ $attr_name>](gui: &mut Gui, engine: &mut Engine,  context: &mut PlayContext, json: &Vec<json::JsonValue>) {
 				let mut i = -1;
 				i += 1;
 				let node = unsafe {Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))}.index();
@@ -388,7 +451,7 @@ macro_rules! style_out_export {
 
 			#[allow(unused_variables)]
 			#[allow(unused_assignments)]
-			pub fn [<play_reset_ $attr_name>](gui: &mut Gui, context: &mut PlayContext, json: &Vec<json::JsonValue>) {
+			pub fn [<play_reset_ $attr_name>](gui: &mut Gui, engine: &mut Engine, context: &mut PlayContext, json: &Vec<json::JsonValue>) {
 				let node = unsafe {Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))}.index();
 				let node = match context.nodes.get(node as usize) {
 					Some(r) => r.clone(),
@@ -399,7 +462,7 @@ macro_rules! style_out_export {
 
 			#[allow(unused_variables)]
 			#[allow(unused_assignments)]
-			pub fn [<play_ $attr_name>](gui: &mut Gui, context: &mut PlayContext, json: &Vec<json::JsonValue>) {
+			pub fn [<play_ $attr_name>](gui: &mut Gui, engine: &mut Engine, context: &mut PlayContext, json: &Vec<json::JsonValue>) {
 				let node = unsafe {Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))}.index();
 				let hash = pi_export_play::as_value::<usize>(json, 1).unwrap();
 				// let node = context.nodes.get(node).unwrap().clone();
@@ -702,7 +765,48 @@ style_out_export!(@expr line_height_normal, LineHeightType, LineHeight::Normal,;
 style_out_export!(@expr line_height, LineHeightType, LineHeight::Length(value),; value: f32,);
 style_out_export!(@expr line_height_percent, LineHeightType, LineHeight::Percent(value), ;value: f32,);
 style_out_export!(@expr text_indent, TextIndentType, v,; v: f32,);
-style_out_export!(@cenum text_align, TextAlignType);
+// style_out_export!(@cenum text_align, TextAlignType);
+style_out_export!(
+	@owner 
+	text_align, 
+	{	
+		let v: TextAlign = unsafe {transmute(v as u8)};
+		gui.commands.set_style(node_id, TextAlignType(v));
+		gui.commands.set_style(node_id, JustifyContentType(match v {
+			TextAlign::Left => JustifyContent::FlexStart,
+			TextAlign::Right => JustifyContent::FlexEnd,
+			TextAlign::Center => JustifyContent::Center,
+			TextAlign::Justify => JustifyContent::SpaceBetween,
+		}));
+	},
+	{
+		gui.commands.set_style(node_id, ResetTextAlignType);
+		gui.commands.set_style(node_id, ResetJustifyContentType);
+	},;
+	v: f64,
+);
+
+style_out_export!(
+	@owner 
+	vertical_align, 
+	{	
+		let v: VerticalAlign = unsafe {transmute(v as u8)};
+		gui.commands.set_style(node_id, VerticalAlignType(v));
+		gui.commands.set_style(node_id, AlignSelfType(match v {
+			VerticalAlign::Top => AlignSelf::FlexStart,
+			VerticalAlign::Bottom => AlignSelf::FlexEnd,
+			VerticalAlign::Middle => AlignSelf::Center,
+		}));
+	},
+	{
+		gui.commands.set_style(node_id, ResetVerticalAlignType);
+		gui.commands.set_style(node_id, ResetAlignSelfType);
+	},;
+	v: f64,
+);
+
+style_out_export!(@expr $attr_name, $last_ty, unsafe {transmute(v as u8)},; v: f64,);
+
 style_out_export!(@expr text_stroke, TextStrokeType, Stroke {
 	width: NotNan::new(width).expect("stroke width is nan"),
 	color: CgColor::new(r, g, b, a),
@@ -953,7 +1057,14 @@ other_out_export!(
 	@with_return,
     create_vnode,
 	f64,
-	create_node(gui),
+	{
+		let entity = gui.entitys.reserve_entity();
+		let mut node_bundle = NodeBundle::default();
+		node_bundle.node_state.set_vnode(true);
+		gui.commands
+			.push_cmd(NodeCmd(node_bundle, entity));
+		unsafe { transmute(entity.to_bits()) }
+	},
 	gui: &mut Gui,;
 	;
 );
@@ -989,7 +1100,7 @@ other_out_export!(
     destroy_node,
     gui,
     node,
-    {gui.commands.destroy_node(Entity::from_bits(unsafe { transmute(node) }));},;
+    {gui.commands.destroy_node(node);},;
 );
 
 other_out_export!(

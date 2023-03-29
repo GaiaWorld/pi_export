@@ -3,9 +3,13 @@ use std::mem::transmute;
 use js_proxy_gen_macro::pi_js_export;
 use pi_bevy_ecs_extend::prelude::Down;
 use pi_bevy_ecs_extend::prelude::Up;
+use pi_bevy_render_plugin::PiRenderGraph;
 use pi_flex_layout::prelude::*;
 use pi_null::Null;
 use pi_style::style_parse::Attribute;
+use pi_ui_render::components::calc::InPassId;
+use pi_ui_render::components::pass_2d::GraphId;
+use pi_ui_render::components::pass_2d::ParentPassId;
 use serde::{Deserialize, Serialize};
 
 use pi_style::style::Point2;
@@ -84,7 +88,10 @@ struct Info {
     pub background_repeat: Option<ImageRepeat>,
     pub filter: Option<Hsi>,
     pub transform_will_change: Option<TransformWillChange>,
-    pub parent_id: Option<f64>,
+    pub parent_id: String,
+	pub inpass: String,
+	pub parentpass: String,
+	pub graph_id: String,
     pub content_bound_box: Option<ContentBox>,
     pub quad: Option<pi_ui_render::components::calc::Quad>,
 
@@ -252,6 +259,12 @@ pub fn get_class_name(engine: &mut Engine, node_id: f64) -> String {
         Ok(r) => Some(r),
         _ => None,
     }).unwrap()
+}
+
+#[pi_js_export]
+pub fn dump_graphviz(engine: &Engine) -> String {
+	let g = engine.world.get_resource::<PiRenderGraph>().unwrap();
+	g.dump_graphviz()
 }
 
 #[allow(unused_attributes)]
@@ -905,6 +918,9 @@ pub fn node_info(engine: &mut Engine, node_id: f64) -> String {
             Option<&BackgroundImageMod>,
             Option<&Hsi>,
             Option<&TransformWillChange>,
+			Option<&InPassId>,
+			Option<&ParentPassId>,
+			Option<&GraphId>,
         ),
     )>();
     let (
@@ -938,6 +954,9 @@ pub fn node_info(engine: &mut Engine, node_id: f64) -> String {
             background_image_mod,
             hsi,
             transform_will_change,
+			inpass,
+			parentpass,
+			graph_id,
         ),
     ) = query.get(&engine.world, node_id).unwrap();
 
@@ -988,7 +1007,10 @@ pub fn node_info(engine: &mut Engine, node_id: f64) -> String {
         filter: hsi.map(|r| r.clone()),
         // style_mark: gui.gui.style_mark.lend()[node_id],
         transform_will_change: transform_will_change.map(|r| r.clone()),
-        parent_id: Some(unsafe { transmute::<_, f64>(parent) }),
+        parent_id: format!("{:?}", parent),
+		inpass: format!("{:?}", inpass),
+		parentpass: format!("{:?}", parentpass),
+		graph_id:  format!("{:?}", graph_id),
         children: children,
     };
 

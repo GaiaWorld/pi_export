@@ -1,6 +1,8 @@
 use std::mem::transmute;
 use std::sync::Arc;
 
+use pi_bevy_render_plugin::PiRenderGraph;
+use pi_ui_render::components::pass_2d::GraphId;
 use pi_async::prelude::SingleTaskRunner;
 use pi_async::prelude::SingleTaskRuntime;
 use pi_bevy_ecs_extend::prelude::Down;
@@ -27,6 +29,8 @@ use pi_ui_render::components::user::serialize::StyleTypeReader;
 use pi_ui_render::components::user::Vector4;
 use pi_ui_render::components::user::*;
 use pi_ui_render::components::user::{Overflow, Size};
+use pi_ui_render::components::calc::InPassId;
+use pi_ui_render::components::pass_2d::ParentPassId;
 use super::{Engine, Gui};
 use pi_ui_render::resource::ClassSheet;
 use bevy::ecs::prelude::Entity;
@@ -92,7 +96,10 @@ struct Info {
     pub background_repeat: Option<ImageRepeat>,
     pub filter: Option<Hsi>,
     pub transform_will_change: Option<TransformWillChange>,
-    pub parent_id: Option<f64>,
+    pub parent_id: String,
+	pub inpass: String,
+	pub parentpass: String,
+	pub graph_id: String,
     pub content_bound_box: Option<ContentBox>,
     pub quad: Option<pi_ui_render::components::calc::Quad>,
 
@@ -280,6 +287,13 @@ pub fn get_class_name(engine: &mut Engine, node_id: f64) -> JsValue {
         _ => None,
     })
     .unwrap()
+}
+
+#[wasm_bindgen]
+pub fn dump_graphviz(engine: &Engine)  {
+	let g = engine.world.get_resource::<PiRenderGraph>().unwrap();
+	log::info!("{}", g.dump_graphviz());
+	
 }
 
 #[allow(unused_attributes)]
@@ -933,6 +947,9 @@ pub fn node_info(engine: &mut Engine, node_id: f64) -> JsValue {
             Option<&BackgroundImageMod>,
             Option<&Hsi>,
             Option<&TransformWillChange>,
+			Option<&InPassId>,
+			Option<&ParentPassId>,
+			Option<&GraphId>,
         ),
     )>();
     let (
@@ -966,6 +983,9 @@ pub fn node_info(engine: &mut Engine, node_id: f64) -> JsValue {
             background_image_mod,
             hsi,
             transform_will_change,
+			inpass,
+			parentpass,
+			graph_id,
         ),
     ) = query.get(&engine.world, node_id).unwrap();
 
@@ -1016,7 +1036,10 @@ pub fn node_info(engine: &mut Engine, node_id: f64) -> JsValue {
         filter: hsi.map(|r| r.clone()),
         // style_mark: gui.gui.style_mark.lend()[node_id],
         transform_will_change: transform_will_change.map(|r| r.clone()),
-        parent_id: Some(unsafe { transmute::<_, f64>(parent) }),
+        parent_id: format!("{:?}", parent),
+		inpass: format!("{:?}", inpass),
+		parentpass: format!("{:?}", parentpass),
+		graph_id: format!("{:?}", graph_id),
         children: children,
     };
 

@@ -1,29 +1,28 @@
+use std::time::Duration;
 use std::{sync::Arc, time::Instant, mem::transmute};
 
 use async_trait::async_trait;
-use bevy::app::CoreStage;
 use bevy::ecs::{
-    schedule::{IntoSystemDescriptor, ShouldRun, StageLabel, SystemStage},
-    system::{Commands, ResMut, SystemState},
-    world::World,
+    schedule::{StageLabel},
+    system::{SystemState},
 };
 use bevy::prelude::App;
+use bevy::window::WindowId;
 use bevy::winit::WinitPlugin;
 use pi_async::prelude::AsyncRuntime;
 use pi_bevy_post_process::PiPostProcessPlugin;
-use pi_bevy_render_plugin::{PiRenderPlugin};
+use pi_bevy_render_plugin::{PiRenderPlugin, FrameState};
 use pi_flex_layout::prelude::Size;
 use pi_hal::{init_load_cb, on_load, runtime::MULTI_MEDIA_RUNTIME};
 use pi_share::{Share, ShareMutex};
-use pi_ui_render::export::Engine;
+use pi_export_gui::{Engine, Gui, fram_call};
 use pi_ui_render::system::RunState;
-use pi_ui_render::{prelude::UiPlugin, resource::UserCommands, system::node::user_setting::user_setting, export::{Gui}};
+use pi_ui_render::{prelude::UiPlugin, resource::UserCommands};
 
 #[async_trait]
 pub trait Example: 'static + Sized {
-    fn init(&mut self, app: Commands, gui: &mut Gui, size: (usize, usize));
-    fn render(&mut self, commands: &mut UserCommands, cmd1: &mut Commands);
-
+    fn init(&mut self, gui: &mut Gui, engine: &mut Engine, size: (usize, usize));
+    fn fram_call(&mut self, gui: &mut Gui, engine: &mut Engine);
     fn get_init_size(&self) -> Option<Size<u32>> {
         // None表示使用默认值
         None
@@ -54,55 +53,48 @@ pub fn start<T: Example + Sync + Send + 'static>(example: T) {
 	};
 
     let exmple = Share::new(ShareMutex::new(example));
-    let exmple1 = exmple.clone();
-    let exmple_run = move |world: &mut World, commands: &mut SystemState<(ResMut<UserCommands>, Commands)>| {
-        // log::warn!("zzzzzzzzzzzzzzzzzzzzzzzzbbbbbb");
-        let mut commands = commands.get_mut(world);
-        exmple.lock().render(&mut commands.0, &mut commands.1);
-    };
+    // let exmple_run = move |world: &mut World, commands: &mut SystemState<(ResMut<UserCommands>, Commands)>| {
+    //     // log::warn!("zzzzzzzzzzzzzzzzzzzzzzzzbbbbbb");
+    //     let mut commands = commands.get_mut(world);
+    //     exmple.lock().render(&mut commands.0, &mut commands.1);
+    // };
 
 	let mut engine = create_engine(width, height);
 
 	engine.world.insert_resource(RunState::RENDER);
     engine.add_plugin(UiPlugin);
 
-    engine.0
-		.add_system_to_stage(CoreStage::First, exmple_run.before(user_setting))
-		.add_stage_before(
-			CoreStage::First,
-			InitStartupStage::Startup,
-			SystemStage::parallel().with_run_criteria(ShouldRun::once),
-		)
-		.add_system_to_stage(InitStartupStage::Startup, move |world: &mut World, commands_state: &mut SystemState<Commands>| {
-			let mut gui = Gui {
-				down_query: world.query(),
-				up_query: world.query(),
-				layer_query: world.query(),
-				enable_query: world.query(),
-				depth_query: world.query(),
-				layout_query: world.query(),
-				quad_query: world.query(),
-				matrix_query: world.query(),
-				overflow_query: world.query(),
-				in_pass2d_query: world.query(),
-				graph_id: world.query(),
-				query_state: SystemState::new(world),
-				entitys: unsafe { transmute(world.entities()) },
-				commands: UserCommands::default(),
-			};
-			let commands = commands_state.get_mut(world);
-			exmple1.lock().init(commands, &mut gui, (500, 500));
-			commands_state.apply(world);
-		})
-		.run();
-	
-    // let system_schedule = bevy_mod_debugdump::get_schedule(&mut app);
-    // let mut file = File::create("system_schedule.dot").unwrap();
-    // file.write_all(system_schedule.as_bytes()).unwrap();
-
-    // bevy_mod_debugdump::print_schedule(&mut app);
-
-    // run_window_loop(window, event_loop);
+    // engine.0
+	// 	// .add_system_to_stage(CoreStage::First, exmple_run.before(user_setting))
+	// 	.add_stage_before(
+	// 		CoreStage::First,
+	// 		InitStartupStage::Startup,
+	// 		SystemStage::parallel().with_run_criteria(ShouldRun::once),
+	// 	);
+	engine.app_mut().update();
+	let world = &mut engine.world;
+	let mut gui = Gui {
+		down_query: world.query(),
+		up_query: world.query(),
+		layer_query: world.query(),
+		enable_query: world.query(),
+		depth_query: world.query(),
+		layout_query: world.query(),
+		quad_query: world.query(),
+		matrix_query: world.query(),
+		overflow_query: world.query(),
+		in_pass2d_query: world.query(),
+		graph_id: world.query(),
+		query_state: SystemState::new(world),
+		entitys: unsafe { transmute(world.entities()) },
+		commands: UserCommands::default(),
+	};
+	exmple.lock().init(&mut gui, &mut engine, (500, 500));
+	loop {
+		exmple.lock().fram_call(&mut gui, &mut engine);
+		fram_call(&mut engine, 0);
+		std::thread::sleep(Duration::from_millis(16));
+	}
 }
 
 #[derive(Debug, Hash, PartialEq, Eq, Clone, StageLabel)]
@@ -125,22 +117,44 @@ impl Default for PreFrameTime {
 fn main() {}
 
 pub fn create_engine(width: u32, height: u32) -> Engine {
+	use winit::{event_loop::{EventLoopBuilder}, platform::windows::EventLoopBuilderExtWindows};
     let mut app = App::default();
 
-	let mut window_plugin = bevy::window::WindowPlugin::default();
-	window_plugin.window.width = width as f32;
-	window_plugin.window.height = height as f32;
+	// let mut window_plugin = bevy::window::WindowPlugin::default();
+	// window_plugin.window.width = width as f32;
+	// window_plugin.window.height = height as f32;
 	
-	app
+	// app
+	// 	.add_plugin(bevy::log::LogPlugin {
+	// 		filter: "wgpu=info,pi_ui_render::components::user=debug".to_string(),
+	// 		level: bevy::log::Level::INFO,
+	// 	})
+	// 	.add_plugin(bevy::input::InputPlugin::default())
+	// 	.add_plugin(window_plugin)
+	// 	.add_plugin(WinitPlugin::default())
+	// 	// .add_plugin(WorldInspectorPlugin::new())
+	// 	.add_plugin(PiRenderPlugin::default())
+	// 	.add_plugin(PiPostProcessPlugin);
+	let mut window_plugin = bevy::window::WindowPlugin::default();
+    window_plugin.add_primary_window = false;
+	// window_plugin.window.width = width as f32;
+    // window_plugin.window.height = height as f32;
+	// window_plugin.add_primary_window = false;
+
+	let event_loop =  EventLoopBuilder::new().with_any_thread(true).build();
+	let window = Arc::new(winit::window::Window::new(&event_loop).unwrap());
+	
+    app
 		.add_plugin(bevy::log::LogPlugin {
-			filter: "wgpu=info,pi_ui_render::components::user=debug".to_string(),
-			level: bevy::log::Level::INFO,
+			// filter: "pi_ui_render::components::user=debug".to_string(),
+			filter: "".to_string(),
+			level: bevy::log::Level::WARN,
 		})
-		.add_plugin(bevy::input::InputPlugin::default())
+		// .add_plugin(bevy::input::InputPlugin::default())
 		.add_plugin(window_plugin)
-		.add_plugin(WinitPlugin::default())
+		.add_plugin(pi_bevy_winit_window::WinitPlugin::new(window.clone(), WindowId::primary()).with_size(width, height))
 		// .add_plugin(WorldInspectorPlugin::new())
-		.add_plugin(PiRenderPlugin::default())
+		.add_plugin(PiRenderPlugin {frame_init_state: FrameState::UnActive})
 		.add_plugin(PiPostProcessPlugin);
     Engine(app)
 }

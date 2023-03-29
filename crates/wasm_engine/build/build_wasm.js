@@ -69,7 +69,9 @@ export default init;`,
 
 export { initSync }
 Promise.resolve().then(() => {
-	init(module.wasmModule);
+	init(module.wasmModule).then((r) => {
+		window["_$wasm"] = r;
+	});
 })`);
 		// data = data.replace(`Module["noExitRuntime"]=true;run();`, `Module["noExitRuntime"] = true;
 		// //PI_START

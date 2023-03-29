@@ -6,7 +6,6 @@ pub extern crate lazy_static;
 
 use bevy::ecs::{
     prelude::Entity,
-    system::{Commands},
 };
 use font_kit::font::new_face_by_path;
 use framework::Example;
@@ -15,24 +14,13 @@ use pi_flex_layout::prelude::Size;
 use pi_hash::XHashMap;
 use pi_idtree::IdTree;
 use pi_map::vecmap::VecMap;
-use pi_ui_render::{
-    components::{
-        user::{ClearColor, RenderDirty, Viewport},
-    },
-    export::json_parse::as_value,
-    export::*,
-    resource::{ExtendCssCmd, NodeCmd, UserCommands},
-};
+use pi_export_play::as_value;
+use pi_export_gui::*;
+use pi_export_gui::native_index::{play_append_child, play_insert_before, play_remove_node, play_destroy_node};
 use std::{
     fs::{read, DirEntry},
-    mem::{swap, transmute, replace},
+    mem::{transmute},
     path::Path,
-};
-
-use pi_style::{
-    style::{Aabb2, CgColor, Point2},
-    style_parse::parse_class_map_from_string,
-    style_type::ClassSheet,
 };
 
 //
@@ -51,8 +39,6 @@ pub struct ExampleCommonPlay {
     width: usize,
     height: usize,
     scale: f32,
-
-    cmd: UserCommands,
 }
 
 impl Default for ExampleCommonPlay {
@@ -65,9 +51,9 @@ impl Default for ExampleCommonPlay {
             },
             list_index: 0,
             file_index: 0,
-            play_version: "1671364756197",
-            play_path: "G://pi_demo_m/dst",
-            cmd_path: Some("E://pi_ui_render_new/examples/cmd_play/source/cmds"),
+            play_version: "test",
+            play_path: "G://pi_demo_gui_exe/dst",
+            cmd_path: Some("E://pi_export/crates/gui/examples/cmd_play/source/cmds"),
             json_arr: JsonValue::Array(Vec::default()),
             // width: 400,
             // height: 750,
@@ -75,7 +61,6 @@ impl Default for ExampleCommonPlay {
             width: 1024,
             height: 1920,
             scale: 0.5,
-            cmd: UserCommands::default(),
         }
     }
 }
@@ -86,11 +71,12 @@ impl Default for ExampleCommonPlay {
 // }
 
 impl Example for ExampleCommonPlay {
-    fn init(&mut self, _command: Commands, gui: &mut Gui, mut size: (usize, usize)) {
-        size = (512, 960);
+    fn init(&mut self, gui: &mut Gui, engine: &mut Engine, mut _size: (usize, usize)) {
+        let size = (512, 960);
         // let r: Commands1 = unsafe { transmute(command) };
         let mut ttf = std::env::current_dir().unwrap();
-        ttf.push("examples/cmd_play/source/SOURCEHANSANSK-MEDIUM.TTF");
+		log::warn!("cur_dir========{:?}", ttf);
+        ttf.push("crates/gui/examples/cmd_play/source/SOURCEHANSANSK-MEDIUM.TTF");
         // 设置默认字体
         new_face_by_path("default".to_string(), ttf.to_str().unwrap());
 
@@ -100,7 +86,7 @@ impl Example for ExampleCommonPlay {
 
         println!("view_port:{:?}", size);
         // 设置class
-        let mut class_sheet = ClassSheet::default();
+        // let mut class_sheet = ClassSheet::default();
         let mut cb = |dwcss: &DirEntry| {
             if let Some(r) = dwcss.path().extension() {
                 if r != "dcss" {
@@ -125,9 +111,7 @@ impl Example for ExampleCommonPlay {
             ".c3165071837 {{position : absolute ;left : 0px ;top : 0px ;width : {:?}px ;height : {:?}px ;}}",
             self.width, self.height
         );
-        let class_map = parse_class_map_from_string(full_screen_class.as_str(), 0).unwrap();
-
-        gui.commands.push_cmd(ExtendCssCmd(vec![class_map]));
+		create_class(gui, &full_screen_class, 0);
 
         // let gui = &mut self.cmd;
         // let gui = unsafe { &mut *(gui as *mut Gui as usize as *mut pi_ui_render::export::Gui)};
@@ -136,31 +120,32 @@ impl Example for ExampleCommonPlay {
         context.atoms.insert(11, Atom::new(pi_atom::Atom::from("")));
 
         let mut json = Object::new();
-        let id: f64 = unsafe { transmute::<u64, f64>(1) };
+        let id: f64 = unsafe { transmute::<u64, f64>(0) };
         json.insert("ret", JsonValue::Number(id.into()));
-        play_create_node(gui, context, &vec![JsonValue::Object(json.clone())]);
+        play_create_node(gui, engine, context, &vec![JsonValue::Object(json.clone())]);
 
         let root_entity = Entity::from_raw(0);
-        gui.commands
-            .push_cmd(NodeCmd(ClearColor(CgColor::new(1.0, 1.0, 1.0, 1.0), true), root_entity));
-        gui.commands.push_cmd(NodeCmd(
-            Viewport(Aabb2::new(Point2::new(0.0, 0.0), Point2::new(size.0 as f32, size.1 as f32))),
-            root_entity,
-        ));
-        gui.commands.push_cmd(NodeCmd(RenderDirty(true), root_entity));
+		let root_entity_f64 = unsafe {transmute::<u64, f64>(root_entity.to_bits())};
+
+		set_clear_color(gui, 1.0, 1.0, 1.0, 1.0, root_entity_f64, true);
+		set_view_port(gui, 0, 0, size.0 as i32, size.1 as i32, root_entity_f64);
+		set_render_dirty(gui, root_entity_f64);
 
         play_width(
             gui,
+			engine,
             context,
             &vec![JsonValue::Number(Number::from(id)), JsonValue::Number(Number::from(self.width))],
         );
         play_height(
             gui,
+			engine,
             context,
             &vec![JsonValue::Number(Number::from(id)), JsonValue::Number(Number::from(self.height))],
         );
         play_transform_scale(
             gui,
+			engine,
             context,
             &vec![
                 JsonValue::Number(Number::from(id)),
@@ -170,6 +155,7 @@ impl Example for ExampleCommonPlay {
         );
         play_transform_origin(
             gui,
+			engine,
             context,
             &vec![
                 JsonValue::Number(Number::from(id)),
@@ -181,6 +167,7 @@ impl Example for ExampleCommonPlay {
         );
         play_position(
             gui,
+			engine,
             context,
             &vec![
                 JsonValue::Number(Number::from(id)),
@@ -190,6 +177,7 @@ impl Example for ExampleCommonPlay {
         );
         play_position(
             gui,
+			engine,
             context,
             &vec![
                 JsonValue::Number(Number::from(id)),
@@ -199,6 +187,7 @@ impl Example for ExampleCommonPlay {
         );
         play_margin(
             gui,
+			engine,
             context,
             &vec![
                 JsonValue::Number(Number::from(id)),
@@ -208,6 +197,7 @@ impl Example for ExampleCommonPlay {
         );
         play_margin(
             gui,
+			engine,
             context,
             &vec![
                 JsonValue::Number(Number::from(id)),
@@ -217,11 +207,13 @@ impl Example for ExampleCommonPlay {
         );
         play_position_type(
             gui,
+			engine,
             context,
             &vec![JsonValue::Number(Number::from(id)), JsonValue::Number(Number::from(1))],
         );
         play_append_child(
             gui,
+			engine,
             context,
             &vec![
                 JsonValue::Number(Number::from(id)),
@@ -229,22 +221,23 @@ impl Example for ExampleCommonPlay {
             ],
         );
 
-        let (list_index, file_index, json_arr) = (&mut self.list_index, &mut self.file_index, &mut self.json_arr);
-        while setting(
-            list_index,
-            json_arr,
-            self.cmd_path,
-            self.play_path,
-            self.play_version,
-            file_index,
-            gui,
-            &mut self.play_context,
-        ) {}
+        // let (list_index, file_index, json_arr) = (&mut self.list_index, &mut self.file_index, &mut self.json_arr);
+        // while setting(
+        //     list_index,
+        //     json_arr,
+        //     self.cmd_path,
+        //     self.play_path,
+        //     self.play_version,
+        //     file_index,
+        //     gui,
+		// 	engine,
+        //     &mut self.play_context,
+        // ) {}
 
-        self.cmd = replace(&mut gui.commands, UserCommands::default()) ;
+        // self.cmd = replace(&mut gui.commands, UserCommands::default()) ;
     }
 
-    fn render(&mut self, cmd: &mut UserCommands, _cmd1: &mut Commands) {
+    fn fram_call(&mut self, gui: &mut Gui, engine: &mut Engine){
         // let s = replace(&mut self.cmd, UserCommands::default());
         // let r: &'static mut Commands1 = unsafe { transmute(cmd1) };
         // let mut gui = Gui {
@@ -255,7 +248,22 @@ impl Example for ExampleCommonPlay {
         // while setting(list_index, json_arr, self.cmd_path, self.play_path, self.play_version, file_index, gui, &mut self.play_context) {}
         // swap(&mut self.cmd, gui.commands);
 
-        swap(&mut self.cmd, cmd);
+		let (list_index, file_index, json_arr) = (&mut self.list_index, &mut self.file_index, &mut self.json_arr);
+        setting(
+            list_index,
+            json_arr,
+            self.cmd_path,
+            self.play_path,
+            self.play_version,
+            file_index,
+            gui,
+			engine,
+            &mut self.play_context,
+        );
+
+        // self.cmd = replace(&mut gui.commands, UserCommands::default()) ;
+
+        // swap(&mut self.cmd, cmd);
     }
 
     fn get_init_size(&self) -> Option<Size<u32>> {
@@ -289,6 +297,7 @@ pub fn setting(
     play_version: &str,
     file_index1: &mut usize,
     gui: &mut Gui,
+	engine: &mut Engine,
     play_context: &mut PlayContext,
 ) -> bool {
     let (mut list_index, mut file_index) = (*list_index1, *file_index1);
@@ -334,12 +343,12 @@ pub fn setting(
                     if ret == 0.0 {
                         if let JsonValue::Array(param) = param {
                             if let Some(cmd) = CMD_LIST.get(ty) {
-                                cmd(gui, play_context, param);
+                                cmd(gui, engine, play_context, param);
                             }
                         }
                     } else {
                         if let Some(cmd) = CMD_LIST.get(ty) {
-                            cmd(gui, play_context, &vec![play_item.clone()]);
+                            cmd(gui, engine, play_context, &vec![play_item.clone()]);
                         }
                     }
                 }
@@ -352,7 +361,7 @@ pub fn setting(
 }
 
 lazy_static! {
-    pub static ref CMD_LIST: Vec<fn (&mut Gui, &mut PlayContext, &Vec<json::JsonValue>) > = vec![
+    pub static ref CMD_LIST: Vec<fn (&mut Gui, &mut Engine, &mut PlayContext, &Vec<json::JsonValue>) > = vec![
         // 布局
         play_position_type, // 1
         play_display, // 1
@@ -451,10 +460,10 @@ lazy_static! {
 
         play_todo, //"force_update_text",
         play_todo, //play_render_dirty,
-        play_todo, //"render",
-        play_todo, //"calc",
-        play_todo, //"calc_geo",
-        play_todo, //"cal_layout",
+        play_flush, //"render",
+        play_calc, //"calc",
+        play_calc_geo, //"calc_geo",
+        play_calc_layout, //"cal_layout",
         // "create_render_target",
         // "bind_render_target",
 
@@ -619,10 +628,11 @@ lazy_static! {
 
 
         set_atom, //"__$set_atom",
+		play_fram_call, //"__$set_atom",
     ];
 }
 
-pub fn play_todo(_gui: &mut Gui, _context: &mut PlayContext, _json: &Vec<json::JsonValue>) {}
+pub fn play_todo(_gui: &mut Gui, _engine: &mut Engine, _context: &mut PlayContext, _json: &Vec<json::JsonValue>) {}
 
 // pub fn render(gui: &mut pi_ui_render::export::Gui, context: &mut PlayContext, _json: &Vec<json::JsonValue>) {
 // 	{
@@ -634,7 +644,7 @@ pub fn play_todo(_gui: &mut Gui, _context: &mut PlayContext, _json: &Vec<json::J
 // 	std::thread::sleep( Duration::from_millis(16));
 // }
 
-pub fn set_atom(_gui: &mut Gui, context: &mut PlayContext, json: &Vec<json::JsonValue>) {
+pub fn set_atom(_gui: &mut Gui, _engine: &mut Engine, context: &mut PlayContext, json: &Vec<json::JsonValue>) {
     // 这里必须要在json中存在两个字段，分别是hash和字符串，而不能只有字符串
     // 因为hash有其他地方生成，比如32位的wasm生成，与当前64位程序计算出来的hash不同
     let key = as_value::<usize>(json, 0).unwrap();

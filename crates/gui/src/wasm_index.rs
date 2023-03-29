@@ -2,6 +2,7 @@ use serde::{Serialize, Deserialize};
 use pi_ui_render::components::user::Overflow;
 use pi_ui_render::components::user::{RenderDirty, TextContent as TextContent1};
 use pi_ui_render::components::NodeBundle;
+use pi_ui_render::components::pass_2d::GraphId;
 use pi_ui_render::{
     components::{
         calc::{EntityKey, InPassId, IsShow, Quad, ZRange},
@@ -77,8 +78,13 @@ pub fn create_engine(canvas: HtmlCanvasElement, r: f64, width: u32, height: u32)
 
     let mut window_plugin = bevy::window::WindowPlugin::default();
     window_plugin.add_primary_window = false;
+
+	let mut log = bevy::log::LogPlugin::default();
+	// log.filter="pi_flex_layout=trace".to_string();
+	// log.filter="bevy=debug".to_string();
+	log.level=bevy::log::Level::WARN;
     app
-        .add_plugin(bevy::log::LogPlugin::default())
+        .add_plugin(log)
         .add_plugin(window_plugin)
         .add_plugin(pi_bevy_winit_window::WinitPlugin::new(canvas, WindowId::primary()).with_size(width, height))
         .add_plugin(PiRenderPlugin {frame_init_state: FrameState::UnActive})

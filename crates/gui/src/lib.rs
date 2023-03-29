@@ -68,7 +68,7 @@ use pi_ui_render::{
 
 #[cfg(feature="pi_js_export")]
 #[derive(Debug, Deref, DerefMut)]
-pub struct Engine(pub(crate) App);
+pub struct Engine(pub App);
 
 #[cfg(target_arch="wasm32")]
 #[wasm_bindgen]
@@ -83,20 +83,20 @@ impl Engine {
 
 #[cfg(feature="pi_js_export")]
 pub struct Gui {
-    pub(crate) entitys: &'static Entities,
-    pub(crate) commands: UserCommands,
-    pub(crate) down_query: QueryState<&'static Down>,
-    pub(crate) up_query: QueryState<&'static Up>,
-    pub(crate) layer_query: QueryState<&'static Layer>,
-    pub(crate) enable_query: QueryState<&'static IsShow>,
-    pub(crate) depth_query: QueryState<&'static ZRange>,
-    pub(crate) layout_query: QueryState<&'static LayoutResult>,
-    pub(crate) quad_query: QueryState<&'static Quad>,
-    pub(crate) matrix_query: QueryState<&'static WorldMatrix>,
-    pub(crate) overflow_query: QueryState<(&'static ParentPassId, &'static Quad, OrDefault<Overflow>)>,
-    pub(crate) in_pass2d_query: QueryState<&'static InPassId>,
-    pub(crate) graph_id: QueryState<&'static GraphId>,
-    pub(crate) query_state: SystemState<(
+    pub entitys: &'static Entities,
+    pub commands: UserCommands,
+    pub down_query: QueryState<&'static Down>,
+    pub up_query: QueryState<&'static Up>,
+    pub layer_query: QueryState<&'static Layer>,
+    pub enable_query: QueryState<&'static IsShow>,
+    pub depth_query: QueryState<&'static ZRange>,
+    pub layout_query: QueryState<&'static LayoutResult>,
+    pub quad_query: QueryState<&'static Quad>,
+    pub matrix_query: QueryState<&'static WorldMatrix>,
+    pub overflow_query: QueryState<(&'static ParentPassId, &'static Quad, OrDefault<Overflow>)>,
+    pub in_pass2d_query: QueryState<&'static InPassId>,
+    pub graph_id: QueryState<&'static GraphId>,
+    pub query_state: SystemState<(
         Res<'static, QuadTree>,
         Query<'static, 'static, (&'static Layer, &'static IsShow, &'static ZRange, &'static InPassId)>,
         Query<'static, 'static, (&'static ParentPassId, &'static Quad, OrDefault<Overflow>)>,
@@ -212,7 +212,7 @@ fn ab_query_func(arg: &mut AbQueryArgs, id: EntityKey, aabb: &Aabb2, _bind: &())
             // 检查是否有裁剪，及是否在裁剪范围内
             let mut inpass = inpass.0;
             while !inpass.is_null() {
-                if let Ok((parent, quad, oveflow)) = arg.query_parent.get(*id) {
+                if let Ok((parent, quad, oveflow)) = arg.query_parent.get(*inpass) {
                     inpass = parent.0;
                     if oveflow.0 {
                         if !intersects(&arg.aabb, quad) {
