@@ -109,3 +109,7 @@ pi_async = "0.5"
 wgpu = { version = "0.14", features = ["spirv", "glsl"] }
 pi_render = { git = "https://github.com/GaiaWorld/pi_render.git", branch="bevy_shader" }
 flume = "0.10"
+
+[dev-dependencies]
+font_kit = {git="http://ser.yinengyun.com:10082/tech/font_kit.git"}
+async-trait="0.1"

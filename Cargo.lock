@@ -3262,6 +3262,7 @@ dependencies = [
 name = "pi_export_gui"
 version = "0.1.0"
 dependencies = [
+ "async-trait",
  "bevy",
  "bincode",
  "bitflags",
@@ -3273,6 +3274,7 @@ dependencies = [
  "fixedbitset",
  "flume",
  "fnv",
+ "font_kit",
  "futures",
  "fxhash",
  "geo",
@@ -3416,7 +3418,6 @@ dependencies = [
 [[package]]
 name = "pi_hal"
 version = "0.1.0"
-source = "git+https://github.com/GaiaWorld/pi_hal.git#e40ed5259e47b59f3ab2f4104d0aad900c2aacef"
 dependencies = [
  "async-trait",
  "derive_deref",
@@ -3651,8 +3652,6 @@ dependencies = [
 [[package]]
 name = "pi_slotmap"
 version = "0.1.5"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5be86f7871af810e44af808c3a2b3757ad74be13479cda47d853f8460a92f85e"
 dependencies = [
  "serde",
  "version_check",

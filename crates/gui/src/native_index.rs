@@ -175,7 +175,7 @@ pub fn offset_document(_gui: &mut Gui, _node: f64) -> OffsetDocument {
     }
 }
 
-pub fn play_destroy_node(gui: &mut Gui, context: &mut PlayContext, json: &Vec<json::JsonValue>) {
+pub fn play_destroy_node(gui: &mut Gui, _engine: &mut Engine, context: &mut PlayContext, json: &Vec<json::JsonValue>) {
     let id = unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index() as usize;
     let node_id = context.nodes.remove(id).unwrap();
 
@@ -200,7 +200,7 @@ pub fn play_destroy_node(gui: &mut Gui, context: &mut PlayContext, json: &Vec<js
     destroy_node(gui, node_id);
 }
 
-pub fn play_append_child(gui: &mut Gui, context: &mut PlayContext, json: &Vec<json::JsonValue>) {
+pub fn play_append_child(gui: &mut Gui, _engine: &mut Engine, context: &mut PlayContext, json: &Vec<json::JsonValue>) {
 
     // log::warn!("play_append_child================{:?}, {:?}, version0: {:?}, version1: {:?}, index0: {}, index1:{:?}, v1:{}, v2:{}, entity:{:?}", r0, r1, r0 >> 32 as u32, r1 >> 32 as u32, r0 as u32, r1 as u32, as_value::<f64>(json, 0).unwrap(), as_value::<f64>(json, 1).unwrap(), unsafe {Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))} );
 
@@ -227,7 +227,7 @@ pub fn play_append_child(gui: &mut Gui, context: &mut PlayContext, json: &Vec<js
     }
 }
 
-pub fn play_insert_before(gui: &mut Gui, context: &mut PlayContext, json: &Vec<json::JsonValue>) {
+pub fn play_insert_before(gui: &mut Gui, _engine: &mut Engine, context: &mut PlayContext, json: &Vec<json::JsonValue>) {
     let node_id = unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index() as usize;
     let borther = unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 1).unwrap())) }.index() as usize;
     let node_id1 = context.nodes.get(node_id).unwrap().clone();
@@ -241,7 +241,7 @@ pub fn play_insert_before(gui: &mut Gui, context: &mut PlayContext, json: &Vec<j
     context.idtree.insert_brother(node_id, borther, InsertType::Front);
 }
 
-pub fn play_create_node(gui: &mut Gui, context: &mut PlayContext, json: &Vec<json::JsonValue>) {
+pub fn play_create_node(gui: &mut Gui, _engine: &mut Engine, context: &mut PlayContext, json: &Vec<json::JsonValue>) {
     let json = &json[0];
     let ret = &json["ret"];
     let ret = unsafe { Entity::from_bits(transmute(ret.as_f64().unwrap())) }.index() as usize;
@@ -249,28 +249,28 @@ pub fn play_create_node(gui: &mut Gui, context: &mut PlayContext, json: &Vec<jso
     context.nodes.insert(ret, r);
 }
 
-pub fn play_create_vnode(gui: &mut Gui, context: &mut PlayContext, json: &Vec<json::JsonValue>) {
+pub fn play_create_vnode(gui: &mut Gui, _engine: &mut Engine, context: &mut PlayContext, json: &Vec<json::JsonValue>) {
     let json = &json[0];
     let ret = &json["ret"];
     let ret = unsafe { Entity::from_bits(transmute(ret.as_f64().unwrap())) }.index() as usize;
     context.nodes.insert(ret, create_vnode(gui));
 }
 
-pub fn play_create_text_node(gui: &mut Gui, context: &mut PlayContext, json: &Vec<json::JsonValue>) {
+pub fn play_create_text_node(gui: &mut Gui, _engine: &mut Engine, context: &mut PlayContext, json: &Vec<json::JsonValue>) {
     let json = &json[0];
     let ret = &json["ret"];
     let ret = unsafe { Entity::from_bits(transmute(ret.as_f64().unwrap())) }.index() as usize;
     context.nodes.insert(ret, create_text_node(gui));
 }
 
-pub fn play_create_image_node(app: &mut Gui, context: &mut PlayContext, json: &Vec<json::JsonValue>) {
+pub fn play_create_image_node(app: &mut Gui, _engine: &mut Engine, context: &mut PlayContext, json: &Vec<json::JsonValue>) {
     let json = &json[0];
     let ret = &json["ret"];
     let ret = unsafe { Entity::from_bits(transmute(ret.as_f64().unwrap())) }.index() as usize;
     context.nodes.insert(ret, create_image_node(app));
 }
 
-pub fn play_create_canvas_node(gui: &mut Gui, context: &mut PlayContext, json: &Vec<json::JsonValue>) {
+pub fn play_create_canvas_node(gui: &mut Gui, _engine: &mut Engine, context: &mut PlayContext, json: &Vec<json::JsonValue>) {
     let json = &json[0];
     let ret = &json["ret"];
     let ret = unsafe { Entity::from_bits(transmute(ret.as_f64().unwrap())) }.index() as usize;
@@ -278,7 +278,7 @@ pub fn play_create_canvas_node(gui: &mut Gui, context: &mut PlayContext, json: &
 }
 
 
-pub fn play_remove_node(gui: &mut Gui, context: &mut PlayContext, json: &Vec<json::JsonValue>) {
+pub fn play_remove_node(gui: &mut Gui, _engine: &mut Engine, context: &mut PlayContext, json: &Vec<json::JsonValue>) {
     let node_id = unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index() as usize;
     let node_id = context.nodes.get(node_id).unwrap().clone();
     remove_node(gui, node_id);

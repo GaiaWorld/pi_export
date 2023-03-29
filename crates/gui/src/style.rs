@@ -69,6 +69,7 @@
     #[allow(unused_assignments)]
     pub fn play_reset_align_content(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -84,6 +85,7 @@
     #[allow(unused_assignments)]
     pub fn play_align_content(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -132,6 +134,7 @@
     #[allow(unused_assignments)]
     pub fn play_reset_align_items(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -145,7 +148,12 @@
     }
     #[allow(unused_variables)]
     #[allow(unused_assignments)]
-    pub fn play_align_items(gui: &mut Gui, context: &mut PlayContext, json: &Vec<json::JsonValue>) {
+    pub fn play_align_items(
+        gui: &mut Gui,
+        engine: &mut Engine,
+        context: &mut PlayContext,
+        json: &Vec<json::JsonValue>,
+    ) {
         let mut i = 0;
         let node =
             unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
@@ -191,6 +199,7 @@
     #[allow(unused_assignments)]
     pub fn play_reset_justify_content(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -206,6 +215,7 @@
     #[allow(unused_assignments)]
     pub fn play_justify_content(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -254,6 +264,7 @@
     #[allow(unused_assignments)]
     pub fn play_reset_flex_direction(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -269,6 +280,7 @@
     #[allow(unused_assignments)]
     pub fn play_flex_direction(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -317,6 +329,7 @@
     #[allow(unused_assignments)]
     pub fn play_reset_flex_wrap(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -330,7 +343,12 @@
     }
     #[allow(unused_variables)]
     #[allow(unused_assignments)]
-    pub fn play_flex_wrap(gui: &mut Gui, context: &mut PlayContext, json: &Vec<json::JsonValue>) {
+    pub fn play_flex_wrap(
+        gui: &mut Gui,
+        engine: &mut Engine,
+        context: &mut PlayContext,
+        json: &Vec<json::JsonValue>,
+    ) {
         let mut i = 0;
         let node =
             unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
@@ -376,6 +394,7 @@
     #[allow(unused_assignments)]
     pub fn play_reset_align_self(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -389,7 +408,12 @@
     }
     #[allow(unused_variables)]
     #[allow(unused_assignments)]
-    pub fn play_align_self(gui: &mut Gui, context: &mut PlayContext, json: &Vec<json::JsonValue>) {
+    pub fn play_align_self(
+        gui: &mut Gui,
+        engine: &mut Engine,
+        context: &mut PlayContext,
+        json: &Vec<json::JsonValue>,
+    ) {
         let mut i = 0;
         let node =
             unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
@@ -435,6 +459,7 @@
     #[allow(unused_assignments)]
     pub fn play_reset_position_type(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -450,6 +475,7 @@
     #[allow(unused_assignments)]
     pub fn play_position_type(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -496,6 +522,7 @@
     #[allow(unused_assignments)]
     pub fn play_reset_flex_grow(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -509,7 +536,12 @@
     }
     #[allow(unused_variables)]
     #[allow(unused_assignments)]
-    pub fn play_flex_grow(gui: &mut Gui, context: &mut PlayContext, json: &Vec<json::JsonValue>) {
+    pub fn play_flex_grow(
+        gui: &mut Gui,
+        engine: &mut Engine,
+        context: &mut PlayContext,
+        json: &Vec<json::JsonValue>,
+    ) {
         let mut i = 0;
         let node =
             unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
@@ -553,6 +585,7 @@
     #[allow(unused_assignments)]
     pub fn play_reset_flex_shrink(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -566,7 +599,12 @@
     }
     #[allow(unused_variables)]
     #[allow(unused_assignments)]
-    pub fn play_flex_shrink(gui: &mut Gui, context: &mut PlayContext, json: &Vec<json::JsonValue>) {
+    pub fn play_flex_shrink(
+        gui: &mut Gui,
+        engine: &mut Engine,
+        context: &mut PlayContext,
+        json: &Vec<json::JsonValue>,
+    ) {
         let mut i = 0;
         let node =
             unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
@@ -612,6 +650,7 @@
     #[allow(unused_assignments)]
     pub fn play_reset_flex_basis_percent(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -627,6 +666,7 @@
     #[allow(unused_assignments)]
     pub fn play_flex_basis_percent(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -675,6 +715,7 @@
     #[allow(unused_assignments)]
     pub fn play_reset_flex_basis(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -688,7 +729,12 @@
     }
     #[allow(unused_variables)]
     #[allow(unused_assignments)]
-    pub fn play_flex_basis(gui: &mut Gui, context: &mut PlayContext, json: &Vec<json::JsonValue>) {
+    pub fn play_flex_basis(
+        gui: &mut Gui,
+        engine: &mut Engine,
+        context: &mut PlayContext,
+        json: &Vec<json::JsonValue>,
+    ) {
         let mut i = 0;
         let node =
             unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
@@ -734,6 +780,7 @@
     #[allow(unused_assignments)]
     pub fn play_reset_flex_basis_auto(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -749,6 +796,7 @@
     #[allow(unused_assignments)]
     pub fn play_flex_basis_auto(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -795,6 +843,7 @@
     #[allow(unused_assignments)]
     pub fn play_reset_width_percent(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -810,6 +859,7 @@
     #[allow(unused_assignments)]
     pub fn play_width_percent(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -856,7 +906,12 @@
     }
     #[allow(unused_variables)]
     #[allow(unused_assignments)]
-    pub fn play_reset_width(gui: &mut Gui, context: &mut PlayContext, json: &Vec<json::JsonValue>) {
+    pub fn play_reset_width(
+        gui: &mut Gui,
+        engine: &mut Engine,
+        context: &mut PlayContext,
+        json: &Vec<json::JsonValue>,
+    ) {
         let node =
             unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
         let node = match context.nodes.get(node as usize) {
@@ -867,7 +922,12 @@
     }
     #[allow(unused_variables)]
     #[allow(unused_assignments)]
-    pub fn play_width(gui: &mut Gui, context: &mut PlayContext, json: &Vec<json::JsonValue>) {
+    pub fn play_width(
+        gui: &mut Gui,
+        engine: &mut Engine,
+        context: &mut PlayContext,
+        json: &Vec<json::JsonValue>,
+    ) {
         let mut i = 0;
         let node =
             unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
@@ -911,6 +971,7 @@
     #[allow(unused_assignments)]
     pub fn play_reset_width_auto(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -924,7 +985,12 @@
     }
     #[allow(unused_variables)]
     #[allow(unused_assignments)]
-    pub fn play_width_auto(gui: &mut Gui, context: &mut PlayContext, json: &Vec<json::JsonValue>) {
+    pub fn play_width_auto(
+        gui: &mut Gui,
+        engine: &mut Engine,
+        context: &mut PlayContext,
+        json: &Vec<json::JsonValue>,
+    ) {
         let mut i = 0;
         let node =
             unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
@@ -968,6 +1034,7 @@
     #[allow(unused_assignments)]
     pub fn play_reset_height_percent(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -983,6 +1050,7 @@
     #[allow(unused_assignments)]
     pub fn play_height_percent(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -1031,6 +1099,7 @@
     #[allow(unused_assignments)]
     pub fn play_reset_height(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -1044,7 +1113,12 @@
     }
     #[allow(unused_variables)]
     #[allow(unused_assignments)]
-    pub fn play_height(gui: &mut Gui, context: &mut PlayContext, json: &Vec<json::JsonValue>) {
+    pub fn play_height(
+        gui: &mut Gui,
+        engine: &mut Engine,
+        context: &mut PlayContext,
+        json: &Vec<json::JsonValue>,
+    ) {
         let mut i = 0;
         let node =
             unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
@@ -1088,6 +1162,7 @@
     #[allow(unused_assignments)]
     pub fn play_reset_height_auto(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -1101,7 +1176,12 @@
     }
     #[allow(unused_variables)]
     #[allow(unused_assignments)]
-    pub fn play_height_auto(gui: &mut Gui, context: &mut PlayContext, json: &Vec<json::JsonValue>) {
+    pub fn play_height_auto(
+        gui: &mut Gui,
+        engine: &mut Engine,
+        context: &mut PlayContext,
+        json: &Vec<json::JsonValue>,
+    ) {
         let mut i = 0;
         let node =
             unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
@@ -1145,6 +1225,7 @@
     #[allow(unused_assignments)]
     pub fn play_reset_min_width_percent(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -1160,6 +1241,7 @@
     #[allow(unused_assignments)]
     pub fn play_min_width_percent(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -1208,6 +1290,7 @@
     #[allow(unused_assignments)]
     pub fn play_reset_min_width(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -1221,7 +1304,12 @@
     }
     #[allow(unused_variables)]
     #[allow(unused_assignments)]
-    pub fn play_min_width(gui: &mut Gui, context: &mut PlayContext, json: &Vec<json::JsonValue>) {
+    pub fn play_min_width(
+        gui: &mut Gui,
+        engine: &mut Engine,
+        context: &mut PlayContext,
+        json: &Vec<json::JsonValue>,
+    ) {
         let mut i = 0;
         let node =
             unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
@@ -1267,6 +1355,7 @@
     #[allow(unused_assignments)]
     pub fn play_reset_min_width_auto(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -1282,6 +1371,7 @@
     #[allow(unused_assignments)]
     pub fn play_min_width_auto(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -1328,6 +1418,7 @@
     #[allow(unused_assignments)]
     pub fn play_reset_min_height_percent(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -1343,6 +1434,7 @@
     #[allow(unused_assignments)]
     pub fn play_min_height_percent(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -1391,6 +1483,7 @@
     #[allow(unused_assignments)]
     pub fn play_reset_min_height(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -1404,7 +1497,12 @@
     }
     #[allow(unused_variables)]
     #[allow(unused_assignments)]
-    pub fn play_min_height(gui: &mut Gui, context: &mut PlayContext, json: &Vec<json::JsonValue>) {
+    pub fn play_min_height(
+        gui: &mut Gui,
+        engine: &mut Engine,
+        context: &mut PlayContext,
+        json: &Vec<json::JsonValue>,
+    ) {
         let mut i = 0;
         let node =
             unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
@@ -1450,6 +1548,7 @@
     #[allow(unused_assignments)]
     pub fn play_reset_min_height_auto(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -1465,6 +1564,7 @@
     #[allow(unused_assignments)]
     pub fn play_min_height_auto(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -1511,6 +1611,7 @@
     #[allow(unused_assignments)]
     pub fn play_reset_max_width_percent(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -1526,6 +1627,7 @@
     #[allow(unused_assignments)]
     pub fn play_max_width_percent(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -1574,6 +1676,7 @@
     #[allow(unused_assignments)]
     pub fn play_reset_max_width(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -1587,7 +1690,12 @@
     }
     #[allow(unused_variables)]
     #[allow(unused_assignments)]
-    pub fn play_max_width(gui: &mut Gui, context: &mut PlayContext, json: &Vec<json::JsonValue>) {
+    pub fn play_max_width(
+        gui: &mut Gui,
+        engine: &mut Engine,
+        context: &mut PlayContext,
+        json: &Vec<json::JsonValue>,
+    ) {
         let mut i = 0;
         let node =
             unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
@@ -1633,6 +1741,7 @@
     #[allow(unused_assignments)]
     pub fn play_reset_max_width_auto(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -1648,6 +1757,7 @@
     #[allow(unused_assignments)]
     pub fn play_max_width_auto(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -1694,6 +1804,7 @@
     #[allow(unused_assignments)]
     pub fn play_reset_max_height_percent(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -1709,6 +1820,7 @@
     #[allow(unused_assignments)]
     pub fn play_max_height_percent(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -1757,6 +1869,7 @@
     #[allow(unused_assignments)]
     pub fn play_reset_max_height(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -1770,7 +1883,12 @@
     }
     #[allow(unused_variables)]
     #[allow(unused_assignments)]
-    pub fn play_max_height(gui: &mut Gui, context: &mut PlayContext, json: &Vec<json::JsonValue>) {
+    pub fn play_max_height(
+        gui: &mut Gui,
+        engine: &mut Engine,
+        context: &mut PlayContext,
+        json: &Vec<json::JsonValue>,
+    ) {
         let mut i = 0;
         let node =
             unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
@@ -1816,6 +1934,7 @@
     #[allow(unused_assignments)]
     pub fn play_reset_max_height_auto(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -1831,6 +1950,7 @@
     #[allow(unused_assignments)]
     pub fn play_max_height_auto(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -1915,6 +2035,7 @@
     #[allow(unused_assignments)]
     pub fn play_reset_padding_percent(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -1930,6 +2051,7 @@
     #[allow(unused_variables)]
     pub fn play_padding_percent(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -2018,6 +2140,7 @@
     #[allow(unused_assignments)]
     pub fn play_reset_padding(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -2031,7 +2154,12 @@
         reset_padding(gui, node, edge);
     }
     #[allow(unused_variables)]
-    pub fn play_padding(gui: &mut Gui, context: &mut PlayContext, json: &Vec<json::JsonValue>) {
+    pub fn play_padding(
+        gui: &mut Gui,
+        engine: &mut Engine,
+        context: &mut PlayContext,
+        json: &Vec<json::JsonValue>,
+    ) {
         let mut i = -1;
         i += 1;
         let node =
@@ -2117,6 +2245,7 @@
     #[allow(unused_assignments)]
     pub fn play_reset_padding_auto(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -2132,6 +2261,7 @@
     #[allow(unused_variables)]
     pub fn play_padding_auto(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -2218,6 +2348,7 @@
     #[allow(unused_assignments)]
     pub fn play_reset_margin_percent(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -2233,6 +2364,7 @@
     #[allow(unused_variables)]
     pub fn play_margin_percent(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -2321,6 +2453,7 @@
     #[allow(unused_assignments)]
     pub fn play_reset_margin(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -2334,7 +2467,12 @@
         reset_margin(gui, node, edge);
     }
     #[allow(unused_variables)]
-    pub fn play_margin(gui: &mut Gui, context: &mut PlayContext, json: &Vec<json::JsonValue>) {
+    pub fn play_margin(
+        gui: &mut Gui,
+        engine: &mut Engine,
+        context: &mut PlayContext,
+        json: &Vec<json::JsonValue>,
+    ) {
         let mut i = -1;
         i += 1;
         let node =
@@ -2420,6 +2558,7 @@
     #[allow(unused_assignments)]
     pub fn play_reset_margin_auto(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -2433,7 +2572,12 @@
         reset_margin_auto(gui, node, edge);
     }
     #[allow(unused_variables)]
-    pub fn play_margin_auto(gui: &mut Gui, context: &mut PlayContext, json: &Vec<json::JsonValue>) {
+    pub fn play_margin_auto(
+        gui: &mut Gui,
+        engine: &mut Engine,
+        context: &mut PlayContext,
+        json: &Vec<json::JsonValue>,
+    ) {
         let mut i = -1;
         i += 1;
         let node =
@@ -2517,6 +2661,7 @@
     #[allow(unused_assignments)]
     pub fn play_reset_border_percent(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -2532,6 +2677,7 @@
     #[allow(unused_variables)]
     pub fn play_border_percent(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -2620,6 +2766,7 @@
     #[allow(unused_assignments)]
     pub fn play_reset_border(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -2633,7 +2780,12 @@
         reset_border(gui, node, edge);
     }
     #[allow(unused_variables)]
-    pub fn play_border(gui: &mut Gui, context: &mut PlayContext, json: &Vec<json::JsonValue>) {
+    pub fn play_border(
+        gui: &mut Gui,
+        engine: &mut Engine,
+        context: &mut PlayContext,
+        json: &Vec<json::JsonValue>,
+    ) {
         let mut i = -1;
         i += 1;
         let node =
@@ -2719,6 +2871,7 @@
     #[allow(unused_assignments)]
     pub fn play_reset_border_auto(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -2732,7 +2885,12 @@
         reset_border_auto(gui, node, edge);
     }
     #[allow(unused_variables)]
-    pub fn play_border_auto(gui: &mut Gui, context: &mut PlayContext, json: &Vec<json::JsonValue>) {
+    pub fn play_border_auto(
+        gui: &mut Gui,
+        engine: &mut Engine,
+        context: &mut PlayContext,
+        json: &Vec<json::JsonValue>,
+    ) {
         let mut i = -1;
         i += 1;
         let node =
@@ -2816,6 +2974,7 @@
     #[allow(unused_assignments)]
     pub fn play_reset_position_percent(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -2831,6 +2990,7 @@
     #[allow(unused_variables)]
     pub fn play_position_percent(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -2919,6 +3079,7 @@
     #[allow(unused_assignments)]
     pub fn play_reset_position(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -2932,7 +3093,12 @@
         reset_position(gui, node, edge);
     }
     #[allow(unused_variables)]
-    pub fn play_position(gui: &mut Gui, context: &mut PlayContext, json: &Vec<json::JsonValue>) {
+    pub fn play_position(
+        gui: &mut Gui,
+        engine: &mut Engine,
+        context: &mut PlayContext,
+        json: &Vec<json::JsonValue>,
+    ) {
         let mut i = -1;
         i += 1;
         let node =
@@ -3018,6 +3184,7 @@
     #[allow(unused_assignments)]
     pub fn play_reset_position_auto(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -3033,6 +3200,7 @@
     #[allow(unused_variables)]
     pub fn play_position_auto(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -3085,6 +3253,7 @@
     #[allow(unused_assignments)]
     pub fn play_reset_background_rgba_color(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -3100,6 +3269,7 @@
     #[allow(unused_assignments)]
     pub fn play_background_rgba_color(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -3174,6 +3344,7 @@
     #[allow(unused_assignments)]
     pub fn play_reset_background_linear_color(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -3189,6 +3360,7 @@
     #[allow(unused_assignments)]
     pub fn play_background_linear_color(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -3239,6 +3411,7 @@
     #[allow(unused_assignments)]
     pub fn play_reset_border_color(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -3254,6 +3427,7 @@
     #[allow(unused_assignments)]
     pub fn play_border_color(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -3330,6 +3504,7 @@
     #[allow(unused_assignments)]
     pub fn play_reset_border_radius(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -3345,6 +3520,7 @@
     #[allow(unused_assignments)]
     pub fn play_border_radius(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -3432,6 +3608,7 @@
     #[allow(unused_assignments)]
     pub fn play_reset_box_shadow(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -3445,7 +3622,12 @@
     }
     #[allow(unused_variables)]
     #[allow(unused_assignments)]
-    pub fn play_box_shadow(gui: &mut Gui, context: &mut PlayContext, json: &Vec<json::JsonValue>) {
+    pub fn play_box_shadow(
+        gui: &mut Gui,
+        engine: &mut Engine,
+        context: &mut PlayContext,
+        json: &Vec<json::JsonValue>,
+    ) {
         let mut i = 0;
         let node =
             unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
@@ -3505,6 +3687,7 @@
     #[allow(unused_assignments)]
     pub fn play_reset_object_fit(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -3518,7 +3701,12 @@
     }
     #[allow(unused_variables)]
     #[allow(unused_assignments)]
-    pub fn play_object_fit(gui: &mut Gui, context: &mut PlayContext, json: &Vec<json::JsonValue>) {
+    pub fn play_object_fit(
+        gui: &mut Gui,
+        engine: &mut Engine,
+        context: &mut PlayContext,
+        json: &Vec<json::JsonValue>,
+    ) {
         let mut i = 0;
         let node =
             unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
@@ -3574,6 +3762,7 @@
     #[allow(unused_assignments)]
     pub fn play_reset_background_repeat(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -3589,6 +3778,7 @@
     #[allow(unused_assignments)]
     pub fn play_background_repeat(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -3659,6 +3849,7 @@
     #[allow(unused_assignments)]
     pub fn play_reset_mask_image_linenear(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -3674,6 +3865,7 @@
     #[allow(unused_assignments)]
     pub fn play_mask_image_linenear(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -3740,6 +3932,7 @@
     #[allow(unused_assignments)]
     pub fn play_reset_image_clip(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -3753,7 +3946,12 @@
     }
     #[allow(unused_variables)]
     #[allow(unused_assignments)]
-    pub fn play_image_clip(gui: &mut Gui, context: &mut PlayContext, json: &Vec<json::JsonValue>) {
+    pub fn play_image_clip(
+        gui: &mut Gui,
+        engine: &mut Engine,
+        context: &mut PlayContext,
+        json: &Vec<json::JsonValue>,
+    ) {
         let mut i = 0;
         let node =
             unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
@@ -3819,6 +4017,7 @@
     #[allow(unused_assignments)]
     pub fn play_reset_mask_image_clip(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -3834,6 +4033,7 @@
     #[allow(unused_assignments)]
     pub fn play_mask_image_clip(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -3902,6 +4102,7 @@
     #[allow(unused_assignments)]
     pub fn play_reset_border_image_clip(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -3917,6 +4118,7 @@
     #[allow(unused_assignments)]
     pub fn play_border_image_clip(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -4003,6 +4205,7 @@
     #[allow(unused_assignments)]
     pub fn play_reset_border_image_slice(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -4018,6 +4221,7 @@
     #[allow(unused_assignments)]
     pub fn play_border_image_slice(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -4084,6 +4288,7 @@
     #[allow(unused_assignments)]
     pub fn play_reset_border_image_repeat(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -4099,6 +4304,7 @@
     #[allow(unused_assignments)]
     pub fn play_border_image_repeat(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -4147,6 +4353,7 @@
     #[allow(unused_assignments)]
     pub fn play_reset_overflow(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -4160,7 +4367,12 @@
     }
     #[allow(unused_variables)]
     #[allow(unused_assignments)]
-    pub fn play_overflow(gui: &mut Gui, context: &mut PlayContext, json: &Vec<json::JsonValue>) {
+    pub fn play_overflow(
+        gui: &mut Gui,
+        engine: &mut Engine,
+        context: &mut PlayContext,
+        json: &Vec<json::JsonValue>,
+    ) {
         let mut i = 0;
         let node =
             unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
@@ -4204,6 +4416,7 @@
     #[allow(unused_assignments)]
     pub fn play_reset_opacity(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -4217,7 +4430,12 @@
     }
     #[allow(unused_variables)]
     #[allow(unused_assignments)]
-    pub fn play_opacity(gui: &mut Gui, context: &mut PlayContext, json: &Vec<json::JsonValue>) {
+    pub fn play_opacity(
+        gui: &mut Gui,
+        engine: &mut Engine,
+        context: &mut PlayContext,
+        json: &Vec<json::JsonValue>,
+    ) {
         let mut i = 0;
         let node =
             unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
@@ -4263,6 +4481,7 @@
     #[allow(unused_assignments)]
     pub fn play_reset_display(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -4276,7 +4495,12 @@
     }
     #[allow(unused_variables)]
     #[allow(unused_assignments)]
-    pub fn play_display(gui: &mut Gui, context: &mut PlayContext, json: &Vec<json::JsonValue>) {
+    pub fn play_display(
+        gui: &mut Gui,
+        engine: &mut Engine,
+        context: &mut PlayContext,
+        json: &Vec<json::JsonValue>,
+    ) {
         let mut i = 0;
         let node =
             unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
@@ -4320,6 +4544,7 @@
     #[allow(unused_assignments)]
     pub fn play_reset_visibility(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -4333,7 +4558,12 @@
     }
     #[allow(unused_variables)]
     #[allow(unused_assignments)]
-    pub fn play_visibility(gui: &mut Gui, context: &mut PlayContext, json: &Vec<json::JsonValue>) {
+    pub fn play_visibility(
+        gui: &mut Gui,
+        engine: &mut Engine,
+        context: &mut PlayContext,
+        json: &Vec<json::JsonValue>,
+    ) {
         let mut i = 0;
         let node =
             unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
@@ -4379,6 +4609,7 @@
     #[allow(unused_assignments)]
     pub fn play_reset_enable(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -4392,7 +4623,12 @@
     }
     #[allow(unused_variables)]
     #[allow(unused_assignments)]
-    pub fn play_enable(gui: &mut Gui, context: &mut PlayContext, json: &Vec<json::JsonValue>) {
+    pub fn play_enable(
+        gui: &mut Gui,
+        engine: &mut Engine,
+        context: &mut PlayContext,
+        json: &Vec<json::JsonValue>,
+    ) {
         let mut i = 0;
         let node =
             unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
@@ -4438,6 +4674,7 @@
     #[allow(unused_assignments)]
     pub fn play_reset_blend_mode(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -4451,7 +4688,12 @@
     }
     #[allow(unused_variables)]
     #[allow(unused_assignments)]
-    pub fn play_blend_mode(gui: &mut Gui, context: &mut PlayContext, json: &Vec<json::JsonValue>) {
+    pub fn play_blend_mode(
+        gui: &mut Gui,
+        engine: &mut Engine,
+        context: &mut PlayContext,
+        json: &Vec<json::JsonValue>,
+    ) {
         let mut i = 0;
         let node =
             unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
@@ -4495,6 +4737,7 @@
     #[allow(unused_assignments)]
     pub fn play_reset_zindex(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -4508,7 +4751,12 @@
     }
     #[allow(unused_variables)]
     #[allow(unused_assignments)]
-    pub fn play_zindex(gui: &mut Gui, context: &mut PlayContext, json: &Vec<json::JsonValue>) {
+    pub fn play_zindex(
+        gui: &mut Gui,
+        engine: &mut Engine,
+        context: &mut PlayContext,
+        json: &Vec<json::JsonValue>,
+    ) {
         let mut i = 0;
         let node =
             unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
@@ -4552,6 +4800,7 @@
     #[allow(unused_assignments)]
     pub fn play_reset_filter_blur(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -4565,7 +4814,12 @@
     }
     #[allow(unused_variables)]
     #[allow(unused_assignments)]
-    pub fn play_filter_blur(gui: &mut Gui, context: &mut PlayContext, json: &Vec<json::JsonValue>) {
+    pub fn play_filter_blur(
+        gui: &mut Gui,
+        engine: &mut Engine,
+        context: &mut PlayContext,
+        json: &Vec<json::JsonValue>,
+    ) {
         let mut i = 0;
         let node =
             unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
@@ -4659,6 +4913,7 @@
     #[allow(unused_assignments)]
     pub fn play_reset_filter_hsi(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -4672,7 +4927,12 @@
     }
     #[allow(unused_variables)]
     #[allow(unused_assignments)]
-    pub fn play_filter_hsi(gui: &mut Gui, context: &mut PlayContext, json: &Vec<json::JsonValue>) {
+    pub fn play_filter_hsi(
+        gui: &mut Gui,
+        engine: &mut Engine,
+        context: &mut PlayContext,
+        json: &Vec<json::JsonValue>,
+    ) {
         let mut i = 0;
         let node =
             unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
@@ -4722,6 +4982,7 @@
     #[allow(unused_assignments)]
     pub fn play_reset_transform_translate(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -4737,6 +4998,7 @@
     #[allow(unused_assignments)]
     pub fn play_transform_translate(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -4791,6 +5053,7 @@
     #[allow(unused_assignments)]
     pub fn play_reset_transform_translate_percent(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -4806,6 +5069,7 @@
     #[allow(unused_assignments)]
     pub fn play_transform_translate_percent(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -4856,6 +5120,7 @@
     #[allow(unused_assignments)]
     pub fn play_reset_transform_translate_x(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -4871,6 +5136,7 @@
     #[allow(unused_assignments)]
     pub fn play_transform_translate_x(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -4923,6 +5189,7 @@
     #[allow(unused_assignments)]
     pub fn play_reset_transform_translate_x_percent(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -4938,6 +5205,7 @@
     #[allow(unused_assignments)]
     pub fn play_transform_translate_x_percent(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -4986,6 +5254,7 @@
     #[allow(unused_assignments)]
     pub fn play_reset_transform_translate_y(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -5001,6 +5270,7 @@
     #[allow(unused_assignments)]
     pub fn play_transform_translate_y(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -5053,6 +5323,7 @@
     #[allow(unused_assignments)]
     pub fn play_reset_transform_translate_y_percent(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -5068,6 +5339,7 @@
     #[allow(unused_assignments)]
     pub fn play_transform_translate_y_percent(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -5116,6 +5388,7 @@
     #[allow(unused_assignments)]
     pub fn play_reset_transform_scale(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -5131,6 +5404,7 @@
     #[allow(unused_assignments)]
     pub fn play_transform_scale(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -5181,6 +5455,7 @@
     #[allow(unused_assignments)]
     pub fn play_reset_transform_scale_x(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -5196,6 +5471,7 @@
     #[allow(unused_assignments)]
     pub fn play_transform_scale_x(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -5244,6 +5520,7 @@
     #[allow(unused_assignments)]
     pub fn play_reset_transform_scale_y(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -5259,6 +5536,7 @@
     #[allow(unused_assignments)]
     pub fn play_transform_scale_y(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -5307,6 +5585,7 @@
     #[allow(unused_assignments)]
     pub fn play_reset_transform_rotate_x(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -5322,6 +5601,7 @@
     #[allow(unused_assignments)]
     pub fn play_transform_rotate_x(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -5370,6 +5650,7 @@
     #[allow(unused_assignments)]
     pub fn play_reset_transform_rotate_y(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -5385,6 +5666,7 @@
     #[allow(unused_assignments)]
     pub fn play_transform_rotate_y(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -5433,6 +5715,7 @@
     #[allow(unused_assignments)]
     pub fn play_reset_transform_rotate_z(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -5448,6 +5731,7 @@
     #[allow(unused_assignments)]
     pub fn play_transform_rotate_z(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -5496,6 +5780,7 @@
     #[allow(unused_assignments)]
     pub fn play_reset_transform_skew_x(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -5511,6 +5796,7 @@
     #[allow(unused_assignments)]
     pub fn play_transform_skew_x(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -5559,6 +5845,7 @@
     #[allow(unused_assignments)]
     pub fn play_reset_transform_skew_y(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -5574,6 +5861,7 @@
     #[allow(unused_assignments)]
     pub fn play_transform_skew_y(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -5620,6 +5908,7 @@
     #[allow(unused_assignments)]
     pub fn play_reset_clear_transform(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -5635,6 +5924,7 @@
     #[allow(unused_assignments)]
     pub fn play_clear_transform(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -5709,6 +5999,7 @@
     #[allow(unused_assignments)]
     pub fn play_reset_transform_origin(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -5724,6 +6015,7 @@
     #[allow(unused_assignments)]
     pub fn play_transform_origin(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -5776,6 +6068,7 @@
     #[allow(unused_assignments)]
     pub fn play_reset_letter_spacing(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -5791,6 +6084,7 @@
     #[allow(unused_assignments)]
     pub fn play_letter_spacing(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -5837,6 +6131,7 @@
     #[allow(unused_assignments)]
     pub fn play_reset_word_spacing(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -5852,6 +6147,7 @@
     #[allow(unused_assignments)]
     pub fn play_word_spacing(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -5900,6 +6196,7 @@
     #[allow(unused_assignments)]
     pub fn play_reset_text_rgba_color(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -5915,6 +6212,7 @@
     #[allow(unused_assignments)]
     pub fn play_text_rgba_color(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -5989,6 +6287,7 @@
     #[allow(unused_assignments)]
     pub fn play_reset_text_linear_gradient_color(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -6004,6 +6303,7 @@
     #[allow(unused_assignments)]
     pub fn play_text_linear_gradient_color(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -6054,6 +6354,7 @@
     #[allow(unused_assignments)]
     pub fn play_reset_line_height_normal(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -6069,6 +6370,7 @@
     #[allow(unused_assignments)]
     pub fn play_line_height_normal(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -6115,6 +6417,7 @@
     #[allow(unused_assignments)]
     pub fn play_reset_line_height(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -6128,7 +6431,12 @@
     }
     #[allow(unused_variables)]
     #[allow(unused_assignments)]
-    pub fn play_line_height(gui: &mut Gui, context: &mut PlayContext, json: &Vec<json::JsonValue>) {
+    pub fn play_line_height(
+        gui: &mut Gui,
+        engine: &mut Engine,
+        context: &mut PlayContext,
+        json: &Vec<json::JsonValue>,
+    ) {
         let mut i = 0;
         let node =
             unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
@@ -6174,6 +6482,7 @@
     #[allow(unused_assignments)]
     pub fn play_reset_line_height_percent(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -6189,6 +6498,7 @@
     #[allow(unused_assignments)]
     pub fn play_line_height_percent(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -6235,6 +6545,7 @@
     #[allow(unused_assignments)]
     pub fn play_reset_text_indent(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -6248,7 +6559,12 @@
     }
     #[allow(unused_variables)]
     #[allow(unused_assignments)]
-    pub fn play_text_indent(gui: &mut Gui, context: &mut PlayContext, json: &Vec<json::JsonValue>) {
+    pub fn play_text_indent(
+        gui: &mut Gui,
+        engine: &mut Engine,
+        context: &mut PlayContext,
+        json: &Vec<json::JsonValue>,
+    ) {
         let mut i = 0;
         let node =
             unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
@@ -6322,6 +6638,7 @@
     #[allow(unused_assignments)]
     pub fn play_reset_text_align(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -6335,7 +6652,12 @@
     }
     #[allow(unused_variables)]
     #[allow(unused_assignments)]
-    pub fn play_text_align(gui: &mut Gui, context: &mut PlayContext, json: &Vec<json::JsonValue>) {
+    pub fn play_text_align(
+        gui: &mut Gui,
+        engine: &mut Engine,
+        context: &mut PlayContext,
+        json: &Vec<json::JsonValue>,
+    ) {
         let mut i = 0;
         let node =
             unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
@@ -6407,6 +6729,7 @@
     #[allow(unused_assignments)]
     pub fn play_reset_vertical_align(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -6422,6 +6745,7 @@
     #[allow(unused_assignments)]
     pub fn play_vertical_align(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -6496,6 +6820,7 @@
     #[allow(unused_assignments)]
     pub fn play_reset_text_stroke(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -6509,7 +6834,12 @@
     }
     #[allow(unused_variables)]
     #[allow(unused_assignments)]
-    pub fn play_text_stroke(gui: &mut Gui, context: &mut PlayContext, json: &Vec<json::JsonValue>) {
+    pub fn play_text_stroke(
+        gui: &mut Gui,
+        engine: &mut Engine,
+        context: &mut PlayContext,
+        json: &Vec<json::JsonValue>,
+    ) {
         let mut i = 0;
         let node =
             unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
@@ -6563,6 +6893,7 @@
     #[allow(unused_assignments)]
     pub fn play_reset_white_space(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -6576,7 +6907,12 @@
     }
     #[allow(unused_variables)]
     #[allow(unused_assignments)]
-    pub fn play_white_space(gui: &mut Gui, context: &mut PlayContext, json: &Vec<json::JsonValue>) {
+    pub fn play_white_space(
+        gui: &mut Gui,
+        engine: &mut Engine,
+        context: &mut PlayContext,
+        json: &Vec<json::JsonValue>,
+    ) {
         let mut i = 0;
         let node =
             unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
@@ -6622,6 +6958,7 @@
     #[allow(unused_assignments)]
     pub fn play_reset_font_style(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -6635,7 +6972,12 @@
     }
     #[allow(unused_variables)]
     #[allow(unused_assignments)]
-    pub fn play_font_style(gui: &mut Gui, context: &mut PlayContext, json: &Vec<json::JsonValue>) {
+    pub fn play_font_style(
+        gui: &mut Gui,
+        engine: &mut Engine,
+        context: &mut PlayContext,
+        json: &Vec<json::JsonValue>,
+    ) {
         let mut i = 0;
         let node =
             unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
@@ -6679,6 +7021,7 @@
     #[allow(unused_assignments)]
     pub fn play_reset_font_weight(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -6692,7 +7035,12 @@
     }
     #[allow(unused_variables)]
     #[allow(unused_assignments)]
-    pub fn play_font_weight(gui: &mut Gui, context: &mut PlayContext, json: &Vec<json::JsonValue>) {
+    pub fn play_font_weight(
+        gui: &mut Gui,
+        engine: &mut Engine,
+        context: &mut PlayContext,
+        json: &Vec<json::JsonValue>,
+    ) {
         let mut i = 0;
         let node =
             unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
@@ -6738,6 +7086,7 @@
     #[allow(unused_assignments)]
     pub fn play_reset_font_size_none(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -6753,6 +7102,7 @@
     #[allow(unused_assignments)]
     pub fn play_font_size_none(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -6799,6 +7149,7 @@
     #[allow(unused_assignments)]
     pub fn play_reset_font_size(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -6812,7 +7163,12 @@
     }
     #[allow(unused_variables)]
     #[allow(unused_assignments)]
-    pub fn play_font_size(gui: &mut Gui, context: &mut PlayContext, json: &Vec<json::JsonValue>) {
+    pub fn play_font_size(
+        gui: &mut Gui,
+        engine: &mut Engine,
+        context: &mut PlayContext,
+        json: &Vec<json::JsonValue>,
+    ) {
         let mut i = 0;
         let node =
             unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
@@ -6858,6 +7214,7 @@
     #[allow(unused_assignments)]
     pub fn play_reset_font_size_percent(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -6873,6 +7230,7 @@
     #[allow(unused_assignments)]
     pub fn play_font_size_percent(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -6931,6 +7289,7 @@
     #[allow(unused_assignments)]
     pub fn play_reset_text_content_utf8(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -6946,6 +7305,7 @@
     #[allow(unused_assignments)]
     pub fn play_text_content_utf8(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -7018,6 +7378,7 @@
     #[allow(unused_assignments)]
     pub fn play_reset_clip_path_str(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -7033,6 +7394,7 @@
     #[allow(unused_assignments)]
     pub fn play_clip_path_str(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -7090,6 +7452,7 @@
     #[allow(unused_assignments)]
     pub fn play_reset_animation_duration(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -7105,6 +7468,7 @@
     #[allow(unused_assignments)]
     pub fn play_animation_duration(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -7161,6 +7525,7 @@
     #[allow(unused_assignments)]
     pub fn play_reset_animation_delay(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -7176,6 +7541,7 @@
     #[allow(unused_assignments)]
     pub fn play_animation_delay(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -7234,6 +7600,7 @@
     #[allow(unused_assignments)]
     pub fn play_reset_animation_iteration_count(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -7249,6 +7616,7 @@
     #[allow(unused_assignments)]
     pub fn play_animation_iteration_count(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -7305,6 +7673,7 @@
     #[allow(unused_assignments)]
     pub fn play_reset_animation_direction(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -7320,6 +7689,7 @@
     #[allow(unused_assignments)]
     pub fn play_animation_direction(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -7376,6 +7746,7 @@
     #[allow(unused_assignments)]
     pub fn play_reset_animation_fill_mode(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -7391,6 +7762,7 @@
     #[allow(unused_assignments)]
     pub fn play_animation_fill_mode(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -7447,6 +7819,7 @@
     #[allow(unused_assignments)]
     pub fn play_reset_animation_play_state(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -7462,6 +7835,7 @@
     #[allow(unused_assignments)]
     pub fn play_animation_play_state(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -7550,6 +7924,7 @@
     #[allow(unused_assignments)]
     pub fn play_reset_animation_name_str(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -7565,6 +7940,7 @@
     #[allow(unused_assignments)]
     pub fn play_animation_name_str(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -7670,6 +8046,7 @@
     #[allow(unused_assignments)]
     pub fn play_reset_mask_image(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -7683,7 +8060,12 @@
     }
     #[allow(unused_variables)]
     #[allow(unused_assignments)]
-    pub fn play_mask_image(gui: &mut Gui, context: &mut PlayContext, json: &Vec<json::JsonValue>) {
+    pub fn play_mask_image(
+        gui: &mut Gui,
+        engine: &mut Engine,
+        context: &mut PlayContext,
+        json: &Vec<json::JsonValue>,
+    ) {
         let node =
             unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
         let hash = pi_export_play::as_value::<usize>(json, 1).unwrap();
@@ -7736,6 +8118,7 @@
     #[allow(unused_assignments)]
     pub fn play_reset_background_image(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -7751,6 +8134,7 @@
     #[allow(unused_assignments)]
     pub fn play_background_image(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -7806,6 +8190,7 @@
     #[allow(unused_assignments)]
     pub fn play_reset_border_image(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -7821,6 +8206,7 @@
     #[allow(unused_assignments)]
     pub fn play_border_image(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -7898,6 +8284,7 @@
     #[allow(unused_assignments)]
     pub fn play_reset_text_shadow(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -7911,7 +8298,12 @@
     }
     #[allow(unused_variables)]
     #[allow(unused_assignments)]
-    pub fn play_text_shadow(gui: &mut Gui, context: &mut PlayContext, json: &Vec<json::JsonValue>) {
+    pub fn play_text_shadow(
+        gui: &mut Gui,
+        engine: &mut Engine,
+        context: &mut PlayContext,
+        json: &Vec<json::JsonValue>,
+    ) {
         let mut i = 0;
         let node =
             unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
@@ -7958,6 +8350,7 @@
     #[allow(unused_assignments)]
     pub fn play_reset_font_family(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -7971,7 +8364,12 @@
     }
     #[allow(unused_variables)]
     #[allow(unused_assignments)]
-    pub fn play_font_family(gui: &mut Gui, context: &mut PlayContext, json: &Vec<json::JsonValue>) {
+    pub fn play_font_family(
+        gui: &mut Gui,
+        engine: &mut Engine,
+        context: &mut PlayContext,
+        json: &Vec<json::JsonValue>,
+    ) {
         let node =
             unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
         let hash = pi_export_play::as_value::<usize>(json, 1).unwrap();
@@ -8028,6 +8426,7 @@
     #[allow(unused_assignments)]
     pub fn play_reset_text_content(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -8043,6 +8442,7 @@
     #[allow(unused_assignments)]
     pub fn play_text_content(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -8119,6 +8519,7 @@
     #[allow(unused_assignments)]
     pub fn play_reset_animation_timing_function_str(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -8134,6 +8535,7 @@
     #[allow(unused_assignments)]
     pub fn play_animation_timing_function_str(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -8163,6 +8565,7 @@
     #[allow(unused_variables)]
     pub fn play_set_default_style(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -8188,6 +8591,7 @@
     #[allow(unused_variables)]
     pub fn play_create_class(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -8222,7 +8626,12 @@
             gui.commands.set_class(node, ClassName(s));
         }
     }
-    pub fn play_set_class(gui: &mut Gui, context: &mut PlayContext, json: &Vec<json::JsonValue>) {
+    pub fn play_set_class(
+        gui: &mut Gui,
+        engine: &mut Engine,
+        context: &mut PlayContext,
+        json: &Vec<json::JsonValue>,
+    ) {
         let mut i = -1;
         i += 1;
         let node =
@@ -8305,21 +8714,22 @@
     }
     #[cfg(feature = "pi_js_export")]
     pub fn destroy_node(gui: &mut Gui, node: f64) {
+        let node = unsafe { Entity::from_bits(transmute::<f64, u64>(node)) };
         {
-            gui.commands
-                .destroy_node(Entity::from_bits(unsafe { transmute(node) }));
+            gui.commands.destroy_node(node);
         }
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     pub fn destroy_node(gui: &mut Gui, node: f64) {
+        let node = unsafe { Entity::from_bits(transmute::<f64, u64>(node)) };
         {
-            gui.commands
-                .destroy_node(Entity::from_bits(unsafe { transmute(node) }));
+            gui.commands.destroy_node(node);
         }
     }
     pub fn play_destroy_node(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -8353,6 +8763,7 @@
     }
     pub fn play_insert_as_root(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -8386,6 +8797,7 @@
     }
     pub fn play_append_child(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -8421,6 +8833,7 @@
     }
     pub fn play_insert_before(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -8452,7 +8865,12 @@
             gui.commands.remove_node(node);
         }
     }
-    pub fn play_remove_node(gui: &mut Gui, context: &mut PlayContext, json: &Vec<json::JsonValue>) {
+    pub fn play_remove_node(
+        gui: &mut Gui,
+        engine: &mut Engine,
+        context: &mut PlayContext,
+        json: &Vec<json::JsonValue>,
+    ) {
         let mut i = -1;
         i += 1;
         let node =
@@ -8494,6 +8912,7 @@
     #[allow(unused_variables)]
     pub fn play_set_view_port(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -8556,6 +8975,7 @@
     #[allow(unused_variables)]
     pub fn play_set_clear_color(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -8604,6 +9024,7 @@
     #[allow(unused_variables)]
     pub fn play_create_class_by_bin(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -8637,6 +9058,7 @@
     #[allow(unused_variables)]
     pub fn play_set_render_dirty(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -8663,6 +9085,7 @@
         }
     }
     pub fn play_fram_call(
+        gui: &mut Gui,
         engine: &mut Engine,
         _context: &mut PlayContext,
         _json: &Vec<json::JsonValue>,
@@ -8840,6 +9263,7 @@
     #[allow(unused_variables)]
     pub fn play_bind_render_target(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -8858,6 +9282,7 @@
     #[allow(unused_variables)]
     pub fn play_set_pixel_ratio(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -8878,6 +9303,7 @@
     #[allow(unused_variables)]
     pub fn play_nullify_clear_color(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -8894,7 +9320,12 @@
         {}
     }
     #[allow(unused_variables)]
-    pub fn play_set_scissor(gui: &mut Gui, context: &mut PlayContext, json: &Vec<json::JsonValue>) {
+    pub fn play_set_scissor(
+        gui: &mut Gui,
+        engine: &mut Engine,
+        context: &mut PlayContext,
+        json: &Vec<json::JsonValue>,
+    ) {
         let i = -1;
         let i = i + 1;
         let _x = pi_export_play::as_value::<i32>(json, i as usize).unwrap();
@@ -8936,6 +9367,7 @@
     #[allow(unused_variables)]
     pub fn play_set_project_transfrom(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -8978,6 +9410,7 @@
     }
     pub fn play_force_update_text(
         gui: &mut Gui,
+        engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -9002,7 +9435,12 @@
         {}
     }
     #[allow(unused_variables)]
-    pub fn play_set_shader(gui: &mut Gui, context: &mut PlayContext, json: &Vec<json::JsonValue>) {
+    pub fn play_set_shader(
+        gui: &mut Gui,
+        engine: &mut Engine,
+        context: &mut PlayContext,
+        json: &Vec<json::JsonValue>,
+    ) {
         let i = -1;
         let i = i + 1;
         let _shader_name = pi_export_play::as_value::<str>(json, i as usize).unwrap();
