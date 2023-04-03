@@ -3,12 +3,9 @@ use std::{sync::Arc, time::Instant, mem::transmute};
 
 use async_trait::async_trait;
 use bevy::ecs::{
-    schedule::{StageLabel},
     system::{SystemState},
 };
 use bevy::prelude::App;
-use bevy::window::WindowId;
-use bevy::winit::WinitPlugin;
 use pi_async::prelude::AsyncRuntime;
 use pi_bevy_post_process::PiPostProcessPlugin;
 use pi_bevy_render_plugin::{PiRenderPlugin, FrameState};
@@ -58,8 +55,9 @@ pub fn start<T: Example + Sync + Send + 'static>(example: T) {
     //     let mut commands = commands.get_mut(world);
     //     exmple.lock().render(&mut commands.0, &mut commands.1);
     // };
+	let mut engine = Engine(App::default());
 
-	let mut engine = create_engine(width, height);
+	create_engine(width, height, &mut engine);
 
 	engine.world.insert_resource(RunState::RENDER);
     engine.add_plugin(UiPlugin);
@@ -71,6 +69,7 @@ pub fn start<T: Example + Sync + Send + 'static>(example: T) {
 	// 		InitStartupStage::Startup,
 	// 		SystemStage::parallel().with_run_criteria(ShouldRun::once),
 	// 	);
+	App::setup(engine.app_mut());
 	engine.app_mut().update();
 	let world = &mut engine.world;
 	let mut gui = Gui {
@@ -97,12 +96,6 @@ pub fn start<T: Example + Sync + Send + 'static>(example: T) {
 	}
 }
 
-#[derive(Debug, Hash, PartialEq, Eq, Clone, StageLabel)]
-pub enum InitStartupStage {
-    /// The [`Stage`](bevy::ecs::schedule::Stage) that runs once before [`StartupStage::Startup`].
-    Startup,
-}
-
 pub struct PreFrameTime(pub Arc<ShareMutex<Instant>>);
 pub struct FrameStartTime(pub Instant);
 impl Default for FrameStartTime {
@@ -116,45 +109,25 @@ impl Default for PreFrameTime {
 #[allow(dead_code)]
 fn main() {}
 
-pub fn create_engine(width: u32, height: u32) -> Engine {
+pub fn create_engine(width: u32, height: u32, engine: &mut Engine) {
 	use winit::{event_loop::{EventLoopBuilder}, platform::windows::EventLoopBuilderExtWindows};
-    let mut app = App::default();
-
-	// let mut window_plugin = bevy::window::WindowPlugin::default();
-	// window_plugin.window.width = width as f32;
-	// window_plugin.window.height = height as f32;
-	
-	// app
-	// 	.add_plugin(bevy::log::LogPlugin {
-	// 		filter: "wgpu=info,pi_ui_render::components::user=debug".to_string(),
-	// 		level: bevy::log::Level::INFO,
-	// 	})
-	// 	.add_plugin(bevy::input::InputPlugin::default())
-	// 	.add_plugin(window_plugin)
-	// 	.add_plugin(WinitPlugin::default())
-	// 	// .add_plugin(WorldInspectorPlugin::new())
-	// 	.add_plugin(PiRenderPlugin::default())
-	// 	.add_plugin(PiPostProcessPlugin);
 	let mut window_plugin = bevy::window::WindowPlugin::default();
-    window_plugin.add_primary_window = false;
-	// window_plugin.window.width = width as f32;
-    // window_plugin.window.height = height as f32;
-	// window_plugin.add_primary_window = false;
+	window_plugin.primary_window = None;
 
 	let event_loop =  EventLoopBuilder::new().with_any_thread(true).build();
 	let window = Arc::new(winit::window::Window::new(&event_loop).unwrap());
 	
-    app
+    engine
 		.add_plugin(bevy::log::LogPlugin {
-			// filter: "pi_ui_render::components::user=debug".to_string(),
+			// filter: "pi_flex_layout=trace".to_string(),
+			// filter: "pi_ui_render::system::node::user_setting=debug".to_string(),
 			filter: "".to_string(),
 			level: bevy::log::Level::WARN,
 		})
 		// .add_plugin(bevy::input::InputPlugin::default())
 		.add_plugin(window_plugin)
-		.add_plugin(pi_bevy_winit_window::WinitPlugin::new(window.clone(), WindowId::primary()).with_size(width, height))
+		.add_plugin(pi_bevy_winit_window::WinitPlugin::new(window.clone()).with_size(width, height))
 		// .add_plugin(WorldInspectorPlugin::new())
 		.add_plugin(PiRenderPlugin {frame_init_state: FrameState::UnActive})
 		.add_plugin(PiPostProcessPlugin);
-    Engine(app)
 }

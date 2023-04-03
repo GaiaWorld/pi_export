@@ -25,8 +25,8 @@ use pi_style::{
 };
 use pi_style::style_parse::{parse_comma_separated, parse_text_shadow, StyleParse};
 use smallvec::SmallVec;
-pub use pi_export_base::export::Atom;
-pub use super::{Engine, Gui};
+pub use pi_export_base::export::{Atom, Engine};
+pub use super::Gui;
 use pi_ui_render::system::RunState;
 use pi_bevy_render_plugin::FrameState;
 

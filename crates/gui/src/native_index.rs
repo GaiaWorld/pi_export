@@ -1,5 +1,4 @@
 use pi_ui_render::{prelude::{UserCommands, UiPlugin}};
-use bevy::{window::WindowId};
 use pi_bevy_post_process::PiPostProcessPlugin;
 use pi_bevy_render_plugin::{PiRenderPlugin, FrameState};
 use pi_idtree::InsertType;
@@ -7,12 +6,12 @@ use pi_ui_render::resource::animation_sheet::KeyFramesSheet;
 
 // use pi_ecs::prelude::{DispatcherMgr, Id, LocalVersion, Offset};
 
-pub use super::{Gui, Engine};
-pub use pi_export_base::export::Atom;
+pub use super::Gui;
+pub use pi_export_base::export::{Engine, Atom};
 use pi_export_play::as_value;
 use super::{style::PlayContext, remove_node, append_child, destroy_node, insert_before, create_node, create_text_node, create_image_node, create_canvas_node, create_vnode};
 use pi_ui_render::components::calc::EntityKey;
-use bevy::app::prelude::App;
+use bevy::{app::prelude::App};
 use bevy::ecs::{prelude::Entity, system::SystemState};
 // pub use pi_ui_render::gui::Gui;
 use pi_null::Null;
@@ -21,10 +20,14 @@ pub use winit::window::Window;
 
 #[cfg(feature="pi_js_export")]
 pub fn create_engine(window: &Arc<Window>, _r: f64, width: u32, height: u32) -> Engine {
+    use bevy::prelude::{CoreSet, IntoSystemSetConfig};
+    use pi_bevy_render_plugin::should_run;
+
     let mut app = App::default();
 
 	let mut window_plugin = bevy::window::WindowPlugin::default();
-    window_plugin.add_primary_window = false;
+	window_plugin.primary_window = None;
+    // window_plugin.add_primary_window = false;
 	// window_plugin.window.width = width as f32;
     // window_plugin.window.height = height as f32;
 	// window_plugin.add_primary_window = false;
@@ -34,12 +37,14 @@ pub fn create_engine(window: &Arc<Window>, _r: f64, width: u32, height: u32) -> 
 		// 	filter: "wgpu=debug".to_string(),
 		// 	level: bevy::log::Level::DEBUG,
 		// })
+		.add_plugin(bevy::a11y::AccessibilityPlugin)
 		// .add_plugin(bevy::input::InputPlugin::default())
 		.add_plugin(window_plugin)
-		.add_plugin(pi_bevy_winit_window::WinitPlugin::new(window.clone(), WindowId::primary()).with_size(width, height))
+		.add_plugin(pi_bevy_winit_window::WinitPlugin::new(window.clone()).with_size(width, height))
 		// .add_plugin(WorldInspectorPlugin::new())
 		.add_plugin(PiRenderPlugin {frame_init_state: FrameState::UnActive})
 		.add_plugin(PiPostProcessPlugin);
+	app.configure_set(CoreSet::First.run_if(should_run));
     Engine(app)
 }
 
@@ -211,6 +216,7 @@ pub fn play_append_child(gui: &mut Gui, _engine: &mut Engine, context: &mut Play
         Some(r) => r.clone(),
         None => unsafe { transmute(EntityKey::null().to_bits()) },
     };
+
     append_child(gui, node_id1, parent_id1);
 
     if context.idtree.get(node_id).is_none() {

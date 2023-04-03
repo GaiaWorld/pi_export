@@ -67,21 +67,6 @@ use pi_ui_render::{
 };
 
 #[cfg(feature="pi_js_export")]
-#[derive(Debug, Deref, DerefMut)]
-pub struct Engine(pub App);
-
-#[cfg(target_arch="wasm32")]
-#[wasm_bindgen]
-#[derive(Debug, Deref, DerefMut)]
-pub struct Engine(pub(crate) App);
-
-impl Engine {
-	pub fn new(app: App) -> Self { Self(app) }
-	pub fn app(&self) -> &App { &self.0 }
-	pub fn app_mut(&mut self) -> &mut App { &mut self.0 }
-}
-
-#[cfg(feature="pi_js_export")]
 pub struct Gui {
     pub entitys: &'static Entities,
     pub commands: UserCommands,
