@@ -19,7 +19,6 @@ use bevy::ecs::{
     system::{CommandQueue, Query, SystemState},
     world::WorldCell,
 };
-use bevy::window::WindowId;
 use pi_animation::{animation_group::AnimationGroupID, animation_listener::EAnimationEvent};
 use pi_async::prelude::AsyncRuntime;
 use pi_bevy_ecs_extend::prelude::{Layer, OrDefault};
@@ -41,9 +40,8 @@ use smallvec::SmallVec;
 pub use super::Gui;
 use super::{style::PlayContext};
 use pi_export_play::as_value;
-use pi_export_base::export::Atom;
 // pub use pi_ui_render::gui::Gui;
-use super::Engine;
+pub use pi_export_base::export::{Engine, Atom};
 use bevy::app::App;
 use cssparser::ParseError;
 use js_proxy_gen_macro::pi_js_export;
@@ -74,10 +72,12 @@ use pi_ui_render::resource::animation_sheet::KeyFramesSheet;
 /// width、height为physical_size
 #[wasm_bindgen]
 pub fn create_engine(canvas: HtmlCanvasElement, r: f64, width: u32, height: u32) -> Engine {
+	use bevy::prelude::{CoreSet, IntoSystemSetConfig};
+	use pi_bevy_render_plugin::should_run;
     let mut app = App::default();
 
     let mut window_plugin = bevy::window::WindowPlugin::default();
-    window_plugin.add_primary_window = false;
+	window_plugin.primary_window = None;
 
 	let mut log = bevy::log::LogPlugin::default();
 	// log.filter="pi_flex_layout=trace".to_string();
@@ -85,12 +85,14 @@ pub fn create_engine(canvas: HtmlCanvasElement, r: f64, width: u32, height: u32)
 	log.level=bevy::log::Level::WARN;
     app
         .add_plugin(log)
+		.add_plugin(bevy::a11y::AccessibilityPlugin)
         .add_plugin(window_plugin)
-        .add_plugin(pi_bevy_winit_window::WinitPlugin::new(canvas, WindowId::primary()).with_size(width, height))
+        .add_plugin(pi_bevy_winit_window::WinitPlugin::new(canvas).with_size(width, height))
         .add_plugin(PiRenderPlugin {frame_init_state: FrameState::UnActive})
         .add_plugin(PiPostProcessPlugin)
 		.add_plugin(RuntimePlugin); // 推动运行时
-    Engine(app)
+	app.configure_set(CoreSet::First.run_if(should_run));
+    Engine::new(app)
 }
 
 #[wasm_bindgen]
@@ -341,36 +343,53 @@ fn run_all(rt: &SingleTaskRunner<()>) {
 // wasm 使用单线程运行时，需要手动推
 pub struct RuntimePlugin;
 
+fn runtime_run() {
+	run_all(&pi_hal::runtime::RUNNER_MULTI.lock());
+	run_all(&pi_hal::runtime::RUNNER_RENDER.lock());
+}
+
 impl bevy::app::Plugin for RuntimePlugin {
     fn build(&self, app: &mut App) {
-        app.add_stage_before(
-			bevy::prelude::CoreStage::First,
-			RuntimeStage::Start,
-			bevy::prelude::SystemStage::single(|| {
-				run_all(&pi_hal::runtime::RUNNER_MULTI.lock());
-				run_all(&pi_hal::runtime::RUNNER_RENDER.lock());
-			}),
-		);
-
-		let last_stage = app.schedule.iter_stages();
-		let mut last = None;
-		for i in last_stage {
-			last = Some(i.0);
-		}
-		let last = last.unwrap();
-		app.add_stage_after(
-			last,
-			RuntimeStage::End,
-			bevy::prelude::SystemStage::single(|| {
-				run_all(&pi_hal::runtime::RUNNER_MULTI.lock());
-				run_all(&pi_hal::runtime::RUNNER_RENDER.lock());
-			}),
+		use bevy::prelude::IntoSystemConfig;
+        app.add_system(
+			runtime_run.in_base_set(bevy::prelude::CoreSet::First)
 		);
     }
 }
 
-#[derive(Debug, Hash, PartialEq, Eq, Clone, bevy::ecs::schedule::StageLabel)]
-pub enum RuntimeStage {
-	Start,
-	End
-}
+// // wasm 使用单线程运行时，需要手动推
+// pub struct RuntimePlugin;
+
+// impl bevy::app::Plugin for RuntimePlugin {
+//     fn build(&self, app: &mut App) {
+//         app.add_stage_before(
+// 			bevy::prelude::CoreStage::First,
+// 			RuntimeStage::Start,
+// 			bevy::prelude::SystemStage::single(|| {
+// 				run_all(&pi_hal::runtime::RUNNER_MULTI.lock());
+// 				run_all(&pi_hal::runtime::RUNNER_RENDER.lock());
+// 			}),
+// 		);
+
+// 		let last_stage = app.schedule.iter_stages();
+// 		let mut last = None;
+// 		for i in last_stage {
+// 			last = Some(i.0);
+// 		}
+// 		let last = last.unwrap();
+// 		app.add_stage_after(
+// 			last,
+// 			RuntimeStage::End,
+// 			bevy::prelude::SystemStage::single(|| {
+// 				run_all(&pi_hal::runtime::RUNNER_MULTI.lock());
+// 				run_all(&pi_hal::runtime::RUNNER_RENDER.lock());
+// 			}),
+// 		);
+//     }
+// }
+
+// #[derive(Debug, Hash, PartialEq, Eq, Clone, bevy::ecs::schedule::StageLabel)]
+// pub enum RuntimeStage {
+// 	Start,
+// 	End
+// }

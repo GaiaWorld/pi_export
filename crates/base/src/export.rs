@@ -5,10 +5,26 @@ use std::{sync::Arc, cell::RefCell};
 use derive_deref::{Deref, DerefMut};
 use pi_assets::{allocator::Allocator, asset::{Asset, Handle}, mgr::AssetMgr};
 use pi_share::Share;
+use bevy::app::App;
 #[cfg(target_arch = "wasm32")]
 use wasm_bindgen::prelude::*;
 #[cfg(target_arch = "wasm32")]
 use js_sys::Function;
+
+#[cfg(all(feature="pi_js_export", not(target_arch="wasm32")))]
+#[derive(Debug, Deref, DerefMut)]
+pub struct Engine(pub App);
+
+#[cfg(target_arch="wasm32")]
+#[wasm_bindgen]
+#[derive(Debug, Deref, DerefMut)]
+pub struct Engine(pub(crate) App);
+
+impl Engine {
+	pub fn new(app: App) -> Self { Self(app) }
+	pub fn app(&self) -> &App { &self.0 }
+	pub fn app_mut(&mut self) -> &mut App { &mut self.0 }
+}
 
 #[derive(Debug, Clone, Deref, DerefMut)]
 #[cfg_attr(target_arch = "wasm32", wasm_bindgen)]

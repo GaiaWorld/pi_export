@@ -7,6 +7,7 @@ exclude = ["crates/gui/exports_macro"]
 [patch.crates-io]
 probabilistic-collections = { git = "https://github.com/GaiaWorld/pi_probabilistic_collections.git" }
 # bevy = { path = "../bevy" }
+# pi_flex_layout = { path = "../pi_flex_layout" }
 # pi_slotmap = { path = "../pi_slotmap" }
 
 # [patch."https://github.com/GaiaWorld/pi_ui_render"]
@@ -25,7 +26,6 @@ probabilistic-collections = { git = "https://github.com/GaiaWorld/pi_probabilist
 # pi_bevy_render_plugin = { path = "../pi_render_bevy/crates/render" }
 # pi_bevy_asset = { path = "../pi_render_bevy/crates/asset" }
 # pi_bevy_winit_window = { path = "../pi_render_bevy/crates/winit_window" } 
-
 # [patch."https://github.com/GaiaWorld/pi_spatialtree"]
 # pi_spatialtree ={path="../pi_spatialtree"}
 

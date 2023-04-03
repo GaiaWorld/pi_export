@@ -26,7 +26,6 @@ use std::{
 //
 fn main() { framework::start(ExampleCommonPlay::default()) }
 
-
 pub struct ExampleCommonPlay {
     play_context: PlayContext,
     list_index: usize,
@@ -39,6 +38,7 @@ pub struct ExampleCommonPlay {
     width: usize,
     height: usize,
     scale: f32,
+	end: bool,
 }
 
 impl Default for ExampleCommonPlay {
@@ -52,8 +52,8 @@ impl Default for ExampleCommonPlay {
             list_index: 0,
             file_index: 0,
             play_version: "test",
-            play_path: "G://pi_demo_gui_exe/dst",
-            cmd_path: Some("E://pi_export/crates/gui/examples/cmd_play/source/cmds"),
+            play_path: "D://0_js/pi_demo_gui_exe/dst",
+            cmd_path: Some("D://0_rust/pi_export/crates/gui/examples/cmd_play/source/cmds"),
             json_arr: JsonValue::Array(Vec::default()),
             // width: 400,
             // height: 750,
@@ -61,6 +61,7 @@ impl Default for ExampleCommonPlay {
             width: 1024,
             height: 1920,
             scale: 0.5,
+			end: false
         }
     }
 }
@@ -120,12 +121,12 @@ impl Example for ExampleCommonPlay {
         context.atoms.insert(11, Atom::new(pi_atom::Atom::from("")));
 
         let mut json = Object::new();
-        let id: f64 = unsafe { transmute::<u64, f64>(0) };
-        json.insert("ret", JsonValue::Number(id.into()));
-        play_create_node(gui, engine, context, &vec![JsonValue::Object(json.clone())]);
-
-        let root_entity = Entity::from_raw(0);
+		let root_entity = Entity::from_raw(1);
 		let root_entity_f64 = unsafe {transmute::<u64, f64>(root_entity.to_bits())};
+
+        json.insert("ret", JsonValue::Number(root_entity_f64.into()));
+        play_create_node(gui, engine, context, &vec![JsonValue::Object(json.clone())]);
+		
 
 		set_clear_color(gui, 1.0, 1.0, 1.0, 1.0, root_entity_f64, true);
 		set_view_port(gui, 0, 0, size.0 as i32, size.1 as i32, root_entity_f64);
@@ -135,20 +136,20 @@ impl Example for ExampleCommonPlay {
             gui,
 			engine,
             context,
-            &vec![JsonValue::Number(Number::from(id)), JsonValue::Number(Number::from(self.width))],
+            &vec![JsonValue::Number(Number::from(root_entity_f64)), JsonValue::Number(Number::from(self.width))],
         );
         play_height(
             gui,
 			engine,
             context,
-            &vec![JsonValue::Number(Number::from(id)), JsonValue::Number(Number::from(self.height))],
+            &vec![JsonValue::Number(Number::from(root_entity_f64)), JsonValue::Number(Number::from(self.height))],
         );
         play_transform_scale(
             gui,
 			engine,
             context,
             &vec![
-                JsonValue::Number(Number::from(id)),
+                JsonValue::Number(Number::from(root_entity_f64)),
                 JsonValue::Number(Number::from(self.scale)),
                 JsonValue::Number(Number::from(self.scale)),
             ],
@@ -158,7 +159,7 @@ impl Example for ExampleCommonPlay {
 			engine,
             context,
             &vec![
-                JsonValue::Number(Number::from(id)),
+                JsonValue::Number(Number::from(root_entity_f64)),
                 JsonValue::Number(Number::from(0)),
                 JsonValue::Number(Number::from(0.0)),
                 JsonValue::Number(Number::from(0)),
@@ -170,7 +171,7 @@ impl Example for ExampleCommonPlay {
 			engine,
             context,
             &vec![
-                JsonValue::Number(Number::from(id)),
+                JsonValue::Number(Number::from(root_entity_f64)),
                 JsonValue::Number(Number::from(0)),
                 JsonValue::Number(Number::from(0.)),
             ],
@@ -180,7 +181,7 @@ impl Example for ExampleCommonPlay {
 			engine,
             context,
             &vec![
-                JsonValue::Number(Number::from(id)),
+                JsonValue::Number(Number::from(root_entity_f64)),
                 JsonValue::Number(Number::from(1)),
                 JsonValue::Number(Number::from(0.)),
             ],
@@ -190,7 +191,7 @@ impl Example for ExampleCommonPlay {
 			engine,
             context,
             &vec![
-                JsonValue::Number(Number::from(id)),
+                JsonValue::Number(Number::from(root_entity_f64)),
                 JsonValue::Number(Number::from(0)),
                 JsonValue::Number(Number::from(0.)),
             ],
@@ -200,7 +201,7 @@ impl Example for ExampleCommonPlay {
 			engine,
             context,
             &vec![
-                JsonValue::Number(Number::from(id)),
+                JsonValue::Number(Number::from(root_entity_f64)),
                 JsonValue::Number(Number::from(1)),
                 JsonValue::Number(Number::from(0.)),
             ],
@@ -209,14 +210,14 @@ impl Example for ExampleCommonPlay {
             gui,
 			engine,
             context,
-            &vec![JsonValue::Number(Number::from(id)), JsonValue::Number(Number::from(1))],
+            &vec![JsonValue::Number(Number::from(root_entity_f64)), JsonValue::Number(Number::from(1))],
         );
         play_append_child(
             gui,
 			engine,
             context,
             &vec![
-                JsonValue::Number(Number::from(id)),
+                JsonValue::Number(Number::from(root_entity_f64)),
                 JsonValue::Number(Number::from(unsafe { transmute::<u64, f64>(Entity::from_raw(u32::MAX).to_bits()) })),
             ],
         );
@@ -238,6 +239,9 @@ impl Example for ExampleCommonPlay {
     }
 
     fn fram_call(&mut self, gui: &mut Gui, engine: &mut Engine){
+		if self.end {
+			return;
+		}
         // let s = replace(&mut self.cmd, UserCommands::default());
         // let r: &'static mut Commands1 = unsafe { transmute(cmd1) };
         // let mut gui = Gui {
@@ -249,7 +253,7 @@ impl Example for ExampleCommonPlay {
         // swap(&mut self.cmd, gui.commands);
 
 		let (list_index, file_index, json_arr) = (&mut self.list_index, &mut self.file_index, &mut self.json_arr);
-        setting(
+        if !setting(
             list_index,
             json_arr,
             self.cmd_path,
@@ -259,7 +263,9 @@ impl Example for ExampleCommonPlay {
             gui,
 			engine,
             &mut self.play_context,
-        );
+        ) {
+			self.end = true;
+		}
 
         // self.cmd = replace(&mut gui.commands, UserCommands::default()) ;
 
@@ -666,3 +672,21 @@ pub fn set_atom(_gui: &mut Gui, _engine: &mut Engine, context: &mut PlayContext,
 // 		}
 // 	}
 // }
+
+#[test]
+fn x() {
+	println!("{:?}, {:?}, {:?}, {:?}", Entity::from_bits(unsafe {transmute::<_, u64>(1.07e-321)}),
+	Entity::from_bits(unsafe {transmute::<_, u64>(1.013e-321)}),
+	Entity::from_bits(unsafe {transmute::<_, u64>(1.087e-321)}),
+	Entity::from_bits(unsafe {transmute::<_, u64>(1e-323)}),
+);
+	// {
+	// 	"type": 84,
+	// 	"doc": 0,
+	// 	"param": [1.07e-321, 1.013e-321]
+	// }, {
+	// 	"type": 84,
+	// 	"doc": 0,
+	// 	"param": [1.087e-321, 1.08e-321]
+	// }
+}

@@ -16,6 +16,7 @@ derive_deref = "1.1"
 pi_export_macro = {path="../macro"}
 pi_share = {version="0.4"}
 pi_assets = "0.10"
+bevy = {version="0.10", default-features = false, features=["bevy_winit"]}
 
 [target.'cfg(target_arch = "wasm32")'.dependencies]
 wasm-bindgen = { version = "0.2", features = ["serde-serialize"]}
