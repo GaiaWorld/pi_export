@@ -120,7 +120,7 @@ pub fn create_engine(width: u32, height: u32, engine: &mut Engine) {
     engine
 		.add_plugin(bevy::log::LogPlugin {
 			// filter: "pi_flex_layout=trace".to_string(),
-			// filter: "pi_ui_render::system::node::user_setting=debug".to_string(),
+			// filter: "pi_flex_layout=trace,pi_ui_render::system::node::user_setting=debug".to_string(),
 			filter: "".to_string(),
 			level: bevy::log::Level::WARN,
 		})

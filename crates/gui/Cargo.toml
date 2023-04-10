@@ -8,6 +8,7 @@ edition = "2021"
 [features]
 default = ["pi_js_export"]
 pi_js_export = []
+trace = ["pi_ui_render/trace"]
 
 [dependencies]
 pi_export_base = {path="../base"}

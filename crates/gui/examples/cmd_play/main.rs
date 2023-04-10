@@ -16,7 +16,7 @@ use pi_idtree::IdTree;
 use pi_map::vecmap::VecMap;
 use pi_export_play::as_value;
 use pi_export_gui::*;
-use pi_export_gui::native_index::{play_append_child, play_insert_before, play_remove_node, play_destroy_node};
+use pi_export_gui::native_index::{play_append_child, play_insert_as_root, play_insert_before, play_remove_node, play_destroy_node};
 use std::{
     fs::{read, DirEntry},
     mem::{transmute},
@@ -76,14 +76,14 @@ impl Example for ExampleCommonPlay {
         let size = (512, 960);
         // let r: Commands1 = unsafe { transmute(command) };
         let mut ttf = std::env::current_dir().unwrap();
-		log::warn!("cur_dir========{:?}", ttf);
+		// log::warn!("cur_dir========{:?}", ttf);
         ttf.push("crates/gui/examples/cmd_play/source/SOURCEHANSANSK-MEDIUM.TTF");
         // 设置默认字体
         new_face_by_path("default".to_string(), ttf.to_str().unwrap());
 
         std::env::set_current_dir(self.play_path).unwrap();
-        let dir = std::env::current_dir().unwrap();
-        log::warn!("current_dir: {:?}", dir);
+        let _dir = std::env::current_dir().unwrap();
+        // log::warn!("current_dir: {:?}", dir);
 
         println!("view_port:{:?}", size);
         // 设置class
@@ -558,6 +558,11 @@ lazy_static! {
         play_todo, //play_box_shadow_h,
         play_todo, //play_box_shadow_v,
         play_todo, //play_box_shadow_blur,
+
+		play_set_brush,
+		play_set_rendertarget_type,
+		play_insert_as_root,
+		play_set_view_port,
 
         play_reset_text_content, //"reset_text_content",
         play_reset_font_style, //"reset_font_style",

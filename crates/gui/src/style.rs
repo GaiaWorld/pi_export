@@ -8930,6 +8930,78 @@
         set_view_port(gui, x, y, width, height, root);
     }
     #[cfg(feature = "pi_js_export")]
+    pub fn set_brush(gui: &mut Gui, node: f64, brush: f64) {
+        {
+            let node = unsafe { Entity::from_bits(transmute::<f64, u64>(node)) };
+            let brush = unsafe { Entity::from_bits(transmute::<f64, u64>(brush)) };
+            gui.commands
+                .push_cmd(NodeCmd(pi_ui_render::components::user::Canvas(brush), node));
+        }
+    }
+    #[cfg(target_arch = "wasm32")]
+    #[wasm_bindgen]
+    pub fn set_brush(gui: &mut Gui, node: f64, brush: f64) {
+        {
+            let node = unsafe { Entity::from_bits(transmute::<f64, u64>(node)) };
+            let brush = unsafe { Entity::from_bits(transmute::<f64, u64>(brush)) };
+            gui.commands
+                .push_cmd(NodeCmd(pi_ui_render::components::user::Canvas(brush), node));
+        }
+    }
+    #[allow(unused_variables)]
+    pub fn play_set_brush(
+        gui: &mut Gui,
+        engine: &mut Engine,
+        context: &mut PlayContext,
+        json: &Vec<json::JsonValue>,
+    ) {
+        let i = -1;
+        let i = i + 1;
+        let node = pi_export_play::as_value::<f64>(json, i as usize).unwrap();
+        let i = i + 1;
+        let brush = pi_export_play::as_value::<f64>(json, i as usize).unwrap();
+        set_brush(gui, node, brush);
+    }
+    #[cfg(feature = "pi_js_export")]
+    pub fn set_rendertarget_type(gui: &mut Gui, node: f64, target_ty: u8) {
+        {
+            let node = unsafe { Entity::from_bits(transmute::<f64, u64>(node)) };
+            gui.commands.push_cmd(NodeCmd(
+                unsafe {
+                    transmute::<_, pi_ui_render::components::user::RenderTargetType>(target_ty)
+                },
+                node,
+            ));
+        }
+    }
+    #[cfg(target_arch = "wasm32")]
+    #[wasm_bindgen]
+    pub fn set_rendertarget_type(gui: &mut Gui, node: f64, target_ty: u8) {
+        {
+            let node = unsafe { Entity::from_bits(transmute::<f64, u64>(node)) };
+            gui.commands.push_cmd(NodeCmd(
+                unsafe {
+                    transmute::<_, pi_ui_render::components::user::RenderTargetType>(target_ty)
+                },
+                node,
+            ));
+        }
+    }
+    #[allow(unused_variables)]
+    pub fn play_set_rendertarget_type(
+        gui: &mut Gui,
+        engine: &mut Engine,
+        context: &mut PlayContext,
+        json: &Vec<json::JsonValue>,
+    ) {
+        let i = -1;
+        let i = i + 1;
+        let node = pi_export_play::as_value::<f64>(json, i as usize).unwrap();
+        let i = i + 1;
+        let target_ty = pi_export_play::as_value::<u8>(json, i as usize).unwrap();
+        set_rendertarget_type(gui, node, target_ty);
+    }
+    #[cfg(feature = "pi_js_export")]
     pub fn set_clear_color(
         gui: &mut Gui,
         r: f32,

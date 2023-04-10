@@ -6,6 +6,8 @@ use pi_ui_render::resource::animation_sheet::KeyFramesSheet;
 
 // use pi_ecs::prelude::{DispatcherMgr, Id, LocalVersion, Offset};
 
+use crate::insert_as_root;
+
 pub use super::Gui;
 pub use pi_export_base::export::{Engine, Atom};
 use pi_export_play::as_value;
@@ -231,6 +233,22 @@ pub fn play_append_child(gui: &mut Gui, _engine: &mut Engine, context: &mut Play
         }
         context.idtree.insert_child(node_id, parent_id, 0);
     }
+}
+
+pub fn play_insert_as_root(gui: &mut Gui, _engine: &mut Engine, context: &mut PlayContext, json: &Vec<json::JsonValue>) {
+
+    // log::warn!("play_append_child================{:?}, {:?}, version0: {:?}, version1: {:?}, index0: {}, index1:{:?}, v1:{}, v2:{}, entity:{:?}", r0, r1, r0 >> 32 as u32, r1 >> 32 as u32, r0 as u32, r1 as u32, as_value::<f64>(json, 0).unwrap(), as_value::<f64>(json, 1).unwrap(), unsafe {Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))} );
+
+    let node_id = unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index() as usize;
+    let node_id1 = context.nodes.get(node_id).unwrap().clone();
+
+    insert_as_root(gui, node_id1);
+
+    if context.idtree.get(node_id).is_none() {
+        context.idtree.create(node_id);
+    }
+
+	context.idtree.insert_child(node_id, usize::null(), 0);
 }
 
 pub fn play_insert_before(gui: &mut Gui, _engine: &mut Engine, context: &mut PlayContext, json: &Vec<json::JsonValue>) {

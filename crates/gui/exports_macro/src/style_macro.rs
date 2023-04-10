@@ -1158,6 +1158,35 @@ other_out_export!(
 	x: i32, y: i32, width: i32, height: i32, root: f64,
 );
 
+// 设置画笔（绘canvas的图节点所在的实体）
+other_out_export!(
+    set_brush,
+    gui,
+    {
+		let node = unsafe { Entity::from_bits(transmute::<f64, u64>(node)) };
+		let brush = unsafe { Entity::from_bits(transmute::<f64, u64>(brush)) };
+		gui.commands.push_cmd(NodeCmd(
+			pi_ui_render::components::user::Canvas(brush),
+			node,
+		));
+	},;
+	node: f64, brush: f64,
+);
+
+// 设置
+other_out_export!(
+    set_rendertarget_type,
+    gui,
+    {
+		let node = unsafe { Entity::from_bits(transmute::<f64, u64>(node)) };
+		gui.commands.push_cmd(NodeCmd(
+			unsafe { transmute::<_, pi_ui_render::components::user::RenderTargetType>(target_ty) };
+			node,
+		));
+	},;
+	node: f64, target_ty: u8,
+);
+
 other_out_export!(
     set_clear_color,
     gui,

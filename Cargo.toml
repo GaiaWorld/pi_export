@@ -6,9 +6,14 @@ exclude = ["crates/gui/exports_macro"]
 # [patch.crates-io]
 [patch.crates-io]
 probabilistic-collections = { git = "https://github.com/GaiaWorld/pi_probabilistic_collections.git" }
+# tracing-chrome = { path = "../tracing-chrome" }
 # bevy = { path = "../bevy" }
 # pi_flex_layout = { path = "../pi_flex_layout" }
 # pi_slotmap = { path = "../pi_slotmap" }
+
+# [profile.release]
+# debug=true
+
 
 # [patch."https://github.com/GaiaWorld/pi_ui_render"]
 # pi_ui_render = { path = "../pi_ui_render_new" }
