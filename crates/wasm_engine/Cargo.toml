@@ -15,6 +15,7 @@ pi_js_export = []
 pi_export_gui = { path = "../gui", default-features=false }
 pi_export_astar = { path = "../astar"}
 pi_export_base = { path = "../base"}
+pi_spine_export = { path = "../pi_spine_export"}
 # pi_export_quad_tree = { path = "../quad_tree"}
 pi_web_logger = {git = "http://ser.yinengyun.com:10082/tech/pi_web_logger.git"}
 
