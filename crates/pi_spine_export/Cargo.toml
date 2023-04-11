@@ -24,7 +24,7 @@ pi_hash = "0.1"
 pi_atom = "0.2"
 # pi_export_gui = { path = "../gui" }
 pi_export_base = { path = "../base" }
-pi_spine_rs = { path="../../../pi_spine_rs" }
+pi_spine_rs = { git = "https://github.com/GaiaWorld/pi_spine_rs.git" }
 pi_hal = { git = "https://github.com/GaiaWorld/pi_hal.git" }
 pi_render = { git = "https://github.com/GaiaWorld/pi_render.git", branch="bevy_shader" }
 pi_web_logger = {git = "http://ser.yinengyun.com:10082/tech/pi_web_logger.git"}
