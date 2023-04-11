@@ -5,28 +5,47 @@ use bevy::{prelude::{Deref, DerefMut, App, Commands}, ecs::system::CommandQueue}
 use pi_atom::Atom;
 use pi_bevy_asset::ShareAssetMgr;
 use pi_bevy_render_plugin::{PiRenderGraph, PiRenderDevice, PiRenderQueue, GraphError, component::GraphId};
-use pi_export_base::{export::Engine, constants::SamplerDescriptor};
-use pi_final_render_target::FinalRenderTarget;
+use pi_export_base::{export::Engine, constants::{SamplerDescriptor, sampler_desc}};
+use pi_final_render_target::{FinalRenderTarget, PluginFinalRender};
 use pi_hal::image::{load_from_url, DynamicImage};
 use pi_render::{rhi::{asset::TextureRes, device::RenderDevice, RenderQueue}, renderer::sampler::SamplerRes, asset::TAssetKeyU64};
 
 use pi_export_base::constants::{TextureFormat, BlendFactor};
-use pi_spine_rs::{shaders::{KeySpineShader}, KeySpineRenderer, SpineRenderContext, SingleSpineCommands, SAMPLER_DESC, SpineRenderNode, ActionSpine};
+use pi_spine_rs::{shaders::{KeySpineShader}, KeySpineRenderer, SpineRenderContext, SingleSpineCommands, SAMPLER_DESC, SpineRenderNode, ActionSpine, PluginSpineRenderer};
 use wasm_bindgen::prelude::wasm_bindgen;
 
 #[derive(Debug, Clone, Copy)]
-#[wasm_bindgen]
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[cfg(feature = "pi_js_export")]
 pub struct SpineTextureSize(pub u32, pub u32);
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[cfg(feature = "pi_js_export")]
 impl SpineTextureSize {
-    pub fn val(val: Option<&Self>) -> Option<(u32, u32)> {
-        match val {
-            Some(val) => Some((val.0, val.1)),
-            None => None,
-        }
+    #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+    #[cfg(feature = "pi_js_export")]
+    pub fn new(w: u32, h: u32) -> Self {
+        Self(w, h)
+    }
+}
+pub fn render_size(val: Option<&SpineTextureSize>) -> Option<(u32, u32)> {
+    match val {
+        Some(val) => Some((val.0, val.1)),
+        None => None,
     }
 }
 
-#[wasm_bindgen]
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[cfg(feature = "pi_js_export")]
+pub fn init_spine_context(
+    engine: &mut Engine,
+) {
+    engine
+        .add_plugin(PluginFinalRender)
+        .add_plugin(PluginSpineRenderer);
+}
+
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[cfg(feature = "pi_js_export")]
 pub fn spine_renderer_create(app: &mut Engine, name: String, rendersize: Option<SpineTextureSize>) -> f64 {
     let id_renderer = {
         let mut queue = CommandQueue::default();
@@ -37,7 +56,7 @@ pub fn spine_renderer_create(app: &mut Engine, name: String, rendersize: Option<
     
         let final_render_format = app.world.get_resource::<FinalRenderTarget>().unwrap().format();
         let mut ctx = app.world.get_resource_mut::<SpineRenderContext>().unwrap();
-        ActionSpine::create_spine_renderer(id_renderer, SpineTextureSize::val(rendersize.as_ref()), &mut ctx, final_render_format);
+        ActionSpine::create_spine_renderer(id_renderer, render_size(rendersize.as_ref()), &mut ctx, final_render_format);
         
         id_renderer
     };
@@ -63,7 +82,8 @@ pub fn spine_renderer_create(app: &mut Engine, name: String, rendersize: Option<
     f
 }
 
-#[wasm_bindgen]
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[cfg(feature = "pi_js_export")]
 pub fn spine_renderer_dispose(app: &mut Engine, id_renderer: f64) {
     let id_renderer = KeySpineRenderer::from_f64(id_renderer);
 
@@ -76,7 +96,8 @@ pub fn spine_renderer_dispose(app: &mut Engine, id_renderer: f64) {
     ActionSpine::dispose_spine_renderer(id_renderer, &mut ctx);
 }
 
-#[wasm_bindgen]
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[cfg(feature = "pi_js_export")]
 pub async fn spine_texture_load(app: &mut Engine, id_renderer: f64, key: String) -> Result<SpineTextureSize, String> {
     let id_renderer = KeySpineRenderer::from_f64(id_renderer);
     let device = app.world.get_resource::<PiRenderDevice>().unwrap().clone();
@@ -93,7 +114,8 @@ pub async fn spine_texture_load(app: &mut Engine, id_renderer: f64, key: String)
         let image = match image {
             Ok(r) => r,
             Err(_e) =>  {
-                return Err(String::from("spine_texture_load Fail: ") + key.as_str());
+                let mut s = String::from("spine_texture_load Fail: ") + format!("{:?}", _e).as_str();
+                return Err(s + key.as_str());
             },
         };
 
@@ -119,7 +141,8 @@ pub async fn spine_texture_load(app: &mut Engine, id_renderer: f64, key: String)
 }
 
 
-#[wasm_bindgen]
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[cfg(feature = "pi_js_export")]
 pub fn spine_remove_texture(app: &mut Engine, id_renderer: f64, key: String) {
     let id_renderer = KeySpineRenderer::from_f64(id_renderer);
     let mut renderers = app.world.get_resource_mut::<SpineRenderContext>().unwrap();
@@ -129,14 +152,15 @@ pub fn spine_remove_texture(app: &mut Engine, id_renderer: f64, key: String) {
     }
 }
 
-#[wasm_bindgen]
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[cfg(feature = "pi_js_export")]
 pub fn spine_use_texture(app: &mut Engine, id_renderer: f64, key: String, samplerdesc: SamplerDescriptor) {
     let id_renderer = KeySpineRenderer::from_f64(id_renderer);
     let device = app.world.get_resource::<PiRenderDevice>().unwrap().clone();
     let queue = app.world.get_resource::<PiRenderQueue>().unwrap().clone();
     let asset_samplers = app.world.get_resource::<ShareAssetMgr<SamplerRes>>().unwrap();
 
-    let samplerdesc = samplerdesc.val();
+    let samplerdesc = sampler_desc(&samplerdesc);
     let sampler = if let Some(sampler) = asset_samplers.get(&samplerdesc) {
         sampler
     } else {
@@ -156,42 +180,48 @@ pub fn spine_use_texture(app: &mut Engine, id_renderer: f64, key: String, sample
     ActionSpine::spine_use_texture(&mut cmds.0, id_renderer, key.asset_u64(), samplerdesc)
 }
 
-#[wasm_bindgen]
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[cfg(feature = "pi_js_export")]
 pub fn spine_shader(app: &mut Engine, id_renderer: f64, shader: KeySpineShader) {
     let id_renderer = KeySpineRenderer::from_f64(id_renderer);
     let mut cmds = app.world.get_resource_mut::<SingleSpineCommands>().unwrap();
     ActionSpine::spine_shader(&mut cmds.0, id_renderer, shader);
 }
 
-#[wasm_bindgen]
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[cfg(feature = "pi_js_export")]
 pub fn spine_blend(app: &mut Engine, id_renderer: f64, val: bool) {
     let id_renderer = KeySpineRenderer::from_f64(id_renderer);
     let mut cmds = app.world.get_resource_mut::<SingleSpineCommands>().unwrap();
     ActionSpine::spine_blend(&mut cmds.0, id_renderer, val);
 }
 
-#[wasm_bindgen]
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[cfg(feature = "pi_js_export")]
 pub fn spine_blend_mode(app: &mut Engine, id_renderer: f64, src: BlendFactor, dst: BlendFactor) {
     let id_renderer = KeySpineRenderer::from_f64(id_renderer);
     let mut cmds = app.world.get_resource_mut::<SingleSpineCommands>().unwrap();
     ActionSpine::spine_blend_mode(&mut cmds.0, id_renderer, src.val(), dst.val());
 }
 
-#[wasm_bindgen]
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[cfg(feature = "pi_js_export")]
 pub fn spine_uniform(app: &mut Engine, id_renderer: f64, val: &[f32]) {
     let id_renderer = KeySpineRenderer::from_f64(id_renderer);
     let mut cmds = app.world.get_resource_mut::<SingleSpineCommands>().unwrap();
     ActionSpine::spine_uniform(&mut cmds.0, id_renderer, val);
 }
 
-#[wasm_bindgen]
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[cfg(feature = "pi_js_export")]
 pub fn spine_draw(app: &mut Engine, id_renderer: f64, vertices: &[f32], indices: &[u16], vlen: u32, ilen: u32) {
     let id_renderer = KeySpineRenderer::from_f64(id_renderer);
     let mut cmds = app.world.get_resource_mut::<SingleSpineCommands>().unwrap();
     ActionSpine::spine_draw(&mut cmds.0, id_renderer, vertices, indices, vlen, ilen);
 }
 
-#[wasm_bindgen]
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[cfg(feature = "pi_js_export")]
 pub fn spine_reset(app: &mut Engine, id_renderer: f64) {
     let id_renderer = KeySpineRenderer::from_f64(id_renderer);
     let mut cmds = app.world.get_resource_mut::<SingleSpineCommands>().unwrap();
