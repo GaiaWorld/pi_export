@@ -1230,6 +1230,8 @@ other_out_export!(
     fram_call,
     [engine: &mut Engine,],
     {
+		#[cfg(feature = "trace")]
+    	let _span = tracing::warn_span!("frame_call").entered();
 		*engine.world.get_resource_mut::<RunState>().unwrap() = RunState::RENDER;
 		*engine.world.get_resource_mut::<FrameState>().unwrap() = FrameState::Active;
 		engine.update();
@@ -1243,6 +1245,8 @@ other_out_export!(
     flush,
     [gui: &mut Gui, engine: &mut Engine,],
     {
+		#[cfg(feature = "trace")]
+    	let _span = tracing::warn_span!("flush").entered();
 		bevy::ecs::system::CommandQueue::default().apply(&mut engine.world);
 		let mut com = engine.world.get_resource_mut::<pi_ui_render::prelude::UserCommands>().unwrap();
 		std::mem::swap(&mut gui.commands, &mut *com);
@@ -1258,6 +1262,8 @@ other_out_export!(
     calc,
     [gui: &mut Gui, engine: &mut Engine,],
     {	
+		#[cfg(feature = "trace")]
+    	let _span = tracing::warn_span!("calc").entered();
 		bevy::ecs::system::CommandQueue::default().apply(&mut engine.world);
 		let mut com = engine.world.get_resource_mut::<pi_ui_render::prelude::UserCommands>().unwrap();
 		std::mem::swap(&mut gui.commands, &mut *com);
@@ -1273,7 +1279,8 @@ other_out_export!(
     calc_layout,
     [gui: &mut Gui, engine: &mut Engine,],
     {	
-		log::error!("calc_layout!!!!!");
+		#[cfg(feature = "trace")]
+    	let _span = tracing::warn_span!("calc_layout").entered();
 		bevy::ecs::system::CommandQueue::default().apply(&mut engine.world);
 		let mut com = engine.world.get_resource_mut::<pi_ui_render::prelude::UserCommands>().unwrap();
 		std::mem::swap(&mut gui.commands, &mut *com);
@@ -1289,7 +1296,8 @@ other_out_export!(
     calc_geo,
     [gui: &mut Gui, engine: &mut Engine,],
     {
-		log::error!("calc_geo!!!!!");
+		#[cfg(feature = "trace")]
+    	let _span = tracing::warn_span!("calc_geo").entered();
 		bevy::ecs::system::CommandQueue::default().apply(&mut engine.world);
 		let mut com = engine.world.get_resource_mut::<pi_ui_render::prelude::UserCommands>().unwrap();
 		std::mem::swap(&mut gui.commands, &mut *com);

@@ -10,13 +10,20 @@ probabilistic-collections = { git = "https://github.com/GaiaWorld/pi_probabilist
 # bevy = { path = "../bevy" }
 # pi_flex_layout = { path = "../pi_flex_layout" }
 # pi_slotmap = { path = "../pi_slotmap" }
+# pi_map = { path = "../pi_map" }
+# wgpu = {path = "../wgpu/wgpu"}
+# smallvec = {path = "../smallvec"}
 
-# [profile.release]
-# debug=true
+
+[profile.release]
+debug=true
 
 
 # [patch."https://github.com/GaiaWorld/pi_ui_render"]
 # pi_ui_render = { path = "../pi_ui_render_new" }
+
+# [patch."https://github.com/GaiaWorld/pi_spine_rs"]
+# pi_spine_rs = { path = "../pi_spine_rs" }
 
 # [patch."https://github.com/GaiaWorld/pi_hal"]
 # pi_hal = { path = "../pi_hal" }
@@ -33,6 +40,8 @@ probabilistic-collections = { git = "https://github.com/GaiaWorld/pi_probabilist
 # pi_bevy_winit_window = { path = "../pi_render_bevy/crates/winit_window" } 
 # [patch."https://github.com/GaiaWorld/pi_spatialtree"]
 # pi_spatialtree ={path="../pi_spatialtree"}
+# [patch."https://github.com/GaiaWorld/pi_post_process"]
+# pi_postprocess ={path="../pi_post_process"}
 
 # [net]
 # git-fetch-with-cli = true

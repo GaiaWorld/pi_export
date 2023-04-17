@@ -5,6 +5,7 @@ use pi_bevy_ecs_extend::prelude::Down;
 use pi_bevy_ecs_extend::prelude::Up;
 use pi_bevy_render_plugin::PiRenderGraph;
 use pi_flex_layout::prelude::*;
+use pi_map::smallvecmap::SmallVecMap;
 use pi_null::Null;
 use pi_style::style_parse::Attribute;
 use pi_ui_render::components::calc::InPassId;
@@ -853,19 +854,17 @@ pub fn node_info(engine: &mut Engine, node_id: f64) -> String {
 
     let draw_list = match engine.world.query::<&DrawList>().get(&engine.world, node_id) {
         Ok(r) => r.0.clone(),
-        _ => VecMap::default(),
+        _ => SmallVecMap::default(),
     };
 
     let mut draw_objs = Vec::new();
-    for i in draw_list.iter() {
-        if let Some(i) = i {
-            if let Ok(pipeline_meta) = engine.world.query::<&PipelineMeta>().get(&engine.world, i.clone()) {
-                draw_objs.push(RenderObject {
-                    id: format!("{:?}", i),
-                    name: pipeline_meta.program.shader_meta.name.clone(),
-                });
-            }
-        }
+    for (i, _) in draw_list.iter() {
+        if let Ok(pipeline_meta) = engine.world.query::<&PipelineMeta>().get(&engine.world, i.clone()) {
+			draw_objs.push(RenderObject {
+				id: format!("{:?}", i),
+				name: pipeline_meta.program.shader_meta.name.clone(),
+			});
+		}
     }
     let mut children = Vec::new();
 

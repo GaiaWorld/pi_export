@@ -130,7 +130,7 @@ impl Example for ExampleCommonPlay {
 
 		set_clear_color(gui, 1.0, 1.0, 1.0, 1.0, root_entity_f64, true);
 		set_view_port(gui, 0, 0, size.0 as i32, size.1 as i32, root_entity_f64);
-		set_render_dirty(gui, root_entity_f64);
+		// set_render_dirty(gui, root_entity_f64);
 
         play_width(
             gui,
@@ -315,6 +315,7 @@ pub fn setting(
             };
             let path = dir + "/cmd_" + play_version + "_" + file_index.to_string().as_str() + ".gui_cmd.json";
 
+			let _span = tracing::warn_span!("gui_cmd").entered();
             match std::fs::read(path.clone()) {
                 Ok(r) => {
                     *json_arr = json::parse(String::from_utf8(r).unwrap().as_str()).unwrap();
