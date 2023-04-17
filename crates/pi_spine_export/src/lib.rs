@@ -15,6 +15,7 @@ use pi_spine_rs::{shaders::{KeySpineShader}, KeySpineRenderer, SpineRenderContex
 use wasm_bindgen::prelude::wasm_bindgen;
 
 #[derive(Debug, Clone, Copy)]
+
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[cfg(feature = "pi_js_export")]
 pub struct SpineTextureSize(pub u32, pub u32);
@@ -68,6 +69,7 @@ pub fn spine_renderer_create(app: &mut Engine, name: String, rendersize: Option<
             Ok(nodeid) => {
                 let mut queue = CommandQueue::default();
                 let mut commands = Commands::new(&mut queue, &app.world);
+                log::warn!("SpineRenderer Add GraphId()");
                 commands.entity(id_renderer.0).insert(GraphId(nodeid));
                 queue.apply(&mut app.world);
             },
@@ -98,19 +100,17 @@ pub fn spine_renderer_dispose(app: &mut Engine, id_renderer: f64) {
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[cfg(feature = "pi_js_export")]
-pub async fn spine_texture_load(app: &mut Engine, id_renderer: f64, key: String) -> Result<SpineTextureSize, String> {
+pub async fn spine_texture_load(app: &mut Engine, id_renderer: f64, key: pi_export_base::export::Atom) -> Result<SpineTextureSize, String> {
     let id_renderer = KeySpineRenderer::from_f64(id_renderer);
     let device = app.world.get_resource::<PiRenderDevice>().unwrap().clone();
     let queue = app.world.get_resource::<PiRenderQueue>().unwrap().clone();
     let asset_textures = app.world.get_resource::<ShareAssetMgr<TextureRes>>().unwrap();
 
-    let key_atom = Atom::from(key.clone());
-
     let key_u64 = key.asset_u64();
     let texture = if let Some(textureres) = asset_textures.get(&key_u64) {
         textureres
     } else {
-        let image = load_from_url(&key_atom).await;
+        let image = load_from_url(&key).await;
         let image = match image {
             Ok(r) => r,
             Err(_e) =>  {
@@ -119,7 +119,7 @@ pub async fn spine_texture_load(app: &mut Engine, id_renderer: f64, key: String)
             },
         };
 
-        let texture = create_texture_from_image(&image, device, queue, &key_atom);
+        let texture = create_texture_from_image(&image, device, queue, &key);
 
         if let Some(texture) = asset_textures.insert(key_u64, texture) {
             texture
@@ -143,7 +143,7 @@ pub async fn spine_texture_load(app: &mut Engine, id_renderer: f64, key: String)
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[cfg(feature = "pi_js_export")]
-pub fn spine_remove_texture(app: &mut Engine, id_renderer: f64, key: String) {
+pub fn spine_remove_texture(app: &mut Engine, id_renderer: f64, key: pi_export_base::export::Atom) {
     let id_renderer = KeySpineRenderer::from_f64(id_renderer);
     let mut renderers = app.world.get_resource_mut::<SpineRenderContext>().unwrap();
     if let Some(renderer) = renderers.get_mut(id_renderer) {
@@ -154,7 +154,7 @@ pub fn spine_remove_texture(app: &mut Engine, id_renderer: f64, key: String) {
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[cfg(feature = "pi_js_export")]
-pub fn spine_use_texture(app: &mut Engine, id_renderer: f64, key: String, samplerdesc: SamplerDescriptor) {
+pub fn spine_use_texture(app: &mut Engine, id_renderer: f64, key: pi_export_base::export::Atom, samplerdesc: SamplerDescriptor) {
     let id_renderer = KeySpineRenderer::from_f64(id_renderer);
     let device = app.world.get_resource::<PiRenderDevice>().unwrap().clone();
     let queue = app.world.get_resource::<PiRenderQueue>().unwrap().clone();
