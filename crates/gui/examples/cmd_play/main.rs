@@ -51,7 +51,7 @@ impl Default for ExampleCommonPlay {
             },
             list_index: 0,
             file_index: 0,
-            play_version: "test",
+            play_version: "performance",
             play_path: "D://0_js/pi_demo_gui_exe/dst",
             cmd_path: Some("D://0_rust/pi_export/crates/gui/examples/cmd_play/source/cmds"),
             json_arr: JsonValue::Array(Vec::default()),

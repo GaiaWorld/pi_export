@@ -28,7 +28,6 @@ use pi_ui_render::components::user::{Overflow, Size};
 pub use pi_export_base::export::Engine;
 use pi_ui_render::resource::ClassSheet;
 use bevy::ecs::prelude::Entity;
-use pi_map::vecmap::VecMap;
 use pi_style::style::ImageRepeatOption;
 
 #[derive(Serialize, Deserialize, Debug)]

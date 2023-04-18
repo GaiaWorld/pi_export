@@ -30,8 +30,6 @@ use pi_spatialtree::quad_helper::intersects;
 #[cfg(target_arch = "wasm32")]
 use wasm_bindgen::prelude::wasm_bindgen;
 
-use bevy::app::prelude::App;
-
 #[cfg(not(target_arch = "wasm32"))]
 pub mod native_index;
 #[cfg(not(target_arch = "wasm32"))]
