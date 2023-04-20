@@ -7864,7 +7864,7 @@
                 let value = if let Ok(value) = parse_comma_separated::<
                     _,
                     _,
-                    cssparser::ParseError<pi_style::style_parse::ValueParseErrorKind>,
+                    cssparser::ParseError<pi_style::style_parse::TokenParseError>,
                 >(&mut parse, |input| {
                     Ok(pi_atom::Atom::from(input.expect_ident()?.as_ref()))
                 }) {
@@ -7892,7 +7892,7 @@
                 let value = if let Ok(value) = parse_comma_separated::<
                     _,
                     _,
-                    cssparser::ParseError<pi_style::style_parse::ValueParseErrorKind>,
+                    cssparser::ParseError<pi_style::style_parse::TokenParseError>,
                 >(&mut parse, |input| {
                     Ok(pi_atom::Atom::from(input.expect_ident()?.as_ref()))
                 }) {
@@ -9148,7 +9148,7 @@
                             "pi_export_gui::style_macro",
                             ::tracing::Level::WARN,
                             Some("src\\style_macro.rs"),
-                            Some(1234u32),
+                            Some(1262u32),
                             Some("pi_export_gui::style_macro"),
                             ::tracing_core::field::FieldSet::new(
                                 &[],
@@ -9196,7 +9196,7 @@
                             "pi_export_gui::style_macro",
                             ::tracing::Level::WARN,
                             Some("src\\style_macro.rs"),
-                            Some(1234u32),
+                            Some(1262u32),
                             Some("pi_export_gui::style_macro"),
                             ::tracing_core::field::FieldSet::new(
                                 &[],
@@ -9254,7 +9254,7 @@
                             "pi_export_gui::style_macro",
                             ::tracing::Level::WARN,
                             Some("src\\style_macro.rs"),
-                            Some(1249u32),
+                            Some(1277u32),
                             Some("pi_export_gui::style_macro"),
                             ::tracing_core::field::FieldSet::new(
                                 &[],
@@ -9308,7 +9308,7 @@
                             "pi_export_gui::style_macro",
                             ::tracing::Level::WARN,
                             Some("src\\style_macro.rs"),
-                            Some(1249u32),
+                            Some(1277u32),
                             Some("pi_export_gui::style_macro"),
                             ::tracing_core::field::FieldSet::new(
                                 &[],
@@ -9370,7 +9370,7 @@
                             "pi_export_gui::style_macro",
                             ::tracing::Level::WARN,
                             Some("src\\style_macro.rs"),
-                            Some(1266u32),
+                            Some(1294u32),
                             Some("pi_export_gui::style_macro"),
                             ::tracing_core::field::FieldSet::new(
                                 &[],
@@ -9424,7 +9424,7 @@
                             "pi_export_gui::style_macro",
                             ::tracing::Level::WARN,
                             Some("src\\style_macro.rs"),
-                            Some(1266u32),
+                            Some(1294u32),
                             Some("pi_export_gui::style_macro"),
                             ::tracing_core::field::FieldSet::new(
                                 &[],
@@ -9486,7 +9486,7 @@
                             "pi_export_gui::style_macro",
                             ::tracing::Level::WARN,
                             Some("src\\style_macro.rs"),
-                            Some(1283u32),
+                            Some(1311u32),
                             Some("pi_export_gui::style_macro"),
                             ::tracing_core::field::FieldSet::new(
                                 &[],
@@ -9540,7 +9540,7 @@
                             "pi_export_gui::style_macro",
                             ::tracing::Level::WARN,
                             Some("src\\style_macro.rs"),
-                            Some(1283u32),
+                            Some(1311u32),
                             Some("pi_export_gui::style_macro"),
                             ::tracing_core::field::FieldSet::new(
                                 &[],
@@ -9602,7 +9602,7 @@
                             "pi_export_gui::style_macro",
                             ::tracing::Level::WARN,
                             Some("src\\style_macro.rs"),
-                            Some(1300u32),
+                            Some(1328u32),
                             Some("pi_export_gui::style_macro"),
                             ::tracing_core::field::FieldSet::new(
                                 &[],
@@ -9656,7 +9656,7 @@
                             "pi_export_gui::style_macro",
                             ::tracing::Level::WARN,
                             Some("src\\style_macro.rs"),
-                            Some(1300u32),
+                            Some(1328u32),
                             Some("pi_export_gui::style_macro"),
                             ::tracing_core::field::FieldSet::new(
                                 &[],
@@ -10123,6 +10123,19 @@
     #[wasm_bindgen]
     pub fn query(engine: &mut Engine, gui: &mut Gui, x: f32, y: f32) -> Option<f64> {
         super::query(engine, gui, x, y)
+    }
+    pub fn play_query(
+        gui: &mut Gui,
+        engine: &mut Engine,
+        context: &mut PlayContext,
+        json: &Vec<json::JsonValue>,
+    ) {
+        let mut i = -1;
+        i += 1;
+        let x = pi_export_play::as_value::<f32>(json, i as usize).unwrap();
+        i += 1;
+        let y = pi_export_play::as_value::<f32>(json, i as usize).unwrap();
+        query(engine, gui, x, y);
     }
     pub struct Rect {
         pub left: f32,

@@ -641,6 +641,7 @@ lazy_static! {
 
         set_atom, //"__$set_atom",
 		play_fram_call, //"__$set_atom",
+		play_query,
     ];
 }
 

@@ -26,7 +26,7 @@ use pi_async::prelude::{SingleTaskRunner, SingleTaskRuntime};
 //     prelude::{DispatcherMgr, IntoSystem, ResMut, SingleDispatcher, StageBuilder},
 //     world::World,
 // };
-use pi_spatialtree::quad_helper::intersects;
+use pi_spatial::quad_helper::intersects;
 #[cfg(target_arch = "wasm32")]
 use wasm_bindgen::prelude::wasm_bindgen;
 

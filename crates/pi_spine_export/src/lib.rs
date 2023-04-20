@@ -103,7 +103,7 @@ pub async fn spine_texture_load(app: &mut Engine, id_renderer: f64, key: String)
 
         let texture = create_texture_from_image(&image, device, queue, &key_atom);
 
-        if let Some(texture) = asset_textures.insert(key_u64, texture) {
+        if let Ok(texture) = asset_textures.insert(key_u64, texture) {
             texture
         } else {
             return Err(String::from("spine_texture_load Fail While Insert: ") + key.as_str());
@@ -146,7 +146,7 @@ pub fn spine_use_texture(app: &mut Engine, id_renderer: f64, key: String, sample
     let sampler = if let Some(sampler) = asset_samplers.get(&samplerdesc) {
         sampler
     } else {
-        if let Some(sampler) = asset_samplers.insert(samplerdesc.clone(), SamplerRes::new(&device, &samplerdesc)) {
+        if let Ok(sampler) = asset_samplers.insert(samplerdesc.clone(), SamplerRes::new(&device, &samplerdesc)) {
             sampler
         } else {
             return;

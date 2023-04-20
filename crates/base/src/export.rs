@@ -102,8 +102,8 @@ impl ResMgr {
 	#[cfg(feature = "pi_js_export")]
 	pub fn create_res(&mut self, key: u32, cost: u32) -> ResRef {
 		match self.inner.insert(key, JsRes {key, cost: cost as usize}) {
-			Some(r) => ResRef(r),
-			None => self.get_res(key).unwrap()
+			Ok(r) => ResRef(r),
+			_ => unreachable!()
 		}
 	}
 

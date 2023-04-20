@@ -11,10 +11,10 @@ pi_js_export = []
 
 [dependencies]
 # wee_alloc = { version = "0.4", optional = true }
-nalgebra = "0.30.0"
-ncollide2d = "0.33.0"
+nalgebra = "0.32.0"
+parry2d = "0.13"
 num-traits = "0.2.14"
-pi_spatialtree = { git = "https://github.com/GaiaWorld/pi_spatialtree.git" }
+pi_spatial = { git = "https://github.com/GaiaWorld/pi_spatial.git" }
 bytemuck = { version = "1.4", features = ["derive"] }
 pi_slotmap = "0.1"
 
