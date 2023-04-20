@@ -29,6 +29,7 @@ pi_hal = { git = "https://github.com/GaiaWorld/pi_hal.git" }
 pi_render = { git = "https://github.com/GaiaWorld/pi_render.git", branch="bevy_shader" }
 pi_web_logger = {git = "http://ser.yinengyun.com:10082/tech/pi_web_logger.git"}
 
+log="0.4"
 js-sys = "0.3"
 web-sys = {version="0.3", features = [
 	"HtmlCanvasElement"
