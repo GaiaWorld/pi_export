@@ -51,7 +51,7 @@ impl Default for ExampleCommonPlay {
             },
             list_index: 0,
             file_index: 0,
-            play_version: "test",
+            play_version: "performance",
             play_path: "D://0_js/pi_demo_gui_exe/dst",
             cmd_path: Some("D://0_rust/pi_export/crates/gui/examples/cmd_play/source/cmds"),
             json_arr: JsonValue::Array(Vec::default()),
@@ -130,7 +130,7 @@ impl Example for ExampleCommonPlay {
 
 		set_clear_color(gui, 1.0, 1.0, 1.0, 1.0, root_entity_f64, true);
 		set_view_port(gui, 0, 0, size.0 as i32, size.1 as i32, root_entity_f64);
-		set_render_dirty(gui, root_entity_f64);
+		// set_render_dirty(gui, root_entity_f64);
 
         play_width(
             gui,
@@ -315,6 +315,7 @@ pub fn setting(
             };
             let path = dir + "/cmd_" + play_version + "_" + file_index.to_string().as_str() + ".gui_cmd.json";
 
+			let _span = tracing::warn_span!("gui_cmd").entered();
             match std::fs::read(path.clone()) {
                 Ok(r) => {
                     *json_arr = json::parse(String::from_utf8(r).unwrap().as_str()).unwrap();
@@ -640,6 +641,7 @@ lazy_static! {
 
         set_atom, //"__$set_atom",
 		play_fram_call, //"__$set_atom",
+		play_query,
     ];
 }
 

@@ -2,7 +2,7 @@
 name = "pi_wasm_engine"
 version = "0.1.0"
 authors = ["suncy <suncy@yineng.com>"]
-edition = "2021"
+edition = "2018"
 
 [lib]
 crate-type = ["cdylib"]
@@ -20,6 +20,7 @@ pi_spine_export = { path = "../pi_spine_export"}
 pi_web_logger = {git = "http://ser.yinengyun.com:10082/tech/pi_web_logger.git"}
 
 wasm-bindgen = { version = "0.2"}
+bevy = { version = "0.10", default-features=false}
 
 # log
 log = "0.4"
@@ -33,8 +34,21 @@ lto = true #这为LLVM提供了更多内联和修剪功能的机会。它不仅�
 opt-level = 's'  # 默认情况下，对LLVM的优化通道进行了调整，以提高速度，而不是大小。我们可以通过修改以下
 # opt-level = "z" # 了更积极地优化尺寸，以进一步的潜在速度成本
 # 请注意，令人惊讶的是，opt-level = "s"有时二进制文件的大小可能小于opt-level = "z"。总是测量！
-# opt-level = "z" # 性能优先
 # panic = 'abort'
 codegen-units = 1
+# dwarf-debug-info = true
+
+[profile.dev]
+dwarf-debug-info = true
+
+# [profile.release]
+# debug= true
+# lto = true #这为LLVM提供了更多内联和修剪功能的机会。它不仅使.wasm尺寸更小，而且在运行时也更快！缺点是编译将花费更长的时间
+# opt-level = 's'  # 默认情况下，对LLVM的优化通道进行了调整，以提高速度，而不是大小。我们可以通过修改以下
+# # opt-level = "z" # 了更积极地优化尺寸，以进一步的潜在速度成本
+# # 请注意，令人惊讶的是，opt-level = "s"有时二进制文件的大小可能小于opt-level = "z"。总是测量！
+# # opt-level = "z"
+# # panic = 'abort'
+# codegen-units = 1
 
 

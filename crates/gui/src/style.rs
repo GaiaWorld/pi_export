@@ -7864,7 +7864,7 @@
                 let value = if let Ok(value) = parse_comma_separated::<
                     _,
                     _,
-                    cssparser::ParseError<pi_style::style_parse::ValueParseErrorKind>,
+                    cssparser::ParseError<pi_style::style_parse::TokenParseError>,
                 >(&mut parse, |input| {
                     Ok(pi_atom::Atom::from(input.expect_ident()?.as_ref()))
                 }) {
@@ -7892,7 +7892,7 @@
                 let value = if let Ok(value) = parse_comma_separated::<
                     _,
                     _,
-                    cssparser::ParseError<pi_style::style_parse::ValueParseErrorKind>,
+                    cssparser::ParseError<pi_style::style_parse::TokenParseError>,
                 >(&mut parse, |input| {
                     Ok(pi_atom::Atom::from(input.expect_ident()?.as_ref()))
                 }) {
@@ -9142,6 +9142,45 @@
     #[cfg(feature = "pi_js_export")]
     pub fn fram_call(engine: &mut Engine, _cur_time: u32) {
         {
+            #[cfg(feature = "trace")]
+            let _span = {
+                use ::tracing::__macro_support::Callsite as _;
+                static CALLSITE: ::tracing::callsite::DefaultCallsite = {
+                    static META: ::tracing::Metadata<'static> = {
+                        ::tracing_core::metadata::Metadata::new(
+                            "frame_call",
+                            "pi_export_gui::style_macro",
+                            ::tracing::Level::WARN,
+                            Some("src\\style_macro.rs"),
+                            Some(1262u32),
+                            Some("pi_export_gui::style_macro"),
+                            ::tracing_core::field::FieldSet::new(
+                                &[],
+                                ::tracing_core::callsite::Identifier(&CALLSITE),
+                            ),
+                            ::tracing::metadata::Kind::SPAN,
+                        )
+                    };
+                    ::tracing::callsite::DefaultCallsite::new(&META)
+                };
+                let mut interest = ::tracing::subscriber::Interest::never();
+                if ::tracing::Level::WARN <= ::tracing::level_filters::STATIC_MAX_LEVEL
+                    && ::tracing::Level::WARN <= ::tracing::level_filters::LevelFilter::current()
+                    && {
+                        interest = CALLSITE.interest();
+                        !interest.is_never()
+                    }
+                    && ::tracing::__macro_support::__is_enabled(CALLSITE.metadata(), interest)
+                {
+                    let meta = CALLSITE.metadata();
+                    ::tracing::Span::new(meta, &{ meta.fields().value_set(&[]) })
+                } else {
+                    let span = ::tracing::__macro_support::__disabled_span(CALLSITE.metadata());
+                    {};
+                    span
+                }
+            }
+            .entered();
             *engine.world.get_resource_mut::<RunState>().unwrap() = RunState::RENDER;
             *engine.world.get_resource_mut::<FrameState>().unwrap() = FrameState::Active;
             engine.update();
@@ -9151,6 +9190,45 @@
     #[wasm_bindgen]
     pub fn fram_call(engine: &mut Engine, _cur_time: u32) {
         {
+            #[cfg(feature = "trace")]
+            let _span = {
+                use ::tracing::__macro_support::Callsite as _;
+                static CALLSITE: ::tracing::callsite::DefaultCallsite = {
+                    static META: ::tracing::Metadata<'static> = {
+                        ::tracing_core::metadata::Metadata::new(
+                            "frame_call",
+                            "pi_export_gui::style_macro",
+                            ::tracing::Level::WARN,
+                            Some("src\\style_macro.rs"),
+                            Some(1262u32),
+                            Some("pi_export_gui::style_macro"),
+                            ::tracing_core::field::FieldSet::new(
+                                &[],
+                                ::tracing_core::callsite::Identifier(&CALLSITE),
+                            ),
+                            ::tracing::metadata::Kind::SPAN,
+                        )
+                    };
+                    ::tracing::callsite::DefaultCallsite::new(&META)
+                };
+                let mut interest = ::tracing::subscriber::Interest::never();
+                if ::tracing::Level::WARN <= ::tracing::level_filters::STATIC_MAX_LEVEL
+                    && ::tracing::Level::WARN <= ::tracing::level_filters::LevelFilter::current()
+                    && {
+                        interest = CALLSITE.interest();
+                        !interest.is_never()
+                    }
+                    && ::tracing::__macro_support::__is_enabled(CALLSITE.metadata(), interest)
+                {
+                    let meta = CALLSITE.metadata();
+                    ::tracing::Span::new(meta, &{ meta.fields().value_set(&[]) })
+                } else {
+                    let span = ::tracing::__macro_support::__disabled_span(CALLSITE.metadata());
+                    {};
+                    span
+                }
+            }
+            .entered();
             *engine.world.get_resource_mut::<RunState>().unwrap() = RunState::RENDER;
             *engine.world.get_resource_mut::<FrameState>().unwrap() = FrameState::Active;
             engine.update();
@@ -9170,6 +9248,45 @@
     #[cfg(feature = "pi_js_export")]
     pub fn flush(gui: &mut Gui, engine: &mut Engine) {
         {
+            #[cfg(feature = "trace")]
+            let _span = {
+                use ::tracing::__macro_support::Callsite as _;
+                static CALLSITE: ::tracing::callsite::DefaultCallsite = {
+                    static META: ::tracing::Metadata<'static> = {
+                        ::tracing_core::metadata::Metadata::new(
+                            "flush",
+                            "pi_export_gui::style_macro",
+                            ::tracing::Level::WARN,
+                            Some("src\\style_macro.rs"),
+                            Some(1277u32),
+                            Some("pi_export_gui::style_macro"),
+                            ::tracing_core::field::FieldSet::new(
+                                &[],
+                                ::tracing_core::callsite::Identifier(&CALLSITE),
+                            ),
+                            ::tracing::metadata::Kind::SPAN,
+                        )
+                    };
+                    ::tracing::callsite::DefaultCallsite::new(&META)
+                };
+                let mut interest = ::tracing::subscriber::Interest::never();
+                if ::tracing::Level::WARN <= ::tracing::level_filters::STATIC_MAX_LEVEL
+                    && ::tracing::Level::WARN <= ::tracing::level_filters::LevelFilter::current()
+                    && {
+                        interest = CALLSITE.interest();
+                        !interest.is_never()
+                    }
+                    && ::tracing::__macro_support::__is_enabled(CALLSITE.metadata(), interest)
+                {
+                    let meta = CALLSITE.metadata();
+                    ::tracing::Span::new(meta, &{ meta.fields().value_set(&[]) })
+                } else {
+                    let span = ::tracing::__macro_support::__disabled_span(CALLSITE.metadata());
+                    {};
+                    span
+                }
+            }
+            .entered();
             bevy::ecs::system::CommandQueue::default().apply(&mut engine.world);
             let mut com = engine
                 .world
@@ -9185,6 +9302,45 @@
     #[wasm_bindgen]
     pub fn flush(gui: &mut Gui, engine: &mut Engine) {
         {
+            #[cfg(feature = "trace")]
+            let _span = {
+                use ::tracing::__macro_support::Callsite as _;
+                static CALLSITE: ::tracing::callsite::DefaultCallsite = {
+                    static META: ::tracing::Metadata<'static> = {
+                        ::tracing_core::metadata::Metadata::new(
+                            "flush",
+                            "pi_export_gui::style_macro",
+                            ::tracing::Level::WARN,
+                            Some("src\\style_macro.rs"),
+                            Some(1277u32),
+                            Some("pi_export_gui::style_macro"),
+                            ::tracing_core::field::FieldSet::new(
+                                &[],
+                                ::tracing_core::callsite::Identifier(&CALLSITE),
+                            ),
+                            ::tracing::metadata::Kind::SPAN,
+                        )
+                    };
+                    ::tracing::callsite::DefaultCallsite::new(&META)
+                };
+                let mut interest = ::tracing::subscriber::Interest::never();
+                if ::tracing::Level::WARN <= ::tracing::level_filters::STATIC_MAX_LEVEL
+                    && ::tracing::Level::WARN <= ::tracing::level_filters::LevelFilter::current()
+                    && {
+                        interest = CALLSITE.interest();
+                        !interest.is_never()
+                    }
+                    && ::tracing::__macro_support::__is_enabled(CALLSITE.metadata(), interest)
+                {
+                    let meta = CALLSITE.metadata();
+                    ::tracing::Span::new(meta, &{ meta.fields().value_set(&[]) })
+                } else {
+                    let span = ::tracing::__macro_support::__disabled_span(CALLSITE.metadata());
+                    {};
+                    span
+                }
+            }
+            .entered();
             bevy::ecs::system::CommandQueue::default().apply(&mut engine.world);
             let mut com = engine
                 .world
@@ -9208,6 +9364,45 @@
     #[cfg(feature = "pi_js_export")]
     pub fn calc(gui: &mut Gui, engine: &mut Engine) {
         {
+            #[cfg(feature = "trace")]
+            let _span = {
+                use ::tracing::__macro_support::Callsite as _;
+                static CALLSITE: ::tracing::callsite::DefaultCallsite = {
+                    static META: ::tracing::Metadata<'static> = {
+                        ::tracing_core::metadata::Metadata::new(
+                            "calc",
+                            "pi_export_gui::style_macro",
+                            ::tracing::Level::WARN,
+                            Some("src\\style_macro.rs"),
+                            Some(1294u32),
+                            Some("pi_export_gui::style_macro"),
+                            ::tracing_core::field::FieldSet::new(
+                                &[],
+                                ::tracing_core::callsite::Identifier(&CALLSITE),
+                            ),
+                            ::tracing::metadata::Kind::SPAN,
+                        )
+                    };
+                    ::tracing::callsite::DefaultCallsite::new(&META)
+                };
+                let mut interest = ::tracing::subscriber::Interest::never();
+                if ::tracing::Level::WARN <= ::tracing::level_filters::STATIC_MAX_LEVEL
+                    && ::tracing::Level::WARN <= ::tracing::level_filters::LevelFilter::current()
+                    && {
+                        interest = CALLSITE.interest();
+                        !interest.is_never()
+                    }
+                    && ::tracing::__macro_support::__is_enabled(CALLSITE.metadata(), interest)
+                {
+                    let meta = CALLSITE.metadata();
+                    ::tracing::Span::new(meta, &{ meta.fields().value_set(&[]) })
+                } else {
+                    let span = ::tracing::__macro_support::__disabled_span(CALLSITE.metadata());
+                    {};
+                    span
+                }
+            }
+            .entered();
             bevy::ecs::system::CommandQueue::default().apply(&mut engine.world);
             let mut com = engine
                 .world
@@ -9223,6 +9418,45 @@
     #[wasm_bindgen]
     pub fn calc(gui: &mut Gui, engine: &mut Engine) {
         {
+            #[cfg(feature = "trace")]
+            let _span = {
+                use ::tracing::__macro_support::Callsite as _;
+                static CALLSITE: ::tracing::callsite::DefaultCallsite = {
+                    static META: ::tracing::Metadata<'static> = {
+                        ::tracing_core::metadata::Metadata::new(
+                            "calc",
+                            "pi_export_gui::style_macro",
+                            ::tracing::Level::WARN,
+                            Some("src\\style_macro.rs"),
+                            Some(1294u32),
+                            Some("pi_export_gui::style_macro"),
+                            ::tracing_core::field::FieldSet::new(
+                                &[],
+                                ::tracing_core::callsite::Identifier(&CALLSITE),
+                            ),
+                            ::tracing::metadata::Kind::SPAN,
+                        )
+                    };
+                    ::tracing::callsite::DefaultCallsite::new(&META)
+                };
+                let mut interest = ::tracing::subscriber::Interest::never();
+                if ::tracing::Level::WARN <= ::tracing::level_filters::STATIC_MAX_LEVEL
+                    && ::tracing::Level::WARN <= ::tracing::level_filters::LevelFilter::current()
+                    && {
+                        interest = CALLSITE.interest();
+                        !interest.is_never()
+                    }
+                    && ::tracing::__macro_support::__is_enabled(CALLSITE.metadata(), interest)
+                {
+                    let meta = CALLSITE.metadata();
+                    ::tracing::Span::new(meta, &{ meta.fields().value_set(&[]) })
+                } else {
+                    let span = ::tracing::__macro_support::__disabled_span(CALLSITE.metadata());
+                    {};
+                    span
+                }
+            }
+            .entered();
             bevy::ecs::system::CommandQueue::default().apply(&mut engine.world);
             let mut com = engine
                 .world
@@ -9246,7 +9480,45 @@
     #[cfg(feature = "pi_js_export")]
     pub fn calc_layout(gui: &mut Gui, engine: &mut Engine) {
         {
-            ();
+            #[cfg(feature = "trace")]
+            let _span = {
+                use ::tracing::__macro_support::Callsite as _;
+                static CALLSITE: ::tracing::callsite::DefaultCallsite = {
+                    static META: ::tracing::Metadata<'static> = {
+                        ::tracing_core::metadata::Metadata::new(
+                            "calc_layout",
+                            "pi_export_gui::style_macro",
+                            ::tracing::Level::WARN,
+                            Some("src\\style_macro.rs"),
+                            Some(1311u32),
+                            Some("pi_export_gui::style_macro"),
+                            ::tracing_core::field::FieldSet::new(
+                                &[],
+                                ::tracing_core::callsite::Identifier(&CALLSITE),
+                            ),
+                            ::tracing::metadata::Kind::SPAN,
+                        )
+                    };
+                    ::tracing::callsite::DefaultCallsite::new(&META)
+                };
+                let mut interest = ::tracing::subscriber::Interest::never();
+                if ::tracing::Level::WARN <= ::tracing::level_filters::STATIC_MAX_LEVEL
+                    && ::tracing::Level::WARN <= ::tracing::level_filters::LevelFilter::current()
+                    && {
+                        interest = CALLSITE.interest();
+                        !interest.is_never()
+                    }
+                    && ::tracing::__macro_support::__is_enabled(CALLSITE.metadata(), interest)
+                {
+                    let meta = CALLSITE.metadata();
+                    ::tracing::Span::new(meta, &{ meta.fields().value_set(&[]) })
+                } else {
+                    let span = ::tracing::__macro_support::__disabled_span(CALLSITE.metadata());
+                    {};
+                    span
+                }
+            }
+            .entered();
             bevy::ecs::system::CommandQueue::default().apply(&mut engine.world);
             let mut com = engine
                 .world
@@ -9262,7 +9534,45 @@
     #[wasm_bindgen]
     pub fn calc_layout(gui: &mut Gui, engine: &mut Engine) {
         {
-            ();
+            #[cfg(feature = "trace")]
+            let _span = {
+                use ::tracing::__macro_support::Callsite as _;
+                static CALLSITE: ::tracing::callsite::DefaultCallsite = {
+                    static META: ::tracing::Metadata<'static> = {
+                        ::tracing_core::metadata::Metadata::new(
+                            "calc_layout",
+                            "pi_export_gui::style_macro",
+                            ::tracing::Level::WARN,
+                            Some("src\\style_macro.rs"),
+                            Some(1311u32),
+                            Some("pi_export_gui::style_macro"),
+                            ::tracing_core::field::FieldSet::new(
+                                &[],
+                                ::tracing_core::callsite::Identifier(&CALLSITE),
+                            ),
+                            ::tracing::metadata::Kind::SPAN,
+                        )
+                    };
+                    ::tracing::callsite::DefaultCallsite::new(&META)
+                };
+                let mut interest = ::tracing::subscriber::Interest::never();
+                if ::tracing::Level::WARN <= ::tracing::level_filters::STATIC_MAX_LEVEL
+                    && ::tracing::Level::WARN <= ::tracing::level_filters::LevelFilter::current()
+                    && {
+                        interest = CALLSITE.interest();
+                        !interest.is_never()
+                    }
+                    && ::tracing::__macro_support::__is_enabled(CALLSITE.metadata(), interest)
+                {
+                    let meta = CALLSITE.metadata();
+                    ::tracing::Span::new(meta, &{ meta.fields().value_set(&[]) })
+                } else {
+                    let span = ::tracing::__macro_support::__disabled_span(CALLSITE.metadata());
+                    {};
+                    span
+                }
+            }
+            .entered();
             bevy::ecs::system::CommandQueue::default().apply(&mut engine.world);
             let mut com = engine
                 .world
@@ -9286,7 +9596,45 @@
     #[cfg(feature = "pi_js_export")]
     pub fn calc_geo(gui: &mut Gui, engine: &mut Engine) {
         {
-            ();
+            #[cfg(feature = "trace")]
+            let _span = {
+                use ::tracing::__macro_support::Callsite as _;
+                static CALLSITE: ::tracing::callsite::DefaultCallsite = {
+                    static META: ::tracing::Metadata<'static> = {
+                        ::tracing_core::metadata::Metadata::new(
+                            "calc_geo",
+                            "pi_export_gui::style_macro",
+                            ::tracing::Level::WARN,
+                            Some("src\\style_macro.rs"),
+                            Some(1328u32),
+                            Some("pi_export_gui::style_macro"),
+                            ::tracing_core::field::FieldSet::new(
+                                &[],
+                                ::tracing_core::callsite::Identifier(&CALLSITE),
+                            ),
+                            ::tracing::metadata::Kind::SPAN,
+                        )
+                    };
+                    ::tracing::callsite::DefaultCallsite::new(&META)
+                };
+                let mut interest = ::tracing::subscriber::Interest::never();
+                if ::tracing::Level::WARN <= ::tracing::level_filters::STATIC_MAX_LEVEL
+                    && ::tracing::Level::WARN <= ::tracing::level_filters::LevelFilter::current()
+                    && {
+                        interest = CALLSITE.interest();
+                        !interest.is_never()
+                    }
+                    && ::tracing::__macro_support::__is_enabled(CALLSITE.metadata(), interest)
+                {
+                    let meta = CALLSITE.metadata();
+                    ::tracing::Span::new(meta, &{ meta.fields().value_set(&[]) })
+                } else {
+                    let span = ::tracing::__macro_support::__disabled_span(CALLSITE.metadata());
+                    {};
+                    span
+                }
+            }
+            .entered();
             bevy::ecs::system::CommandQueue::default().apply(&mut engine.world);
             let mut com = engine
                 .world
@@ -9302,7 +9650,45 @@
     #[wasm_bindgen]
     pub fn calc_geo(gui: &mut Gui, engine: &mut Engine) {
         {
-            ();
+            #[cfg(feature = "trace")]
+            let _span = {
+                use ::tracing::__macro_support::Callsite as _;
+                static CALLSITE: ::tracing::callsite::DefaultCallsite = {
+                    static META: ::tracing::Metadata<'static> = {
+                        ::tracing_core::metadata::Metadata::new(
+                            "calc_geo",
+                            "pi_export_gui::style_macro",
+                            ::tracing::Level::WARN,
+                            Some("src\\style_macro.rs"),
+                            Some(1328u32),
+                            Some("pi_export_gui::style_macro"),
+                            ::tracing_core::field::FieldSet::new(
+                                &[],
+                                ::tracing_core::callsite::Identifier(&CALLSITE),
+                            ),
+                            ::tracing::metadata::Kind::SPAN,
+                        )
+                    };
+                    ::tracing::callsite::DefaultCallsite::new(&META)
+                };
+                let mut interest = ::tracing::subscriber::Interest::never();
+                if ::tracing::Level::WARN <= ::tracing::level_filters::STATIC_MAX_LEVEL
+                    && ::tracing::Level::WARN <= ::tracing::level_filters::LevelFilter::current()
+                    && {
+                        interest = CALLSITE.interest();
+                        !interest.is_never()
+                    }
+                    && ::tracing::__macro_support::__is_enabled(CALLSITE.metadata(), interest)
+                {
+                    let meta = CALLSITE.metadata();
+                    ::tracing::Span::new(meta, &{ meta.fields().value_set(&[]) })
+                } else {
+                    let span = ::tracing::__macro_support::__disabled_span(CALLSITE.metadata());
+                    {};
+                    span
+                }
+            }
+            .entered();
             bevy::ecs::system::CommandQueue::default().apply(&mut engine.world);
             let mut com = engine
                 .world
@@ -9741,6 +10127,19 @@
     #[wasm_bindgen]
     pub fn query(engine: &mut Engine, gui: &mut Gui, x: f32, y: f32) -> Option<f64> {
         super::query(engine, gui, x, y)
+    }
+    pub fn play_query(
+        gui: &mut Gui,
+        engine: &mut Engine,
+        context: &mut PlayContext,
+        json: &Vec<json::JsonValue>,
+    ) {
+        let mut i = -1;
+        i += 1;
+        let x = pi_export_play::as_value::<f32>(json, i as usize).unwrap();
+        i += 1;
+        let y = pi_export_play::as_value::<f32>(json, i as usize).unwrap();
+        query(engine, gui, x, y);
     }
     pub struct Rect {
         pub left: f32,

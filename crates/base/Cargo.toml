@@ -10,12 +10,12 @@ pi_js_export = []
 wasm_bindgen = []
 
 [dependencies]
-paste = "0.1"
+paste = "1.0"
 pi_atom = "0.2"
 derive_deref = "1.1"
 pi_export_macro = {path="../macro"}
 pi_share = {version="0.4"}
-pi_assets = "0.10"
+pi_assets = "0.11"
 pi_hal={git="https://github.com/GaiaWorld/pi_hal.git"}
 bevy = { version="0.10", default-features = false, features=["bevy_winit"] }
 wgpu = { version = "0.15" }

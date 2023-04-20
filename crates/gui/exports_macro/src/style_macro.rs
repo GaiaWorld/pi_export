@@ -162,6 +162,34 @@ macro_rules! other_out_export {
 			$expr
 		}
 	};
+
+	(@with_return1, $func_name:ident($($context: ident: $context_ty: ty,)*)($($node: ident,)*)($($other_param: ident: $other_ty: ty,)*)->$return_ty: ty {$expr:expr}) => {
+		#[cfg(feature="pi_js_export")]
+		pub fn $func_name($($context: $context_ty,)* $($node: &$ident: f64,)* $($other_param: $other_ty,)*) -> $return_ty {
+			$expr
+		}
+
+		#[cfg(target_arch="wasm32")]
+		#[wasm_bindgen]
+		pub fn $func_name($($context: $context_ty,)* $($node: &$ident: f64,)* $($other_param: $other_ty,)*) -> $return_ty {
+			$expr
+		}
+
+		$crate::paste::item! {
+			pub fn [<play_ $func_name>](gui: &mut Gui, engine: &mut Engine, context: &mut PlayContext, json: &Vec<json::JsonValue>) {
+				let mut i = -1;
+				$(i += 1; let $node = pi_export_play::as_value::<f64>(json, i as usize).unwrap(); let $node = &$node;)*
+				$(let $node = match context.nodes.get($node as usize) {
+					Some(r) => r.clone(),
+					None => return,
+				};)*
+
+				$(i += 1; let $other_param = pi_export_play::as_value::<$other_ty>(json, i as usize).unwrap();)*
+
+				$func_name($($context,)*  $($node,)* $($other_param,)*);
+			}
+		}
+	};
 }
 
 #[macro_export]
@@ -847,7 +875,7 @@ style_out_export!(@expr animation_name_str, AnimationNameType, {
 	let mut input = cssparser::ParserInput::new(value);
     let mut parse = cssparser::Parser::new(&mut input);
     let value = if let Ok(value) =
-        parse_comma_separated::<_, _, cssparser::ParseError<pi_style::style_parse::ValueParseErrorKind>>(&mut parse, |input| Ok(pi_atom::Atom::from(input.expect_ident()?.as_ref())))
+        parse_comma_separated::<_, _, cssparser::ParseError<pi_style::style_parse::TokenParseError>>(&mut parse, |input| Ok(pi_atom::Atom::from(input.expect_ident()?.as_ref())))
     {
         value
     } else {
@@ -1230,6 +1258,8 @@ other_out_export!(
     fram_call,
     [engine: &mut Engine,],
     {
+		#[cfg(feature = "trace")]
+    	let _span = tracing::warn_span!("frame_call").entered();
 		*engine.world.get_resource_mut::<RunState>().unwrap() = RunState::RENDER;
 		*engine.world.get_resource_mut::<FrameState>().unwrap() = FrameState::Active;
 		engine.update();
@@ -1243,6 +1273,8 @@ other_out_export!(
     flush,
     [gui: &mut Gui, engine: &mut Engine,],
     {
+		#[cfg(feature = "trace")]
+    	let _span = tracing::warn_span!("flush").entered();
 		bevy::ecs::system::CommandQueue::default().apply(&mut engine.world);
 		let mut com = engine.world.get_resource_mut::<pi_ui_render::prelude::UserCommands>().unwrap();
 		std::mem::swap(&mut gui.commands, &mut *com);
@@ -1258,6 +1290,8 @@ other_out_export!(
     calc,
     [gui: &mut Gui, engine: &mut Engine,],
     {	
+		#[cfg(feature = "trace")]
+    	let _span = tracing::warn_span!("calc").entered();
 		bevy::ecs::system::CommandQueue::default().apply(&mut engine.world);
 		let mut com = engine.world.get_resource_mut::<pi_ui_render::prelude::UserCommands>().unwrap();
 		std::mem::swap(&mut gui.commands, &mut *com);
@@ -1273,7 +1307,8 @@ other_out_export!(
     calc_layout,
     [gui: &mut Gui, engine: &mut Engine,],
     {	
-		log::error!("calc_layout!!!!!");
+		#[cfg(feature = "trace")]
+    	let _span = tracing::warn_span!("calc_layout").entered();
 		bevy::ecs::system::CommandQueue::default().apply(&mut engine.world);
 		let mut com = engine.world.get_resource_mut::<pi_ui_render::prelude::UserCommands>().unwrap();
 		std::mem::swap(&mut gui.commands, &mut *com);
@@ -1289,7 +1324,8 @@ other_out_export!(
     calc_geo,
     [gui: &mut Gui, engine: &mut Engine,],
     {
-		log::error!("calc_geo!!!!!");
+		#[cfg(feature = "trace")]
+    	let _span = tracing::warn_span!("calc_geo").entered();
 		bevy::ecs::system::CommandQueue::default().apply(&mut engine.world);
 		let mut com = engine.world.get_resource_mut::<pi_ui_render::prelude::UserCommands>().unwrap();
 		std::mem::swap(&mut gui.commands, &mut *com);
@@ -1585,11 +1621,10 @@ other_out_export!(
 );
 
 other_out_export!(
-	@with_return, 
-    query,
-	Option<f64>,
-    super::query(engine, gui, x, y),
-	engine: &mut Engine, gui: &mut Gui,;;x: f32, y: f32,
+	@with_return1,
+    query(engine: &mut Engine, gui: &mut Gui,)()(x: f32, y: f32,)-> Option<f64> {
+		super::query(engine, gui, x, y)
+	}
 );
 
 #[derive(Serialize, Deserialize, Debug)]

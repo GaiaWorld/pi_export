@@ -9,8 +9,8 @@ default = ["pi_js_export"]
 pi_js_export = []
 
 [dependencies]
-paste = "0.1"
-pi_path_finding = { git = "https://github.com/GaiaWorld/pi_path_finding.git" }
+paste = "1.0"
+pi_path_finding = "0.3"
 bytemuck = { version = "1.4", features = ["derive"] }
 
 [target.'cfg(target_arch = "wasm32")'.dependencies]
