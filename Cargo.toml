@@ -1,3 +1,7 @@
+targets = [
+    { triple = "wasm32-unknown-unknown" }
+]
+
 [workspace]
 members = ["crates/*"]
 resolver="2"
@@ -11,12 +15,12 @@ probabilistic-collections = { git = "https://github.com/GaiaWorld/pi_probabilist
 # pi_flex_layout = { path = "../pi_flex_layout" }
 # pi_slotmap = { path = "../pi_slotmap" }
 # pi_map = { path = "../pi_map" }
-# wgpu = {path = "../wgpu/wgpu"}
+wgpu = {path = "../wgpu/wgpu"}
 # smallvec = {path = "../smallvec"}
 
 [profile.release]
 # debug= true
-strip = true
+# strip = true
 lto = true #这为LLVM提供了更多内联和修剪功能的机会。它不仅使.wasm尺寸更小，而且在运行时也更快！缺点是编译将花费更长的时间
 opt-level = 's'  # 默认情况下，对LLVM的优化通道进行了调整，以提高速度，而不是大小。我们可以通过修改以下
 # opt-level = "z" # 了更积极地优化尺寸，以进一步的潜在速度成本
@@ -25,8 +29,8 @@ panic = 'abort'
 codegen-units = 1
 # dwarf-debug-info = true
 
-[profile.dev]
-dwarf-debug-info = true
+# [profile.dev]
+# dwarf-debug-info = true
 
 # [patch."https://github.com/GaiaWorld/pi_path_finding"]
 # pi_path_finding = { path = "../pi_path_finding" }
@@ -49,12 +53,13 @@ dwarf-debug-info = true
 # pi_render = { path = "../pi_render_bevy_shader" }
 # render_derive = {path = "../pi_render_bevy_shader/crates/render_derive"}
 
-[patch."https://github.com/GaiaWorld/pi_render_bevy"]
-pi_bevy_post_process= { path = "../pi_render_bevy/crates/post_process" }
-pi_bevy_ecs_extend = { path = "../pi_render_bevy/crates/ecs_extend" }
-pi_bevy_render_plugin = { path = "../pi_render_bevy/crates/render" }
-pi_bevy_asset = { path = "../pi_render_bevy/crates/asset" }
-pi_bevy_winit_window = { path = "../pi_render_bevy/crates/winit_window" } 
+# [patch."https://github.com/GaiaWorld/pi_render_bevy"]
+# pi_bevy_post_process= { path = "../pi_render_bevy/crates/post_process" }
+# pi_bevy_ecs_extend = { path = "../pi_render_bevy/crates/ecs_extend" }
+# pi_bevy_render_plugin = { path = "../pi_render_bevy/crates/render" }
+# pi_bevy_asset = { path = "../pi_render_bevy/crates/asset" }
+# pi_bevy_winit_window = { path = "../pi_render_bevy/crates/winit_window" } 
+# pi_final_render_target = { path = "../pi_render_bevy/crates/final_render_target" } 
 # [patch."https://github.com/GaiaWorld/pi_spatial"]
 # pi_spatial ={path="../pi_spatial"}
 

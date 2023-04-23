@@ -78,12 +78,12 @@ pub fn create_engine(canvas: HtmlCanvasElement, r: f64, width: u32, height: u32)
     let mut window_plugin = bevy::window::WindowPlugin::default();
 	window_plugin.primary_window = None;
 
-	let mut log = bevy::log::LogPlugin::default();
+	// let mut log = bevy::log::LogPlugin::default();
 	// log.filter="pi_flex_layout=trace".to_string();
 	// log.filter="bevy=debug".to_string();
-	log.level=bevy::log::Level::WARN;
+	// log.level=bevy::log::Level::WARN;
     app
-        .add_plugin(log)
+        // .add_plugin(log)
 		.add_plugin(bevy::a11y::AccessibilityPlugin)
         .add_plugin(window_plugin)
         .add_plugin(pi_bevy_winit_window::WinitPlugin::new(canvas).with_size(width, height))

@@ -187,15 +187,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "ash"
-version = "0.37.2+1.3.238"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "28bf19c1f0a470be5fbf7522a308a05df06610252c5bcf5143e1b23f629a9a03"
-dependencies = [
- "libloading",
-]
-
-[[package]]
 name = "async-channel"
 version = "1.8.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -685,7 +676,7 @@ dependencies = [
  "thiserror",
  "thread_local",
  "wgpu",
- "wgpu-hal",
+ "wgpu-hal 0.15.4 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
@@ -1314,8 +1305,7 @@ checksum = "b365fabc795046672053e29c954733ec3b05e4be654ab130fe8f1f94d7051f35"
 [[package]]
 name = "d3d12"
 version = "0.6.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d8f0de2f5a8e7bd4a9eec0e3c781992a4ce1724f68aec7d7a3715344de8b39da"
+source = "git+https://github.com/gfx-rs/d3d12-rs?rev=b940b1d71#b940b1d71ab7083ae80eec697872672dc1f2bd32"
 dependencies = [
  "bitflags",
  "libloading",
@@ -1953,25 +1943,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "gpu-alloc"
-version = "0.5.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7fc59e5f710e310e76e6707f86c561dd646f69a8876da9131703b2f717de818d"
-dependencies = [
- "bitflags",
- "gpu-alloc-types",
-]
-
-[[package]]
-name = "gpu-alloc-types"
-version = "0.2.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "54804d0d6bc9d7f26db4eaec1ad10def69b599315f487d32c334a80d1efe67a5"
-dependencies = [
- "bitflags",
-]
-
-[[package]]
 name = "gpu-allocator"
 version = "0.22.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1982,26 +1953,6 @@ dependencies = [
  "thiserror",
  "winapi",
  "windows",
-]
-
-[[package]]
-name = "gpu-descriptor"
-version = "0.2.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0b0c02e1ba0bdb14e965058ca34e09c020f8e507a760df1121728e0aef68d57a"
-dependencies = [
- "bitflags",
- "gpu-descriptor-types",
- "hashbrown",
-]
-
-[[package]]
-name = "gpu-descriptor-types"
-version = "0.1.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "363e3677e55ad168fef68cf9de3a4a310b53124c5e784c53a1d70e92d23f2126"
-dependencies = [
- "bitflags",
 ]
 
 [[package]]
@@ -3505,7 +3456,6 @@ checksum = "acdcfb7c46949fd3d2a18863da12e34fa718fecc21f8274cd1decbaef4ec3c42"
 [[package]]
 name = "pi_final_render_target"
 version = "0.1.0"
-source = "git+https://github.com/GaiaWorld/pi_render_bevy.git#333bfa899013d7a142e3a3e41fc158adb041f551"
 dependencies = [
  "bevy",
  "bytemuck",
@@ -3567,7 +3517,6 @@ dependencies = [
 [[package]]
 name = "pi_hal"
 version = "0.1.0"
-source = "git+https://github.com/GaiaWorld/pi_hal.git#c9463e96fe8d6284a82498abe4c167a87d740a5c"
 dependencies = [
  "async-trait",
  "derive_deref",
@@ -3688,7 +3637,6 @@ checksum = "570c510b82dafa56cc1f4605066e994da0f5ba343811f4ccd1cc66c4d00f2c43"
 [[package]]
 name = "pi_postprocess"
 version = "0.1.0"
-source = "git+https://github.com/GaiaWorld/pi_post_process.git#9a4446b7011970257903b605b6fd2228dbbf76ed"
 dependencies = [
  "bytemuck",
  "derive_deref",
@@ -3721,7 +3669,6 @@ checksum = "8eeeddb49aca084a517b5efcd8111cd19121130201190c09d5d817e998f78a4a"
 [[package]]
 name = "pi_render"
 version = "0.1.0"
-source = "git+https://github.com/GaiaWorld/pi_render.git?branch=bevy_shader#f70c8586e5369f2bd00ee7abfd8e13673f16954f"
 dependencies = [
  "render_core",
 ]
@@ -3825,6 +3772,7 @@ version = "0.0.1"
 dependencies = [
  "bevy",
  "js-sys",
+ "log",
  "pi_async",
  "pi_atom",
  "pi_bevy_asset",
@@ -3846,7 +3794,6 @@ dependencies = [
 [[package]]
 name = "pi_spine_render"
 version = "0.0.1"
-source = "git+https://github.com/GaiaWorld/pi_spine_rs.git#434b477b33704ae147b044185792975c80788338"
 dependencies = [
  "approx",
  "bevy",
@@ -3877,7 +3824,7 @@ dependencies = [
  "pi_slotmap_tree",
  "pi_spatial",
  "render_derive",
- "render_utils",
+ "render_utils 0.1.0 (git+https://github.com/GaiaWorld/pi_render.git?branch=bevy_shader)",
  "smallvec",
  "wasm-bindgen",
  "wgpu",
@@ -3886,7 +3833,6 @@ dependencies = [
 [[package]]
 name = "pi_spine_rs"
 version = "0.0.1"
-source = "git+https://github.com/GaiaWorld/pi_spine_rs.git#434b477b33704ae147b044185792975c80788338"
 dependencies = [
  "bevy",
  "crossbeam",
@@ -3909,7 +3855,7 @@ dependencies = [
  "pi_share",
  "pi_spine_render",
  "render_derive",
- "render_utils",
+ "render_utils 0.1.0 (git+https://github.com/GaiaWorld/pi_render.git?branch=bevy_shader)",
  "smallvec",
  "wgpu",
  "winit 0.27.4",
@@ -3975,7 +3921,6 @@ checksum = "dbaf7abc0904cab87ca08c61afa70581049affa856cec59fe77e0b8a83a37257"
 [[package]]
 name = "pi_ui_render"
 version = "0.2.0"
-source = "git+https://github.com/GaiaWorld/pi_ui_render.git?branch=bevy#575af18a5ffaa7af1320cdad8c2465a78fc56186"
 dependencies = [
  "bevy",
  "bincode",
@@ -4399,7 +4344,6 @@ dependencies = [
 [[package]]
 name = "render_core"
 version = "0.1.0"
-source = "git+https://github.com/GaiaWorld/pi_render.git?branch=bevy_shader#f70c8586e5369f2bd00ee7abfd8e13673f16954f"
 dependencies = [
  "anyhow",
  "bitvec",
@@ -4438,7 +4382,7 @@ dependencies = [
  "pi_time",
  "regex",
  "render_crevice",
- "render_utils",
+ "render_utils 0.1.0",
  "smallvec",
  "thiserror",
  "tracing",
@@ -4450,7 +4394,6 @@ dependencies = [
 [[package]]
 name = "render_crevice"
 version = "0.1.0"
-source = "git+https://github.com/GaiaWorld/pi_render.git?branch=bevy_shader#f70c8586e5369f2bd00ee7abfd8e13673f16954f"
 dependencies = [
  "bytemuck",
  "mint",
@@ -4461,7 +4404,6 @@ dependencies = [
 [[package]]
 name = "render_crevice_derive"
 version = "0.1.0"
-source = "git+https://github.com/GaiaWorld/pi_render.git?branch=bevy_shader#f70c8586e5369f2bd00ee7abfd8e13673f16954f"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -4472,7 +4414,6 @@ dependencies = [
 [[package]]
 name = "render_derive"
 version = "0.1.0"
-source = "git+https://github.com/GaiaWorld/pi_render.git?branch=bevy_shader#f70c8586e5369f2bd00ee7abfd8e13673f16954f"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -4483,11 +4424,18 @@ dependencies = [
 [[package]]
 name = "render_macro_utils"
 version = "0.1.0"
-source = "git+https://github.com/GaiaWorld/pi_render.git?branch=bevy_shader#f70c8586e5369f2bd00ee7abfd8e13673f16954f"
 dependencies = [
  "cargo-manifest",
  "quote",
  "syn 1.0.109",
+]
+
+[[package]]
+name = "render_utils"
+version = "0.1.0"
+dependencies = [
+ "ahash",
+ "render_derive",
 ]
 
 [[package]]
@@ -5351,8 +5299,6 @@ checksum = "9193164d4de03a926d909d3bc7c30543cecb35400c02114792c2cae20d5e2dbb"
 [[package]]
 name = "wgpu"
 version = "0.15.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d745a1b6d91d85c33defbb29f0eee0450e1d2614d987e14bf6baf26009d132d7"
 dependencies = [
  "arrayvec 0.7.2",
  "cfg-if",
@@ -5368,15 +5314,13 @@ dependencies = [
  "wasm-bindgen-futures",
  "web-sys",
  "wgpu-core",
- "wgpu-hal",
- "wgpu-types",
+ "wgpu-hal 0.15.4",
+ "wgpu-types 0.15.2",
 ]
 
 [[package]]
 name = "wgpu-core"
 version = "0.15.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7131408d940e335792645a98f03639573b0480e9e2e7cddbbab74f7c6d9f3fff"
 dependencies = [
  "arrayvec 0.7.2",
  "bit-vec",
@@ -5391,19 +5335,16 @@ dependencies = [
  "smallvec",
  "thiserror",
  "web-sys",
- "wgpu-hal",
- "wgpu-types",
+ "wgpu-hal 0.15.4",
+ "wgpu-types 0.15.2",
 ]
 
 [[package]]
 name = "wgpu-hal"
 version = "0.15.4"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "bdcf61a283adc744bb5453dd88ea91f3f86d5ca6b027661c6c73c7734ae0288b"
 dependencies = [
  "android_system_properties",
  "arrayvec 0.7.2",
- "ash",
  "bit-set",
  "bitflags",
  "block",
@@ -5412,9 +5353,7 @@ dependencies = [
  "foreign-types 0.3.2",
  "fxhash",
  "glow",
- "gpu-alloc",
  "gpu-allocator",
- "gpu-descriptor",
  "hassle-rs",
  "js-sys",
  "khronos-egl",
@@ -5429,12 +5368,48 @@ dependencies = [
  "range-alloc",
  "raw-window-handle 0.5.2",
  "renderdoc-sys",
- "smallvec",
  "thiserror",
  "wasm-bindgen",
  "web-sys",
- "wgpu-types",
+ "wgpu-types 0.15.2",
  "winapi",
+]
+
+[[package]]
+name = "wgpu-hal"
+version = "0.15.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "bdcf61a283adc744bb5453dd88ea91f3f86d5ca6b027661c6c73c7734ae0288b"
+dependencies = [
+ "android_system_properties",
+ "arrayvec 0.7.2",
+ "bitflags",
+ "core-graphics-types",
+ "fxhash",
+ "js-sys",
+ "khronos-egl",
+ "libc",
+ "log",
+ "metal",
+ "naga",
+ "objc",
+ "parking_lot",
+ "profiling",
+ "raw-window-handle 0.5.2",
+ "thiserror",
+ "wasm-bindgen",
+ "web-sys",
+ "wgpu-types 0.15.2 (registry+https://github.com/rust-lang/crates.io-index)",
+ "winapi",
+]
+
+[[package]]
+name = "wgpu-types"
+version = "0.15.2"
+dependencies = [
+ "bitflags",
+ "js-sys",
+ "web-sys",
 ]
 
 [[package]]
