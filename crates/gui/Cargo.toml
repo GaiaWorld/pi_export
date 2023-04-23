@@ -81,7 +81,6 @@ pi_densevec = "0.1.2"
 pi_futures="0.1"
 pi_time="0.2"
 siphasher = {version="0.3", features=["serde_no_std"]}
-bevy = {version="0.10", default-features = false, features=["bevy_winit"]}
 
 winit = {git = "http://ser.yinengyun.com:10082/tech/winit.git"}
 pi_bevy_post_process= { git = "https://github.com/GaiaWorld/pi_render_bevy.git"}
@@ -90,6 +89,7 @@ pi_bevy_render_plugin = { git = "https://github.com/GaiaWorld/pi_render_bevy.git
 pi_bevy_asset = { git = "https://github.com/GaiaWorld/pi_render_bevy.git"}
 pi_bevy_winit_window = { git = "https://github.com/GaiaWorld/pi_render_bevy.git"}
 wasm-bindgen = { version = "0.2", features = ["serde-serialize"] }
+bevy = {version="0.10", default-features = false}
 
 [target.'cfg(target_arch = "wasm32")'.dependencies]
 uuid = { version = "1", features = ["js"] }
@@ -102,6 +102,7 @@ web-sys = {version="0.3", features = [
 js-sys = "0.3"
 wgpu = { version = "0.15", features = ["spirv", "glsl", "webgl"] }
 pi_render = { git = "https://github.com/GaiaWorld/pi_render.git", branch="bevy_shader", features=["webgl"] }
+
 
 [target.'cfg(not(target_arch = "wasm32"))'.dependencies]
 pi_share = {version="0.4"}

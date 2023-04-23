@@ -97,7 +97,7 @@ version = "0.7.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "fcb51a0695d8f838b1ee009b3fbf66bda078cd64590202a864a8f3e8c4315c47"
 dependencies = [
- "getrandom 0.2.9",
+ "getrandom",
  "once_cell",
  "version_check",
 ]
@@ -750,7 +750,7 @@ checksum = "0a88ebbca55d360d72e9fe78df0d22e25cd419933c9559e79dae2757f7c4d066"
 dependencies = [
  "ahash",
  "bevy_utils_proc_macros",
- "getrandom 0.2.9",
+ "getrandom",
  "hashbrown",
  "instant",
  "petgraph",
@@ -1903,17 +1903,6 @@ dependencies = [
 
 [[package]]
 name = "getrandom"
-version = "0.1.16"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8fc3cb4d91f53b50155bdcfd23f6a4c39ae1969c2ae85982b135750cccaf5fce"
-dependencies = [
- "cfg-if",
- "libc",
- "wasi 0.9.0+wasi-snapshot-preview1",
-]
-
-[[package]]
-name = "getrandom"
 version = "0.2.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c85e1d9ab2eadba7e5040d4e09cbd6d072b76a557ad64e797c2cb9d4da21d7e4"
@@ -2027,7 +2016,7 @@ dependencies = [
  "into-attr-derive",
  "pest",
  "pest_derive",
- "rand 0.8.5",
+ "rand",
  "tempfile",
 ]
 
@@ -2560,7 +2549,7 @@ version = "0.7.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "6a51313c5820b0b02bd422f4b44776fbf47961755c74ce64afc73bfad10226c3"
 dependencies = [
- "getrandom 0.2.9",
+ "getrandom",
 ]
 
 [[package]]
@@ -3028,7 +3017,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "5d5285893bb5eb82e6aaf5d59ee909a06a16737a8970984dd7746ba9283498d6"
 dependencies = [
  "phf_shared",
- "rand 0.8.5",
+ "rand",
 ]
 
 [[package]]
@@ -3147,7 +3136,6 @@ dependencies = [
 [[package]]
 name = "pi_bevy_asset"
 version = "0.1.0"
-source = "git+https://github.com/GaiaWorld/pi_render_bevy.git#333bfa899013d7a142e3a3e41fc158adb041f551"
 dependencies = [
  "bevy",
  "pi_assets",
@@ -3159,7 +3147,6 @@ dependencies = [
 [[package]]
 name = "pi_bevy_ecs_extend"
 version = "0.1.0"
-source = "git+https://github.com/GaiaWorld/pi_render_bevy.git#333bfa899013d7a142e3a3e41fc158adb041f551"
 dependencies = [
  "bevy",
  "derive_deref",
@@ -3187,7 +3174,6 @@ dependencies = [
 [[package]]
 name = "pi_bevy_ecs_macro"
 version = "0.1.0"
-source = "git+https://github.com/GaiaWorld/pi_render_bevy.git#333bfa899013d7a142e3a3e41fc158adb041f551"
 dependencies = [
  "quote",
  "syn 1.0.109",
@@ -3197,7 +3183,6 @@ dependencies = [
 [[package]]
 name = "pi_bevy_post_process"
 version = "0.1.0"
-source = "git+https://github.com/GaiaWorld/pi_render_bevy.git#333bfa899013d7a142e3a3e41fc158adb041f551"
 dependencies = [
  "bevy",
  "pi_assets",
@@ -3212,7 +3197,6 @@ dependencies = [
 [[package]]
 name = "pi_bevy_render_plugin"
 version = "0.1.0"
-source = "git+https://github.com/GaiaWorld/pi_render_bevy.git#333bfa899013d7a142e3a3e41fc158adb041f551"
 dependencies = [
  "bevy",
  "crossbeam",
@@ -3235,7 +3219,6 @@ dependencies = [
 [[package]]
 name = "pi_bevy_winit_window"
 version = "0.1.0"
-source = "git+https://github.com/GaiaWorld/pi_render_bevy.git#333bfa899013d7a142e3a3e41fc158adb041f551"
 dependencies = [
  "bevy",
  "glam",
@@ -3247,13 +3230,12 @@ dependencies = [
 
 [[package]]
 name = "pi_bon"
-version = "0.2.0"
+version = "0.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7d4bb10dd76f86102a71bda00f5e4752eb4c6a8494775020fe18b2f539c6b51c"
+checksum = "4be730b2ad29b379ee950418cf28cbd450124c3b5291c5099015aa451f928807"
 dependencies = [
  "num-bigint",
  "pi_data_view",
- "rand 0.7.3",
 ]
 
 [[package]]
@@ -3725,7 +3707,7 @@ dependencies = [
  "pi_share",
  "pi_wy_rng",
  "pollster",
- "rand 0.8.5",
+ "rand",
  "smallvec",
  "wgpu",
 ]
@@ -3864,7 +3846,7 @@ dependencies = [
 [[package]]
 name = "pi_spine_render"
 version = "0.0.1"
-source = "git+https://github.com/GaiaWorld/pi_spine_rs.git#95caafdcbf2bb900cd64f480de54e91e12f86638"
+source = "git+https://github.com/GaiaWorld/pi_spine_rs.git#434b477b33704ae147b044185792975c80788338"
 dependencies = [
  "approx",
  "bevy",
@@ -3904,7 +3886,7 @@ dependencies = [
 [[package]]
 name = "pi_spine_rs"
 version = "0.0.1"
-source = "git+https://github.com/GaiaWorld/pi_spine_rs.git#95caafdcbf2bb900cd64f480de54e91e12f86638"
+source = "git+https://github.com/GaiaWorld/pi_spine_rs.git#434b477b33704ae147b044185792975c80788338"
 dependencies = [
  "bevy",
  "crossbeam",
@@ -3993,7 +3975,7 @@ checksum = "dbaf7abc0904cab87ca08c61afa70581049affa856cec59fe77e0b8a83a37257"
 [[package]]
 name = "pi_ui_render"
 version = "0.2.0"
-source = "git+https://github.com/GaiaWorld/pi_ui_render.git?branch=bevy#4e2e55e5c9a8f11b94c815c314eab585bcc934f0"
+source = "git+https://github.com/GaiaWorld/pi_ui_render.git?branch=bevy#575af18a5ffaa7af1320cdad8c2465a78fc56186"
 dependencies = [
  "bevy",
  "bincode",
@@ -4069,7 +4051,7 @@ name = "pi_wasm_engine"
 version = "0.1.0"
 dependencies = [
  "bevy",
- "getrandom 0.2.9",
+ "getrandom",
  "log",
  "pi_export_astar",
  "pi_export_base",
@@ -4093,7 +4075,7 @@ name = "pi_wy_rng"
 version = "0.1.0"
 source = "git+https://github.com/GaiaWorld/pi_wy_rng.git#824440e590978ebbb0c64fc5c8a6e38245c86c8d"
 dependencies = [
- "rand 0.8.5",
+ "rand",
 ]
 
 [[package]]
@@ -4185,8 +4167,8 @@ source = "git+https://github.com/GaiaWorld/pi_probabilistic_collections.git#0cfd
 dependencies = [
  "bincode",
  "byteorder",
- "getrandom 0.2.9",
- "rand 0.8.5",
+ "getrandom",
+ "rand",
  "rand_xorshift",
  "siphasher",
 ]
@@ -4268,36 +4250,13 @@ checksum = "17fd96390ed3feda12e1dfe2645ed587e0bea749e319333f104a33ff62f77a0b"
 
 [[package]]
 name = "rand"
-version = "0.7.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6a6b1679d49b24bbfe0c803429aa1874472f50d9b363131f0e89fc356b544d03"
-dependencies = [
- "getrandom 0.1.16",
- "libc",
- "rand_chacha 0.2.2",
- "rand_core 0.5.1",
- "rand_hc",
-]
-
-[[package]]
-name = "rand"
 version = "0.8.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "34af8d1a0e25924bc5b7c43c079c942339d8f0a8b57c39049bef581b46327404"
 dependencies = [
  "libc",
- "rand_chacha 0.3.1",
- "rand_core 0.6.4",
-]
-
-[[package]]
-name = "rand_chacha"
-version = "0.2.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f4c8ed856279c9737206bf725bf36935d8666ead7aa69b52be55af369d193402"
-dependencies = [
- "ppv-lite86",
- "rand_core 0.5.1",
+ "rand_chacha",
+ "rand_core",
 ]
 
 [[package]]
@@ -4307,16 +4266,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e6c10a63a0fa32252be49d21e7709d4d4baf8d231c2dbce1eaa8141b9b127d88"
 dependencies = [
  "ppv-lite86",
- "rand_core 0.6.4",
-]
-
-[[package]]
-name = "rand_core"
-version = "0.5.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "90bde5296fc891b0cef12a6d03ddccc162ce7b2aff54160af9338f8d40df6d19"
-dependencies = [
- "getrandom 0.1.16",
+ "rand_core",
 ]
 
 [[package]]
@@ -4325,16 +4275,7 @@ version = "0.6.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ec0be4795e2f6a28069bec0b5ff3e2ac9bafc99e6a9a7dc3547996c5c816922c"
 dependencies = [
- "getrandom 0.2.9",
-]
-
-[[package]]
-name = "rand_hc"
-version = "0.2.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ca3129af7b92a17112d59ad498c6f81eaf463253766b90396d39ea7a39d6613c"
-dependencies = [
- "rand_core 0.5.1",
+ "getrandom",
 ]
 
 [[package]]
@@ -4343,7 +4284,7 @@ version = "0.3.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d25bf25ec5ae4a3f1b92f929810509a2f53d7dca2f50b794ff57e3face536c8f"
 dependencies = [
- "rand_core 0.6.4",
+ "rand_core",
 ]
 
 [[package]]
@@ -5138,7 +5079,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "97fee6b57c6a41524a810daee9286c02d7752c4253064d0b05472833a438f675"
 dependencies = [
  "cfg-if",
- "rand 0.8.5",
+ "rand",
  "static_assertions",
 ]
 
@@ -5178,7 +5119,7 @@ version = "1.3.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "5b55a3fef2a1e3b3a00ce878640918820d3c51081576ac657d23af9fc7928fdb"
 dependencies = [
- "getrandom 0.2.9",
+ "getrandom",
  "serde",
  "wasm-bindgen",
 ]
@@ -5243,12 +5184,6 @@ name = "wasi"
 version = "0.7.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b89c3ce4ce14bdc6fb6beaf9ec7928ca331de5df7e5ea278375642a2f478570d"
-
-[[package]]
-name = "wasi"
-version = "0.9.0+wasi-snapshot-preview1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "cccddf32554fecc6acb585f82a32a72e28b48f8c4c1883ddfeeeaa96f7d8e519"
 
 [[package]]
 name = "wasi"
