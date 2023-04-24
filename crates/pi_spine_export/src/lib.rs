@@ -70,12 +70,14 @@ pub fn init_spine_context(
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[cfg(feature = "pi_js_export")]
 pub fn spine_renderer_create(app: &mut Engine, name: String, rendersize: Option<SpineTextureSize>) -> f64 {
+    use bevy::prelude::apply_system_buffers;
+    use pi_spine_rs::ESpineCommand;
+
+    log::warn!("To Screen: {:?}", rendersize.is_none());
+
     let id_renderer = {
-        let mut queue = CommandQueue::default();
-        let mut commands = Commands::new(&mut queue, &app.world);
-        let mut entitycmd = commands.spawn_empty();
-        let id_renderer = KeySpineRenderer(entitycmd.id());
-        queue.apply(&mut app.world);
+        let id = app.world.spawn_empty().id();
+        let id_renderer = KeySpineRenderer(id);
     
         let final_render_format = app.world.get_resource::<WindowRenderer>().unwrap().format();
         let mut ctx = app.world.get_resource_mut::<SpineRenderContext>().unwrap();
@@ -89,13 +91,19 @@ pub fn spine_renderer_create(app: &mut Engine, name: String, rendersize: Option<
         let mut render_graph = app.world.get_resource_mut::<PiRenderGraph>().unwrap();
         match ActionSpine::spine_renderer_apply(id_renderer, pi_atom::Atom::from(name), rendersize.is_none(), &mut render_graph) {
             Ok(nodeid) => {
-                let mut queue = CommandQueue::default();
-                let mut commands = Commands::new(&mut queue, &app.world);
-                // log::warn!("SpineRenderer Add GraphId()");
-                commands.entity(id_renderer.0).insert(GraphId(nodeid));
-                queue.apply(&mut app.world);
+                // let mut actions = app.world.get_resource_mut::<ActionListSpine>().unwrap();
+                // let mut queue = CommandQueue::default();
+                // let mut commands = Commands::new(&mut queue, &app.world);
+                // // log::warn!("SpineRenderer Add GraphId()");
+                // commands.entity(id_renderer.0).insert(GraphId(nodeid));
+                // queue.apply(&mut app.world);
+                app.world.entity_mut(id_renderer.0).insert(GraphId(nodeid));
+                // actions.push(ESpineCommand::Graph(id_renderer, nodeid));
+                log::warn!("render_graph Ok");
             },
-            Err(_) => {},
+            Err(e) => {
+                log::warn!("render_graph Err {:?}", e);
+            },
         }
     
     
