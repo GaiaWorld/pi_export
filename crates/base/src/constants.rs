@@ -1,6 +1,8 @@
 
 use pi_render::rhi::sampler::{EAddressMode, EFilterMode, EAnisotropyClamp, SamplerDesc};
-use wasm_bindgen::prelude::wasm_bindgen;
+
+#[cfg(target_arch = "wasm32")]
+use wasm_bindgen::prelude::*;
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[cfg(feature = "pi_js_export")]
