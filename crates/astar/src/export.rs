@@ -1,7 +1,7 @@
 #[cfg(target_arch = "wasm32")]
 use wasm_bindgen::prelude::*;
 
-use pi_path_finding::{AStar, Entry, NormalTileMap, NodeIndex, make_neighbors};
+use pi_path_finding::{AStar, Entry, TileMap, NodeIndex, make_neighbors, TileObstacle};
 
 /// A* 寻路网格数据 序号转换模式
 #[cfg_attr(target_arch = "wasm32", wasm_bindgen)]
@@ -16,7 +16,7 @@ pub enum AStarGridMode {
 #[cfg(feature = "pi_js_export")]
 pub struct AStarGrid {
     /// 底层网格数据
-    tilemap: NormalTileMap<usize>,
+    tilemap: TileMap,
     /// 测试用数据
     // list: Vec<usize>,
     /// 网格半宽度
@@ -34,7 +34,7 @@ impl AStarGrid {
         use std::mem::transmute;
 
         AStarGrid {
-            tilemap: NormalTileMap::new(row, column, 100),
+            tilemap: TileMap::new(row, column, 100, 141),
             // list: Vec::default(),
             half_w: column / 2,
             mode: unsafe {transmute(mode)},
@@ -110,9 +110,7 @@ impl AStarGrid {
         let mut astar: AStar<usize, Entry<usize>> = AStar::with_capacity(map.column * map.row, (map.column + map.row) * 100);
         let start = NodeIndex(id0);
         let end = NodeIndex(id1);
-        let _r = astar.find(start, end, max_len, &mut |cur, end, finder| {
-            make_neighbors(map, cur, end, finder)
-        });
+        let _r = astar.find(start, end, max_len,  map, make_neighbors);
         
         let mut path_length = 0usize;
 

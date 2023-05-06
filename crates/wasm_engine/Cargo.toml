@@ -13,7 +13,7 @@ pi_js_export = []
 
 [dependencies]
 pi_export_gui = { path = "../gui", default-features=false }
-pi_export_astar = { path = "../astar"}
+# pi_export_astar = { path = "../astar"}
 pi_export_base = { path = "../base"}
 pi_spine_export = { path = "../pi_spine_export"}
 # pi_export_quad_tree = { path = "../quad_tree"}
@@ -23,7 +23,9 @@ wasm-bindgen = { version = "0.2"}
 bevy = { version = "0.10", default-features=false}
 
 # log
-log = "0.4"
+# log = "0.4"
+log={version = "0.4", features=["release_max_level_warn"]}
+# features = ["release_max_level_warn", "max_level_warn"] 
 
 getrandom = { version = "0.2", features = ["js"] }
 

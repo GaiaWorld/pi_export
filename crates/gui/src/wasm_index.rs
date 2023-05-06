@@ -78,12 +78,13 @@ pub fn create_engine(canvas: HtmlCanvasElement, r: f64, width: u32, height: u32)
     let mut window_plugin = bevy::window::WindowPlugin::default();
 	window_plugin.primary_window = None;
 
-	// let mut log = bevy::log::LogPlugin::default();
+	let mut log = bevy::log::LogPlugin::default();
 	// log.filter="pi_flex_layout=trace".to_string();
+	// log.filter="pi_ui_render::resource::animation_sheet=debug".to_string();
 	// log.filter="bevy=debug".to_string();
-	// log.level=bevy::log::Level::WARN;
+	log.level=bevy::log::Level::WARN;
     app
-        // .add_plugin(log)
+        .add_plugin(log)
 		.add_plugin(bevy::a11y::AccessibilityPlugin)
         .add_plugin(window_plugin)
         .add_plugin(pi_bevy_winit_window::WinitPlugin::new(canvas).with_size(width, height))
@@ -154,23 +155,29 @@ pub fn get_animation_events(
     engine: &Engine,
 ) -> Option<js_sys::ArrayBuffer> {
 	let key_frames = engine.world.get_resource::<KeyFramesSheet>().unwrap();
+	// log::warn!("get_animation_events=======");
 
 	let events = key_frames.get_animation_events();
 	let map = key_frames.get_group_bind();
-	let mut arr = js_sys::Uint32Array::new_with_length(events.len() as u32);
+	
+	let mut arr = js_sys::Uint32Array::new_with_length(events.len() as u32 * 5);
 	let mut i = 0;
 	for (group_id, ty, count) in events.iter() {
+		// if let pi_animation::animation_listener::EAnimationEvent::End = *ty {
+		// 	log::warn!("end=========={:?}", group_id);
+		// }
 		match map.get(*group_id) {
 			Some(r) => {
+				
 				arr.set_index(i, r.0.index()); // entity
-				arr.set_index(i + 4, r.0.generation());
-				arr.set_index(i + 8, r.1.get_hash() as u32); // name hash
+				arr.set_index(i + 1, r.0.generation());
+				arr.set_index(i + 2, r.1.get_hash() as u32); // name hash
 			},
 			None => continue,
 		};
-		arr.set_index(i + 12, unsafe {transmute::<_, u8>(*ty)}  as u32); // event type
-		arr.set_index(i + 16, *count); // cur iter count
-		i += 20;
+		arr.set_index(i + 3, unsafe {transmute::<_, u8>(*ty)}  as u32); // event type
+		arr.set_index(i + 4, *count); // cur iter count
+		i += 5;
 	}
 	if arr.byte_length() > 0 {
 		Some(arr.buffer())
@@ -179,6 +186,13 @@ pub fn get_animation_events(
 	}
 	
 	// arr
+}
+#[wasm_bindgen]
+pub fn log_animation(
+    engine: &Engine,
+) {
+	let key_frames = engine.world.get_resource::<KeyFramesSheet>().unwrap();
+	key_frames.log();
 }
 
 #[wasm_bindgen]
