@@ -12,7 +12,7 @@ use pi_hal::image::{load_from_url, DynamicImage};
 use pi_hash::XHashMap;
 use pi_render::{rhi::{asset::TextureRes, device::RenderDevice, RenderQueue}, renderer::sampler::SamplerRes, asset::TAssetKeyU64};
 
-use pi_export_base::constants::{TextureFormat, BlendFactor};
+use pi_export_base::constants::{ColorFormat, BlendFactor};
 use pi_spine_rs::{
     shaders::{KeySpineShader},
     KeySpineRenderer,

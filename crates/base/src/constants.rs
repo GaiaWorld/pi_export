@@ -56,15 +56,32 @@ impl BlendFactor {
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[cfg(feature = "pi_js_export")]
-pub enum TextureFormat {
+pub enum ColorFormat {
     RGBA,
     RGB,
 }
-impl TextureFormat {
+impl ColorFormat {
     pub fn val(&self) -> wgpu::TextureFormat {
         match self {
-            TextureFormat::RGBA => wgpu::TextureFormat::Rgba8UnormSrgb,
-            TextureFormat::RGB => wgpu::TextureFormat::Rgba8UnormSrgb,
+            ColorFormat::RGBA => wgpu::TextureFormat::Rgba8Unorm,
+            ColorFormat::RGB => wgpu::TextureFormat::Rgba8Unorm,
+        }
+    }
+}
+
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[cfg(feature = "pi_js_export")]
+pub enum DepthFormat {
+    None,
+    Depth32,
+    Depth24Stencil8,
+}
+impl DepthFormat {
+    pub fn val(&self) -> Option<wgpu::TextureFormat> {
+        match self {
+            DepthFormat::None => None,
+            DepthFormat::Depth32 => Some(wgpu::TextureFormat::Depth32Float),
+            DepthFormat::Depth24Stencil8 => Some(wgpu::TextureFormat::Depth24PlusStencil8),
         }
     }
 }

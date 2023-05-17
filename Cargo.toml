@@ -56,6 +56,8 @@ codegen-units = 1
 # [patch."https://github.com/GaiaWorld/pi_render"]
 # pi_render = { path = "../pi_render_bevy_shader" }
 # render_derive = {path = "../pi_render_bevy_shader/crates/render_derive"}
+# render_utils = { path = "../pi_render/crates/render_utils" }
+# render_compile = { path = "../pi_render/crates/render_compile" }
 
 # [patch."https://github.com/GaiaWorld/pi_render_bevy"]
 # pi_bevy_post_process= { path = "../pi_render_bevy/crates/post_process" }
@@ -73,6 +75,14 @@ codegen-units = 1
 # [patch."https://github.com/GaiaWorld/pi_animation"]
 # pi_animation ={path="../pi_animation"}
 
+# [patch."https://github.com/GaiaWorld/pi_3d"]
+# pi_3d               = { path="../pi_3d" }
+# pi_engine_shell     = { path="../pi_3d/crates/pi_engine_shell" }
+# pi_node_materials   = { path="../pi_3d/crates/node_materials" }
+# default_render      = { path="../pi_3d/crates/default_render" }
+# pi_scene_context    = { path="../pi_3d/crates/pi_scene_context" }
+# unlit_material      = { path="../pi_3d/crates/unlit_material" }
+# pi_mesh_builder     = { path="../pi_3d/crates/pi_mesh_builder" }
 
 # [net]
 # git-fetch-with-cli = true
