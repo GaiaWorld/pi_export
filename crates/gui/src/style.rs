@@ -2,7 +2,7 @@
     //! 将设置布局属性的接口导出到js
     use std::mem::transmute;
     use pi_ui_render::components::{calc::EntityKey, NodeBundle};
-    use pi_ui_render::resource::NodeCmd;
+    use pi_ui_render::resource::{NodeCmd, ComponentCmd};
     use pi_null::Null;
     use pi_ui_render::components::user::ClassName;
     use pi_export_play::as_value;
@@ -4835,6 +4835,71 @@
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
+    pub fn set_transform_will_change(gui: &mut Gui, node_id: f64, v: bool) {
+        let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
+        gui.commands.set_style(node_id, TransformWillChangeType(v));
+    }
+    #[cfg(target_arch = "wasm32")]
+    #[wasm_bindgen]
+    #[allow(unused_attributes)]
+    pub fn set_transform_will_change(gui: &mut Gui, node_id: f64, v: bool) {
+        let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
+        gui.commands.set_style(node_id, TransformWillChangeType(v));
+    }
+    #[cfg(feature = "pi_js_export")]
+    #[allow(unused_attributes)]
+    pub fn reset_transform_will_change(gui: &mut Gui, node_id: f64) {
+        let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
+        gui.commands
+            .set_style(node_id, ResetTransformWillChangeType);
+    }
+    #[cfg(target_arch = "wasm32")]
+    #[wasm_bindgen]
+    #[allow(unused_attributes)]
+    pub fn reset_transform_will_change(gui: &mut Gui, node_id: f64) {
+        let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
+        gui.commands
+            .set_style(node_id, ResetTransformWillChangeType);
+    }
+    #[allow(unused_variables)]
+    #[allow(unused_assignments)]
+    pub fn play_reset_transform_will_change(
+        gui: &mut Gui,
+        engine: &mut Engine,
+        context: &mut PlayContext,
+        json: &Vec<json::JsonValue>,
+    ) {
+        let node =
+            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
+        let node = match context.nodes.get(node as usize) {
+            Some(r) => r.clone(),
+            None => return,
+        };
+        reset_transform_will_change(gui, node);
+    }
+    #[allow(unused_variables)]
+    #[allow(unused_assignments)]
+    pub fn play_transform_will_change(
+        gui: &mut Gui,
+        engine: &mut Engine,
+        context: &mut PlayContext,
+        json: &Vec<json::JsonValue>,
+    ) {
+        let mut i = 0;
+        let node =
+            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
+                .index();
+        i += 1;
+        let v = pi_export_play::as_value::<bool>(json, i).unwrap();
+        i += 1;
+        let node = match context.nodes.get(node as usize) {
+            Some(r) => r.clone(),
+            None => return,
+        };
+        set_transform_will_change(gui, node, v);
+    }
+    #[cfg(feature = "pi_js_export")]
+    #[allow(unused_attributes)]
     pub fn set_filter_hsi(gui: &mut Gui, node_id: f64, h: f32, s: f32, _i: f32) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
         gui.commands.set_style(
@@ -4952,106 +5017,65 @@
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
-    pub fn set_transform_translate(gui: &mut Gui, node_id: f64, x: f32, y: f32) {
-        let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands
-            .set_style(node_id, TransformFuncType(TransformFunc::Translate(x, y)));
-    }
-    #[cfg(target_arch = "wasm32")]
-    #[wasm_bindgen]
-    #[allow(unused_attributes)]
-    pub fn set_transform_translate(gui: &mut Gui, node_id: f64, x: f32, y: f32) {
-        let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands
-            .set_style(node_id, TransformFuncType(TransformFunc::Translate(x, y)));
-    }
-    #[cfg(feature = "pi_js_export")]
-    #[allow(unused_attributes)]
-    pub fn reset_transform_translate(gui: &mut Gui, node_id: f64) {
-        let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands.set_style(node_id, ResetTransformFuncType);
-    }
-    #[cfg(target_arch = "wasm32")]
-    #[wasm_bindgen]
-    #[allow(unused_attributes)]
-    pub fn reset_transform_translate(gui: &mut Gui, node_id: f64) {
-        let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands.set_style(node_id, ResetTransformFuncType);
-    }
-    #[allow(unused_variables)]
-    #[allow(unused_assignments)]
-    pub fn play_reset_transform_translate(
-        gui: &mut Gui,
-        engine: &mut Engine,
-        context: &mut PlayContext,
-        json: &Vec<json::JsonValue>,
-    ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
-        let node = match context.nodes.get(node as usize) {
-            Some(r) => r.clone(),
-            None => return,
-        };
-        reset_transform_translate(gui, node);
-    }
-    #[allow(unused_variables)]
-    #[allow(unused_assignments)]
-    pub fn play_transform_translate(
-        gui: &mut Gui,
-        engine: &mut Engine,
-        context: &mut PlayContext,
-        json: &Vec<json::JsonValue>,
-    ) {
-        let mut i = 0;
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
-                .index();
-        i += 1;
-        let x = pi_export_play::as_value::<f32>(json, i).unwrap();
-        i += 1;
-        let y = pi_export_play::as_value::<f32>(json, i).unwrap();
-        i += 1;
-        let node = match context.nodes.get(node as usize) {
-            Some(r) => r.clone(),
-            None => return,
-        };
-        set_transform_translate(gui, node, x, y);
-    }
-    #[cfg(feature = "pi_js_export")]
-    #[allow(unused_attributes)]
-    pub fn set_transform_translate_percent(gui: &mut Gui, node_id: f64, x: f32, y: f32) {
+    pub fn set_translate(gui: &mut Gui, node_id: f64, s: &str) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
         gui.commands.set_style(
             node_id,
-            TransformFuncType(TransformFunc::TranslatePercent(x, y)),
+            TranslateType({
+                let mut input = cssparser::ParserInput::new(s);
+                let mut parse = cssparser::Parser::new(&mut input);
+                let translate = pi_style::style_parse::parse_mult(
+                    &mut parse,
+                    [LengthUnit::default(), LengthUnit::default()],
+                    pi_style::style_parse::parse_len_or_percent,
+                );
+                if let Ok(translate) = translate {
+                    translate
+                } else {
+                    Default::default()
+                }
+            }),
         );
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
-    pub fn set_transform_translate_percent(gui: &mut Gui, node_id: f64, x: f32, y: f32) {
+    pub fn set_translate(gui: &mut Gui, node_id: f64, s: &str) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
         gui.commands.set_style(
             node_id,
-            TransformFuncType(TransformFunc::TranslatePercent(x, y)),
+            TranslateType({
+                let mut input = cssparser::ParserInput::new(s);
+                let mut parse = cssparser::Parser::new(&mut input);
+                let translate = pi_style::style_parse::parse_mult(
+                    &mut parse,
+                    [LengthUnit::default(), LengthUnit::default()],
+                    pi_style::style_parse::parse_len_or_percent,
+                );
+                if let Ok(translate) = translate {
+                    translate
+                } else {
+                    Default::default()
+                }
+            }),
         );
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
-    pub fn reset_transform_translate_percent(gui: &mut Gui, node_id: f64) {
+    pub fn reset_translate(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands.set_style(node_id, ResetTransformFuncType);
+        gui.commands.set_style(node_id, ResetTranslateType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
-    pub fn reset_transform_translate_percent(gui: &mut Gui, node_id: f64) {
+    pub fn reset_translate(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands.set_style(node_id, ResetTransformFuncType);
+        gui.commands.set_style(node_id, ResetTranslateType);
     }
     #[allow(unused_variables)]
     #[allow(unused_assignments)]
-    pub fn play_reset_transform_translate_percent(
+    pub fn play_reset_translate(
         gui: &mut Gui,
         engine: &mut Engine,
         context: &mut PlayContext,
@@ -5063,11 +5087,11 @@
             Some(r) => r.clone(),
             None => return,
         };
-        reset_transform_translate_percent(gui, node);
+        reset_translate(gui, node);
     }
     #[allow(unused_variables)]
     #[allow(unused_assignments)]
-    pub fn play_transform_translate_percent(
+    pub fn play_translate(
         gui: &mut Gui,
         engine: &mut Engine,
         context: &mut PlayContext,
@@ -5078,116 +5102,76 @@
             unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
                 .index();
         i += 1;
-        let x = pi_export_play::as_value::<f32>(json, i).unwrap();
+        let s = pi_export_play::as_value::<str>(json, i).unwrap();
         i += 1;
-        let y = pi_export_play::as_value::<f32>(json, i).unwrap();
-        i += 1;
+        let s = &s;
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
-        set_transform_translate_percent(gui, node, x, y);
+        set_translate(gui, node, s);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
-    pub fn set_transform_translate_x(gui: &mut Gui, node_id: f64, x: f32) {
-        let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands
-            .set_style(node_id, TransformFuncType(TransformFunc::TranslateX(x)));
-    }
-    #[cfg(target_arch = "wasm32")]
-    #[wasm_bindgen]
-    #[allow(unused_attributes)]
-    pub fn set_transform_translate_x(gui: &mut Gui, node_id: f64, x: f32) {
-        let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands
-            .set_style(node_id, TransformFuncType(TransformFunc::TranslateX(x)));
-    }
-    #[cfg(feature = "pi_js_export")]
-    #[allow(unused_attributes)]
-    pub fn reset_transform_translate_x(gui: &mut Gui, node_id: f64) {
-        let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands.set_style(node_id, ResetTransformFuncType);
-    }
-    #[cfg(target_arch = "wasm32")]
-    #[wasm_bindgen]
-    #[allow(unused_attributes)]
-    pub fn reset_transform_translate_x(gui: &mut Gui, node_id: f64) {
-        let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands.set_style(node_id, ResetTransformFuncType);
-    }
-    #[allow(unused_variables)]
-    #[allow(unused_assignments)]
-    pub fn play_reset_transform_translate_x(
-        gui: &mut Gui,
-        engine: &mut Engine,
-        context: &mut PlayContext,
-        json: &Vec<json::JsonValue>,
-    ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
-        let node = match context.nodes.get(node as usize) {
-            Some(r) => r.clone(),
-            None => return,
-        };
-        reset_transform_translate_x(gui, node);
-    }
-    #[allow(unused_variables)]
-    #[allow(unused_assignments)]
-    pub fn play_transform_translate_x(
-        gui: &mut Gui,
-        engine: &mut Engine,
-        context: &mut PlayContext,
-        json: &Vec<json::JsonValue>,
-    ) {
-        let mut i = 0;
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
-                .index();
-        i += 1;
-        let x = pi_export_play::as_value::<f32>(json, i).unwrap();
-        i += 1;
-        let node = match context.nodes.get(node as usize) {
-            Some(r) => r.clone(),
-            None => return,
-        };
-        set_transform_translate_x(gui, node, x);
-    }
-    #[cfg(feature = "pi_js_export")]
-    #[allow(unused_attributes)]
-    pub fn set_transform_translate_x_percent(gui: &mut Gui, node_id: f64, x: f32) {
+    pub fn set_scale(gui: &mut Gui, node_id: f64, s: &str) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
         gui.commands.set_style(
             node_id,
-            TransformFuncType(TransformFunc::TranslateXPercent(x)),
+            ScaleType({
+                let mut input = cssparser::ParserInput::new(s);
+                let mut parse = cssparser::Parser::new(&mut input);
+                let scale = pi_style::style_parse::parse_mult(
+                    &mut parse,
+                    [1.0f32, 1.0f32],
+                    pi_style::style_parse::parse_number,
+                );
+                if let Ok(scale) = scale {
+                    scale
+                } else {
+                    Default::default()
+                }
+            }),
         );
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
-    pub fn set_transform_translate_x_percent(gui: &mut Gui, node_id: f64, x: f32) {
+    pub fn set_scale(gui: &mut Gui, node_id: f64, s: &str) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
         gui.commands.set_style(
             node_id,
-            TransformFuncType(TransformFunc::TranslateXPercent(x)),
+            ScaleType({
+                let mut input = cssparser::ParserInput::new(s);
+                let mut parse = cssparser::Parser::new(&mut input);
+                let scale = pi_style::style_parse::parse_mult(
+                    &mut parse,
+                    [1.0f32, 1.0f32],
+                    pi_style::style_parse::parse_number,
+                );
+                if let Ok(scale) = scale {
+                    scale
+                } else {
+                    Default::default()
+                }
+            }),
         );
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
-    pub fn reset_transform_translate_x_percent(gui: &mut Gui, node_id: f64) {
+    pub fn reset_scale(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands.set_style(node_id, ResetTransformFuncType);
+        gui.commands.set_style(node_id, ResetScaleType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
-    pub fn reset_transform_translate_x_percent(gui: &mut Gui, node_id: f64) {
+    pub fn reset_scale(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands.set_style(node_id, ResetTransformFuncType);
+        gui.commands.set_style(node_id, ResetScaleType);
     }
     #[allow(unused_variables)]
     #[allow(unused_assignments)]
-    pub fn play_reset_transform_translate_x_percent(
+    pub fn play_reset_scale(
         gui: &mut Gui,
         engine: &mut Engine,
         context: &mut PlayContext,
@@ -5199,11 +5183,11 @@
             Some(r) => r.clone(),
             None => return,
         };
-        reset_transform_translate_x_percent(gui, node);
+        reset_scale(gui, node);
     }
     #[allow(unused_variables)]
     #[allow(unused_assignments)]
-    pub fn play_transform_translate_x_percent(
+    pub fn play_scale(
         gui: &mut Gui,
         engine: &mut Engine,
         context: &mut PlayContext,
@@ -5214,114 +5198,68 @@
             unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
                 .index();
         i += 1;
-        let x = pi_export_play::as_value::<f32>(json, i).unwrap();
+        let s = pi_export_play::as_value::<str>(json, i).unwrap();
         i += 1;
+        let s = &s;
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
-        set_transform_translate_x_percent(gui, node, x);
+        set_scale(gui, node, s);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
-    pub fn set_transform_translate_y(gui: &mut Gui, node_id: f64, y: f32) {
-        let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands
-            .set_style(node_id, TransformFuncType(TransformFunc::TranslateY(y)));
-    }
-    #[cfg(target_arch = "wasm32")]
-    #[wasm_bindgen]
-    #[allow(unused_attributes)]
-    pub fn set_transform_translate_y(gui: &mut Gui, node_id: f64, y: f32) {
-        let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands
-            .set_style(node_id, TransformFuncType(TransformFunc::TranslateY(y)));
-    }
-    #[cfg(feature = "pi_js_export")]
-    #[allow(unused_attributes)]
-    pub fn reset_transform_translate_y(gui: &mut Gui, node_id: f64) {
-        let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands.set_style(node_id, ResetTransformFuncType);
-    }
-    #[cfg(target_arch = "wasm32")]
-    #[wasm_bindgen]
-    #[allow(unused_attributes)]
-    pub fn reset_transform_translate_y(gui: &mut Gui, node_id: f64) {
-        let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands.set_style(node_id, ResetTransformFuncType);
-    }
-    #[allow(unused_variables)]
-    #[allow(unused_assignments)]
-    pub fn play_reset_transform_translate_y(
-        gui: &mut Gui,
-        engine: &mut Engine,
-        context: &mut PlayContext,
-        json: &Vec<json::JsonValue>,
-    ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
-        let node = match context.nodes.get(node as usize) {
-            Some(r) => r.clone(),
-            None => return,
-        };
-        reset_transform_translate_y(gui, node);
-    }
-    #[allow(unused_variables)]
-    #[allow(unused_assignments)]
-    pub fn play_transform_translate_y(
-        gui: &mut Gui,
-        engine: &mut Engine,
-        context: &mut PlayContext,
-        json: &Vec<json::JsonValue>,
-    ) {
-        let mut i = 0;
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
-                .index();
-        i += 1;
-        let y = pi_export_play::as_value::<f32>(json, i).unwrap();
-        i += 1;
-        let node = match context.nodes.get(node as usize) {
-            Some(r) => r.clone(),
-            None => return,
-        };
-        set_transform_translate_y(gui, node, y);
-    }
-    #[cfg(feature = "pi_js_export")]
-    #[allow(unused_attributes)]
-    pub fn set_transform_translate_y_percent(gui: &mut Gui, node_id: f64, y: f32) {
+    pub fn set_rotate(gui: &mut Gui, node_id: f64, s: &str) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
         gui.commands.set_style(
             node_id,
-            TransformFuncType(TransformFunc::TranslateYPercent(y)),
+            RotateType({
+                let mut input = cssparser::ParserInput::new(s);
+                let mut parse = cssparser::Parser::new(&mut input);
+                let rotate = pi_style::style_parse::parse_angle(&mut parse);
+                if let Ok(rotate) = rotate {
+                    rotate
+                } else {
+                    Default::default()
+                }
+            }),
         );
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
-    pub fn set_transform_translate_y_percent(gui: &mut Gui, node_id: f64, y: f32) {
+    pub fn set_rotate(gui: &mut Gui, node_id: f64, s: &str) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
         gui.commands.set_style(
             node_id,
-            TransformFuncType(TransformFunc::TranslateYPercent(y)),
+            RotateType({
+                let mut input = cssparser::ParserInput::new(s);
+                let mut parse = cssparser::Parser::new(&mut input);
+                let rotate = pi_style::style_parse::parse_angle(&mut parse);
+                if let Ok(rotate) = rotate {
+                    rotate
+                } else {
+                    Default::default()
+                }
+            }),
         );
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
-    pub fn reset_transform_translate_y_percent(gui: &mut Gui, node_id: f64) {
+    pub fn reset_rotate(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands.set_style(node_id, ResetTransformFuncType);
+        gui.commands.set_style(node_id, ResetRotateType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
-    pub fn reset_transform_translate_y_percent(gui: &mut Gui, node_id: f64) {
+    pub fn reset_rotate(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands.set_style(node_id, ResetTransformFuncType);
+        gui.commands.set_style(node_id, ResetRotateType);
     }
     #[allow(unused_variables)]
     #[allow(unused_assignments)]
-    pub fn play_reset_transform_translate_y_percent(
+    pub fn play_reset_rotate(
         gui: &mut Gui,
         engine: &mut Engine,
         context: &mut PlayContext,
@@ -5333,11 +5271,11 @@
             Some(r) => r.clone(),
             None => return,
         };
-        reset_transform_translate_y_percent(gui, node);
+        reset_rotate(gui, node);
     }
     #[allow(unused_variables)]
     #[allow(unused_assignments)]
-    pub fn play_transform_translate_y_percent(
+    pub fn play_rotate(
         gui: &mut Gui,
         engine: &mut Engine,
         context: &mut PlayContext,
@@ -5348,565 +5286,68 @@
             unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
                 .index();
         i += 1;
-        let y = pi_export_play::as_value::<f32>(json, i).unwrap();
+        let s = pi_export_play::as_value::<str>(json, i).unwrap();
         i += 1;
+        let s = &s;
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
-        set_transform_translate_y_percent(gui, node, y);
+        set_rotate(gui, node, s);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
-    pub fn set_transform_scale(gui: &mut Gui, node_id: f64, x: f32, y: f32) {
+    pub fn set_transform(gui: &mut Gui, node_id: f64, s: &str) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands
-            .set_style(node_id, TransformFuncType(TransformFunc::Scale(x, y)));
+        gui.commands.set_style(
+            node_id,
+            TransformType({
+                let mut input = cssparser::ParserInput::new(s);
+                let mut parse = cssparser::Parser::new(&mut input);
+                let transform = pi_style::style_parse::parse_transform(&mut parse);
+                if let Ok(transform) = transform {
+                    transform
+                } else {
+                    Default::default()
+                }
+            }),
+        );
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
-    pub fn set_transform_scale(gui: &mut Gui, node_id: f64, x: f32, y: f32) {
+    pub fn set_transform(gui: &mut Gui, node_id: f64, s: &str) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands
-            .set_style(node_id, TransformFuncType(TransformFunc::Scale(x, y)));
+        gui.commands.set_style(
+            node_id,
+            TransformType({
+                let mut input = cssparser::ParserInput::new(s);
+                let mut parse = cssparser::Parser::new(&mut input);
+                let transform = pi_style::style_parse::parse_transform(&mut parse);
+                if let Ok(transform) = transform {
+                    transform
+                } else {
+                    Default::default()
+                }
+            }),
+        );
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
-    pub fn reset_transform_scale(gui: &mut Gui, node_id: f64) {
-        let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands.set_style(node_id, ResetTransformFuncType);
-    }
-    #[cfg(target_arch = "wasm32")]
-    #[wasm_bindgen]
-    #[allow(unused_attributes)]
-    pub fn reset_transform_scale(gui: &mut Gui, node_id: f64) {
-        let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands.set_style(node_id, ResetTransformFuncType);
-    }
-    #[allow(unused_variables)]
-    #[allow(unused_assignments)]
-    pub fn play_reset_transform_scale(
-        gui: &mut Gui,
-        engine: &mut Engine,
-        context: &mut PlayContext,
-        json: &Vec<json::JsonValue>,
-    ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
-        let node = match context.nodes.get(node as usize) {
-            Some(r) => r.clone(),
-            None => return,
-        };
-        reset_transform_scale(gui, node);
-    }
-    #[allow(unused_variables)]
-    #[allow(unused_assignments)]
-    pub fn play_transform_scale(
-        gui: &mut Gui,
-        engine: &mut Engine,
-        context: &mut PlayContext,
-        json: &Vec<json::JsonValue>,
-    ) {
-        let mut i = 0;
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
-                .index();
-        i += 1;
-        let x = pi_export_play::as_value::<f32>(json, i).unwrap();
-        i += 1;
-        let y = pi_export_play::as_value::<f32>(json, i).unwrap();
-        i += 1;
-        let node = match context.nodes.get(node as usize) {
-            Some(r) => r.clone(),
-            None => return,
-        };
-        set_transform_scale(gui, node, x, y);
-    }
-    #[cfg(feature = "pi_js_export")]
-    #[allow(unused_attributes)]
-    pub fn set_transform_scale_x(gui: &mut Gui, node_id: f64, x: f32) {
-        let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands
-            .set_style(node_id, TransformFuncType(TransformFunc::ScaleX(x)));
-    }
-    #[cfg(target_arch = "wasm32")]
-    #[wasm_bindgen]
-    #[allow(unused_attributes)]
-    pub fn set_transform_scale_x(gui: &mut Gui, node_id: f64, x: f32) {
-        let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands
-            .set_style(node_id, TransformFuncType(TransformFunc::ScaleX(x)));
-    }
-    #[cfg(feature = "pi_js_export")]
-    #[allow(unused_attributes)]
-    pub fn reset_transform_scale_x(gui: &mut Gui, node_id: f64) {
-        let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands.set_style(node_id, ResetTransformFuncType);
-    }
-    #[cfg(target_arch = "wasm32")]
-    #[wasm_bindgen]
-    #[allow(unused_attributes)]
-    pub fn reset_transform_scale_x(gui: &mut Gui, node_id: f64) {
-        let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands.set_style(node_id, ResetTransformFuncType);
-    }
-    #[allow(unused_variables)]
-    #[allow(unused_assignments)]
-    pub fn play_reset_transform_scale_x(
-        gui: &mut Gui,
-        engine: &mut Engine,
-        context: &mut PlayContext,
-        json: &Vec<json::JsonValue>,
-    ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
-        let node = match context.nodes.get(node as usize) {
-            Some(r) => r.clone(),
-            None => return,
-        };
-        reset_transform_scale_x(gui, node);
-    }
-    #[allow(unused_variables)]
-    #[allow(unused_assignments)]
-    pub fn play_transform_scale_x(
-        gui: &mut Gui,
-        engine: &mut Engine,
-        context: &mut PlayContext,
-        json: &Vec<json::JsonValue>,
-    ) {
-        let mut i = 0;
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
-                .index();
-        i += 1;
-        let x = pi_export_play::as_value::<f32>(json, i).unwrap();
-        i += 1;
-        let node = match context.nodes.get(node as usize) {
-            Some(r) => r.clone(),
-            None => return,
-        };
-        set_transform_scale_x(gui, node, x);
-    }
-    #[cfg(feature = "pi_js_export")]
-    #[allow(unused_attributes)]
-    pub fn set_transform_scale_y(gui: &mut Gui, node_id: f64, y: f32) {
-        let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands
-            .set_style(node_id, TransformFuncType(TransformFunc::ScaleY(y)));
-    }
-    #[cfg(target_arch = "wasm32")]
-    #[wasm_bindgen]
-    #[allow(unused_attributes)]
-    pub fn set_transform_scale_y(gui: &mut Gui, node_id: f64, y: f32) {
-        let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands
-            .set_style(node_id, TransformFuncType(TransformFunc::ScaleY(y)));
-    }
-    #[cfg(feature = "pi_js_export")]
-    #[allow(unused_attributes)]
-    pub fn reset_transform_scale_y(gui: &mut Gui, node_id: f64) {
-        let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands.set_style(node_id, ResetTransformFuncType);
-    }
-    #[cfg(target_arch = "wasm32")]
-    #[wasm_bindgen]
-    #[allow(unused_attributes)]
-    pub fn reset_transform_scale_y(gui: &mut Gui, node_id: f64) {
-        let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands.set_style(node_id, ResetTransformFuncType);
-    }
-    #[allow(unused_variables)]
-    #[allow(unused_assignments)]
-    pub fn play_reset_transform_scale_y(
-        gui: &mut Gui,
-        engine: &mut Engine,
-        context: &mut PlayContext,
-        json: &Vec<json::JsonValue>,
-    ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
-        let node = match context.nodes.get(node as usize) {
-            Some(r) => r.clone(),
-            None => return,
-        };
-        reset_transform_scale_y(gui, node);
-    }
-    #[allow(unused_variables)]
-    #[allow(unused_assignments)]
-    pub fn play_transform_scale_y(
-        gui: &mut Gui,
-        engine: &mut Engine,
-        context: &mut PlayContext,
-        json: &Vec<json::JsonValue>,
-    ) {
-        let mut i = 0;
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
-                .index();
-        i += 1;
-        let y = pi_export_play::as_value::<f32>(json, i).unwrap();
-        i += 1;
-        let node = match context.nodes.get(node as usize) {
-            Some(r) => r.clone(),
-            None => return,
-        };
-        set_transform_scale_y(gui, node, y);
-    }
-    #[cfg(feature = "pi_js_export")]
-    #[allow(unused_attributes)]
-    pub fn set_transform_rotate_x(gui: &mut Gui, node_id: f64, x: f32) {
-        let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands
-            .set_style(node_id, TransformFuncType(TransformFunc::RotateX(x)));
-    }
-    #[cfg(target_arch = "wasm32")]
-    #[wasm_bindgen]
-    #[allow(unused_attributes)]
-    pub fn set_transform_rotate_x(gui: &mut Gui, node_id: f64, x: f32) {
-        let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands
-            .set_style(node_id, TransformFuncType(TransformFunc::RotateX(x)));
-    }
-    #[cfg(feature = "pi_js_export")]
-    #[allow(unused_attributes)]
-    pub fn reset_transform_rotate_x(gui: &mut Gui, node_id: f64) {
-        let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands.set_style(node_id, ResetTransformFuncType);
-    }
-    #[cfg(target_arch = "wasm32")]
-    #[wasm_bindgen]
-    #[allow(unused_attributes)]
-    pub fn reset_transform_rotate_x(gui: &mut Gui, node_id: f64) {
-        let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands.set_style(node_id, ResetTransformFuncType);
-    }
-    #[allow(unused_variables)]
-    #[allow(unused_assignments)]
-    pub fn play_reset_transform_rotate_x(
-        gui: &mut Gui,
-        engine: &mut Engine,
-        context: &mut PlayContext,
-        json: &Vec<json::JsonValue>,
-    ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
-        let node = match context.nodes.get(node as usize) {
-            Some(r) => r.clone(),
-            None => return,
-        };
-        reset_transform_rotate_x(gui, node);
-    }
-    #[allow(unused_variables)]
-    #[allow(unused_assignments)]
-    pub fn play_transform_rotate_x(
-        gui: &mut Gui,
-        engine: &mut Engine,
-        context: &mut PlayContext,
-        json: &Vec<json::JsonValue>,
-    ) {
-        let mut i = 0;
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
-                .index();
-        i += 1;
-        let x = pi_export_play::as_value::<f32>(json, i).unwrap();
-        i += 1;
-        let node = match context.nodes.get(node as usize) {
-            Some(r) => r.clone(),
-            None => return,
-        };
-        set_transform_rotate_x(gui, node, x);
-    }
-    #[cfg(feature = "pi_js_export")]
-    #[allow(unused_attributes)]
-    pub fn set_transform_rotate_y(gui: &mut Gui, node_id: f64, y: f32) {
-        let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands
-            .set_style(node_id, TransformFuncType(TransformFunc::RotateY(y)));
-    }
-    #[cfg(target_arch = "wasm32")]
-    #[wasm_bindgen]
-    #[allow(unused_attributes)]
-    pub fn set_transform_rotate_y(gui: &mut Gui, node_id: f64, y: f32) {
-        let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands
-            .set_style(node_id, TransformFuncType(TransformFunc::RotateY(y)));
-    }
-    #[cfg(feature = "pi_js_export")]
-    #[allow(unused_attributes)]
-    pub fn reset_transform_rotate_y(gui: &mut Gui, node_id: f64) {
-        let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands.set_style(node_id, ResetTransformFuncType);
-    }
-    #[cfg(target_arch = "wasm32")]
-    #[wasm_bindgen]
-    #[allow(unused_attributes)]
-    pub fn reset_transform_rotate_y(gui: &mut Gui, node_id: f64) {
-        let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands.set_style(node_id, ResetTransformFuncType);
-    }
-    #[allow(unused_variables)]
-    #[allow(unused_assignments)]
-    pub fn play_reset_transform_rotate_y(
-        gui: &mut Gui,
-        engine: &mut Engine,
-        context: &mut PlayContext,
-        json: &Vec<json::JsonValue>,
-    ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
-        let node = match context.nodes.get(node as usize) {
-            Some(r) => r.clone(),
-            None => return,
-        };
-        reset_transform_rotate_y(gui, node);
-    }
-    #[allow(unused_variables)]
-    #[allow(unused_assignments)]
-    pub fn play_transform_rotate_y(
-        gui: &mut Gui,
-        engine: &mut Engine,
-        context: &mut PlayContext,
-        json: &Vec<json::JsonValue>,
-    ) {
-        let mut i = 0;
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
-                .index();
-        i += 1;
-        let y = pi_export_play::as_value::<f32>(json, i).unwrap();
-        i += 1;
-        let node = match context.nodes.get(node as usize) {
-            Some(r) => r.clone(),
-            None => return,
-        };
-        set_transform_rotate_y(gui, node, y);
-    }
-    #[cfg(feature = "pi_js_export")]
-    #[allow(unused_attributes)]
-    pub fn set_transform_rotate_z(gui: &mut Gui, node_id: f64, z: f32) {
-        let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands
-            .set_style(node_id, TransformFuncType(TransformFunc::RotateZ(z)));
-    }
-    #[cfg(target_arch = "wasm32")]
-    #[wasm_bindgen]
-    #[allow(unused_attributes)]
-    pub fn set_transform_rotate_z(gui: &mut Gui, node_id: f64, z: f32) {
-        let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands
-            .set_style(node_id, TransformFuncType(TransformFunc::RotateZ(z)));
-    }
-    #[cfg(feature = "pi_js_export")]
-    #[allow(unused_attributes)]
-    pub fn reset_transform_rotate_z(gui: &mut Gui, node_id: f64) {
-        let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands.set_style(node_id, ResetTransformFuncType);
-    }
-    #[cfg(target_arch = "wasm32")]
-    #[wasm_bindgen]
-    #[allow(unused_attributes)]
-    pub fn reset_transform_rotate_z(gui: &mut Gui, node_id: f64) {
-        let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands.set_style(node_id, ResetTransformFuncType);
-    }
-    #[allow(unused_variables)]
-    #[allow(unused_assignments)]
-    pub fn play_reset_transform_rotate_z(
-        gui: &mut Gui,
-        engine: &mut Engine,
-        context: &mut PlayContext,
-        json: &Vec<json::JsonValue>,
-    ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
-        let node = match context.nodes.get(node as usize) {
-            Some(r) => r.clone(),
-            None => return,
-        };
-        reset_transform_rotate_z(gui, node);
-    }
-    #[allow(unused_variables)]
-    #[allow(unused_assignments)]
-    pub fn play_transform_rotate_z(
-        gui: &mut Gui,
-        engine: &mut Engine,
-        context: &mut PlayContext,
-        json: &Vec<json::JsonValue>,
-    ) {
-        let mut i = 0;
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
-                .index();
-        i += 1;
-        let z = pi_export_play::as_value::<f32>(json, i).unwrap();
-        i += 1;
-        let node = match context.nodes.get(node as usize) {
-            Some(r) => r.clone(),
-            None => return,
-        };
-        set_transform_rotate_z(gui, node, z);
-    }
-    #[cfg(feature = "pi_js_export")]
-    #[allow(unused_attributes)]
-    pub fn set_transform_skew_x(gui: &mut Gui, node_id: f64, x: f32) {
-        let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands
-            .set_style(node_id, TransformFuncType(TransformFunc::SkewX(x)));
-    }
-    #[cfg(target_arch = "wasm32")]
-    #[wasm_bindgen]
-    #[allow(unused_attributes)]
-    pub fn set_transform_skew_x(gui: &mut Gui, node_id: f64, x: f32) {
-        let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands
-            .set_style(node_id, TransformFuncType(TransformFunc::SkewX(x)));
-    }
-    #[cfg(feature = "pi_js_export")]
-    #[allow(unused_attributes)]
-    pub fn reset_transform_skew_x(gui: &mut Gui, node_id: f64) {
-        let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands.set_style(node_id, ResetTransformFuncType);
-    }
-    #[cfg(target_arch = "wasm32")]
-    #[wasm_bindgen]
-    #[allow(unused_attributes)]
-    pub fn reset_transform_skew_x(gui: &mut Gui, node_id: f64) {
-        let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands.set_style(node_id, ResetTransformFuncType);
-    }
-    #[allow(unused_variables)]
-    #[allow(unused_assignments)]
-    pub fn play_reset_transform_skew_x(
-        gui: &mut Gui,
-        engine: &mut Engine,
-        context: &mut PlayContext,
-        json: &Vec<json::JsonValue>,
-    ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
-        let node = match context.nodes.get(node as usize) {
-            Some(r) => r.clone(),
-            None => return,
-        };
-        reset_transform_skew_x(gui, node);
-    }
-    #[allow(unused_variables)]
-    #[allow(unused_assignments)]
-    pub fn play_transform_skew_x(
-        gui: &mut Gui,
-        engine: &mut Engine,
-        context: &mut PlayContext,
-        json: &Vec<json::JsonValue>,
-    ) {
-        let mut i = 0;
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
-                .index();
-        i += 1;
-        let x = pi_export_play::as_value::<f32>(json, i).unwrap();
-        i += 1;
-        let node = match context.nodes.get(node as usize) {
-            Some(r) => r.clone(),
-            None => return,
-        };
-        set_transform_skew_x(gui, node, x);
-    }
-    #[cfg(feature = "pi_js_export")]
-    #[allow(unused_attributes)]
-    pub fn set_transform_skew_y(gui: &mut Gui, node_id: f64, y: f32) {
-        let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands
-            .set_style(node_id, TransformFuncType(TransformFunc::SkewY(y)));
-    }
-    #[cfg(target_arch = "wasm32")]
-    #[wasm_bindgen]
-    #[allow(unused_attributes)]
-    pub fn set_transform_skew_y(gui: &mut Gui, node_id: f64, y: f32) {
-        let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands
-            .set_style(node_id, TransformFuncType(TransformFunc::SkewY(y)));
-    }
-    #[cfg(feature = "pi_js_export")]
-    #[allow(unused_attributes)]
-    pub fn reset_transform_skew_y(gui: &mut Gui, node_id: f64) {
-        let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands.set_style(node_id, ResetTransformFuncType);
-    }
-    #[cfg(target_arch = "wasm32")]
-    #[wasm_bindgen]
-    #[allow(unused_attributes)]
-    pub fn reset_transform_skew_y(gui: &mut Gui, node_id: f64) {
-        let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands.set_style(node_id, ResetTransformFuncType);
-    }
-    #[allow(unused_variables)]
-    #[allow(unused_assignments)]
-    pub fn play_reset_transform_skew_y(
-        gui: &mut Gui,
-        engine: &mut Engine,
-        context: &mut PlayContext,
-        json: &Vec<json::JsonValue>,
-    ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
-        let node = match context.nodes.get(node as usize) {
-            Some(r) => r.clone(),
-            None => return,
-        };
-        reset_transform_skew_y(gui, node);
-    }
-    #[allow(unused_variables)]
-    #[allow(unused_assignments)]
-    pub fn play_transform_skew_y(
-        gui: &mut Gui,
-        engine: &mut Engine,
-        context: &mut PlayContext,
-        json: &Vec<json::JsonValue>,
-    ) {
-        let mut i = 0;
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
-                .index();
-        i += 1;
-        let y = pi_export_play::as_value::<f32>(json, i).unwrap();
-        i += 1;
-        let node = match context.nodes.get(node as usize) {
-            Some(r) => r.clone(),
-            None => return,
-        };
-        set_transform_skew_y(gui, node, y);
-    }
-    #[cfg(feature = "pi_js_export")]
-    #[allow(unused_attributes)]
-    pub fn set_clear_transform(gui: &mut Gui, node_id: f64) {
-        let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands.set_style(node_id, TransformType(Vec::new()));
-    }
-    #[cfg(target_arch = "wasm32")]
-    #[wasm_bindgen]
-    #[allow(unused_attributes)]
-    pub fn set_clear_transform(gui: &mut Gui, node_id: f64) {
-        let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands.set_style(node_id, TransformType(Vec::new()));
-    }
-    #[cfg(feature = "pi_js_export")]
-    #[allow(unused_attributes)]
-    pub fn reset_clear_transform(gui: &mut Gui, node_id: f64) {
+    pub fn reset_transform(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
         gui.commands.set_style(node_id, ResetTransformType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
-    pub fn reset_clear_transform(gui: &mut Gui, node_id: f64) {
+    pub fn reset_transform(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
         gui.commands.set_style(node_id, ResetTransformType);
     }
     #[allow(unused_variables)]
     #[allow(unused_assignments)]
-    pub fn play_reset_clear_transform(
+    pub fn play_reset_transform(
         gui: &mut Gui,
         engine: &mut Engine,
         context: &mut PlayContext,
@@ -5918,11 +5359,11 @@
             Some(r) => r.clone(),
             None => return,
         };
-        reset_clear_transform(gui, node);
+        reset_transform(gui, node);
     }
     #[allow(unused_variables)]
     #[allow(unused_assignments)]
-    pub fn play_clear_transform(
+    pub fn play_transform(
         gui: &mut Gui,
         engine: &mut Engine,
         context: &mut PlayContext,
@@ -5933,11 +5374,14 @@
             unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
                 .index();
         i += 1;
+        let s = pi_export_play::as_value::<str>(json, i).unwrap();
+        i += 1;
+        let s = &s;
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
-        set_clear_transform(gui, node);
+        set_transform(gui, node, s);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
@@ -8930,8 +8374,10 @@
         {
             let node = unsafe { Entity::from_bits(transmute::<f64, u64>(node)) };
             let brush = unsafe { Entity::from_bits(transmute::<f64, u64>(brush)) };
-            gui.commands
-                .push_cmd(NodeCmd(pi_ui_render::components::user::Canvas(brush), node));
+            gui.commands.push_cmd(ComponentCmd(
+                pi_ui_render::components::user::Canvas(brush),
+                node,
+            ));
         }
     }
     #[cfg(target_arch = "wasm32")]
@@ -8940,8 +8386,10 @@
         {
             let node = unsafe { Entity::from_bits(transmute::<f64, u64>(node)) };
             let brush = unsafe { Entity::from_bits(transmute::<f64, u64>(brush)) };
-            gui.commands
-                .push_cmd(NodeCmd(pi_ui_render::components::user::Canvas(brush), node));
+            gui.commands.push_cmd(ComponentCmd(
+                pi_ui_render::components::user::Canvas(brush),
+                node,
+            ));
         }
     }
     #[allow(unused_variables)]
@@ -9148,7 +8596,7 @@
                             "pi_export_gui::style_macro",
                             ::tracing::Level::WARN,
                             Some("src\\style_macro.rs"),
-                            Some(1262u32),
+                            Some(1253u32),
                             Some("pi_export_gui::style_macro"),
                             ::tracing_core::field::FieldSet::new(
                                 &[],
@@ -9196,7 +8644,7 @@
                             "pi_export_gui::style_macro",
                             ::tracing::Level::WARN,
                             Some("src\\style_macro.rs"),
-                            Some(1262u32),
+                            Some(1253u32),
                             Some("pi_export_gui::style_macro"),
                             ::tracing_core::field::FieldSet::new(
                                 &[],
@@ -9254,7 +8702,7 @@
                             "pi_export_gui::style_macro",
                             ::tracing::Level::WARN,
                             Some("src\\style_macro.rs"),
-                            Some(1277u32),
+                            Some(1268u32),
                             Some("pi_export_gui::style_macro"),
                             ::tracing_core::field::FieldSet::new(
                                 &[],
@@ -9308,7 +8756,7 @@
                             "pi_export_gui::style_macro",
                             ::tracing::Level::WARN,
                             Some("src\\style_macro.rs"),
-                            Some(1277u32),
+                            Some(1268u32),
                             Some("pi_export_gui::style_macro"),
                             ::tracing_core::field::FieldSet::new(
                                 &[],
@@ -9370,7 +8818,7 @@
                             "pi_export_gui::style_macro",
                             ::tracing::Level::WARN,
                             Some("src\\style_macro.rs"),
-                            Some(1294u32),
+                            Some(1285u32),
                             Some("pi_export_gui::style_macro"),
                             ::tracing_core::field::FieldSet::new(
                                 &[],
@@ -9424,7 +8872,7 @@
                             "pi_export_gui::style_macro",
                             ::tracing::Level::WARN,
                             Some("src\\style_macro.rs"),
-                            Some(1294u32),
+                            Some(1285u32),
                             Some("pi_export_gui::style_macro"),
                             ::tracing_core::field::FieldSet::new(
                                 &[],
@@ -9486,7 +8934,7 @@
                             "pi_export_gui::style_macro",
                             ::tracing::Level::WARN,
                             Some("src\\style_macro.rs"),
-                            Some(1311u32),
+                            Some(1302u32),
                             Some("pi_export_gui::style_macro"),
                             ::tracing_core::field::FieldSet::new(
                                 &[],
@@ -9540,7 +8988,7 @@
                             "pi_export_gui::style_macro",
                             ::tracing::Level::WARN,
                             Some("src\\style_macro.rs"),
-                            Some(1311u32),
+                            Some(1302u32),
                             Some("pi_export_gui::style_macro"),
                             ::tracing_core::field::FieldSet::new(
                                 &[],
@@ -9602,7 +9050,7 @@
                             "pi_export_gui::style_macro",
                             ::tracing::Level::WARN,
                             Some("src\\style_macro.rs"),
-                            Some(1328u32),
+                            Some(1319u32),
                             Some("pi_export_gui::style_macro"),
                             ::tracing_core::field::FieldSet::new(
                                 &[],
@@ -9656,7 +9104,7 @@
                             "pi_export_gui::style_macro",
                             ::tracing::Level::WARN,
                             Some("src\\style_macro.rs"),
-                            Some(1328u32),
+                            Some(1319u32),
                             Some("pi_export_gui::style_macro"),
                             ::tracing_core::field::FieldSet::new(
                                 &[],

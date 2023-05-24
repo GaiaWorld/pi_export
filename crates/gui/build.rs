@@ -1,6 +1,7 @@
 fn main() -> Result<(), std::io::Error> {
     // 除非修改build.rs， 否则不重新运行脚本
     println!("cargo:rerun-if-changed=build.rs");
+	println!("cargo:rerun-if-changed=exports_macro/src/style_macro.rs");
     // visit_dirs("src/shader/", &mut |file| {
     //     if let Some(r) = file.extension() {
     //         let r = r.to_string_lossy();

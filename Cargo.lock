@@ -3045,6 +3045,7 @@ dependencies = [
 [[package]]
 name = "pi_animation"
 version = "0.0.1"
+source = "git+https://github.com/GaiaWorld/pi_animation.git#39766f2ec9c94264fa957c72d92fe6df39e6f35b"
 dependencies = [
  "env_logger",
  "log",
@@ -3134,7 +3135,7 @@ dependencies = [
 [[package]]
 name = "pi_bevy_asset"
 version = "0.1.0"
-source = "git+https://github.com/GaiaWorld/pi_render_bevy.git#9128649ea1ff8283e04e12d5ee306a81466618f2"
+source = "git+https://github.com/GaiaWorld/pi_render_bevy.git#8e52cd9467e587fbf247f89ce3ff9a4a66c7b256"
 dependencies = [
  "bevy",
  "crossbeam",
@@ -3149,7 +3150,7 @@ dependencies = [
 [[package]]
 name = "pi_bevy_ecs_extend"
 version = "0.1.0"
-source = "git+https://github.com/GaiaWorld/pi_render_bevy.git#9128649ea1ff8283e04e12d5ee306a81466618f2"
+source = "git+https://github.com/GaiaWorld/pi_render_bevy.git#8e52cd9467e587fbf247f89ce3ff9a4a66c7b256"
 dependencies = [
  "bevy",
  "derive_deref",
@@ -3177,7 +3178,7 @@ dependencies = [
 [[package]]
 name = "pi_bevy_ecs_macro"
 version = "0.1.0"
-source = "git+https://github.com/GaiaWorld/pi_render_bevy.git#9128649ea1ff8283e04e12d5ee306a81466618f2"
+source = "git+https://github.com/GaiaWorld/pi_render_bevy.git#8e52cd9467e587fbf247f89ce3ff9a4a66c7b256"
 dependencies = [
  "quote",
  "syn 1.0.109",
@@ -3187,7 +3188,7 @@ dependencies = [
 [[package]]
 name = "pi_bevy_post_process"
 version = "0.1.0"
-source = "git+https://github.com/GaiaWorld/pi_render_bevy.git#9128649ea1ff8283e04e12d5ee306a81466618f2"
+source = "git+https://github.com/GaiaWorld/pi_render_bevy.git#8e52cd9467e587fbf247f89ce3ff9a4a66c7b256"
 dependencies = [
  "bevy",
  "pi_assets",
@@ -3202,12 +3203,13 @@ dependencies = [
 [[package]]
 name = "pi_bevy_render_plugin"
 version = "0.1.0"
-source = "git+https://github.com/GaiaWorld/pi_render_bevy.git#9128649ea1ff8283e04e12d5ee306a81466618f2"
+source = "git+https://github.com/GaiaWorld/pi_render_bevy.git#8e52cd9467e587fbf247f89ce3ff9a4a66c7b256"
 dependencies = [
  "bevy",
  "crossbeam",
  "futures",
  "js-sys",
+ "lazy_static",
  "log",
  "pi_assets",
  "pi_async",
@@ -3229,7 +3231,7 @@ dependencies = [
 [[package]]
 name = "pi_bevy_winit_window"
 version = "0.1.0"
-source = "git+https://github.com/GaiaWorld/pi_render_bevy.git#9128649ea1ff8283e04e12d5ee306a81466618f2"
+source = "git+https://github.com/GaiaWorld/pi_render_bevy.git#8e52cd9467e587fbf247f89ce3ff9a4a66c7b256"
 dependencies = [
  "bevy",
  "glam",
@@ -3252,6 +3254,8 @@ dependencies = [
 [[package]]
 name = "pi_cache"
 version = "0.3.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "1e708758c22fdda337d87f79a0bf6a006a83effab4d57a5e29f17b4024c7ccce"
 dependencies = [
  "log",
  "pi_hash",
@@ -3515,6 +3519,8 @@ checksum = "acdcfb7c46949fd3d2a18863da12e34fa718fecc21f8274cd1decbaef4ec3c42"
 [[package]]
 name = "pi_flex_layout"
 version = "0.2.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "77ba6edf89ba9a693e4990ccf4f03f7760fcd9f2660f2126ba0ee40ff44bc215"
 dependencies = [
  "log",
  "paste",
@@ -3550,6 +3556,7 @@ dependencies = [
 [[package]]
 name = "pi_hal"
 version = "0.1.0"
+source = "git+https://github.com/GaiaWorld/pi_hal.git#812bf7ea57767e037c00ff700917a600a305f03b"
 dependencies = [
  "async-trait",
  "derive_deref",
@@ -3686,6 +3693,7 @@ checksum = "570c510b82dafa56cc1f4605066e994da0f5ba343811f4ccd1cc66c4d00f2c43"
 [[package]]
 name = "pi_postprocess"
 version = "0.1.0"
+source = "git+https://github.com/GaiaWorld/pi_post_process.git#6617491be4ad0e59e322d17cf64784088fdee9fd"
 dependencies = [
  "bytemuck",
  "derive_deref",
@@ -3718,6 +3726,7 @@ checksum = "8eeeddb49aca084a517b5efcd8111cd19121130201190c09d5d817e998f78a4a"
 [[package]]
 name = "pi_render"
 version = "0.1.0"
+source = "git+https://github.com/GaiaWorld/pi_render.git?branch=bevy_shader#0fd1438d40bc6d277fc8f142fb5e2d2fca6f424a"
 dependencies = [
  "render_core",
 ]
@@ -3860,6 +3869,7 @@ dependencies = [
 [[package]]
 name = "pi_spine_render"
 version = "0.0.1"
+source = "git+https://github.com/GaiaWorld/pi_spine_rs.git#22161c1c7aafe85501f6e167f1c44107867bb405"
 dependencies = [
  "approx",
  "bevy",
@@ -3890,7 +3900,7 @@ dependencies = [
  "pi_spatial 0.4.2 (git+https://github.com/GaiaWorld/pi_spatial.git)",
  "pi_window_renderer",
  "render_derive",
- "render_utils 0.1.0 (git+https://github.com/GaiaWorld/pi_render.git?branch=bevy_shader)",
+ "render_utils",
  "smallvec",
  "wasm-bindgen",
  "wgpu",
@@ -3899,6 +3909,7 @@ dependencies = [
 [[package]]
 name = "pi_spine_rs"
 version = "0.0.1"
+source = "git+https://github.com/GaiaWorld/pi_spine_rs.git#22161c1c7aafe85501f6e167f1c44107867bb405"
 dependencies = [
  "bevy",
  "crossbeam",
@@ -3921,7 +3932,7 @@ dependencies = [
  "pi_spine_render",
  "pi_window_renderer",
  "render_derive",
- "render_utils 0.1.0 (git+https://github.com/GaiaWorld/pi_render.git?branch=bevy_shader)",
+ "render_utils",
  "smallvec",
  "wgpu",
  "winit 0.27.4",
@@ -3930,6 +3941,7 @@ dependencies = [
 [[package]]
 name = "pi_style"
 version = "0.1.0"
+source = "git+https://github.com/GaiaWorld/pi_style.git#6152af4571c11cac351f06fd2c1e9a11e69f646f"
 dependencies = [
  "bincode",
  "bitvec",
@@ -3986,6 +3998,7 @@ checksum = "dbaf7abc0904cab87ca08c61afa70581049affa856cec59fe77e0b8a83a37257"
 [[package]]
 name = "pi_ui_render"
 version = "0.2.0"
+source = "git+https://github.com/GaiaWorld/pi_ui_render.git?branch=bevy#b3852adda47094db2f91cee404c9b1c91075ed71"
 dependencies = [
  "bevy",
  "bincode",
@@ -4083,7 +4096,7 @@ dependencies = [
 [[package]]
 name = "pi_window_renderer"
 version = "0.1.0"
-source = "git+https://github.com/GaiaWorld/pi_render_bevy.git#9128649ea1ff8283e04e12d5ee306a81466618f2"
+source = "git+https://github.com/GaiaWorld/pi_render_bevy.git#8e52cd9467e587fbf247f89ce3ff9a4a66c7b256"
 dependencies = [
  "bevy",
  "bytemuck",
@@ -4426,7 +4439,7 @@ checksum = "a5996294f19bd3aae0453a862ad728f60e6600695733dd5df01da90c54363a3c"
 [[package]]
 name = "render_compile"
 version = "0.1.0"
-source = "git+https://github.com/GaiaWorld/pi_render.git?branch=bevy_shader#e39f08a38634948fbca4b77bcabc123526bf3e9b"
+source = "git+https://github.com/GaiaWorld/pi_render.git?branch=bevy_shader#0fd1438d40bc6d277fc8f142fb5e2d2fca6f424a"
 dependencies = [
  "Inflector",
  "log",
@@ -4442,6 +4455,7 @@ dependencies = [
 [[package]]
 name = "render_core"
 version = "0.1.0"
+source = "git+https://github.com/GaiaWorld/pi_render.git?branch=bevy_shader#0fd1438d40bc6d277fc8f142fb5e2d2fca6f424a"
 dependencies = [
  "anyhow",
  "bitvec",
@@ -4480,7 +4494,7 @@ dependencies = [
  "pi_time",
  "regex",
  "render_crevice",
- "render_utils 0.1.0",
+ "render_utils",
  "smallvec",
  "thiserror",
  "tracing",
@@ -4492,6 +4506,7 @@ dependencies = [
 [[package]]
 name = "render_crevice"
 version = "0.1.0"
+source = "git+https://github.com/GaiaWorld/pi_render.git?branch=bevy_shader#0fd1438d40bc6d277fc8f142fb5e2d2fca6f424a"
 dependencies = [
  "bytemuck",
  "mint",
@@ -4502,6 +4517,7 @@ dependencies = [
 [[package]]
 name = "render_crevice_derive"
 version = "0.1.0"
+source = "git+https://github.com/GaiaWorld/pi_render.git?branch=bevy_shader#0fd1438d40bc6d277fc8f142fb5e2d2fca6f424a"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -4512,6 +4528,7 @@ dependencies = [
 [[package]]
 name = "render_derive"
 version = "0.1.0"
+source = "git+https://github.com/GaiaWorld/pi_render.git?branch=bevy_shader#0fd1438d40bc6d277fc8f142fb5e2d2fca6f424a"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -4522,6 +4539,7 @@ dependencies = [
 [[package]]
 name = "render_macro_utils"
 version = "0.1.0"
+source = "git+https://github.com/GaiaWorld/pi_render.git?branch=bevy_shader#0fd1438d40bc6d277fc8f142fb5e2d2fca6f424a"
 dependencies = [
  "cargo-manifest",
  "quote",
@@ -4531,15 +4549,7 @@ dependencies = [
 [[package]]
 name = "render_utils"
 version = "0.1.0"
-dependencies = [
- "ahash",
- "render_derive",
-]
-
-[[package]]
-name = "render_utils"
-version = "0.1.0"
-source = "git+https://github.com/GaiaWorld/pi_render.git?branch=bevy_shader#e39f08a38634948fbca4b77bcabc123526bf3e9b"
+source = "git+https://github.com/GaiaWorld/pi_render.git?branch=bevy_shader#0fd1438d40bc6d277fc8f142fb5e2d2fca6f424a"
 dependencies = [
  "ahash",
  "render_derive",
