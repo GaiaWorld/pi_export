@@ -64,7 +64,7 @@ pub enum BlendFactor {
     OneMinusConstant = 12,
 }
 impl BlendFactor {
-    pub fn val(&self) -> pi_bevy_render_plugin::constant::BlendFactor {
+    pub fn val(&self) -> pi_bevy_render_plugin::constant::render_state::BlendFactor {
         match self {
             BlendFactor::Zero               => pi_bevy_render_plugin::constant::render_state::BlendFactor::Zero               ,
             BlendFactor::One                => pi_bevy_render_plugin::constant::render_state::BlendFactor::One                ,
