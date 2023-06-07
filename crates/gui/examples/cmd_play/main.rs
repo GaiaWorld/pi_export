@@ -17,6 +17,10 @@ use pi_map::vecmap::VecMap;
 use pi_export_play::as_value;
 use pi_export_gui::*;
 use pi_export_gui::native_index::{play_append_child, play_insert_as_root, play_insert_before, play_remove_node, play_destroy_node};
+use pi_null::Null;
+use pi_ui_render::components::calc::EntityKey;
+use pi_ui_render::components::user::RenderDirty;
+use pi_ui_render::resource::NodeCmd;
 use std::{
     fs::{read, DirEntry},
     mem::transmute,
@@ -39,6 +43,7 @@ pub struct ExampleCommonPlay {
     height: usize,
     scale: f32,
 	end: bool,
+	root: EntityKey,
 }
 
 impl Default for ExampleCommonPlay {
@@ -51,7 +56,8 @@ impl Default for ExampleCommonPlay {
             },
             list_index: 0,
             file_index: 0,
-            play_version: "performance",
+            // play_version: "performance",
+			play_version: "test",
 			play_path: "D://0_js/pi_demo_gui_exe/dst",
             // play_path: "D://0_js/cdqxz_new_gui_exe/dst",
             cmd_path: Some("D://0_rust/pi_export/crates/gui/examples/cmd_play/source/cmds"),
@@ -62,7 +68,8 @@ impl Default for ExampleCommonPlay {
             width: 1024,
             height: 1920,
             scale: 0.5,
-			end: false
+			end: false,
+			root: EntityKey::null(),
         }
     }
 }
@@ -123,6 +130,7 @@ impl Example for ExampleCommonPlay {
 
         let mut json = Object::new();
 		let root_entity = Entity::from_raw(1);
+		self.root = EntityKey(root_entity);
 		let root_entity_f64 = unsafe {transmute::<u64, f64>(root_entity.to_bits())};
 
         json.insert("ret", JsonValue::Number(root_entity_f64.into()));
@@ -145,14 +153,13 @@ impl Example for ExampleCommonPlay {
             context,
             &vec![JsonValue::Number(Number::from(root_entity_f64)), JsonValue::Number(Number::from(self.height))],
         );
-        play_transform_scale(
+        play_transform(
             gui,
 			engine,
             context,
             &vec![
                 JsonValue::Number(Number::from(root_entity_f64)),
-                JsonValue::Number(Number::from(self.scale)),
-                JsonValue::Number(Number::from(self.scale)),
+                JsonValue::String(self.scale.to_string()),
             ],
         );
         play_transform_origin(
@@ -240,6 +247,7 @@ impl Example for ExampleCommonPlay {
     }
 
     fn fram_call(&mut self, gui: &mut Gui, engine: &mut Engine){
+		gui.commands.push_cmd(NodeCmd(RenderDirty(true), self.root.0));
 		if self.end {
 			return;
 		}
@@ -423,27 +431,27 @@ lazy_static! {
         play_todo, //"offset_ducument",
 
         // transform
-        play_clear_transform, //"clear_transform",
-        play_clear_transform, //"reset_transform",
+        play_transform, //"clear_transform",
+        play_reset_transform,//play_clear_transform, //"reset_transform",
 
-        play_transform_translate, // 1
-        play_transform_translate_x, // 1
-        play_transform_translate_y, // 1
+        play_translate,//play_transform_translate, // 1
+        play_reset_translate,//play_transform_translate_x, // 1
+        play_scale,//play_transform_translate_y, // 1
 
-        play_transform_translate_percent, // 1
-        play_transform_translate_x_percent, // 1
-        play_transform_translate_y_percent, // 1
+        play_reset_scale,//play_transform_translate_percent, // 1
+        play_rotate,//play_transform_translate_x_percent, // 1
+        play_reset_rotate,//play_transform_translate_y_percent, // 1
 
-        play_transform_scale, // 1
-        play_transform_scale_x, // 1
-        play_transform_scale_y, // 1
+        play_todo,//play_transform_scale, // 1
+        play_todo,//play_transform_scale_x, // 1
+        play_todo,//play_transform_scale_y, // 1
 
-        play_transform_rotate_x, // 1
-        play_transform_rotate_y, // 1
-        play_transform_rotate_z, // 1
+        play_todo,//play_transform_rotate_x, // 1
+        play_todo,//play_transform_rotate_y, // 1
+        play_todo,//play_transform_rotate_z, // 1
 
-        play_transform_skew_x, // 1
-        play_transform_skew_y, // 1
+        play_todo,//play_transform_skew_x, // 1
+        play_todo,//play_transform_skew_y, // 1
 
         play_transform_origin, // 1
 
@@ -479,7 +487,7 @@ lazy_static! {
         play_todo, //"add_sdf_font_res",
         play_todo, //"add_font_face",
 
-        play_todo, //play_transform_will_change,
+        play_transform_will_change,
 
         play_set_class, //play_class,
         play_todo, //"add_class_start",

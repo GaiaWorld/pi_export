@@ -766,6 +766,9 @@ fn to_css_str(attr: Attribute) -> String {
         Attribute::Blur(r) => "blur:".to_string() + r.0.to_string().as_str() + "px",
         Attribute::MaskImage(r) => "mask-image:".to_string() + format!("{:?}", r.0).as_str(),
         Attribute::Transform(r) => "".to_string(),               // TODO
+		Attribute::Translate(r) => "".to_string(),               // TODO
+		Attribute::Scale(r) => "".to_string(),               // TODO
+		Attribute::Rotate(r) => "".to_string(),               // TODO
         Attribute::TransformWillChange(r) => "".to_string(),     // TODO
         Attribute::BlendMode(r) => "".to_string(),               // TODO
         Attribute::Direction(r) => "".to_string(),               // TODO

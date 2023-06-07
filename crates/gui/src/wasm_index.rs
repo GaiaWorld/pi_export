@@ -82,6 +82,7 @@ pub fn create_engine(canvas: HtmlCanvasElement, r: f64, width: u32, height: u32)
 	// log.filter="pi_flex_layout=trace".to_string();
 	// log.filter="pi_ui_render::resource::animation_sheet=debug".to_string();
 	// log.filter="bevy=debug".to_string();
+	// log.filter="wgpu=debug".to_string();
 	log.level=bevy::log::Level::WARN;
     app
         .add_plugin(log)

@@ -10,7 +10,7 @@ use std::{
 //     LinearGradientColor, MaskImage, Stroke, TextContent, TransformFunc, TransformOrigin,
 // };
 use pi_ui_render::components::{calc::EntityKey, NodeBundle};
-use pi_ui_render::resource::NodeCmd;
+use pi_ui_render::resource::{NodeCmd, ComponentCmd};
 use pi_null::Null;
 use pi_ui_render::components::user::ClassName;
 use pi_export_play::as_value;
@@ -654,6 +654,7 @@ style_out_export!(@cenum enable, EnableType);
 style_out_export!(@cenum blend_mode, BlendModeType);
 style_out_export!(@expr zindex, ZIndexType, v as isize,; v: i32,);
 style_out_export!(@expr filter_blur, BlurType, v,; v: f32,);
+style_out_export!(@expr transform_will_change, TransformWillChangeType, v,; v: bool,);
 
 // hsi, 效果与ps一致,  h: -180 ~ 180, s: -100 ~ 100, i: -100 ~ 100
 style_out_export!(@expr 
@@ -685,79 +686,69 @@ style_out_export!(@expr
 	h: f32, s: f32, _i: f32, );
 /************************************ Transform **************************************/
 style_out_export!(@expr 
-	transform_translate, 
-	TransformFuncType, 
-	TransformFunc::Translate(x, y),;
-	x: f32, y: f32,);
+	translate, 
+	TranslateType, 
+	{
+		let mut input = cssparser::ParserInput::new(s);
+		let mut parse = cssparser::Parser::new(&mut input);
+
+		let translate = pi_style::style_parse::parse_mult(&mut parse, [LengthUnit::default(), LengthUnit::default()], pi_style::style_parse::parse_len_or_percent);
+		if let Ok(translate) = translate {
+			translate
+		} else {
+			Default::default()
+		}
+	},
+	s: &str,; );
 style_out_export!(@expr 
-	transform_translate_percent, 
-	TransformFuncType, 
-	TransformFunc::TranslatePercent(x, y),;
-	x: f32, y: f32,);
+	scale, 
+	ScaleType, 
+	{
+		let mut input = cssparser::ParserInput::new(s);
+		let mut parse = cssparser::Parser::new(&mut input);
+
+		let scale = pi_style::style_parse::parse_mult(&mut parse, [1.0f32, 1.0f32], pi_style::style_parse::parse_number);
+		if let Ok(scale) = scale {
+			scale
+		} else {
+			Default::default()
+		}
+
+	},
+	s: &str,; );
 style_out_export!(@expr 
-	transform_translate_x, 
-	TransformFuncType, 
-	TransformFunc::TranslateX(x),;
-	x: f32,);
+	rotate, 
+	RotateType, 
+	{
+		let mut input = cssparser::ParserInput::new(s);
+		let mut parse = cssparser::Parser::new(&mut input);
+
+		let rotate = pi_style::style_parse::parse_angle(&mut parse);
+		if let Ok(rotate) = rotate {
+			rotate
+		} else {
+			Default::default()
+		}
+
+	},
+	s: &str,; );
+
 style_out_export!(@expr 
-	transform_translate_x_percent, 
-	TransformFuncType, 
-	TransformFunc::TranslateXPercent(x),;
-	x: f32,);
-style_out_export!(@expr 
-	transform_translate_y, 
-	TransformFuncType, 
-	TransformFunc::TranslateY(y),;
-	y: f32,);
-style_out_export!(@expr 
-	transform_translate_y_percent, 
-	TransformFuncType, 
-	TransformFunc::TranslateYPercent(y),;
-	y: f32,);
-style_out_export!(@expr 
-	transform_scale, 
-	TransformFuncType, 
-	TransformFunc::Scale(x, y),;
-	x: f32, y: f32,);
-style_out_export!(@expr 
-	transform_scale_x, 
-	TransformFuncType, 
-	TransformFunc::ScaleX(x),;
-	x: f32,);
-style_out_export!(@expr 
-	transform_scale_y, 
-	TransformFuncType, 
-	TransformFunc::ScaleY(y),;
-	y: f32,);
-style_out_export!(@expr 
-	transform_rotate_x, 
-	TransformFuncType, 
-	TransformFunc::RotateX(x),;
-	x: f32,);
-style_out_export!(@expr 
-	transform_rotate_y, 
-	TransformFuncType, 
-	TransformFunc::RotateY(y),;
-	y: f32,);
-style_out_export!(@expr 
-	transform_rotate_z, 
-	TransformFuncType, 
-	TransformFunc::RotateZ(z),;
-	z: f32,);
-style_out_export!(@expr 
-	transform_skew_x, 
-	TransformFuncType, 
-	TransformFunc::SkewX(x),;
-	x: f32,);
-style_out_export!(@expr 
-	transform_skew_y, 
-	TransformFuncType, 
-	TransformFunc::SkewY(y),;
-	y: f32,);
-style_out_export!(@expr 
-	clear_transform, 
+	transform, 
 	TransformType, 
-	Vec::new(),;);
+	{
+		let mut input = cssparser::ParserInput::new(s);
+		let mut parse = cssparser::Parser::new(&mut input);
+
+		let transform = pi_style::style_parse::parse_transform(&mut parse);
+		if let Ok(transform) = transform {
+			transform
+		} else {
+			Default::default()
+		}
+	},
+	s: &str,; );
+
 style_out_export!(@expr 
 	transform_origin, 
 	TransformOriginType, 
@@ -1193,7 +1184,7 @@ other_out_export!(
     {
 		let node = unsafe { Entity::from_bits(transmute::<f64, u64>(node)) };
 		let brush = unsafe { Entity::from_bits(transmute::<f64, u64>(brush)) };
-		gui.commands.push_cmd(NodeCmd(
+		gui.commands.push_cmd(ComponentCmd(
 			pi_ui_render::components::user::Canvas(brush),
 			node,
 		));
