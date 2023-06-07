@@ -3,3 +3,4 @@
 pub mod export;
 pub mod asset;
 pub mod constants;
+pub mod animation;

@@ -1,9 +1,38 @@
 
-use pi_render::rhi::sampler::{EAddressMode, EFilterMode, EAnisotropyClamp, SamplerDesc};
+
+use pi_bevy_render_plugin::constant::texture_sampler::*;
 
 #[cfg(target_arch = "wasm32")]
 use wasm_bindgen::prelude::*;
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[cfg(feature = "pi_js_export")]
+pub enum EShaderStage {
+    /// Binding is not visible from any shader stage.
+    NONE,
+    /// Binding is visible from the vertex shader of a render pipeline.
+    VERTEX,
+    /// Binding is visible from the fragment shader of a render pipeline.
+    FRAGMENT,
+    /// Binding is visible from the compute shader of a compute pipeline.
+    COMPUTE,
+    /// Binding is visible from the vertex and fragment shaders of a render pipeline.
+    VERTEXFRAGMENT,
+}
+impl EShaderStage {
+    pub fn val(&self) -> pi_render::renderer::shader_stage::EShaderStage {
+        match self {
+            EShaderStage::NONE              => pi_render::renderer::shader_stage::EShaderStage::NONE,
+            EShaderStage::VERTEX            => pi_render::renderer::shader_stage::EShaderStage::VERTEX,
+            EShaderStage::FRAGMENT          => pi_render::renderer::shader_stage::EShaderStage::FRAGMENT,
+            EShaderStage::COMPUTE           => pi_render::renderer::shader_stage::EShaderStage::COMPUTE,
+            EShaderStage::VERTEXFRAGMENT    => pi_render::renderer::shader_stage::EShaderStage::VERTEXFRAGMENT,
+        }
+    }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[cfg(feature = "pi_js_export")]
 pub enum BlendFactor {
@@ -35,25 +64,53 @@ pub enum BlendFactor {
     OneMinusConstant = 12,
 }
 impl BlendFactor {
-    pub fn val(&self) -> wgpu::BlendFactor {
+    pub fn val(&self) -> pi_bevy_render_plugin::constant::BlendFactor {
         match self {
-            BlendFactor::Zero               => wgpu::BlendFactor::Zero               ,
-            BlendFactor::One                => wgpu::BlendFactor::One                ,
-            BlendFactor::Src                => wgpu::BlendFactor::Src                ,
-            BlendFactor::OneMinusSrc        => wgpu::BlendFactor::OneMinusSrc        ,
-            BlendFactor::SrcAlpha           => wgpu::BlendFactor::SrcAlpha           ,
-            BlendFactor::OneMinusSrcAlpha   => wgpu::BlendFactor::OneMinusSrcAlpha   ,
-            BlendFactor::Dst                => wgpu::BlendFactor::Dst                ,
-            BlendFactor::OneMinusDst        => wgpu::BlendFactor::OneMinusDst        ,
-            BlendFactor::DstAlpha           => wgpu::BlendFactor::DstAlpha           ,
-            BlendFactor::OneMinusDstAlpha   => wgpu::BlendFactor::OneMinusDstAlpha   ,
-            BlendFactor::SrcAlphaSaturated  => wgpu::BlendFactor::SrcAlphaSaturated  ,
-            BlendFactor::Constant           => wgpu::BlendFactor::Constant           ,
-            BlendFactor::OneMinusConstant   => wgpu::BlendFactor::OneMinusConstant   ,
+            BlendFactor::Zero               => pi_bevy_render_plugin::constant::render_state::BlendFactor::Zero               ,
+            BlendFactor::One                => pi_bevy_render_plugin::constant::render_state::BlendFactor::One                ,
+            BlendFactor::Src                => pi_bevy_render_plugin::constant::render_state::BlendFactor::Src                ,
+            BlendFactor::OneMinusSrc        => pi_bevy_render_plugin::constant::render_state::BlendFactor::OneMinusSrc        ,
+            BlendFactor::SrcAlpha           => pi_bevy_render_plugin::constant::render_state::BlendFactor::SrcAlpha           ,
+            BlendFactor::OneMinusSrcAlpha   => pi_bevy_render_plugin::constant::render_state::BlendFactor::OneMinusSrcAlpha   ,
+            BlendFactor::Dst                => pi_bevy_render_plugin::constant::render_state::BlendFactor::Dst                ,
+            BlendFactor::OneMinusDst        => pi_bevy_render_plugin::constant::render_state::BlendFactor::OneMinusDst        ,
+            BlendFactor::DstAlpha           => pi_bevy_render_plugin::constant::render_state::BlendFactor::DstAlpha           ,
+            BlendFactor::OneMinusDstAlpha   => pi_bevy_render_plugin::constant::render_state::BlendFactor::OneMinusDstAlpha   ,
+            BlendFactor::SrcAlphaSaturated  => pi_bevy_render_plugin::constant::render_state::BlendFactor::SrcAlphaSaturated  ,
+            BlendFactor::Constant           => pi_bevy_render_plugin::constant::render_state::BlendFactor::Constant           ,
+            BlendFactor::OneMinusConstant   => pi_bevy_render_plugin::constant::render_state::BlendFactor::OneMinusConstant   ,
         }
     }
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[cfg(feature = "pi_js_export")]
+pub enum BlendOperation {
+    /// Src + Dst
+    Add,
+    /// Src - Dst
+    Subtract,
+    /// Dst - Src
+    ReverseSubtract,
+    /// min(Src, Dst)
+    Min,
+    /// max(Src, Dst)
+    Max,
+}
+impl BlendOperation {
+    pub fn val(&self) -> pi_bevy_render_plugin::constant::render_state::BlendOperation {
+        match self {
+            BlendOperation::Add                 => pi_bevy_render_plugin::constant::render_state::BlendOperation::Add            ,
+            BlendOperation::Subtract            => pi_bevy_render_plugin::constant::render_state::BlendOperation::Subtract       ,
+            BlendOperation::ReverseSubtract     => pi_bevy_render_plugin::constant::render_state::BlendOperation::ReverseSubtract,
+            BlendOperation::Min                 => pi_bevy_render_plugin::constant::render_state::BlendOperation::Min            ,
+            BlendOperation::Max                 => pi_bevy_render_plugin::constant::render_state::BlendOperation::Max            ,
+        }
+    }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[cfg(feature = "pi_js_export")]
 pub enum ColorFormat {
@@ -69,6 +126,7 @@ impl ColorFormat {
     }
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[cfg(feature = "pi_js_export")]
 pub enum DepthFormat {
@@ -84,8 +142,16 @@ impl DepthFormat {
             DepthFormat::Depth24Stencil8 => Some(wgpu::TextureFormat::Depth24PlusStencil8),
         }
     }
+    pub fn format(&self) -> DepthStencilFormat {
+        match self {
+            DepthFormat::None => DepthStencilFormat::None,
+            DepthFormat::Depth32 => DepthStencilFormat::Depth32Float,
+            DepthFormat::Depth24Stencil8 => DepthStencilFormat::Depth24PlusStencil8,
+        }
+    }
 }
 
+#[derive(Debug, Clone, Copy)]
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[cfg(feature = "pi_js_export")]
 pub enum EColorSpace {
@@ -99,49 +165,10 @@ impl EColorSpace {
             EColorSpace::LINEAR => wgpu::TextureFormat::Rgba8Unorm,
         }
     }
-}
-
-#[derive(Debug, Clone, Copy)]
-#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
-#[cfg(feature = "pi_js_export")]
-pub enum CompareFunction {
-    /// Function never passes
-    Never = 1,
-    /// Function passes if new value less than existing value
-    Less = 2,
-    /// Function passes if new value is equal to existing value. When using
-    /// this compare function, make sure to mark your Vertex Shader's `@builtin(position)`
-    /// output as `@invariant` to prevent artifacting.
-    Equal = 3,
-    /// Function passes if new value is less than or equal to existing value
-    LessEqual = 4,
-    /// Function passes if new value is greater than existing value
-    Greater = 5,
-    /// Function passes if new value is not equal to existing value. When using
-    /// this compare function, make sure to mark your Vertex Shader's `@builtin(position)`
-    /// output as `@invariant` to prevent artifacting.
-    NotEqual = 6,
-    /// Function passes if new value is greater than or equal to existing value
-    GreaterEqual = 7,
-    /// Function always passes
-    Always = 8,
-}
-impl CompareFunction {
-    pub fn val(val: Option<&Self>) -> Option<wgpu::CompareFunction> {
-        match val {
-            Some(val) => {
-                match val {
-                    CompareFunction::Never          => Some(wgpu::CompareFunction::Never),
-                    CompareFunction::Less           => Some(wgpu::CompareFunction::Less),
-                    CompareFunction::Equal          => Some(wgpu::CompareFunction::Equal),
-                    CompareFunction::LessEqual      => Some(wgpu::CompareFunction::LessEqual),
-                    CompareFunction::Greater        => Some(wgpu::CompareFunction::Greater),
-                    CompareFunction::NotEqual       => Some(wgpu::CompareFunction::NotEqual),
-                    CompareFunction::GreaterEqual   => Some(wgpu::CompareFunction::GreaterEqual),
-                    CompareFunction::Always         => Some(wgpu::CompareFunction::Always),
-                }
-            },
-            None => None,
+    pub fn format(&self) -> pi_bevy_render_plugin::constant::texture_sampler::ColorFormat {
+        match self {
+            EColorSpace::GAMMA => pi_bevy_render_plugin::constant::texture_sampler::ColorFormat::Rgba8UnormSrgb,
+            EColorSpace::LINEAR => pi_bevy_render_plugin::constant::texture_sampler::ColorFormat::Rgba8Unorm,
         }
     }
 }
@@ -149,7 +176,143 @@ impl CompareFunction {
 #[derive(Debug, Clone, Copy)]
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[cfg(feature = "pi_js_export")]
+pub enum CompareFunction {
+    None,
+    /// Function never passes
+    Never,
+    /// Function passes if new value less than existing value
+    Less,
+    /// Function passes if new value is equal to existing value. When using
+    /// this compare function, make sure to mark your Vertex Shader's `@builtin(position)`
+    /// output as `@invariant` to prevent artifacting.
+    Equal,
+    /// Function passes if new value is less than or equal to existing value
+    LessEqual,
+    /// Function passes if new value is greater than existing value
+    Greater,
+    /// Function passes if new value is not equal to existing value. When using
+    /// this compare function, make sure to mark your Vertex Shader's `@builtin(position)`
+    /// output as `@invariant` to prevent artifacting.
+    NotEqual,
+    /// Function passes if new value is greater than or equal to existing value
+    GreaterEqual,
+    /// Function always passes
+    Always,
+}
+impl CompareFunction {
+    pub fn val(&self) -> Option<wgpu::CompareFunction> {
+        match self {
+            CompareFunction::None           => None,
+            CompareFunction::Never          => Some(wgpu::CompareFunction::Never),
+            CompareFunction::Less           => Some(wgpu::CompareFunction::Less),
+            CompareFunction::Equal          => Some(wgpu::CompareFunction::Equal),
+            CompareFunction::LessEqual      => Some(wgpu::CompareFunction::LessEqual),
+            CompareFunction::Greater        => Some(wgpu::CompareFunction::Greater),
+            CompareFunction::NotEqual       => Some(wgpu::CompareFunction::NotEqual),
+            CompareFunction::GreaterEqual   => Some(wgpu::CompareFunction::GreaterEqual),
+            CompareFunction::Always         => Some(wgpu::CompareFunction::Always),
+        }
+    }
+}
+
+pub fn sampler_desc(
+    address_mode_u: EAddressMode,
+    address_mode_v: EAddressMode,
+    address_mode_w: EAddressMode,
+    mag_filter: EFilterMode,
+    min_filter: EFilterMode,
+    mipmap_filter: EFilterMode,
+    compare: CompareFunction,
+    anisotropy_clamp: EAnisotropyClamp,
+    border_color: SamplerBorderColor,
+) -> pi_render::rhi::sampler::SamplerDesc {
+    pi_render::rhi::sampler::SamplerDesc {
+        address_mode_u: address_mode_u.val(),
+        address_mode_v: address_mode_v.val(),
+        address_mode_w: address_mode_w.val(),
+        mag_filter: mag_filter.val(),
+        min_filter: min_filter.val(),
+        mipmap_filter: mipmap_filter.val(),
+        compare: compare.val(),
+        anisotropy_clamp: anisotropy_clamp.val(),
+        border_color: border_color.val(),
+    }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[cfg(feature = "pi_js_export")]
+pub enum EDefaultTexture {
+    Black,
+    White,
+}
+impl EDefaultTexture {
+    pub fn val(&self) -> pi_render::renderer::buildin_data::EDefaultTexture {
+        match self {
+            EDefaultTexture::Black => pi_render::renderer::buildin_data::EDefaultTexture::Black,
+            EDefaultTexture::White => pi_render::renderer::buildin_data::EDefaultTexture::White,
+        }
+    }
+}
+
+#[derive(Debug, Clone, Copy, Hash, PartialEq, Eq)]
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[cfg(feature = "pi_js_export")]
+pub enum EFilterMode {
+    Nearest,
+    Linear,
+}
+impl EFilterMode {
+    pub fn val(&self) -> pi_render::rhi::sampler::EFilterMode {
+        match self {
+            EFilterMode::Nearest            => pi_render::rhi::sampler::EFilterMode::Nearest  ,
+            EFilterMode::Linear             => pi_render::rhi::sampler::EFilterMode::Linear   ,
+        }
+    }
+}
+
+#[derive(Debug, Clone, Copy, Hash, PartialEq, Eq)]
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[cfg(feature = "pi_js_export")]
+pub enum EAddressMode {
+    /// Clamp the value to the edge of the texture
+    ///
+    /// -0.25 -> 0.0
+    /// 1.25  -> 1.0
+    ClampToEdge,
+    /// Repeat the texture in a tiling fashion
+    ///
+    /// -0.25 -> 0.75
+    /// 1.25 -> 0.25
+    Repeat,
+    /// Repeat the texture, mirroring it every repeat
+    ///
+    /// -0.25 -> 0.25
+    /// 1.25 -> 0.75
+    MirrorRepeat,
+    /// Clamp the value to the border of the texture
+    /// Requires feature [`Features::ADDRESS_MODE_CLAMP_TO_BORDER`]
+    ///
+    /// -0.25 -> border
+    /// 1.25 -> border
+    ClampToBorder,
+}
+impl EAddressMode {
+    pub fn val(&self) -> pi_render::rhi::sampler::EAddressMode {
+        match self {
+            EAddressMode::ClampToEdge           => pi_render::rhi::sampler::EAddressMode::ClampToEdge  ,
+            EAddressMode::Repeat                => pi_render::rhi::sampler::EAddressMode::Repeat       ,
+            EAddressMode::MirrorRepeat          => pi_render::rhi::sampler::EAddressMode::MirrorRepeat ,
+            EAddressMode::ClampToBorder         => pi_render::rhi::sampler::EAddressMode::ClampToBorder,
+        }
+    }
+}
+
+#[derive(Debug, Clone, Copy, Hash, PartialEq, Eq)]
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[cfg(feature = "pi_js_export")]
 pub enum SamplerBorderColor {
+    None,
     /// [0, 0, 0, 0]
     TransparentBlack,
     /// [0, 0, 0, 1]
@@ -165,176 +328,37 @@ pub enum SamplerBorderColor {
     Zero,
 }
 impl SamplerBorderColor {
-    pub fn val(val: Option<&Self>) -> Option<wgpu::SamplerBorderColor> {
-        match val {
-            Some(val) => {
-                match val {
-                    SamplerBorderColor::TransparentBlack    => Some(wgpu::SamplerBorderColor::TransparentBlack),
-                    SamplerBorderColor::OpaqueBlack         => Some(wgpu::SamplerBorderColor::OpaqueBlack),
-                    SamplerBorderColor::OpaqueWhite         => Some(wgpu::SamplerBorderColor::OpaqueWhite),
-                    SamplerBorderColor::Zero                => Some(wgpu::SamplerBorderColor::Zero),
-                }
-            },
-            None => None,
+    pub fn val(&self) -> Option<wgpu::SamplerBorderColor> {
+        match self {
+            Self::TransparentBlack  => Some(wgpu::SamplerBorderColor::TransparentBlack  ),
+            Self::OpaqueBlack       => Some(wgpu::SamplerBorderColor::OpaqueBlack       ),
+            Self::OpaqueWhite       => Some(wgpu::SamplerBorderColor::OpaqueWhite       ),
+            Self::Zero              => Some(wgpu::SamplerBorderColor::Zero              ),
+            Self::None              => None              
         }
     }
 }
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, Hash, PartialEq, Eq)]
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[cfg(feature = "pi_js_export")]
-pub struct SamplerDescriptor {
-    /// How to deal with out of bounds accesses in the u (i.e. x) direction
-    address_mode_u: EAddressMode,
-    /// How to deal with out of bounds accesses in the v (i.e. y) direction
-    address_mode_v: EAddressMode,
-    /// How to deal with out of bounds accesses in the w (i.e. z) direction
-    address_mode_w: EAddressMode,
-    /// How to filter the texture when it needs to be magnified (made larger)
-    mag_filter: EFilterMode,
-    /// How to filter the texture when it needs to be minified (made smaller)
-    min_filter: EFilterMode,
-    /// How to filter between mip map levels
-    mipmap_filter: EFilterMode,
-    /// If this is enabled, this is a comparison sampler using the given comparison function.
-    compare: Option<CompareFunction>,
-    /// Valid values: 1, 2, 4, 8, and 16.
-    anisotropy_clamp: EAnisotropyClamp,
-    /// Border color to use when address_mode is [`AddressMode::ClampToBorder`]
-    border_color: Option<SamplerBorderColor>,
+pub enum EAnisotropyClamp {
+    None,
+    One,
+    Two,
+    Four,
+    Eight,
+    Sixteen,
 }
-
-pub fn sampler_desc(desc: &SamplerDescriptor) -> SamplerDesc {
-    SamplerDesc {
-        address_mode_u: desc.address_mode_u,
-        address_mode_v: desc.address_mode_v,
-        address_mode_w: desc.address_mode_w,
-        mag_filter: desc.mag_filter,
-        min_filter: desc.min_filter,
-        mipmap_filter: desc.mipmap_filter,
-        compare: CompareFunction::val(desc.compare.as_ref()),
-        anisotropy_clamp: desc.anisotropy_clamp,
-        border_color: SamplerBorderColor::val(desc.border_color.as_ref()),
-    }
-}
-
-#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
-#[cfg(feature = "pi_js_export")]
-impl SamplerDescriptor {
-    #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
-    #[cfg(feature = "pi_js_export")]
-    pub fn new() -> Self {
-        Self {
-            /// How to deal with out of bounds accesses in the u (i.e. x) direction
-            address_mode_u: EAddressMode::ClampToEdge,
-            /// How to deal with out of bounds accesses in the v (i.e. y) direction
-            address_mode_v: EAddressMode::ClampToEdge,
-            /// How to deal with out of bounds accesses in the w (i.e. z) direction
-            address_mode_w: EAddressMode::ClampToEdge,
-            /// How to filter the texture when it needs to be magnified (made larger)
-            mag_filter: EFilterMode::Nearest,
-            /// How to filter the texture when it needs to be minified (made smaller)
-            min_filter: EFilterMode::Nearest,
-            /// How to filter between mip map levels
-            mipmap_filter: EFilterMode::Nearest,
-            /// If this is enabled, this is a comparison sampler using the given comparison function.
-            compare: None,
-            /// Valid values: 1, 2, 4, 8, and 16.
-            anisotropy_clamp: EAnisotropyClamp::One,
-            /// Border color to use when address_mode is [`AddressMode::ClampToBorder`]
-            border_color: None,
+impl EAnisotropyClamp {
+    pub fn val(&self) -> pi_render::rhi::sampler::EAnisotropyClamp {
+        match self {
+            EAnisotropyClamp::None      => pi_render::rhi::sampler::EAnisotropyClamp::None,
+            EAnisotropyClamp::One       => pi_render::rhi::sampler::EAnisotropyClamp::One,
+            EAnisotropyClamp::Two       => pi_render::rhi::sampler::EAnisotropyClamp::Two,
+            EAnisotropyClamp::Four      => pi_render::rhi::sampler::EAnisotropyClamp::Four,
+            EAnisotropyClamp::Eight     => pi_render::rhi::sampler::EAnisotropyClamp::Eight,
+            EAnisotropyClamp::Sixteen   => pi_render::rhi::sampler::EAnisotropyClamp::Sixteen,
         }
-    }
-    
-    #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
-    #[cfg(feature = "pi_js_export")]
-    pub fn address_mode_u(&self) -> EAddressMode {
-        self.address_mode_u
-    }
-    #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
-    #[cfg(feature = "pi_js_export")]
-    pub fn set_address_mode_u(&mut self, val: EAddressMode) {
-        self.address_mode_u = val;
-    }
-    
-    #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
-    #[cfg(feature = "pi_js_export")]
-    pub fn address_mode_v(&self) -> EAddressMode {
-        self.address_mode_v
-    }
-    #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
-    #[cfg(feature = "pi_js_export")]
-    pub fn set_address_mode_v(&mut self, val: EAddressMode) {
-        self.address_mode_v = val;
-    }
-    #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
-    #[cfg(feature = "pi_js_export")]
-    pub fn address_mode_w(&self) -> EAddressMode {
-        self.address_mode_w
-    }
-    #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
-    #[cfg(feature = "pi_js_export")]
-    pub fn set_address_mode_w(&mut self, val: EAddressMode) {
-        self.address_mode_w = val;
-    }
-    #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
-    #[cfg(feature = "pi_js_export")]
-    pub fn mag_filter(&self) -> EFilterMode {
-        self.mag_filter
-    }
-    #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
-    #[cfg(feature = "pi_js_export")]
-    pub fn set_mag_filter(&mut self, val: EFilterMode) {
-        self.mag_filter = val;
-    }
-    #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
-    #[cfg(feature = "pi_js_export")]
-    pub fn min_filter(&self) -> EFilterMode {
-        self.min_filter
-    }
-    #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
-    #[cfg(feature = "pi_js_export")]
-    pub fn set_min_filter(&mut self, val: EFilterMode) {
-        self.min_filter = val;
-    }
-    #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
-    #[cfg(feature = "pi_js_export")]
-    pub fn mipmap_filter(&self) -> EFilterMode {
-        self.mipmap_filter
-    }
-    #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
-    #[cfg(feature = "pi_js_export")]
-    pub fn set_mipmap_filter(&mut self, val: EFilterMode) {
-        self.mipmap_filter = val;
-    }
-    #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
-    #[cfg(feature = "pi_js_export")]
-    pub fn compare(&self) -> Option<CompareFunction> {
-        self.compare
-    }
-    #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
-    #[cfg(feature = "pi_js_export")]
-    pub fn set_compare(&mut self, val: Option<CompareFunction>) {
-        self.compare = val;
-    }
-    #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
-    #[cfg(feature = "pi_js_export")]
-    pub fn border_color(&self) -> Option<SamplerBorderColor> {
-        self.border_color
-    }
-    #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
-    #[cfg(feature = "pi_js_export")]
-    pub fn set_border_color(&mut self, val: Option<SamplerBorderColor>) {
-        self.border_color = val;
-    }
-    #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
-    #[cfg(feature = "pi_js_export")]
-    pub fn anisotropy_clamp(&self) -> EAnisotropyClamp {
-        self.anisotropy_clamp
-    }
-    #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
-    #[cfg(feature = "pi_js_export")]
-    pub fn set_anisotropy_clamp(&mut self, val: EAnisotropyClamp) {
-        self.anisotropy_clamp = val;
     }
 }

@@ -6,7 +6,7 @@ use pi_atom::Atom;
 use pi_assets::{mgr::AssetMgr, asset::Handle};
 use pi_bevy_asset::ShareAssetMgr;
 use pi_bevy_render_plugin::{PiRenderGraph, PiRenderDevice, PiRenderQueue, GraphError, component::GraphId};
-use pi_export_base::{export::Engine, constants::{SamplerDescriptor, sampler_desc}, asset::TextureDefaultView};
+use pi_export_base::{export::Engine, constants::*, asset::TextureDefaultView};
 use pi_window_renderer::{WindowRenderer, PluginWindowRender};
 use pi_hal::image::{load_from_url, DynamicImage};
 use pi_hash::XHashMap;
@@ -50,7 +50,7 @@ impl SpineTextureSize {
         self.1
     }
 }
-pub fn render_size(val: Option<&SpineTextureSize>) -> Option<(u32, u32)> {
+pub fn render_size(val: &Option<SpineTextureSize>) -> Option<(u32, u32)> {
     match val {
         Some(val) => Some((val.0, val.1)),
         None => None,
@@ -69,10 +69,13 @@ pub fn init_spine_context(
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[cfg(feature = "pi_js_export")]
-pub fn spine_renderer_create(app: &mut Engine, name: String, rendersize: Option<SpineTextureSize>) -> f64 {
-    use bevy::prelude::apply_system_buffers;
-    use pi_spine_rs::ESpineCommand;
+pub fn spine_renderer_create(app: &mut Engine, name: String, width: Option<f64>, height: Option<f64>) -> f64 {
 
+    let rendersize =  if let (Some(width), Some(height)) = (width, height) {
+        Some(SpineTextureSize(width as u32, height as u32))
+    } else {
+        None
+    };
     log::warn!("To Screen: {:?}", rendersize.is_none());
 
     let id_renderer = {
@@ -81,7 +84,7 @@ pub fn spine_renderer_create(app: &mut Engine, name: String, rendersize: Option<
     
         let final_render_format = app.world.get_resource::<WindowRenderer>().unwrap().format();
         let mut ctx = app.world.get_resource_mut::<SpineRenderContext>().unwrap();
-        ActionSpine::create_spine_renderer(id_renderer, render_size(rendersize.as_ref()), &mut ctx, final_render_format);
+        ActionSpine::create_spine_renderer(id_renderer, render_size(&rendersize), &mut ctx, final_render_format);
         
         id_renderer
     };
@@ -205,12 +208,33 @@ pub fn spine_remove_texture(app: &mut Engine, id_renderer: f64, key: &pi_export_
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[cfg(feature = "pi_js_export")]
-pub fn spine_use_texture(app: &mut Engine, id_renderer: f64, texture: &TextureDefaultView, samplerdesc: &SamplerDescriptor) {
+pub fn spine_use_texture(app: &mut Engine, id_renderer: f64, texture: &TextureDefaultView, 
+    address_mode_u: EAddressMode,
+    address_mode_v: EAddressMode,
+    address_mode_w: EAddressMode,
+    mag_filter: EFilterMode,
+    min_filter: EFilterMode,
+    mipmap_filter: EFilterMode,
+    compare: CompareFunction,
+    anisotropy_clamp: EAnisotropyClamp,
+    border_color: SamplerBorderColor,
+) {
+
     let id_renderer = KeySpineRenderer::from_f64(id_renderer);
     let device = app.world.get_resource::<PiRenderDevice>().unwrap().clone();
     let asset_samplers = app.world.get_resource::<ShareAssetMgr<SamplerRes>>().unwrap();
 
-    let samplerdesc = sampler_desc(samplerdesc);
+    let samplerdesc = sampler_desc(
+        address_mode_u,
+        address_mode_v,
+        address_mode_w,
+        mag_filter,
+        min_filter,
+        mipmap_filter,
+        compare,
+        anisotropy_clamp,
+        border_color,
+    );
     let sampler = if let Some(sampler) = asset_samplers.get(&samplerdesc) {
         sampler
     } else {
