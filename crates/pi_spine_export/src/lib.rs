@@ -26,37 +26,6 @@ use pi_spine_rs::{
 };
 use wasm_bindgen::prelude::wasm_bindgen;
 
-#[derive(Debug, Clone, Copy)]
-
-#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
-#[cfg(feature = "pi_js_export")]
-pub struct SpineTextureSize(pub u32, pub u32);
-#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
-#[cfg(feature = "pi_js_export")]
-impl SpineTextureSize {
-    #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
-    #[cfg(feature = "pi_js_export")]
-    pub fn new(w: u32, h: u32) -> Self {
-        Self(w, h)
-    }
-    #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
-    #[cfg(feature = "pi_js_export")]
-    pub fn width(&self) -> u32 {
-        self.0
-    }
-    #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
-    #[cfg(feature = "pi_js_export")]
-    pub fn height(&self) -> u32 {
-        self.1
-    }
-}
-pub fn render_size(val: &Option<SpineTextureSize>) -> Option<(u32, u32)> {
-    match val {
-        Some(val) => Some((val.0, val.1)),
-        None => None,
-    }
-}
-
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[cfg(feature = "pi_js_export")]
 pub fn init_spine_context(
@@ -69,10 +38,11 @@ pub fn init_spine_context(
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[cfg(feature = "pi_js_export")]
-pub fn spine_renderer_create(app: &mut Engine, name: String, width: Option<f64>, height: Option<f64>) -> f64 {
-
-    let rendersize =  if let (Some(width), Some(height)) = (width, height) {
-        Some(SpineTextureSize(width as u32, height as u32))
+pub fn spine_renderer_create(app: &mut Engine, name: String, width: f64, height: f64) -> f64 {
+    let width = width as u32;
+    let height = height as u32;
+    let rendersize: Option<(u32, u32)> =  if width != 4294967295 && height != 4294967295 {
+        Some((width as u32, height as u32))
     } else {
         None
     };
@@ -84,7 +54,7 @@ pub fn spine_renderer_create(app: &mut Engine, name: String, width: Option<f64>,
     
         let final_render_format = app.world.get_resource::<WindowRenderer>().unwrap().format();
         let mut ctx = app.world.get_resource_mut::<SpineRenderContext>().unwrap();
-        ActionSpine::create_spine_renderer(id_renderer, render_size(&rendersize), &mut ctx, final_render_format);
+        ActionSpine::create_spine_renderer(id_renderer, rendersize, &mut ctx, final_render_format);
         
         id_renderer
     };
@@ -276,7 +246,7 @@ pub fn spine_blend(app: &mut Engine, id_renderer: f64, val: bool) {
 pub fn spine_blend_mode(app: &mut Engine, id_renderer: f64, src: BlendFactor, dst: BlendFactor) {
     let id_renderer = KeySpineRenderer::from_f64(id_renderer);
     let mut cmds = app.world.get_resource_mut::<ActionListSpine>().unwrap();
-    ActionSpine::spine_blend_mode(&mut cmds, id_renderer, src.val(), dst.val());
+    ActionSpine::spine_blend_mode(&mut cmds, id_renderer, src.val().val(), dst.val().val());
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
