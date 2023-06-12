@@ -1,28 +1,36 @@
-use bevy::prelude::App;
 use pi_assets::asset::Handle;
 use pi_bevy_asset::ShareAssetMgr;
 use pi_render::{rhi::asset::TextureRes, asset::TAssetKeyU64};
+use js_proxy_gen_macro::pi_js_export;
 
-use crate::export::{Atom, Engine};
+pub use crate::export::{Atom, Engine};
 
 #[cfg(target_arch = "wasm32")]
 use wasm_bindgen::prelude::*;
 
+#[pi_js_export]
+pub enum EAnisotropyClamp {
+    None = 0,
+    One,
+  
+}
+
+
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
-#[cfg(feature = "pi_js_export")]
+#[pi_js_export]
 pub struct TextureDefaultView(Handle<pi_render::rhi::asset::TextureRes>);
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
-#[cfg(feature = "pi_js_export")]
+#[pi_js_export]
 impl TextureDefaultView {
     #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
-    #[cfg(feature = "pi_js_export")]
+    #[pi_js_export]
     pub fn width(&self) -> u32 {
         self.0.width
     }
     #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
-    #[cfg(feature = "pi_js_export")]
+    #[pi_js_export]
     pub fn height(&self) -> u32 {
         self.0.height
     }
@@ -40,7 +48,7 @@ impl From<Handle<pi_render::rhi::asset::TextureRes>> for TextureDefaultView {
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
-#[cfg(feature = "pi_js_export")]
+#[pi_js_export]
 pub fn query_texture_default_view(app: &mut Engine, path: &Atom) -> Option<TextureDefaultView> {
 
     if let Some(assets) = app.world.get_resource::<ShareAssetMgr<TextureRes>>() {

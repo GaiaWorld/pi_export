@@ -1,16 +1,17 @@
 
 
 use pi_bevy_render_plugin::constant::texture_sampler::*;
+use js_proxy_gen_macro::pi_js_export;
 
 #[cfg(target_arch = "wasm32")]
 use wasm_bindgen::prelude::*;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
-#[cfg(feature = "pi_js_export")]
+#[pi_js_export]
 pub enum EShaderStage {
     /// Binding is not visible from any shader stage.
-    NONE,
+    NONE = 0,
     /// Binding is visible from the vertex shader of a render pipeline.
     VERTEX,
     /// Binding is visible from the fragment shader of a render pipeline.
@@ -34,7 +35,7 @@ impl EShaderStage {
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
-#[cfg(feature = "pi_js_export")]
+#[pi_js_export]
 pub enum BlendFactor {
     /// 0.0
     Zero = 0,
@@ -85,10 +86,10 @@ impl BlendFactor {
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
-#[cfg(feature = "pi_js_export")]
+#[pi_js_export]
 pub enum BlendOperation {
     /// Src + Dst
-    Add,
+    Add = 0,
     /// Src - Dst
     Subtract,
     /// Dst - Src
@@ -112,9 +113,9 @@ impl BlendOperation {
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
-#[cfg(feature = "pi_js_export")]
+#[pi_js_export]
 pub enum ColorFormat {
-    RGBA,
+    RGBA = 0,
     RGB,
 }
 impl ColorFormat {
@@ -128,9 +129,9 @@ impl ColorFormat {
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
-#[cfg(feature = "pi_js_export")]
+#[pi_js_export]
 pub enum DepthFormat {
-    None,
+    None = 0,
     Depth32,
     Depth24Stencil8,
 }
@@ -153,9 +154,9 @@ impl DepthFormat {
 
 #[derive(Debug, Clone, Copy)]
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
-#[cfg(feature = "pi_js_export")]
+#[pi_js_export]
 pub enum EColorSpace {
-    GAMMA,
+    GAMMA = 0,
     LINEAR,
 }
 impl EColorSpace {
@@ -175,9 +176,9 @@ impl EColorSpace {
 
 #[derive(Debug, Clone, Copy)]
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
-#[cfg(feature = "pi_js_export")]
+#[pi_js_export]
 pub enum CompareFunction {
-    None,
+    None = 0,
     /// Function never passes
     Never,
     /// Function passes if new value less than existing value
@@ -241,9 +242,9 @@ pub fn sampler_desc(
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
-#[cfg(feature = "pi_js_export")]
+#[pi_js_export]
 pub enum EDefaultTexture {
-    Black,
+    Black = 0,
     White,
 }
 impl EDefaultTexture {
@@ -257,9 +258,9 @@ impl EDefaultTexture {
 
 #[derive(Debug, Clone, Copy, Hash, PartialEq, Eq)]
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
-#[cfg(feature = "pi_js_export")]
+#[pi_js_export]
 pub enum EFilterMode {
-    Nearest,
+    Nearest = 0,
     Linear,
 }
 impl EFilterMode {
@@ -273,13 +274,13 @@ impl EFilterMode {
 
 #[derive(Debug, Clone, Copy, Hash, PartialEq, Eq)]
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
-#[cfg(feature = "pi_js_export")]
+#[pi_js_export]
 pub enum EAddressMode {
     /// Clamp the value to the edge of the texture
     ///
     /// -0.25 -> 0.0
     /// 1.25  -> 1.0
-    ClampToEdge,
+    ClampToEdge = 0,
     /// Repeat the texture in a tiling fashion
     ///
     /// -0.25 -> 0.75
@@ -310,9 +311,9 @@ impl EAddressMode {
 
 #[derive(Debug, Clone, Copy, Hash, PartialEq, Eq)]
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
-#[cfg(feature = "pi_js_export")]
+#[pi_js_export]
 pub enum SamplerBorderColor {
-    None,
+    None = 0,
     /// [0, 0, 0, 0]
     TransparentBlack,
     /// [0, 0, 0, 1]
@@ -341,9 +342,9 @@ impl SamplerBorderColor {
 
 #[derive(Debug, Clone, Copy, Hash, PartialEq, Eq)]
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
-#[cfg(feature = "pi_js_export")]
+#[pi_js_export]
 pub enum EAnisotropyClamp {
-    None,
+    None = 0,
     One,
     Two,
     Four,

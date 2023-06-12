@@ -14,9 +14,11 @@ use bevy::{ecs::{
     query::QueryState,
     system::{Query, Res, SystemState},
 }, prelude::{Deref, DerefMut}};
+use js_proxy_gen_macro::pi_js_export;
 use pi_bevy_ecs_extend::prelude::{Down, Layer, OrDefault, Up};
 use pi_null::Null;
 use pi_style::style::Aabb2;
+use serde::{Serialize, Deserialize};
 use std::mem::transmute;
 
 
@@ -158,6 +160,28 @@ impl Gui {
 	pub fn commands_mut(&mut self) -> &mut UserCommands {
 		&mut self.commands
 	}
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct OffsetDocument {
+    pub left: f32,
+    pub top: f32,
+    pub width: f32,
+    pub height: f32,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct Rect {
+    pub left: f32,
+    pub top: f32,
+    pub width: f32,
+    pub height: f32,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct Size {
+    pub width: f32,
+    pub height: f32,
 }
 
 /// 用点命中一个节点

@@ -150,44 +150,7 @@ pub fn create_gui(
     gui
 }
 
-// 取出动画事件
-#[wasm_bindgen]
-pub fn get_animation_events(
-    engine: &Engine,
-) -> Option<js_sys::ArrayBuffer> {
-	let key_frames = engine.world.get_resource::<KeyFramesSheet>().unwrap();
-	// log::warn!("get_animation_events=======");
 
-	let events = key_frames.get_animation_events();
-	let map = key_frames.get_group_bind();
-	
-	let mut arr = js_sys::Uint32Array::new_with_length(events.len() as u32 * 5);
-	let mut i = 0;
-	for (group_id, ty, count) in events.iter() {
-		// if let pi_animation::animation_listener::EAnimationEvent::End = *ty {
-		// 	log::warn!("end=========={:?}", group_id);
-		// }
-		match map.get(*group_id) {
-			Some(r) => {
-				
-				arr.set_index(i, r.0.index()); // entity
-				arr.set_index(i + 1, r.0.generation());
-				arr.set_index(i + 2, r.1.get_hash() as u32); // name hash
-			},
-			None => continue,
-		};
-		arr.set_index(i + 3, unsafe {transmute::<_, u8>(*ty)}  as u32); // event type
-		arr.set_index(i + 4, *count); // cur iter count
-		i += 5;
-	}
-	if arr.byte_length() > 0 {
-		Some(arr.buffer())
-	} else {
-		None
-	}
-	
-	// arr
-}
 #[wasm_bindgen]
 pub fn log_animation(
     engine: &Engine,
@@ -196,154 +159,64 @@ pub fn log_animation(
 	key_frames.log();
 }
 
-#[wasm_bindgen]
-pub struct OffsetDocument {
-    pub left: f32,
-    pub top: f32,
-    pub width: f32,
-    pub height: f32,
-}
 
-/// content宽高的累加值
-#[allow(unused_attributes)]
-#[wasm_bindgen]
-pub fn content_box(gui: &mut Gui, engine: &mut Engine, node_id: f64) -> JsValue {
-    let node: Entity = Entity::from_bits(unsafe { transmute(node_id) });
-    let mut cur_child = match gui.down_query.get(&engine.world, node) {
-        Ok(down) => down.head(),
-        _ => return JsValue::from_serde(&Size { width: 0.0, height: 0.0 }).unwrap(),
-    };
-
-    let (mut left, mut right, mut top, mut bottom) = (std::f32::MAX, 0.0, std::f32::MAX, 0.0);
-    while !EntityKey(cur_child).is_null() {
-        let l = match gui.layout_query.get(&engine.world, cur_child) {
-            Ok(r) => r,
-            _ => break,
-        };
-        let r = l.rect.right;
-        let b = l.rect.bottom;
-        if l.rect.left < left {
-            left = l.rect.left;
-        }
-        if r > right {
-            right = r;
-        }
-        if b > bottom {
-            bottom = b;
-        }
-        if l.rect.top < top {
-            top = l.rect.top;
-        }
-
-        cur_child = match gui.up_query.get(&engine.world, cur_child) {
-            Ok(r) => r.next(),
-            _ => break,
-        };
-    }
-    JsValue::from_serde(&Size {
-        width: right - left,
-        height: bottom - top,
-    })
-    .unwrap()
-}
-
-// impl OffsetDocument {
-// 	#[wasm_bindgen]
-// 	pub fn left(&self) -> f32 {
-// 		self.left
-// 	}
-// 	#[wasm_bindgen]
-// 	pub fn top(&self) -> f32 {
-// 		self.top
-// 	}
-// 	#[wasm_bindgen]
-// 	pub fn width(&self) -> f32 {
-// 		self.width
-// 	}
-// 	#[wasm_bindgen]
-// 	pub fn height(&self) -> f32 {
-// 		self.height
-// 	}
+// /**
+//  * 获取canvas资源
+//  */
+// #[wasm_bindgen]
+// pub fn get_canvas_source(
+//     gui: &mut Gui,
+//     soruce: u32, // 是否缓存
+// ) -> i32 {
+//     -1
 // }
 
-/// 等同于html的getBoundingClientRect TODO
-/// left top width height
-#[wasm_bindgen]
-pub fn offset_document(gui: &mut Gui, engine: &mut Engine, node: f64) -> OffsetDocument {
-    let node: Entity = Entity::from_bits(unsafe { transmute(node) });
-    match gui.quad_query.get(&engine.world, node) {
-        Ok(quad) => OffsetDocument {
-            left: quad.mins.x,
-            top: quad.mins.y,
-            width: quad.maxs.x - quad.mins.x,
-            height: quad.maxs.y - quad.mins.y,
-        },
-        _ => OffsetDocument {
-            left: 0.0,
-            top: 0.0,
-            width: 0.0,
-            height: 0.0,
-        },
-    }
-}
+// /**
+//  * canvas宽高改变时调用(分配纹理成功，返回对应索引，否则返回-1)
+//  * @return __jsObj 纹理
+// */
+// #[wasm_bindgen]
+// pub fn set_canvas_size(
+//     gui: &mut Gui,
+//     node: f64,
+//     width: u32,
+//     height: u32,
+//     soruce: u32, // 是否缓存
+//     need_depth: bool, // 是否需要深度缓冲区
+//                  // avail_width: u32,
+//                  // avail_height: u32,
+// ) -> i32 {
+//     1
+// }
 
-/**
- * 获取canvas资源
- */
-#[wasm_bindgen]
-pub fn get_canvas_source(
-    gui: &mut Gui,
-    soruce: u32, // 是否缓存
-) -> i32 {
-    -1
-}
+// #[wasm_bindgen]
+// pub fn get_canvas_target(gui: &mut Gui, index: usize) -> Option<usize> { Some(1) }
 
-/**
- * canvas宽高改变时调用(分配纹理成功，返回对应索引，否则返回-1)
- * @return __jsObj 纹理
-*/
-#[wasm_bindgen]
-pub fn set_canvas_size(
-    gui: &mut Gui,
-    node: f64,
-    width: u32,
-    height: u32,
-    soruce: u32, // 是否缓存
-    need_depth: bool, // 是否需要深度缓冲区
-                 // avail_width: u32,
-                 // avail_height: u32,
-) -> i32 {
-    1
-}
+// #[wasm_bindgen]
+// pub fn get_canvas_rect(gui: &mut Gui, index: usize) -> JsValue { JsValue::from_serde(&CanvasRect(0, 0, 0, 0)).unwrap() }
 
-#[wasm_bindgen]
-pub fn get_canvas_target(gui: &mut Gui, index: usize) -> Option<usize> { Some(1) }
+// /**
+//  * canvas内容发生改变时，应该调用此方法更新gui渲染
+// */
+// #[wasm_bindgen]
+// pub fn update_canvas(gui: &mut Gui, _node: u32) {}
 
-#[wasm_bindgen]
-pub fn get_canvas_rect(gui: &mut Gui, index: usize) -> JsValue { JsValue::from_serde(&CanvasRect(0, 0, 0, 0)).unwrap() }
+// #[derive(Serialize, Deserialize, Debug)]
+// pub struct Rect {
+//     pub left: f32,
+//     pub top: f32,
+//     pub width: f32,
+//     pub height: f32,
+// }
 
-/**
- * canvas内容发生改变时，应该调用此方法更新gui渲染
-*/
-#[wasm_bindgen]
-pub fn update_canvas(gui: &mut Gui, _node: u32) {}
+// #[derive(Serialize, Deserialize, Debug)]
+// pub struct Size {
+//     pub width: f32,
+//     pub height: f32,
+// }
 
-#[derive(Serialize, Deserialize, Debug)]
-pub struct Rect {
-    pub left: f32,
-    pub top: f32,
-    pub width: f32,
-    pub height: f32,
-}
-
-#[derive(Serialize, Deserialize, Debug)]
-pub struct Size {
-    pub width: f32,
-    pub height: f32,
-}
-
-#[derive(Serialize)]
-pub struct CanvasRect(u32, u32, u32, u32);
+// #[derive(Serialize)]
+// pub struct CanvasRect(u32, u32, u32, u32);
 
 #[inline]
 fn run_all(rt: &SingleTaskRunner<()>) {

@@ -886,12 +886,12 @@ pub fn node_info(engine: &mut Engine, node_id: f64) -> JsValue {
 
     let draw_list = match engine.world.query::<&DrawList>().get(&engine.world, node_id) {
         Ok(r) => r.0.clone(),
-        _ => pi_map::smallvecmap::SmallVecMap::default(),
+        _ => SmallVec::default(),
     };
 
     let mut draw_objs = Vec::new();
-    for (i, _) in draw_list.iter() {
-        if let Ok(pipeline_meta) = engine.world.query::<&PipelineMeta>().get(&engine.world, i.clone()) {
+    for i in draw_list.iter() {
+        if let Ok(pipeline_meta) = engine.world.query::<&PipelineMeta>().get(&engine.world, i.id) {
 			draw_objs.push(RenderObject {
 				id: format!("{:?}", i),
 				name: pipeline_meta.program.shader_meta.name.clone(),

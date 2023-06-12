@@ -29,6 +29,8 @@ pub use pi_export_base::export::{Atom, Engine};
 pub use super::Gui;
 use pi_ui_render::system::RunState;
 use pi_bevy_render_plugin::FrameState;
+use crate::{OffsetDocument, Size};
+use pi_ui_render::resource::animation_sheet::KeyFramesSheet;
 
 #[cfg(target_arch="wasm32")]
 use wasm_bindgen::prelude::wasm_bindgen;
@@ -132,17 +134,17 @@ macro_rules! other_out_export {
 	};
 
 	// 带返回值的接口
-	(@with_return_node, $func_name:ident, $context: ident: $context_ty: ty, $node: ident, $return_ty: ty, $expr:expr, $($name_ref: ident: &$ty_ref: ty,)*; $($name: ident: $ty: ty,)*) => {
+	(@with_return_node, $func_name:ident, $($context: ident: $context_ty: ty,)*; $node: ident, $return_ty: ty, $expr:expr, $($name_ref: ident: &$ty_ref: ty,)*; $($name: ident: $ty: ty,)*) => {
 		#[cfg(feature="pi_js_export")]
 		
-		pub fn $func_name($context: $context_ty, $node: f64, $($name_ref: &$ty_ref,)* $($name: $ty,)*) -> $return_ty {
+		pub fn $func_name($($context: $context_ty,)* $node: f64, $($name_ref: &$ty_ref,)* $($name: $ty,)*) -> $return_ty {
 			let $node = unsafe {Entity::from_bits(transmute::<f64, u64>($node))};
 			$expr
 		}
 
 		#[cfg(target_arch="wasm32")]
 		#[wasm_bindgen]
-		pub fn $func_name($context: $context_ty, $node: f64, $($name_ref: &$ty_ref,)* $($name: $ty,)*) -> $return_ty {
+		pub fn $func_name($($context: $context_ty,)* $node: f64, $($name_ref: &$ty_ref,)* $($name: $ty,)*) -> $return_ty {
 			let $node = unsafe {Entity::from_bits(transmute::<f64, u64>($node))};
 			$expr
 		}
@@ -584,7 +586,7 @@ style_out_export!(@expr background_repeat, BackgroundRepeatType, ImageRepeat {
 	x: u8, y: u8, );
 
 style_out_export!(@expr 
-	mask_image_linenear,
+	mask_image_linear,
 	MaskImageType,
 	MaskImage::LinearGradient(to_linear_gradient_color(
         color_and_positions.as_slice(),
@@ -877,6 +879,16 @@ style_out_export!(@expr animation_name_str, AnimationNameType, {
 		value,
 	}
 },value: &str,; scope_hash: u32,);
+
+style_out_export!(
+	@owner 
+	runtime_animation, 
+	gui.commands.add_runtime_animation(node_id, animation, key_frames, scope_hash as usize),
+	{},;
+	animation: &str,
+	key_frames: &str,
+	scope_hash: u32,
+);
 
 #[cfg(feature="pi_js_export")]
 pub fn set_animation_str(gui: &mut Gui, node_id: f64, value: &str, scope_hash: u32) {
@@ -1487,7 +1499,7 @@ other_out_export!(
 	bool,
     true,
 	_gui: &mut Gui,;
-	;
+	_engine: &Engine,;
 	_node: f64,
 );
 
@@ -1497,7 +1509,7 @@ type ReturnNode = Option<f64>;
 other_out_export!(
 	@with_return_node, 
     first_child,
-    _gui: &Gui,
+    _gui: &Gui,;
 	_parent,
 	ReturnNode,
     None,;
@@ -1507,7 +1519,7 @@ other_out_export!(
 other_out_export!(
 	@with_return_node, 
     last_child,
-    _gui: &Gui,
+    _gui: &Gui,;
 	_parent,
 	ReturnNode,
     None,;
@@ -1517,7 +1529,7 @@ other_out_export!(
 other_out_export!(
 	@with_return_node, 
     next_sibling,
-    _gui: &Gui,
+    _gui: &Gui,;
 	_node,
 	ReturnNode,
     None,;
@@ -1527,7 +1539,7 @@ other_out_export!(
 other_out_export!(
 	@with_return_node, 
     previous_sibling,
-    _gui: &Gui,
+    _gui: &Gui,;
 	_node,
 	ReturnNode,
     None,;
@@ -1537,7 +1549,7 @@ other_out_export!(
 other_out_export!(
 	@with_return_node, 
     get_layer,
-    _gui: &Gui,
+    _gui: &Gui,;
 	_node,
 	u32,
     0,;
@@ -1549,7 +1561,7 @@ other_out_export!(
 other_out_export!(
 	@with_return_node, 
     offset_top,
-    _gui: &Gui,
+    _gui: &Gui,;
 	_node,
 	u32,
     0,;
@@ -1561,7 +1573,7 @@ other_out_export!(
 other_out_export!(
 	@with_return_node, 
     offset_left,
-    _gui: &Gui,
+    _gui: &Gui,;
 	_node,
 	u32,
     0,;
@@ -1573,7 +1585,7 @@ other_out_export!(
 other_out_export!(
 	@with_return_node, 
     offset_width,
-    _gui: &Gui,
+    _gui: &Gui,;
 	_node,
 	u32,
     0,;
@@ -1585,10 +1597,132 @@ other_out_export!(
 other_out_export!(
 	@with_return_node, 
     offset_height,
-    _gui: &Gui,
+    _gui: &Gui,;
 	_node,
 	u32,
     0,;
+);
+
+/// 等同于html的getBoundingClientRect TODO
+/// left top width height
+other_out_export!(
+	@with_return_node, 
+    offset_document,
+    gui: &mut Gui,
+	engine: &Engine,;
+	node,
+	String,
+    {
+		let value = match gui.quad_query.get(&engine.world, node) {
+			Ok(quad) => OffsetDocument {
+				left: quad.mins.x,
+				top: quad.mins.y,
+				width: quad.maxs.x - quad.mins.x,
+				height: quad.maxs.y - quad.mins.y,
+			},
+			_ => OffsetDocument {
+				left: 0.0,
+				top: 0.0,
+				width: 0.0,
+				height: 0.0,
+			},
+		};
+		serde_json::to_string(&value).unwrap()
+	},;
+);
+
+other_out_export!(
+	@with_return_node, 
+    content_box,
+    gui: &mut Gui,
+	engine: &Engine,;
+	node,
+	String,
+    {
+		let mut cur_child = match gui.down_query.get(&engine.world, node) {
+			Ok(down) => down.head(),
+			_ => return serde_json::to_string(&Size { width: 0.0, height: 0.0 }).unwrap(),
+		};
+	
+		let (mut left, mut right, mut top, mut bottom) = (std::f32::MAX, 0.0, std::f32::MAX, 0.0);
+		while !EntityKey(cur_child).is_null() {
+			let l = match gui.layout_query.get(&engine.world, cur_child) {
+				Ok(r) => r,
+				_ => break,
+			};
+			let r = l.rect.right;
+			let b = l.rect.bottom;
+			if l.rect.left < left {
+				left = l.rect.left;
+			}
+			if r > right {
+				right = r;
+			}
+			if b > bottom {
+				bottom = b;
+			}
+			if l.rect.top < top {
+				top = l.rect.top;
+			}
+	
+			cur_child = match gui.up_query.get(&engine.world, cur_child) {
+				Ok(r) => r.next(),
+				_ => break,
+			};
+		}
+		serde_json::to_string(&Size {
+			width: right - left,
+			height: bottom - top,
+		}).unwrap()
+	},;
+);
+
+// 取出动画事件的buffer长度
+other_out_export!(
+	@with_return, 
+    get_animation_events_max_len,
+	u32,
+    {
+		let key_frames = engine.world.get_resource::<KeyFramesSheet>().unwrap();
+		let events = key_frames.get_animation_events();
+
+		return (events.len() * 5) as u32;
+	},;engine: &Engine,;
+);
+
+// 填充动画事件的buffer， 并返回buffer长度
+// 注意， 先调用get_animation_events_max_len获得事件buffer的长度， 将传入的buffer设置为该长度， 否则该函数可能panic
+other_out_export!(
+	@with_return, 
+    get_animation_events,
+	u32,
+    {
+		let key_frames = engine.world.get_resource::<KeyFramesSheet>().unwrap();
+		// log::warn!("get_animation_events=======");
+
+		let events = key_frames.get_animation_events();
+		let map = key_frames.get_group_bind();
+		
+		let mut i = 0;
+		for (group_id, ty, count) in events.iter() {
+			// if let pi_animation::animation_listener::EAnimationEvent::End = *ty {
+			// 	log::warn!("end=========={:?}", group_id);
+			// }
+			match map.get(*group_id) {
+				Some(r) => {
+					
+					arr[i] = r.0.index(); // entity
+					arr[i + 1] = r.0.generation();
+					arr[i + 2] = r.1.1.get_hash() as u32; // name hash
+				},
+				None => continue,
+			};
+			arr[i + 3] = unsafe {transmute::<_, u8>(*ty)}  as u32; // event type
+			arr[i + 4] = *count;  // cur iter count
+			i += 5;
+		}
+		i as u32
+	},arr: &mut [u32],;engine: &Engine,;
 );
 
 other_out_export!(
@@ -1617,20 +1751,6 @@ other_out_export!(
 		super::query(engine, gui, x, y)
 	}
 );
-
-#[derive(Serialize, Deserialize, Debug)]
-pub struct Rect {
-    pub left: f32,
-    pub top: f32,
-    pub width: f32,
-    pub height: f32,
-}
-
-#[derive(Serialize, Deserialize, Debug)]
-pub struct Size {
-    pub width: f32,
-    pub height: f32,
-}
 
 pub fn to_linear_gradient_color(color_and_positions: &[f32], direction: f32) -> LinearGradientColor {
     let arr = color_and_positions;

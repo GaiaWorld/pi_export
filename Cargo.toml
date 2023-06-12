@@ -60,8 +60,8 @@ debug= true
 # [patch."https://github.com/GaiaWorld/pi_render"]
 # pi_render = { path = "../pi_render_bevy_shader" }
 # render_derive = {path = "../pi_render_bevy_shader/crates/render_derive"}
-# render_utils = { path = "../pi_render/crates/render_utils" }
-# render_compile = { path = "../pi_render/crates/render_compile" }
+# render_utils = { path = "../pi_render_bevy_shader/crates/render_utils" }
+# render_compile = { path = "../pi_render_bevy_shader/crates/render_compile" }
 
 # [patch."https://github.com/GaiaWorld/pi_render_bevy"]
 # pi_bevy_post_process= { path = "../pi_render_bevy/crates/post_process" }

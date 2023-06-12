@@ -2,9 +2,6 @@ use pi_ui_render::{prelude::{UserCommands, UiPlugin}};
 use pi_bevy_post_process::PiPostProcessPlugin;
 use pi_bevy_render_plugin::{PiRenderPlugin, FrameState};
 use pi_idtree::InsertType;
-use pi_ui_render::resource::animation_sheet::KeyFramesSheet;
-
-// use pi_ecs::prelude::{DispatcherMgr, Id, LocalVersion, Offset};
 
 use crate::insert_as_root;
 
@@ -103,83 +100,6 @@ pub fn create_gui(
     // gui.commands.push_cmd(AnimationListenCmd(a_callback));
 
     gui
-}
-
-// 取出动画事件
-#[cfg(feature="pi_js_export")]
-pub fn get_animation_events(
-    engine: &Engine,
-) -> Option<Vec<u8>> {
-	let key_frames = engine.world.get_resource::<KeyFramesSheet>().unwrap();
-
-	let events = key_frames.get_animation_events();
-	let map = key_frames.get_group_bind();
-	let mut arr: Vec<u8> = Vec::new();
-	for (group_id, ty, count) in events.iter() {
-		match map.get(*group_id) {
-			Some(r) => {
-				arr.extend_from_slice(r.0.index().to_be_bytes().as_slice()); // entity
-				arr.extend_from_slice(r.0.generation().to_be_bytes().as_slice());
-				arr.extend_from_slice((r.1.get_hash() as u32).to_be_bytes().as_slice()); // name hash
-			},
-			None => continue,
-		};
-		arr.extend_from_slice((unsafe {transmute::<_, u8>(*ty)}  as u32).to_be_bytes().as_slice()); // event type
-		arr.extend_from_slice((*count).to_be_bytes().as_slice()); // cur iter count
-	}
-	if arr.len() > 0 {
-		Some(arr)
-	} else {
-		None
-	}
-	
-	// arr
-}
-
-#[cfg(feature="pi_js_export")]
-pub struct OffsetDocument {
-    left: f32,
-    top: f32,
-    width: f32,
-    height: f32,
-}
-
-impl OffsetDocument {
-    #[cfg(feature="pi_js_export")]
-    pub fn left(&self) -> f32 { self.left }
-    #[cfg(feature="pi_js_export")]
-    pub fn top(&self) -> f32 { self.top }
-    #[cfg(feature="pi_js_export")]
-    pub fn width(&self) -> f32 { self.width }
-    #[cfg(feature="pi_js_export")]
-    pub fn height(&self) -> f32 { self.height }
-}
-
-/// 等同于html的getBoundingClientRect TODO
-/// left top width height
-#[cfg(feature="pi_js_export")]
-pub fn offset_document(_gui: &mut Gui, _node: f64) -> OffsetDocument {
-    // let node: Entity = unsafe { transmute(node) };
-    // match gui.commands.quad_query.get(&gui.commands.world, node) {
-    //     Some(quad) => OffsetDocument {
-    //         left: quad.mins.x,
-    //         top: quad.mins.y,
-    //         width: quad.maxs.x - quad.mins.x,
-    //         height: quad.maxs.y - quad.mins.y,
-    //     },
-    //     None => OffsetDocument {
-    //         left: 0.0,
-    //         top: 0.0,
-    //         width: 0.0,
-    //         height: 0.0,
-    //     },
-    // }
-    OffsetDocument {
-        left: 0.0,
-        top: 0.0,
-        width: 0.0,
-        height: 0.0,
-    }
 }
 
 pub fn play_destroy_node(gui: &mut Gui, _engine: &mut Engine, context: &mut PlayContext, json: &Vec<json::JsonValue>) {

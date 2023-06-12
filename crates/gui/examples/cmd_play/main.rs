@@ -26,7 +26,6 @@ use std::{
     mem::transmute,
     path::Path,
 };
-use std::sync::atomic::AtomicUsize;
 //
 fn main() { framework::start(ExampleCommonPlay::default()) }
 
@@ -519,7 +518,7 @@ lazy_static! {
 
         play_mask_image, // 1
         play_mask_image_clip, // 1
-        play_mask_image_linenear, // 1
+        play_mask_image_linear, // 1
 
         play_border_color, // 1
         play_border_radius, // 1
