@@ -2,19 +2,16 @@
 use std::{num::NonZeroU32, mem::transmute};
 
 use bevy::{prelude::{Deref, DerefMut, App, Commands, Resource}, ecs::system::CommandQueue};
-use pi_atom::Atom;
 use pi_assets::{mgr::AssetMgr, asset::Handle};
 use pi_bevy_asset::ShareAssetMgr;
 use pi_bevy_render_plugin::{PiRenderGraph, PiRenderDevice, PiRenderQueue, GraphError, component::GraphId};
-use pi_export_base::{export::Engine, constants::*, asset::TextureDefaultView};
+pub use pi_export_base::{export::{Engine, Atom}, constants::*, asset::TextureDefaultView};
 use pi_window_renderer::{WindowRenderer, PluginWindowRender};
 use pi_hal::image::{load_from_url, DynamicImage};
 use pi_hash::XHashMap;
 use pi_render::{rhi::{asset::TextureRes, device::RenderDevice, RenderQueue}, renderer::sampler::SamplerRes, asset::TAssetKeyU64};
 
-use pi_export_base::constants::{ColorFormat, BlendFactor};
 use pi_spine_rs::{
-    shaders::{KeySpineShader},
     KeySpineRenderer,
     SpineRenderContext,
     ActionListSpine,
@@ -24,6 +21,7 @@ use pi_spine_rs::{
     PluginSpineRenderer,
     SpineTextureLoad
 };
+pub use pi_spine_rs::shaders::{KeySpineShader};
 use wasm_bindgen::prelude::wasm_bindgen;
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
@@ -38,10 +36,8 @@ pub fn init_spine_context(
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[cfg(feature = "pi_js_export")]
-pub fn spine_renderer_create(app: &mut Engine, name: String, width: f64, height: f64) -> f64 {
-    let width = width as u32;
-    let height = height as u32;
-    let rendersize: Option<(u32, u32)> =  if width != 4294967295 && height != 4294967295 {
+pub fn spine_renderer_create(app: &mut Engine, name: String, width: Option<f64>, height: Option<f64>) -> f64 {
+    let rendersize: Option<(u32, u32)> =  if let (Some(width), Some(height)) = (width, height) {
         Some((width as u32, height as u32))
     } else {
         None
@@ -103,7 +99,7 @@ pub fn spine_renderer_dispose(app: &mut Engine, id_renderer: f64) {
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[cfg(feature = "pi_js_export")]
-pub fn spine_texture_load(app: &mut Engine, key: &pi_export_base::export::Atom) {
+pub fn spine_texture_load(app: &mut Engine, key: &Atom) {
     let mut loader = app.world.get_resource_mut::<SpineTextureLoad>().unwrap();
 
     loader.load(pi_atom::Atom::from(key.as_str()));
@@ -112,8 +108,8 @@ pub fn spine_texture_load(app: &mut Engine, key: &pi_export_base::export::Atom) 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[cfg(feature = "pi_js_export")]
 pub struct SpineTextureLoadRecord {
-    success: XHashMap<Atom, TextureDefaultView>,
-    fail: XHashMap<Atom, String>,
+    success: XHashMap<pi_atom::Atom, TextureDefaultView>,
+    fail: XHashMap<pi_atom::Atom, String>,
 }
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[cfg(feature = "pi_js_export")]
@@ -125,12 +121,12 @@ impl SpineTextureLoadRecord {
     }
     #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
     #[cfg(feature = "pi_js_export")]
-    pub fn success(&mut self, key: &pi_export_base::export::Atom) -> Option<TextureDefaultView> {
+    pub fn success(&mut self, key: &Atom) -> Option<TextureDefaultView> {
         self.success.remove(key)
     }
     #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
     #[cfg(feature = "pi_js_export")]
-    pub fn fail(&mut self, key: &pi_export_base::export::Atom) -> Option<String> {
+    pub fn fail(&mut self, key: &Atom) -> Option<String> {
         self.fail.remove(key)
     }
     #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
@@ -167,7 +163,7 @@ pub fn spine_texture_record(app: &mut Engine, id_renderer: f64, texture: &Textur
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[cfg(feature = "pi_js_export")]
-pub fn spine_remove_texture(app: &mut Engine, id_renderer: f64, key: &pi_export_base::export::Atom) {
+pub fn spine_remove_texture(app: &mut Engine, id_renderer: f64, key: &Atom) {
     let id_renderer = KeySpineRenderer::from_f64(id_renderer);
     let mut renderers = app.world.get_resource_mut::<SpineRenderContext>().unwrap();
     if let Some(renderer) = renderers.get_mut(id_renderer) {
@@ -268,7 +264,6 @@ pub fn spine_draw(app: &mut Engine, id_renderer: f64, vertices: &[f32], indices:
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[cfg(feature = "pi_js_export")]
 pub fn spine_reset(app: &mut Engine, id_renderer: f64) {
-    use pi_spine_rs::ActionListSpine;
 
     let id_renderer = KeySpineRenderer::from_f64(id_renderer);
     let mut cmds = app.world.get_resource_mut::<ActionListSpine>().unwrap();
