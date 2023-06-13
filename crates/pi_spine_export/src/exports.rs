@@ -43,15 +43,13 @@ pub fn init_spine_context(
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
-pub fn spine_renderer_create(app: &mut Engine, name: String, width: f64, height: f64) -> f64 {
-    let width = width as u32;
-    let height = height as u32;
-    let rendersize: Option<(u32, u32)> =  if width != 4294967295 && height != 4294967295 {
+pub fn spine_renderer_create(app: &mut Engine, name: String, width: Option<f64>, height: Option<f64>) -> f64 {
+    let rendersize: Option<(u32, u32)> =  if (Some(width), Some(height)) = (width, height) {
         Some((width as u32, height as u32))
     } else {
         None
     };
-    log::warn!("To Screen: {:?}", rendersize.is_none());
+    log::warn!("Spine To Screen: {:?}", rendersize.is_none());
 
     let id_renderer = {
         let id = app.world.spawn_empty().id();
@@ -77,10 +75,10 @@ pub fn spine_renderer_create(app: &mut Engine, name: String, width: f64, height:
                 // queue.apply(&mut app.world);
                 app.world.entity_mut(id_renderer.0).insert(GraphId(nodeid));
                 // actions.push(ESpineCommand::Graph(id_renderer, nodeid));
-                log::warn!("render_graph Ok");
+                log::warn!("Spine render_graph Ok");
             },
             Err(e) => {
-                log::warn!("render_graph Err {:?}", e);
+                log::warn!("Spine render_graph Err {:?}", e);
             },
         }
     
