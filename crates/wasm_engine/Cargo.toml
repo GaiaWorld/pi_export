@@ -20,7 +20,8 @@ pi_spine_export = { path = "../pi_spine_export"}
 # scene3d_export = { path = "../scene3d" }
 pi_web_logger = {git = "http://ser.yinengyun.com:10082/tech/pi_web_logger.git"}
 
-wasm-bindgen = { version = "0.2"}
+# wasm-bindgen = { version = "0.2"}
+wasm-bindgen = { version = "=0.2.83" }
 bevy = { version = "0.10", default-features=false}
 
 # log

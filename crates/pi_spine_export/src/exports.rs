@@ -26,7 +26,7 @@ pub use pi_export_base::export::Atom;
 #[pi_js_export]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum KeySpineShader {
-    Colored = 0,
+    Colored,
     ColoredTextured,
     TwoColoredTextured,
 }
@@ -44,10 +44,9 @@ pub fn init_spine_context(
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn spine_renderer_create(app: &mut Engine, name: String, width: Option<f64>, height: Option<f64>) -> f64 {
-    let rendersize: Option<(u32, u32)> =  if (Some(width), Some(height)) = (width, height) {
-        Some((width as u32, height as u32))
-    } else {
-        None
+    let rendersize: Option<(u32, u32)> =  match (width, height) {
+		(Some(w), Some(h)) => Some((w as u32, h as u32)),
+		_ => None,
     };
     log::warn!("Spine To Screen: {:?}", rendersize.is_none());
 

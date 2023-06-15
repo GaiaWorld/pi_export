@@ -11,7 +11,7 @@ use wasm_bindgen::prelude::*;
 #[pi_js_export]
 pub enum EShaderStage {
     /// Binding is not visible from any shader stage.
-    NONE = 0,
+    NONE,
     /// Binding is visible from the vertex shader of a render pipeline.
     VERTEX,
     /// Binding is visible from the fragment shader of a render pipeline.
@@ -89,7 +89,7 @@ impl BlendFactor {
 #[pi_js_export]
 pub enum BlendOperation {
     /// Src + Dst
-    Add = 0,
+    Add,
     /// Src - Dst
     Subtract,
     /// Dst - Src
@@ -115,7 +115,7 @@ impl BlendOperation {
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub enum ColorFormat {
-    RGBA = 0,
+    RGBA,
     RGB,
 }
 impl ColorFormat {
@@ -131,7 +131,7 @@ impl ColorFormat {
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub enum DepthFormat {
-    None = 0,
+    None,
     Depth32,
     Depth24Stencil8,
 }
@@ -156,7 +156,7 @@ impl DepthFormat {
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub enum EColorSpace {
-    GAMMA = 0,
+    GAMMA,
     LINEAR,
 }
 impl EColorSpace {
@@ -178,7 +178,7 @@ impl EColorSpace {
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub enum CompareFunction {
-    None = 0,
+    None,
     /// Function never passes
     Never,
     /// Function passes if new value less than existing value
@@ -244,7 +244,7 @@ pub fn sampler_desc(
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub enum EDefaultTexture {
-    Black = 0,
+    Black,
     White,
 }
 impl EDefaultTexture {
@@ -260,7 +260,7 @@ impl EDefaultTexture {
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub enum EFilterMode {
-    Nearest = 0,
+    Nearest,
     Linear,
 }
 impl EFilterMode {
@@ -280,7 +280,7 @@ pub enum EAddressMode {
     ///
     /// -0.25 -> 0.0
     /// 1.25  -> 1.0
-    ClampToEdge = 0,
+    ClampToEdge,
     /// Repeat the texture in a tiling fashion
     ///
     /// -0.25 -> 0.75
@@ -313,7 +313,7 @@ impl EAddressMode {
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub enum SamplerBorderColor {
-    None = 0,
+    None,
     /// [0, 0, 0, 0]
     TransparentBlack,
     /// [0, 0, 0, 1]
@@ -344,7 +344,7 @@ impl SamplerBorderColor {
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub enum EAnisotropyClamp {
-    None = 0,
+    None,
     One,
     Two,
     Four,
