@@ -1,6 +1,6 @@
 
 use pi_engine_shell::prelude::*;
-use pi_export_base::{export::Engine, constants::{ColorFormat, DepthFormat}};
+use pi_export_base::{export::Engine, constants::{RenderFormat, DepthStencilFormat}};
 use pi_scene_context::{
     prelude::*,
 };

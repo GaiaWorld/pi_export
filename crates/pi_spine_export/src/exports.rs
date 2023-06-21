@@ -37,7 +37,6 @@ pub fn init_spine_context(
     engine: &mut Engine,
 ) {
     engine
-        .add_plugin(PluginWindowRender)
         .add_plugin(PluginSpineRenderer);
 }
 
