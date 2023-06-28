@@ -44,7 +44,7 @@ pub use pi_export_base::export::{Engine, Atom};
 use bevy::app::App;
 use cssparser::ParseError;
 use js_proxy_gen_macro::pi_js_export;
-use js_sys::{Array, Function};
+use js_sys::{Array, Function, Float64Array};
 use pi_async::prelude::SingleTaskRunner;
 use pi_bevy_winit_window::WinitPlugin;
 use pi_hal::runtime::{RENDER_RUNTIME, RUNNER_MULTI, RUNNER_RENDER};
@@ -64,7 +64,7 @@ use winit::dpi::PhysicalSize;
 use winit::event_loop::EventLoop;
 pub use winit::platform::web::WindowBuilderExtWebSys;
 pub use winit::window::{Window, WindowBuilder};
-use pi_ui_render::resource::animation_sheet::KeyFramesSheet;
+use pi_ui_render::resource::{animation_sheet::KeyFramesSheet, FragmentCommand};
 
 
 
@@ -149,6 +149,21 @@ pub fn create_gui(
     // gui.commands.set_event_listener(a_callback);
 
     gui
+}
+
+#[wasm_bindgen]
+pub fn create_fragment(gui: &mut Gui, mut arr: Float64Array, count: u32, key: u32) {
+	let mut index = 0;
+	let mut entitys = Vec::with_capacity(count as usize);
+	while index < count {
+		let entity = gui.entitys.reserve_entity();
+		arr.set_index(index, unsafe { transmute(entity.to_bits()) });
+		entitys.push(entity);
+		index = index + 1;
+	}
+	gui.commands
+		.fragment_commands
+		.push(FragmentCommand { key, entitys });
 }
 
 

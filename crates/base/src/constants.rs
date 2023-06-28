@@ -374,7 +374,7 @@ impl EAnisotropyClamp {
 pub enum CullMode {
     Off,
     Back,
-    Front
+    Front,
 }
 
 #[derive(Debug, Clone, Copy)]

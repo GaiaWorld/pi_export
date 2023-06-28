@@ -102,6 +102,23 @@ pub fn create_gui(
     gui
 }
 
+#[cfg(feature = "pi_js_export")]
+pub fn create_fragment(gui: &mut Gui, arr: &mut [f64], count: u32, key: u32) {
+    use pi_ui_render::resource::FragmentCommand;
+
+	let mut index: usize = 0;
+	let mut entitys = Vec::with_capacity(count as usize);
+	while index < count as usize {
+		let entity = gui.entitys.reserve_entity();
+		arr[index] = unsafe { transmute(entity.to_bits()) };
+		entitys.push(entity);
+		index = index + 1;
+	}
+	gui.commands
+		.fragment_commands
+		.push(FragmentCommand { key, entitys });
+}
+
 pub fn play_destroy_node(gui: &mut Gui, _engine: &mut Engine, context: &mut PlayContext, json: &Vec<json::JsonValue>) {
     let id = unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index() as usize;
     let node_id = context.nodes.remove(id).unwrap();

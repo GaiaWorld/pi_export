@@ -21,7 +21,6 @@
     use pi_bevy_render_plugin::FrameState;
     use crate::{OffsetDocument, Size};
     use pi_ui_render::resource::animation_sheet::KeyFramesSheet;
-    use js_sys::Float64Array;
     use pi_ui_render::resource::FragmentCommand;
     #[cfg(target_arch = "wasm32")]
     use wasm_bindgen::prelude::wasm_bindgen;
@@ -8171,43 +8170,6 @@
         set_class(gui, node, class_name);
     }
     #[cfg(feature = "pi_js_export")]
-    pub fn create_fragment(gui: &mut Gui, arr: Float64Array, count: u32, key: u32) -> Float64Array {
-        {
-            let mut arr = arr;
-            let mut index = 0;
-            let mut entitys = Vec::with_capacity(count as usize);
-            while index < count {
-                let entity = gui.entitys.reserve_entity();
-                arr.set_index(index, unsafe { transmute(entity.to_bits()) });
-                entitys.push(entity);
-                index = index + 1;
-            }
-            gui.commands
-                .fragment_commands
-                .push(FragmentCommand { key, entitys });
-            arr
-        }
-    }
-    #[cfg(target_arch = "wasm32")]
-    #[wasm_bindgen]
-    pub fn create_fragment(gui: &mut Gui, arr: Float64Array, count: u32, key: u32) -> Float64Array {
-        {
-            let mut arr = arr;
-            let mut index = 0;
-            let mut entitys = Vec::with_capacity(count as usize);
-            while index < count {
-                let entity = gui.entitys.reserve_entity();
-                arr.set_index(index, unsafe { transmute(entity.to_bits()) });
-                entitys.push(entity);
-                index = index + 1;
-            }
-            gui.commands
-                .fragment_commands
-                .push(FragmentCommand { key, entitys });
-            arr
-        }
-    }
-    #[cfg(feature = "pi_js_export")]
     pub fn create_node(gui: &mut Gui) -> f64 {
         {
             let entity = gui.entitys.reserve_entity();
@@ -8758,7 +8720,7 @@
                             "pi_export_gui::style_macro",
                             ::tracing::Level::WARN,
                             Some("src\\style_macro.rs"),
-                            Some(1312u32),
+                            Some(1339u32),
                             Some("pi_export_gui::style_macro"),
                             ::tracing_core::field::FieldSet::new(
                                 &[],
@@ -8806,7 +8768,7 @@
                             "pi_export_gui::style_macro",
                             ::tracing::Level::WARN,
                             Some("src\\style_macro.rs"),
-                            Some(1312u32),
+                            Some(1339u32),
                             Some("pi_export_gui::style_macro"),
                             ::tracing_core::field::FieldSet::new(
                                 &[],
@@ -8864,7 +8826,7 @@
                             "pi_export_gui::style_macro",
                             ::tracing::Level::WARN,
                             Some("src\\style_macro.rs"),
-                            Some(1327u32),
+                            Some(1354u32),
                             Some("pi_export_gui::style_macro"),
                             ::tracing_core::field::FieldSet::new(
                                 &[],
@@ -8918,7 +8880,7 @@
                             "pi_export_gui::style_macro",
                             ::tracing::Level::WARN,
                             Some("src\\style_macro.rs"),
-                            Some(1327u32),
+                            Some(1354u32),
                             Some("pi_export_gui::style_macro"),
                             ::tracing_core::field::FieldSet::new(
                                 &[],
@@ -8980,7 +8942,7 @@
                             "pi_export_gui::style_macro",
                             ::tracing::Level::WARN,
                             Some("src\\style_macro.rs"),
-                            Some(1344u32),
+                            Some(1369u32),
                             Some("pi_export_gui::style_macro"),
                             ::tracing_core::field::FieldSet::new(
                                 &[],
@@ -9034,7 +8996,7 @@
                             "pi_export_gui::style_macro",
                             ::tracing::Level::WARN,
                             Some("src\\style_macro.rs"),
-                            Some(1344u32),
+                            Some(1369u32),
                             Some("pi_export_gui::style_macro"),
                             ::tracing_core::field::FieldSet::new(
                                 &[],
@@ -9096,7 +9058,7 @@
                             "pi_export_gui::style_macro",
                             ::tracing::Level::WARN,
                             Some("src\\style_macro.rs"),
-                            Some(1361u32),
+                            Some(1384u32),
                             Some("pi_export_gui::style_macro"),
                             ::tracing_core::field::FieldSet::new(
                                 &[],
@@ -9150,7 +9112,7 @@
                             "pi_export_gui::style_macro",
                             ::tracing::Level::WARN,
                             Some("src\\style_macro.rs"),
-                            Some(1361u32),
+                            Some(1384u32),
                             Some("pi_export_gui::style_macro"),
                             ::tracing_core::field::FieldSet::new(
                                 &[],
@@ -9212,7 +9174,7 @@
                             "pi_export_gui::style_macro",
                             ::tracing::Level::WARN,
                             Some("src\\style_macro.rs"),
-                            Some(1378u32),
+                            Some(1399u32),
                             Some("pi_export_gui::style_macro"),
                             ::tracing_core::field::FieldSet::new(
                                 &[],
@@ -9266,7 +9228,7 @@
                             "pi_export_gui::style_macro",
                             ::tracing::Level::WARN,
                             Some("src\\style_macro.rs"),
-                            Some(1378u32),
+                            Some(1399u32),
                             Some("pi_export_gui::style_macro"),
                             ::tracing_core::field::FieldSet::new(
                                 &[],

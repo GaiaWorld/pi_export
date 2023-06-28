@@ -31,7 +31,7 @@ use pi_ui_render::system::RunState;
 use pi_bevy_render_plugin::FrameState;
 use crate::{OffsetDocument, Size};
 use pi_ui_render::resource::animation_sheet::KeyFramesSheet;
-use js_sys::Float64Array;
+
 use pi_ui_render::resource::FragmentCommand;
 
 #[cfg(target_arch="wasm32")]
@@ -56,17 +56,17 @@ pub struct PlayContext {
 
 #[macro_export]
 macro_rules! other_out_export {
-	($func_name:ident, $context: ident, $node: ident, $expr:expr, $($name_ref: ident: &$ty_ref: ty,)*; $($name: ident: $ty: ty,)*) => {
+	($func_name:ident, $context: ident, $node: ident, $expr:expr, $($mut_name_ref: ident: &mut $mut_ty_ref: ty,)*; $($name_ref: ident: &$ty_ref: ty,)*; $($name: ident: $ty: ty,)*) => {
 		#[cfg(feature="pi_js_export")]
 		
-		pub fn $func_name($context: &mut Gui, $node: f64, $($name_ref: &$ty_ref,)* $($name: $ty,)*) {
+		pub fn $func_name($context: &mut Gui, $node: f64, $($mut_name_ref: &mut $mut_ty_ref,)* $($name_ref: &$ty_ref,)* $($name: $ty,)*) {
 			let $node = unsafe {Entity::from_bits(transmute::<f64, u64>($node))};
 			$expr
 		}
 
 		#[cfg(target_arch="wasm32")]
 		#[wasm_bindgen]
-		pub fn $func_name($context: &mut Gui, $node: f64, $($name_ref: &$ty_ref,)* $($name: $ty,)*) {
+		pub fn $func_name($context: &mut Gui, $node: f64, $($mut_name_ref: &mut $mut_ty_ref,)* $($name_ref: &$ty_ref,)* $($name: $ty,)*) {
 			let $node = unsafe {Entity::from_bits(transmute::<f64, u64>($node))};
 			$expr
 		}
@@ -76,6 +76,7 @@ macro_rules! other_out_export {
 				let mut i = -1;
 				i += 1;
 				let node = unsafe {Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))}.index();
+				$(i += 1; let $mut_name_ref = pi_export_play::as_value::<$mut_ty_ref>(json, i as usize).unwrap(); let $mut_name_ref = &mut $mut_name_ref;)*
 				$(i += 1; let $name_ref = pi_export_play::as_value::<$ty_ref>(json, i as usize).unwrap(); let $name_ref = &$name_ref;)*
 				$(i += 1; let $name = pi_export_play::as_value::<$ty>(json, i as usize).unwrap();)*
 				// let node = context.nodes.get(node).unwrap().clone();
@@ -83,44 +84,45 @@ macro_rules! other_out_export {
 					Some(r) => r.clone(),
 					None => return,
 				};
-				$func_name(gui, node,  $($name_ref,)* $($name,)*);
+				$func_name(gui, node, $($mut_name_ref,)* $($name_ref,)* $($name,)*);
 			}
 		}
 	};
 
-	($func_name:ident, [$($context: ident: $context_ty: ty,)*], $expr:expr, [$($name_ref: ident: &$ty_ref: ty,)*], [$($name: ident: $ty: ty,)*]) => {
+	($func_name:ident, [$($context: ident: $context_ty: ty,)*], $expr:expr, $($mut_name_ref: ident: &mut $mut_ty_ref: ty,)*; $($name_ref: ident: &$ty_ref: ty,)*; $($name: ident: $ty: ty,)*) => {
 		#[cfg(feature="pi_js_export")]
 		
-		pub fn $func_name($($context: $context_ty,)* $($name_ref: &$ty_ref,)* $($name: $ty,)*) {
+		pub fn $func_name($($context: $context_ty,)* $($mut_name_ref: &mut $mut_ty_ref,)* $($name_ref: &$ty_ref,)* $($name: $ty,)*) {
 			$expr
 		}
 
 		#[cfg(target_arch="wasm32")]
 		#[wasm_bindgen]
-		pub fn $func_name($($context: $context_ty,)* $($name_ref: &$ty_ref,)* $($name: $ty,)*) {
+		pub fn $func_name($($context: $context_ty,)* $($mut_name_ref: &mut $mut_ty_ref,)* $($name_ref: &$ty_ref,)* $($name: $ty,)*) {
 			$expr
 		}
 
 		$crate::paste::item! {
 			pub fn [<play_ $func_name>](gui: &mut Gui, engine: &mut Engine, _context: &mut PlayContext, _json: &Vec<json::JsonValue>) {
 				let mut _i = -1;
+				$(_i += 1; let $mut_name_ref = pi_export_play::as_value::<$mut_ty_ref>(_json, _i as usize).unwrap(); let $mut_name_ref = &mut $mut_name_ref;)*
 				$(_i += 1; let $name_ref = pi_export_play::as_value::<$ty_ref>(_json, _i as usize).unwrap(); let $name_ref = &$name_ref;)*
 				$(_i += 1; let $name = pi_export_play::as_value::<$ty>(_json, _i as usize).unwrap();)*
-				$func_name($($context,)* $($name_ref,)* $($name,)*);
+				$func_name($($context,)* $($mut_name_ref,)* $($name_ref,)* $($name,)*);
 			}
 		}
 	};
 
-	($func_name:ident, $context: ident, $expr:expr, $($name_ref: ident: &$ty_ref: ty,)*; $($name: ident: $ty: ty,)*) => {
+	($func_name:ident, $context: ident, $expr:expr, $($mut_name_ref: ident: &mut $mut_ty_ref: ty,)*; $($name_ref: ident: &$ty_ref: ty,)*; $($name: ident: $ty: ty,)*) => {
 		#[cfg(feature="pi_js_export")]
 		
-		pub fn $func_name($context: &mut Gui, $($name_ref: &$ty_ref,)* $($name: $ty,)*) {
+		pub fn $func_name($context: &mut Gui, $($mut_name_ref: &mut $mut_ty_ref,)* $($name_ref: &$ty_ref,)* $($name: $ty,)*) {
 			$expr
 		}
 
 		#[cfg(target_arch="wasm32")]
 		#[wasm_bindgen]
-		pub fn $func_name($context: &mut Gui, $($name_ref: &$ty_ref,)* $($name: $ty,)*) {
+		pub fn $func_name($context: &mut Gui, $($mut_name_ref: &mut $mut_ty_ref,)* $($name_ref: &$ty_ref,)* $($name: $ty,)*) {
 			$expr
 		}
 
@@ -128,12 +130,37 @@ macro_rules! other_out_export {
 			#[allow(unused_variables)]
 			pub fn [<play_ $func_name>](gui: &mut Gui, engine: &mut Engine,  context: &mut PlayContext, json: &Vec<json::JsonValue>) {
 				let i = -1;
+				$(let i = i + 1; let $mut_name_ref = pi_export_play::as_value::<$mut_ty_ref>(json, i as usize).unwrap(); let $mut_name_ref = &mut $mut_name_ref;)*
 				$(let i = i + 1; let $name_ref = pi_export_play::as_value::<$ty_ref>(json, i as usize).unwrap();let $name_ref = &$name_ref;)*
 				$(let i = i + 1; let $name = pi_export_play::as_value::<$ty>(json, i as usize).unwrap();)*
-				$func_name(gui, $($name_ref,)* $($name,)*);
+				$func_name(gui, $($mut_name_ref,)* $($name_ref,)* $($name,)*);
 			}
 		}
 	};
+
+	// ($func_name:ident, $context: ident, $expr:expr, $($name_ref: ident: &$ty_ref: ty,)*; $($name: ident: $ty: ty,)*) => {
+	// 	#[cfg(feature="pi_js_export")]
+		
+	// 	pub fn $func_name($context: &mut Gui, $($name_ref: &$ty_ref,)* $($name: $ty,)*) {
+	// 		$expr
+	// 	}
+
+	// 	#[cfg(target_arch="wasm32")]
+	// 	#[wasm_bindgen]
+	// 	pub fn $func_name($context: &mut Gui, $($name_ref: &$ty_ref,)* $($name: $ty,)*) {
+	// 		$expr
+	// 	}
+
+	// 	$crate::paste::item! {
+	// 		#[allow(unused_variables)]
+	// 		pub fn [<play_ $func_name>](gui: &mut Gui, engine: &mut Engine,  context: &mut PlayContext, json: &Vec<json::JsonValue>) {
+	// 			let i = -1;
+	// 			$(let i = i + 1; let $name_ref = pi_export_play::as_value::<$ty_ref>(json, i as usize).unwrap();let $name_ref = &$name_ref;)*
+	// 			$(let i = i + 1; let $name = pi_export_play::as_value::<$ty>(json, i as usize).unwrap();)*
+	// 			$func_name(gui, $($mut_name_ref,)* $($name_ref,)* $($name,)*);
+	// 		}
+	// 	}
+	// };
 
 	// 带返回值的接口
 	(@with_return_node, $func_name:ident, $($context: ident: $context_ty: ty,)*; $node: ident, $return_ty: ty, $expr:expr, $($name_ref: ident: &$ty_ref: ty,)*; $($name: ident: $ty: ty,)*) => {
@@ -1032,14 +1059,14 @@ style_out_export!(@expr animation_timing_function_str, AnimationTimingFunctionTy
 	}
 }, value: &str,;);
 
-other_out_export!(set_default_style, gui, gui.commands.set_default_style_by_str(value, 0), value: &str,;);
+other_out_export!(set_default_style, gui, gui.commands.set_default_style_by_str(value, 0),; value: &str,;);
 
 other_out_export!(
     create_class,
     gui,
     {
         gui.commands.add_css(css, scope_hash as usize);
-    },
+    },;
 	css: &str,
 	;
     scope_hash: u32,
@@ -1055,7 +1082,7 @@ other_out_export!(
             s.push(*i as usize);
         }
         gui.commands.set_class(node, ClassName(s));
-    },;
+    },;;
     class_name: Vec<u32>,
 );
 
@@ -1071,34 +1098,34 @@ other_out_export!(
 //     unsafe { transmute(entity.to_bits()) }
 // }
 
-// 创建模板
-other_out_export!(
-	@with_return,
-    create_fragment,
-	Float64Array,
-	{
-		let mut arr = arr;
-		let mut index = 0;
-		let mut entitys = Vec::with_capacity(count as usize);
-		while index < count {
-			let entity = gui.entitys.reserve_entity();
-			arr.set_index(index, unsafe { transmute(entity.to_bits()) });
-			entitys.push(entity);
-			index = index + 1;
-		}
-		gui.commands
-			.fragment_commands.push(FragmentCommand {
-				key,
-				entitys
-			});
-		arr
-	},
-	gui: &mut Gui,;
-	;
-	arr: Float64Array,
-	count: u32,
-	key: u32,
-);
+// // 创建模板
+// other_out_export!(
+// 	@with_return,
+//     create_fragment,
+// 	u32,
+// 	{
+// 		let mut arr = Float64ArrayMut(arr);
+// 		let mut index = 0;
+// 		let mut entitys = Vec::with_capacity(count as usize);
+// 		while index < count {
+// 			let entity = gui.entitys.reserve_entity();
+// 			arr.set_index(index, unsafe { transmute(entity.to_bits()) });
+// 			entitys.push(entity);
+// 			index = index + 1;
+// 		}
+// 		gui.commands
+// 			.fragment_commands.push(FragmentCommand {
+// 				key,
+// 				entitys
+// 			});
+// 		0
+// 	},
+// 	gui: &mut Gui,;
+// 	;
+// 	arr: Float64Array,
+// 	count: u32,
+// 	key: u32,
+// );
 
 // 创建节点
 other_out_export!(
@@ -1162,7 +1189,7 @@ other_out_export!(
     destroy_node,
     gui,
     node,
-    {gui.commands.destroy_node(node);},;
+    {gui.commands.destroy_node(node);},;;
 );
 
 other_out_export!(
@@ -1171,7 +1198,7 @@ other_out_export!(
     node,
     {
 		gui.commands.append(node, unsafe { transmute(EntityKey::null().to_bits())});
-	},;
+	},;;
 );
 
 other_out_export!(
@@ -1181,7 +1208,7 @@ other_out_export!(
     {	
 		let parent = Entity::from_bits(unsafe { transmute(parent) });
 		gui.commands.append(node, parent);
-	},;
+	},;;
 	parent: f64,
 );
 
@@ -1194,7 +1221,7 @@ other_out_export!(
 			node,
 			Entity::from_bits(unsafe { transmute(borther) }),
 		);
-	},;
+	},;;
 	borther: f64,
 );
 
@@ -1204,7 +1231,7 @@ other_out_export!(
     node,
     {
 		gui.commands.remove_node(node);
-	},;
+	},;;
 );
 
 other_out_export!(
@@ -1216,7 +1243,7 @@ other_out_export!(
 			pi_ui_render::components::user::Viewport(Aabb2::new(Point2::new(x as f32, y as f32), Point2::new(width as f32, height as f32))),
 			root,
 		));
-	},;
+	},;;
 	x: i32, y: i32, width: i32, height: i32, root: f64,
 );
 
@@ -1231,7 +1258,7 @@ other_out_export!(
 			pi_ui_render::components::user::Canvas(brush),
 			node,
 		));
-	},;
+	},;;
 	node: f64, brush: f64,
 );
 
@@ -1245,7 +1272,7 @@ other_out_export!(
 			unsafe { transmute::<_, pi_ui_render::components::user::RenderTargetType>(target_ty) };
 			node,
 		));
-	},;
+	},;;
 	node: f64, target_ty: u8,
 );
 
@@ -1256,7 +1283,7 @@ other_out_export!(
 		let root = unsafe { Entity::from_bits(transmute::<f64, u64>(root)) };
 		gui.commands
 			.push_cmd(NodeCmd(pi_ui_render::components::user::ClearColor(CgColor::new(r, g, b, a), is_clear_window), root));
-	},;
+	},;;
 	r: f32, g: f32, b: f32, a: f32, root: f64, is_clear_window: bool,
 );
 
@@ -1271,7 +1298,7 @@ other_out_export!(
 			log::warn!("deserialize_fragment error: {:?}, {:?}", e, bin);
 			return;
 		}
-	},
+	},;
 	bin: &[u8],;
 	
 );
@@ -1287,7 +1314,7 @@ other_out_export!(
 			log::warn!("deserialize_class_map error: {:?}, {:?}", e, bin);
 			return;
 		}
-	},
+	},;
 	bin: &[u8],;
 	
 );
@@ -1300,7 +1327,7 @@ other_out_export!(
     {
 		let node: Entity = Entity::from_bits(unsafe { transmute(root) });
     	gui.commands.push_cmd(NodeCmd(pi_ui_render::components::user::RenderDirty(true), node));
-	},;
+	},;;
 	root: f64,
 );
 
@@ -1314,8 +1341,8 @@ other_out_export!(
 		*engine.world.get_resource_mut::<FrameState>().unwrap() = FrameState::Active;
 		engine.update();
 	},
-	[],
-	[_cur_time: u32,]
+	;;
+	_cur_time: u32,
 );
 
 // 
@@ -1331,9 +1358,7 @@ other_out_export!(
 		*engine.world.get_resource_mut::<RunState>().unwrap() = RunState::SETTING;
 		*engine.world.get_resource_mut::<FrameState>().unwrap() = FrameState::UnActive;
 		engine.update();
-	},
-	[],
-	[]
+	},;;
 );
 
 other_out_export!(
@@ -1348,9 +1373,7 @@ other_out_export!(
 		*engine.world.get_resource_mut::<RunState>().unwrap() = RunState::MATRIX;
 		*engine.world.get_resource_mut::<FrameState>().unwrap() = FrameState::Active;
 		engine.update();
-	},
-	[],
-	[]
+	},;;
 );
 
 other_out_export!(
@@ -1365,9 +1388,7 @@ other_out_export!(
 		*engine.world.get_resource_mut::<RunState>().unwrap() = RunState::LAYOUT;
 		*engine.world.get_resource_mut::<FrameState>().unwrap() = FrameState::UnActive;
 		engine.update();
-	},
-	[],
-	[]
+	},;;
 );
 
 other_out_export!(
@@ -1382,16 +1403,14 @@ other_out_export!(
 		*engine.world.get_resource_mut::<RunState>().unwrap() = RunState::MATRIX;
 		*engine.world.get_resource_mut::<FrameState>().unwrap() = FrameState::UnActive;
 		engine.update();
-	},
-	[],
-	[]
+	},;;
 );
 
 // TODO
 other_out_export!(
     bind_render_target,
     _gui,
-    {},;
+    {},;;
 );
 
 // TODO
@@ -1400,7 +1419,7 @@ other_out_export!(
     _gui,
     {
 		
-	},;
+	},;;
 	_pixel_ratio: f32,
 );
 
@@ -1410,7 +1429,7 @@ other_out_export!(
     _gui,
     {
 		
-	},;
+	},;;
 );
 
 // TODO
@@ -1419,7 +1438,7 @@ other_out_export!(
     _gui,
     {
 		
-	},;
+	},;;
 	_x: i32, _y: i32, _width: i32, _height: i32,
 );
 
@@ -1429,7 +1448,7 @@ other_out_export!(
     _gui,
     {
 		
-	},;
+	},;;
 	_scale_x: f32, _scale_y: f32, _translate_x: f32, _translate_y: f32, _rotate: f32, _width: f64, _height: f64,
 );
 
@@ -1440,7 +1459,7 @@ other_out_export!(
 	_node,
     {
 		
-	},;
+	},;;
 );
 
 // TODO
@@ -1450,7 +1469,7 @@ other_out_export!(
     _gui,
     {
 	
-	},
+	},;
 	_shader_name: &str, _shader_code: &str,
 	;
 	
