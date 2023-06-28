@@ -130,7 +130,7 @@ pub fn p3d_animation_group(
     let scene: Entity = as_entity(scene);
     let group_target: Entity = as_entity(group_target);
 
-    let mut cmds: crate::engine::ActionSets = param.0.get_mut(&mut app.world);
+    let mut cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
 
     if let Some(id_group) = cmds.animegroupcmd.scene_ctxs.create_group(scene) {
         cmds.animegroupcmd.global.record_group(group_target, key_group, id_group.clone());
@@ -162,7 +162,7 @@ pub fn p3d_anime_group_start(
 ) {
     let target: Entity = as_entity(target);
 
-    let mut cmds: crate::engine::ActionSets = param.0.get_mut(&mut app.world);
+    let mut cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
 
     let amountcalc = match amount_mode {
         EAmountMode::None           => AnimationAmountCalc::default(),
@@ -230,7 +230,7 @@ pub fn p3d_animation_group_listen(
 ) {
     let id_group: DefaultKey = as_dk(&group);
 
-    let mut cmds: crate::engine::ActionSets = param.0.get_mut(&mut app.world);
+    let mut cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
 
     match mode {
         EAnimationGroupListen::Start    => {
@@ -259,7 +259,7 @@ pub fn p3d_animation_group_add_frame_event(
 ) {
     let id_group: DefaultKey = as_dk(&group);
 
-    let mut cmds: crate::engine::ActionSets = param.0.get_mut(&mut app.world);
+    let mut cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
     cmds.animegroupcmd.global.add_frame_event(id_group, percent as f32, data as AnimeFrameEventData);
 }
 
@@ -274,7 +274,7 @@ pub fn p3d_animation_group_delete(
     let id_scene: Entity = as_entity(scene);
     let id_group: DefaultKey = as_dk(&group);
 
-    let mut cmds: crate::engine::ActionSets = param.0.get_mut(&mut app.world);
+    let mut cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
     cmds.animegroupcmd.global.remove(&id_group);
     cmds.animegroupcmd.scene_ctxs.delete_group(&id_scene, id_group);
 }
@@ -288,7 +288,7 @@ pub fn p3d_query_anime_events(
     receive_len: f64,
 ) -> f64 {
 
-    let mut cmds: crate::engine::ActionSets = param.0.get_mut(&mut app.world);
+    let mut cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
 
     let size = receive_len as usize / 4;
 

@@ -17,7 +17,7 @@ use js_proxy_gen_macro::pi_js_export;
 pub fn p3d_abstruct_mesh_enable(app: &mut Engine, param: &mut ActionSetScene3D, abstructmesh: f64, val: bool) {
     let abstructmesh: Entity = as_entity(abstructmesh);
 
-    let mut cmds: crate::engine::ActionSets = param.0.get_mut(&mut app.world);
+    let mut cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
 
     cmds.abstructmeshcmds.enable.push(OpsAbstructMeshEnable::ops(abstructmesh, val));
 }
@@ -28,7 +28,7 @@ pub fn p3d_mesh(app: &mut Engine, param: &mut ActionSetScene3D, scene: f64) -> f
     let id: Entity = app.world.spawn_empty().id();
     let scene: Entity = as_entity(scene);
 
-    let mut cmds: crate::engine::ActionSets = param.0.get_mut(&mut app.world);
+    let mut cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
 
     cmds.transformcmds.tree.push(OpsTransformNodeParent::ops(id, scene));
     cmds.meshcmds.create.push(OpsMeshCreation::ops(scene, id, String::from("")));
@@ -38,58 +38,78 @@ pub fn p3d_mesh(app: &mut Engine, param: &mut ActionSetScene3D, scene: f64) -> f
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
-pub fn p3d_mesh_geometry(app: &mut Engine, param: &mut ActionSetScene3D, mesh: f64, geometa: &GeometryMeta) {
+pub fn p3d_mesh_geometry(app: &mut Engine, param: &mut ActionSetScene3D, mesh: f64, geometa: &GeometryMeta) -> f64 {
     let geo: Entity = app.world.spawn_empty().id();
     let mesh: Entity = as_entity(mesh);
 
-    let mut cmds: crate::engine::ActionSets = param.0.get_mut(&mut app.world);
+    let mut cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
 
     cmds.geometrycmd.create.push(OpsGeomeryCreate::ops(mesh, geo, geometa.0.clone(), geometa.1.clone()));
+
+    as_f64(&geo)
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_mesh_instance_world_matrixs(
     app: &mut Engine, param: &mut ActionSetScene3D, geo: f64,
-    data: &[u8], length: f64
+    data: &[f32], offset: f64, length: f64
 ) {
     let geo: Entity = as_entity(geo);
+    let start = offset as usize;
     let length = length as usize;
-    let data = data[0..length].to_vec();
+    let end = length + start;
+    let mut values: Vec<f32> = Vec::with_capacity(length);
+    data[start..end].iter().for_each(|val| {
+        values.push(*val);
+    });
+    let values = bytemuck::cast_slice(&data).to_vec();
 
-    let mut cmds: crate::engine::ActionSets = param.0.get_mut(&mut app.world);
+    let mut cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
 
-    cmds.instancemeshcmds.ins_world_matrixs.push(OpsInstanceWorldMatrixs::ops(geo, data));
+    cmds.instancemeshcmds.ins_world_matrixs.push(OpsInstanceWorldMatrixs::ops(geo, values));
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_mesh_instance_colors(
     app: &mut Engine, param: &mut ActionSetScene3D, geo: f64,
-    data: &[u8], length: f64
+    data: &[f32], offset: f64, length: f64
 ) {
     let geo: Entity = as_entity(geo);
+    let start = offset as usize;
     let length = length as usize;
-    let data = data[0..length].to_vec();
+    let end = length + start;
+    let mut values: Vec<f32> = Vec::with_capacity(length);
+    data[start..end].iter().for_each(|val| {
+        values.push(*val);
+    });
+    let values = bytemuck::cast_slice(&data).to_vec();
 
-    let mut cmds: crate::engine::ActionSets = param.0.get_mut(&mut app.world);
+    let mut cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
 
-    cmds.instancemeshcmds.ins_colors.push(OpsInstanceColors::ops(geo, data));
+    cmds.instancemeshcmds.ins_colors.push(OpsInstanceColors::ops(geo, values));
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_mesh_instance_tilloffs(
     app: &mut Engine, param: &mut ActionSetScene3D, geo: f64,
-    data: &[u8], length: f64
+    data: &[f32], offset: f64, length: f64
 ) {
     let geo: Entity = as_entity(geo);
+    let start = offset as usize;
     let length = length as usize;
-    let data = data[0..length].to_vec();
+    let end = length + start;
+    let mut values: Vec<f32> = Vec::with_capacity(length);
+    data[start..end].iter().for_each(|val| {
+        values.push(*val);
+    });
+    let values = bytemuck::cast_slice(&data).to_vec();
 
-    let mut cmds: crate::engine::ActionSets = param.0.get_mut(&mut app.world);
+    let mut cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
 
-    cmds.instancemeshcmds.ins_tilloffs.push(OpsInstanceTilloffs::ops(geo, data));
+    cmds.instancemeshcmds.ins_tilloffs.push(OpsInstanceTilloffs::ops(geo, values));
 }
 
 
@@ -106,7 +126,7 @@ pub fn p3d_mesh_blend(
 ) {
     let mesh: Entity = as_entity(mesh);
 
-    let mut cmds: crate::engine::ActionSets = param.0.get_mut(&mut app.world);
+    let mut cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
 
     let blend = ModelBlend {
         enable,
@@ -126,7 +146,7 @@ pub fn p3d_mesh_cull_mode(
     app: &mut Engine, param: &mut ActionSetScene3D, mesh: f64, val: CullMode) {
     let mesh: Entity = as_entity(mesh);
 
-    let mut cmds: crate::engine::ActionSets = param.0.get_mut(&mut app.world);
+    let mut cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
     cmds.meshcmds.cullmode.push(OpsCullMode::ops(mesh, unsafe { transmute(val) }));
 }
 
@@ -136,7 +156,7 @@ pub fn p3d_mesh_frontface(
     app: &mut Engine, param: &mut ActionSetScene3D, mesh: f64, val: FrontFace) {
     let mesh: Entity = as_entity(mesh);
 
-    let mut cmds: crate::engine::ActionSets = param.0.get_mut(&mut app.world);
+    let mut cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
     cmds.meshcmds.frontface.push(OpsFrontFace::ops(mesh, unsafe { transmute(val) }));
 }
 
@@ -146,7 +166,7 @@ pub fn p3d_mesh_topology(
     app: &mut Engine, param: &mut ActionSetScene3D, mesh: f64, val: PrimitiveTopology) {
     let mesh: Entity = as_entity(mesh);
 
-    let mut cmds: crate::engine::ActionSets = param.0.get_mut(&mut app.world);
+    let mut cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
     cmds.meshcmds.topology.push(OpsTopology::ops(mesh, unsafe { transmute(val) }));
 }
 
@@ -156,7 +176,7 @@ pub fn p3d_mesh_polygon_mode(
     app: &mut Engine, param: &mut ActionSetScene3D, mesh: f64, val: PolygonMode) {
     let mesh: Entity = as_entity(mesh);
 
-    let mut cmds: crate::engine::ActionSets = param.0.get_mut(&mut app.world);
+    let mut cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
     cmds.meshcmds.polygonmode.push(OpsPolygonMode::ops(mesh, unsafe { transmute(val) }));
 }
 
@@ -166,7 +186,7 @@ pub fn p3d_mesh_unclip_depth(
     app: &mut Engine, param: &mut ActionSetScene3D, mesh: f64, val: bool) {
     let mesh: Entity = as_entity(mesh);
 
-    let mut cmds: crate::engine::ActionSets = param.0.get_mut(&mut app.world);
+    let mut cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
     cmds.meshcmds.unclip_depth.push(OpsUnClipDepth::ops(mesh, val));
 }
 
@@ -176,7 +196,7 @@ pub fn p3d_mesh_cast_shadow(
     app: &mut Engine, param: &mut ActionSetScene3D, mesh: f64, val: bool) {
     let mesh: Entity = as_entity(mesh);
 
-    let mut cmds: crate::engine::ActionSets = param.0.get_mut(&mut app.world);
+    let mut cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
     cmds.meshcmds.shadow.push(OpsMeshShadow::CastShadow(mesh, val));
 }
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
@@ -185,7 +205,7 @@ pub fn p3d_mesh_receive_shadow(
     app: &mut Engine, param: &mut ActionSetScene3D, mesh: f64, val: bool) {
     let mesh: Entity = as_entity(mesh);
 
-    let mut cmds: crate::engine::ActionSets = param.0.get_mut(&mut app.world);
+    let mut cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
     cmds.meshcmds.shadow.push(OpsMeshShadow::ReceiveShadow(mesh, val));
 }
 
@@ -195,7 +215,7 @@ pub fn p3d_mesh_depth_write(
     app: &mut Engine, param: &mut ActionSetScene3D, mesh: f64, val: bool) {
     let mesh: Entity = as_entity(mesh);
 
-    let mut cmds: crate::engine::ActionSets = param.0.get_mut(&mut app.world);
+    let mut cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
     cmds.meshcmds.depth_write.push(OpsDepthWrite::ops(mesh, val));
 }
 
@@ -205,7 +225,7 @@ pub fn p3d_mesh_depth_compare(
     app: &mut Engine, param: &mut ActionSetScene3D, mesh: f64, val: CompareFunction) {
     let mesh: Entity = as_entity(mesh);
 
-    let mut cmds: crate::engine::ActionSets = param.0.get_mut(&mut app.world);
+    let mut cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
     cmds.meshcmds.depth_compare.push(OpsDepthCompare::ops(mesh, unsafe { transmute(val) }));
 }
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
@@ -214,7 +234,7 @@ pub fn p3d_mesh_depth_bias(
     app: &mut Engine, param: &mut ActionSetScene3D, mesh: f64, constant: f64, slope_scale: f64, clamp: f64) {
     let mesh: Entity = as_entity(mesh);
 
-    let mut cmds: crate::engine::ActionSets = param.0.get_mut(&mut app.world);
+    let mut cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
 
     let constant = (constant as f32 / DepthBiasState::BASE_SLOPE_SCALE) as i32;
     let slope_scale = (slope_scale as f32 / DepthBiasState::BASE_SLOPE_SCALE) as i32;
@@ -238,7 +258,7 @@ pub fn p3d_mesh_stencil_front(
     let depth_fail_op = unsafe { transmute(depth_fail_op) };
     let pass_op = unsafe { transmute(pass_op) };
 
-    let mut cmds: crate::engine::ActionSets = param.0.get_mut(&mut app.world);
+    let mut cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
     cmds.meshcmds.stencil_front.push(OpsStencilFront::ops(mesh, compare, fail_op, depth_fail_op, pass_op));
 }
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
@@ -257,7 +277,7 @@ pub fn p3d_mesh_stencil_back(
     let depth_fail_op = unsafe { transmute(depth_fail_op) };
     let pass_op = unsafe { transmute(pass_op) };
 
-    let mut cmds: crate::engine::ActionSets = param.0.get_mut(&mut app.world);
+    let mut cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
     cmds.meshcmds.stencil_back.push(OpsStencilBack::ops(mesh, compare, fail_op, depth_fail_op, pass_op));
 }
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
@@ -266,7 +286,7 @@ pub fn p3d_mesh_stencil_read(
     app: &mut Engine, param: &mut ActionSetScene3D, mesh: f64, val: f64) {
     let mesh: Entity = as_entity(mesh);
 
-    let mut cmds: crate::engine::ActionSets = param.0.get_mut(&mut app.world);
+    let mut cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
     cmds.meshcmds.stencil_read.push(OpsStencilRead::ops(mesh, val as u32));
 }
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
@@ -276,7 +296,7 @@ pub fn p3d_mesh_stencil_write(
 ) {
     let mesh: Entity = as_entity(mesh);
 
-    let mut cmds: crate::engine::ActionSets = param.0.get_mut(&mut app.world);
+    let mut cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
     cmds.meshcmds.stencil_write.push(OpsStencilWrite::ops(mesh, val as u32));
 }
 
@@ -286,7 +306,7 @@ pub fn p3d_mesh_render_queue(
     app: &mut Engine, param: &mut ActionSetScene3D, mesh: f64, group: f64, index: f64) {
     let mesh: Entity = as_entity(mesh);
 
-    let mut cmds: crate::engine::ActionSets = param.0.get_mut(&mut app.world);
+    let mut cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
     cmds.meshcmds.render_queue.push(OpsRenderQueue::ops(mesh, group as i32,index as i32));
 }
 
@@ -296,7 +316,7 @@ pub fn p3d_mesh_render_alignment(
     app: &mut Engine, param: &mut ActionSetScene3D, mesh: f64, val: ERenderAlignment) {
     let mesh: Entity = as_entity(mesh);
 
-    let mut cmds: crate::engine::ActionSets = param.0.get_mut(&mut app.world);
+    let mut cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
     cmds.meshcmds.render_alignment.push(OpsMeshRenderAlignment::ops(mesh, unsafe { transmute(val) }));
 }
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
@@ -305,7 +325,7 @@ pub fn p3d_abstruct_mesh_scaling_mode(
     app: &mut Engine, param: &mut ActionSetScene3D, mesh: f64, val: EScalingMode) {
     let mesh: Entity = as_entity(mesh);
 
-    let mut cmds: crate::engine::ActionSets = param.0.get_mut(&mut app.world);
+    let mut cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
     cmds.abstructmeshcmds.scaling_mode.push(OpsAbstructMeshScalingMode::ops(mesh, unsafe { transmute(val) }));
 }
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
@@ -314,6 +334,6 @@ pub fn p3d_abstruct_mesh_velocity(
     app: &mut Engine, param: &mut ActionSetScene3D, mesh: f64, x: f64, y: f64, z: f64) {
     let mesh: Entity = as_entity(mesh);
 
-    let mut cmds: crate::engine::ActionSets = param.0.get_mut(&mut app.world);
+    let mut cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
     cmds.abstructmeshcmds.velocity.push(OpsAbstructMeshVelocity::ops(mesh, x as f32, y as f32, z as f32));
 }
