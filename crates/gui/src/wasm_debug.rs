@@ -281,16 +281,6 @@ pub fn get_layout(engine: &mut Engine, node_id: f64) -> JsValue {
 
 
 #[wasm_bindgen]
-pub fn get_class_name(engine: &mut Engine, node_id: f64) -> JsValue {
-    let node_id = Entity::from_bits(unsafe { transmute(node_id) });
-    JsValue::from_serde::<Option<&ClassName>>(&match engine.world.query::<&ClassName>().get(&engine.world, node_id) {
-        Ok(r) => Some(r),
-        _ => None,
-    })
-    .unwrap()
-}
-
-#[wasm_bindgen]
 pub fn dump_graphviz(engine: &Engine)  {
 	let g = engine.world.get_resource::<PiRenderGraph>().unwrap();
 	log::info!("{}", g.dump_graphviz());

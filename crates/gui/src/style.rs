@@ -21,6 +21,8 @@
     use pi_bevy_render_plugin::FrameState;
     use crate::{OffsetDocument, Size};
     use pi_ui_render::resource::animation_sheet::KeyFramesSheet;
+    use js_sys::Float64Array;
+    use pi_ui_render::resource::FragmentCommand;
     #[cfg(target_arch = "wasm32")]
     use wasm_bindgen::prelude::wasm_bindgen;
     pub enum Edge {
@@ -8169,6 +8171,43 @@
         set_class(gui, node, class_name);
     }
     #[cfg(feature = "pi_js_export")]
+    pub fn create_fragment(gui: &mut Gui, arr: Float64Array, count: u32, key: u32) -> Float64Array {
+        {
+            let mut arr = arr;
+            let mut index = 0;
+            let mut entitys = Vec::with_capacity(count as usize);
+            while index < count {
+                let entity = gui.entitys.reserve_entity();
+                arr.set_index(index, unsafe { transmute(entity.to_bits()) });
+                entitys.push(entity);
+                index = index + 1;
+            }
+            gui.commands
+                .fragment_commands
+                .push(FragmentCommand { key, entitys });
+            arr
+        }
+    }
+    #[cfg(target_arch = "wasm32")]
+    #[wasm_bindgen]
+    pub fn create_fragment(gui: &mut Gui, arr: Float64Array, count: u32, key: u32) -> Float64Array {
+        {
+            let mut arr = arr;
+            let mut index = 0;
+            let mut entitys = Vec::with_capacity(count as usize);
+            while index < count {
+                let entity = gui.entitys.reserve_entity();
+                arr.set_index(index, unsafe { transmute(entity.to_bits()) });
+                entitys.push(entity);
+                index = index + 1;
+            }
+            gui.commands
+                .fragment_commands
+                .push(FragmentCommand { key, entitys });
+            arr
+        }
+    }
+    #[cfg(feature = "pi_js_export")]
     pub fn create_node(gui: &mut Gui) -> f64 {
         {
             let entity = gui.entitys.reserve_entity();
@@ -8594,8 +8633,48 @@
         set_clear_color(gui, r, g, b, a, root, is_clear_window);
     }
     #[cfg(feature = "pi_js_export")]
+    pub fn create_fragment_by_bin(gui: &mut Gui, bin: &[u8]) {
+        match postcard::from_bytes::<pi_ui_render::resource::fragment::Fragments>(bin) {
+            Ok(r) => {
+                gui.commands
+                    .push_cmd(pi_ui_render::resource::ExtendFragmentCmd(r));
+            }
+            Err(e) => {
+                ();
+                return;
+            }
+        }
+    }
+    #[cfg(target_arch = "wasm32")]
+    #[wasm_bindgen]
+    pub fn create_fragment_by_bin(gui: &mut Gui, bin: &[u8]) {
+        match postcard::from_bytes::<pi_ui_render::resource::fragment::Fragments>(bin) {
+            Ok(r) => {
+                gui.commands
+                    .push_cmd(pi_ui_render::resource::ExtendFragmentCmd(r));
+            }
+            Err(e) => {
+                ();
+                return;
+            }
+        }
+    }
+    #[allow(unused_variables)]
+    pub fn play_create_fragment_by_bin(
+        gui: &mut Gui,
+        engine: &mut Engine,
+        context: &mut PlayContext,
+        json: &Vec<json::JsonValue>,
+    ) {
+        let i = -1;
+        let i = i + 1;
+        let bin = pi_export_play::as_value::<[u8]>(json, i as usize).unwrap();
+        let bin = &bin;
+        create_fragment_by_bin(gui, bin);
+    }
+    #[cfg(feature = "pi_js_export")]
     pub fn create_class_by_bin(gui: &mut Gui, bin: &[u8]) {
-        match bincode::deserialize::<Vec<pi_style::style_parse::ClassMap>>(bin) {
+        match postcard::from_bytes::<Vec<pi_style::style_parse::ClassMap>>(bin) {
             Ok(r) => {
                 gui.commands
                     .push_cmd(pi_ui_render::resource::ExtendCssCmd(r));
@@ -8609,7 +8688,7 @@
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     pub fn create_class_by_bin(gui: &mut Gui, bin: &[u8]) {
-        match bincode::deserialize::<Vec<pi_style::style_parse::ClassMap>>(bin) {
+        match postcard::from_bytes::<Vec<pi_style::style_parse::ClassMap>>(bin) {
             Ok(r) => {
                 gui.commands
                     .push_cmd(pi_ui_render::resource::ExtendCssCmd(r));
@@ -8679,7 +8758,7 @@
                             "pi_export_gui::style_macro",
                             ::tracing::Level::WARN,
                             Some("src\\style_macro.rs"),
-                            Some(1265u32),
+                            Some(1312u32),
                             Some("pi_export_gui::style_macro"),
                             ::tracing_core::field::FieldSet::new(
                                 &[],
@@ -8727,7 +8806,7 @@
                             "pi_export_gui::style_macro",
                             ::tracing::Level::WARN,
                             Some("src\\style_macro.rs"),
-                            Some(1265u32),
+                            Some(1312u32),
                             Some("pi_export_gui::style_macro"),
                             ::tracing_core::field::FieldSet::new(
                                 &[],
@@ -8785,7 +8864,7 @@
                             "pi_export_gui::style_macro",
                             ::tracing::Level::WARN,
                             Some("src\\style_macro.rs"),
-                            Some(1280u32),
+                            Some(1327u32),
                             Some("pi_export_gui::style_macro"),
                             ::tracing_core::field::FieldSet::new(
                                 &[],
@@ -8839,7 +8918,7 @@
                             "pi_export_gui::style_macro",
                             ::tracing::Level::WARN,
                             Some("src\\style_macro.rs"),
-                            Some(1280u32),
+                            Some(1327u32),
                             Some("pi_export_gui::style_macro"),
                             ::tracing_core::field::FieldSet::new(
                                 &[],
@@ -8901,7 +8980,7 @@
                             "pi_export_gui::style_macro",
                             ::tracing::Level::WARN,
                             Some("src\\style_macro.rs"),
-                            Some(1297u32),
+                            Some(1344u32),
                             Some("pi_export_gui::style_macro"),
                             ::tracing_core::field::FieldSet::new(
                                 &[],
@@ -8955,7 +9034,7 @@
                             "pi_export_gui::style_macro",
                             ::tracing::Level::WARN,
                             Some("src\\style_macro.rs"),
-                            Some(1297u32),
+                            Some(1344u32),
                             Some("pi_export_gui::style_macro"),
                             ::tracing_core::field::FieldSet::new(
                                 &[],
@@ -9017,7 +9096,7 @@
                             "pi_export_gui::style_macro",
                             ::tracing::Level::WARN,
                             Some("src\\style_macro.rs"),
-                            Some(1314u32),
+                            Some(1361u32),
                             Some("pi_export_gui::style_macro"),
                             ::tracing_core::field::FieldSet::new(
                                 &[],
@@ -9071,7 +9150,7 @@
                             "pi_export_gui::style_macro",
                             ::tracing::Level::WARN,
                             Some("src\\style_macro.rs"),
-                            Some(1314u32),
+                            Some(1361u32),
                             Some("pi_export_gui::style_macro"),
                             ::tracing_core::field::FieldSet::new(
                                 &[],
@@ -9133,7 +9212,7 @@
                             "pi_export_gui::style_macro",
                             ::tracing::Level::WARN,
                             Some("src\\style_macro.rs"),
-                            Some(1331u32),
+                            Some(1378u32),
                             Some("pi_export_gui::style_macro"),
                             ::tracing_core::field::FieldSet::new(
                                 &[],
@@ -9187,7 +9266,7 @@
                             "pi_export_gui::style_macro",
                             ::tracing::Level::WARN,
                             Some("src\\style_macro.rs"),
-                            Some(1331u32),
+                            Some(1378u32),
                             Some("pi_export_gui::style_macro"),
                             ::tracing_core::field::FieldSet::new(
                                 &[],
@@ -9573,48 +9652,164 @@
         0
     }
     #[cfg(feature = "pi_js_export")]
-    pub fn offset_top(_gui: &Gui, _node: f64) -> u32 {
-        let _node = unsafe { Entity::from_bits(transmute::<f64, u64>(_node)) };
-        0
+    pub fn get_enable(gui: &mut Gui, engine: &Engine, node: f64) -> bool {
+        let node = unsafe { Entity::from_bits(transmute::<f64, u64>(node)) };
+        if let Ok(is_show) = gui.enable_query.get(&engine.world, node) {
+            is_show.get_enable()
+        } else {
+            false
+        }
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
-    pub fn offset_top(_gui: &Gui, _node: f64) -> u32 {
-        let _node = unsafe { Entity::from_bits(transmute::<f64, u64>(_node)) };
-        0
+    pub fn get_enable(gui: &mut Gui, engine: &Engine, node: f64) -> bool {
+        let node = unsafe { Entity::from_bits(transmute::<f64, u64>(node)) };
+        if let Ok(is_show) = gui.enable_query.get(&engine.world, node) {
+            is_show.get_enable()
+        } else {
+            false
+        }
     }
     #[cfg(feature = "pi_js_export")]
-    pub fn offset_left(_gui: &Gui, _node: f64) -> u32 {
-        let _node = unsafe { Entity::from_bits(transmute::<f64, u64>(_node)) };
-        0
+    pub fn offset_top(gui: &mut Gui, engine: &Engine, node: f64) -> u32 {
+        let node = unsafe { Entity::from_bits(transmute::<f64, u64>(node)) };
+        {
+            let mut r = 0.0;
+            if let Ok(parent) = gui.up_query.get(&engine.world, node) {
+                if let Ok(parent_layout) = gui.layout_query.get(&engine.world, node) {
+                    r += parent_layout.padding.top + parent_layout.border.top;
+                }
+            }
+            if let Ok(layout) = gui.layout_query.get(&engine.world, node) {
+                r += layout.rect.top;
+            }
+            r.round() as u32
+        }
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
-    pub fn offset_left(_gui: &Gui, _node: f64) -> u32 {
-        let _node = unsafe { Entity::from_bits(transmute::<f64, u64>(_node)) };
-        0
+    pub fn offset_top(gui: &mut Gui, engine: &Engine, node: f64) -> u32 {
+        let node = unsafe { Entity::from_bits(transmute::<f64, u64>(node)) };
+        {
+            let mut r = 0.0;
+            if let Ok(parent) = gui.up_query.get(&engine.world, node) {
+                if let Ok(parent_layout) = gui.layout_query.get(&engine.world, node) {
+                    r += parent_layout.padding.top + parent_layout.border.top;
+                }
+            }
+            if let Ok(layout) = gui.layout_query.get(&engine.world, node) {
+                r += layout.rect.top;
+            }
+            r.round() as u32
+        }
     }
     #[cfg(feature = "pi_js_export")]
-    pub fn offset_width(_gui: &Gui, _node: f64) -> u32 {
-        let _node = unsafe { Entity::from_bits(transmute::<f64, u64>(_node)) };
-        0
+    pub fn offset_left(gui: &mut Gui, engine: &Engine, node: f64) -> u32 {
+        let node = unsafe { Entity::from_bits(transmute::<f64, u64>(node)) };
+        {
+            let mut r = 0.0;
+            if let Ok(parent) = gui.up_query.get(&engine.world, node) {
+                if let Ok(parent_layout) = gui.layout_query.get(&engine.world, node) {
+                    r += parent_layout.padding.left + parent_layout.border.left;
+                }
+            }
+            if let Ok(layout) = gui.layout_query.get(&engine.world, node) {
+                r += layout.rect.left;
+            }
+            r.round() as u32
+        }
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
-    pub fn offset_width(_gui: &Gui, _node: f64) -> u32 {
-        let _node = unsafe { Entity::from_bits(transmute::<f64, u64>(_node)) };
-        0
+    pub fn offset_left(gui: &mut Gui, engine: &Engine, node: f64) -> u32 {
+        let node = unsafe { Entity::from_bits(transmute::<f64, u64>(node)) };
+        {
+            let mut r = 0.0;
+            if let Ok(parent) = gui.up_query.get(&engine.world, node) {
+                if let Ok(parent_layout) = gui.layout_query.get(&engine.world, node) {
+                    r += parent_layout.padding.left + parent_layout.border.left;
+                }
+            }
+            if let Ok(layout) = gui.layout_query.get(&engine.world, node) {
+                r += layout.rect.left;
+            }
+            r.round() as u32
+        }
     }
     #[cfg(feature = "pi_js_export")]
-    pub fn offset_height(_gui: &Gui, _node: f64) -> u32 {
-        let _node = unsafe { Entity::from_bits(transmute::<f64, u64>(_node)) };
-        0
+    pub fn offset_width(gui: &mut Gui, engine: &Engine, node: f64) -> u32 {
+        let node = unsafe { Entity::from_bits(transmute::<f64, u64>(node)) };
+        {
+            let r = if let Ok(layout) = gui.layout_query.get(&engine.world, node) {
+                layout.rect.right - layout.rect.left
+            } else {
+                0.0
+            };
+            r.round() as u32
+        }
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
-    pub fn offset_height(_gui: &Gui, _node: f64) -> u32 {
-        let _node = unsafe { Entity::from_bits(transmute::<f64, u64>(_node)) };
-        0
+    pub fn offset_width(gui: &mut Gui, engine: &Engine, node: f64) -> u32 {
+        let node = unsafe { Entity::from_bits(transmute::<f64, u64>(node)) };
+        {
+            let r = if let Ok(layout) = gui.layout_query.get(&engine.world, node) {
+                layout.rect.right - layout.rect.left
+            } else {
+                0.0
+            };
+            r.round() as u32
+        }
+    }
+    #[cfg(feature = "pi_js_export")]
+    pub fn offset_height(gui: &mut Gui, engine: &Engine, node: f64) -> u32 {
+        let node = unsafe { Entity::from_bits(transmute::<f64, u64>(node)) };
+        {
+            let r = if let Ok(layout) = gui.layout_query.get(&engine.world, node) {
+                layout.rect.bottom - layout.rect.top
+            } else {
+                0.0
+            };
+            r.round() as u32
+        }
+    }
+    #[cfg(target_arch = "wasm32")]
+    #[wasm_bindgen]
+    pub fn offset_height(gui: &mut Gui, engine: &Engine, node: f64) -> u32 {
+        let node = unsafe { Entity::from_bits(transmute::<f64, u64>(node)) };
+        {
+            let r = if let Ok(layout) = gui.layout_query.get(&engine.world, node) {
+                layout.rect.bottom - layout.rect.top
+            } else {
+                0.0
+            };
+            r.round() as u32
+        }
+    }
+    #[cfg(feature = "pi_js_export")]
+    pub fn get_class_name(gui: &mut Gui, engine: &mut Engine, node: f64) -> String {
+        let node = unsafe { Entity::from_bits(transmute::<f64, u64>(node)) };
+        {
+            let node = Entity::from_bits(unsafe { transmute(node) });
+            let value = match engine.world.query::<&ClassName>().get(&engine.world, node) {
+                Ok(r) => Some(&r.0),
+                _ => None,
+            };
+            serde_json::to_string(&value).unwrap()
+        }
+    }
+    #[cfg(target_arch = "wasm32")]
+    #[wasm_bindgen]
+    pub fn get_class_name(gui: &mut Gui, engine: &mut Engine, node: f64) -> String {
+        let node = unsafe { Entity::from_bits(transmute::<f64, u64>(node)) };
+        {
+            let node = Entity::from_bits(unsafe { transmute(node) });
+            let value = match engine.world.query::<&ClassName>().get(&engine.world, node) {
+                Ok(r) => Some(&r.0),
+                _ => None,
+            };
+            serde_json::to_string(&value).unwrap()
+        }
     }
     #[cfg(feature = "pi_js_export")]
     pub fn offset_document(gui: &mut Gui, engine: &Engine, node: f64) -> String {

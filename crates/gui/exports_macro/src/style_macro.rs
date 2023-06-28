@@ -31,6 +31,8 @@ use pi_ui_render::system::RunState;
 use pi_bevy_render_plugin::FrameState;
 use crate::{OffsetDocument, Size};
 use pi_ui_render::resource::animation_sheet::KeyFramesSheet;
+use js_sys::Float64Array;
+use pi_ui_render::resource::FragmentCommand;
 
 #[cfg(target_arch="wasm32")]
 use wasm_bindgen::prelude::wasm_bindgen;
@@ -1069,6 +1071,35 @@ other_out_export!(
 //     unsafe { transmute(entity.to_bits()) }
 // }
 
+// 创建模板
+other_out_export!(
+	@with_return,
+    create_fragment,
+	Float64Array,
+	{
+		let mut arr = arr;
+		let mut index = 0;
+		let mut entitys = Vec::with_capacity(count as usize);
+		while index < count {
+			let entity = gui.entitys.reserve_entity();
+			arr.set_index(index, unsafe { transmute(entity.to_bits()) });
+			entitys.push(entity);
+			index = index + 1;
+		}
+		gui.commands
+			.fragment_commands.push(FragmentCommand {
+				key,
+				entitys
+			});
+		arr
+	},
+	gui: &mut Gui,;
+	;
+	arr: Float64Array,
+	count: u32,
+	key: u32,
+);
+
 // 创建节点
 other_out_export!(
 	@with_return,
@@ -1230,9 +1261,25 @@ other_out_export!(
 );
 
 other_out_export!(
+    create_fragment_by_bin,
+    gui,
+    match postcard::from_bytes::<pi_ui_render::resource::fragment::Fragments>(bin) {
+		Ok(r) => {
+			gui.commands.push_cmd(pi_ui_render::resource::ExtendFragmentCmd(r));
+		}
+		Err(e) => {
+			log::warn!("deserialize_fragment error: {:?}, {:?}", e, bin);
+			return;
+		}
+	},
+	bin: &[u8],;
+	
+);
+
+other_out_export!(
     create_class_by_bin,
     gui,
-    match bincode::deserialize::<Vec<pi_style::style_parse::ClassMap>>(bin) {
+    match postcard::from_bytes::<Vec<pi_style::style_parse::ClassMap>>(bin) {
 		Ok(r) => {
 			gui.commands.push_cmd(pi_ui_render::resource::ExtendCssCmd(r));
 		}
@@ -1554,54 +1601,123 @@ other_out_export!(
 	u32,
     0,;
 );
+other_out_export!(
+	@with_return_node, 
+    get_enable,
+    gui: &mut Gui,
+	engine: &Engine,;
+	node,
+	bool,
+    if let Ok(is_show) = gui.enable_query.get(&engine.world, node) {
+		is_show.get_enable()
+	} else {
+		false
+	},;
+);
 
 // 返回值原类型为f32,这里之所以返回u32，是因为在iphonex以上的机型的浏览器上多次连续调用返回值为浮点数时，浏览器会自动刷新或白屏，原因未知
 // 节点到gui的上边界的距离
-// TODO
 other_out_export!(
 	@with_return_node, 
     offset_top,
-    _gui: &Gui,;
-	_node,
+    gui: &mut Gui,
+	engine: &Engine,;
+	node,
 	u32,
-    0,;
+    {
+		let mut r = 0.0;
+		if let Ok(parent) = gui.up_query.get(&engine.world, node) {
+			if let Ok(parent_layout) = gui.layout_query.get(&engine.world, node) {
+				r += parent_layout.padding.top + parent_layout.border.top;
+			}
+		}
+		if let Ok(layout) = gui.layout_query.get(&engine.world, node) {
+			r += layout.rect.top;
+		}
+		r.round() as u32
+	},;
 );
 
 // 返回值原类型为f32,这里之所以返回u32，是因为在iphonex以上的机型的浏览器上多次连续调用返回值为浮点数时，浏览器会自动刷新或白屏，原因未知
 // 节点到gui的左边界的距离
-// TODO
 other_out_export!(
 	@with_return_node, 
     offset_left,
-    _gui: &Gui,;
-	_node,
+    gui: &mut Gui,
+	engine: &Engine,;
+	node,
 	u32,
-    0,;
+    {
+		let mut r = 0.0;
+		if let Ok(parent) = gui.up_query.get(&engine.world, node) {
+			if let Ok(parent_layout) = gui.layout_query.get(&engine.world, node) {
+				r += parent_layout.padding.left + parent_layout.border.left;
+			}
+		}
+		if let Ok(layout) = gui.layout_query.get(&engine.world, node) {
+			r += layout.rect.left;
+		}
+		r.round() as u32
+	},;
 );
 
 // 返回值原类型为f32,这里之所以返回u32，是因为在iphonex以上的机型的浏览器上多次连续调用返回值为浮点数时，浏览器会自动刷新或白屏，原因未知
 // 节点的布局宽度
-// TODO
 other_out_export!(
 	@with_return_node, 
     offset_width,
-    _gui: &Gui,;
-	_node,
+    gui: &mut Gui,
+	engine: &Engine,;
+	node,
 	u32,
-    0,;
+    {
+		let r = if let Ok(layout) = gui.layout_query.get(&engine.world, node) {
+			layout.rect.right - layout.rect.left
+		} else {
+			0.0
+		}
+		r.round() as u32
+	},;
 );
 
 // 返回值原类型为f32,这里之所以返回u32，是因为在iphonex以上的机型的浏览器上多次连续调用返回值为浮点数时，浏览器会自动刷新或白屏，原因未知
 // 节点布局高度
-// TODO
 other_out_export!(
 	@with_return_node, 
     offset_height,
-    _gui: &Gui,;
-	_node,
+    gui: &mut Gui,
+	engine: &Engine,;
+	node,
 	u32,
-    0,;
+    {
+		let r = if let Ok(layout) = gui.layout_query.get(&engine.world, node) {
+			layout.rect.bottom - layout.rect.top
+		} else {
+			0.0
+		}
+		r.round() as u32
+	},;
 );
+
+/// 等同于html的getBoundingClientRect TODO
+/// left top width height
+other_out_export!(
+	@with_return_node, 
+    get_class_name,
+    gui: &mut Gui,
+	engine: &mut Engine,;
+	node,
+	String,
+    {
+		let node = Entity::from_bits(unsafe { transmute(node) });
+		let value = match engine.world.query::<&ClassName>().get(&engine.world, node) {
+			Ok(r) => Some(&r.0),
+			_ => None,
+		};
+		serde_json::to_string(&value).unwrap()
+	},;
+);
+
 
 /// 等同于html的getBoundingClientRect TODO
 /// left top width height
