@@ -1,6 +1,7 @@
 use std::mem::transmute;
 
 use bevy::prelude::Entity;
+use pi_slotmap::DefaultKey;
 
 pub mod engine;
 pub mod scene;
@@ -12,27 +13,10 @@ pub mod instance_mesh;
 pub mod geometry;
 pub mod material;
 pub mod lights;
-
-#[cfg(target_arch = "wasm32")]
-pub use engine::*;
-#[cfg(target_arch = "wasm32")]
-pub use scene::*;
-#[cfg(target_arch = "wasm32")]
-pub use transform_node::*;
-#[cfg(target_arch = "wasm32")]
-pub use camera::*;
-#[cfg(target_arch = "wasm32")]
-pub use mesh::*;
-#[cfg(target_arch = "wasm32")]
-pub use mesh_builder::*;
-#[cfg(target_arch = "wasm32")]
-pub use instance_mesh::*;
-#[cfg(target_arch = "wasm32")]
-pub use geometry::*;
-#[cfg(target_arch = "wasm32")]
-pub use material::*;
-#[cfg(target_arch = "wasm32")]
-pub use lights::*;
+pub mod node_materials;
+pub mod texture;
+pub mod gltf;
+pub mod animation;
 
 pub fn as_entity(val: f64) -> Entity {
     Entity::from_bits(val.to_bits())
@@ -40,4 +24,12 @@ pub fn as_entity(val: f64) -> Entity {
 
 pub fn as_f64(val: &Entity) -> f64 {
     unsafe { transmute(val.to_bits()) }
+}
+
+pub fn as_f64_dk(val: &DefaultKey) -> f64 {
+    unsafe { transmute(*val) }
+}
+pub fn as_dk(val: &f64) -> DefaultKey {
+    unsafe { transmute(*val) }
+    // DefaultKey::from(val.to_bits())
 }

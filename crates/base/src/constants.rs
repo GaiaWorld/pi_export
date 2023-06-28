@@ -114,15 +114,19 @@ impl BlendOperation {
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
-pub enum ColorFormat {
-    RGBA,
-    RGB,
+pub enum RenderFormat {
+    Rgba8Unorm,
+    Rgba8UnormSrgb,
+    Rgba16Float,
+    Rgba32Float,
 }
-impl ColorFormat {
-    pub fn val(&self) -> wgpu::TextureFormat {
+impl RenderFormat {
+    pub fn val(&self) -> pi_bevy_render_plugin::constant::texture_sampler::ColorFormat {
         match self {
-            ColorFormat::RGBA => wgpu::TextureFormat::Rgba8Unorm,
-            ColorFormat::RGB => wgpu::TextureFormat::Rgba8Unorm,
+            RenderFormat::Rgba8Unorm        => pi_bevy_render_plugin::constant::texture_sampler::ColorFormat::Rgba8Unorm,
+            RenderFormat::Rgba8UnormSrgb    => pi_bevy_render_plugin::constant::texture_sampler::ColorFormat::Rgba8UnormSrgb,
+            RenderFormat::Rgba16Float       => pi_bevy_render_plugin::constant::texture_sampler::ColorFormat::Rgba16Float,
+            RenderFormat::Rgba32Float       => pi_bevy_render_plugin::constant::texture_sampler::ColorFormat::Rgba32Float,
         }
     }
 }
@@ -130,24 +134,24 @@ impl ColorFormat {
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
-pub enum DepthFormat {
+pub enum DepthStencilFormat {
     None,
     Depth32,
     Depth24Stencil8,
 }
-impl DepthFormat {
+impl DepthStencilFormat {
     pub fn val(&self) -> Option<wgpu::TextureFormat> {
         match self {
-            DepthFormat::None => None,
-            DepthFormat::Depth32 => Some(wgpu::TextureFormat::Depth32Float),
-            DepthFormat::Depth24Stencil8 => Some(wgpu::TextureFormat::Depth24PlusStencil8),
+            DepthStencilFormat::None => None,
+            DepthStencilFormat::Depth32 => Some(wgpu::TextureFormat::Depth32Float),
+            DepthStencilFormat::Depth24Stencil8 => Some(wgpu::TextureFormat::Depth24PlusStencil8),
         }
     }
-    pub fn format(&self) -> DepthStencilFormat {
+    pub fn format(&self) -> pi_bevy_render_plugin::constant::texture_sampler::DepthStencilFormat {
         match self {
-            DepthFormat::None => DepthStencilFormat::None,
-            DepthFormat::Depth32 => DepthStencilFormat::Depth32Float,
-            DepthFormat::Depth24Stencil8 => DepthStencilFormat::Depth24PlusStencil8,
+            DepthStencilFormat::None => pi_bevy_render_plugin::constant::texture_sampler::DepthStencilFormat::None,
+            DepthStencilFormat::Depth32 => pi_bevy_render_plugin::constant::texture_sampler::DepthStencilFormat::Depth32Float,
+            DepthStencilFormat::Depth24Stencil8 => pi_bevy_render_plugin::constant::texture_sampler::DepthStencilFormat::Depth24PlusStencil8,
         }
     }
 }
@@ -362,4 +366,135 @@ impl EAnisotropyClamp {
             EAnisotropyClamp::Sixteen   => pi_render::rhi::sampler::EAnisotropyClamp::Sixteen,
         }
     }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
+pub enum CullMode {
+    Off,
+    Back,
+    Front
+}
+
+#[derive(Debug, Clone, Copy)]
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
+pub enum FrontFace {
+    Ccw,
+    /// Triangles with vertices in clockwise order are considered the front face.
+    ///
+    /// This is the default with left handed coordinate spaces.
+    Cw,
+}
+
+/// * 默认值 Fill
+#[derive(Debug, Clone, Copy)]
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
+pub enum PrimitiveTopology {
+    /// Vertex data is a list of points. Each vertex is a new point.
+    PointList = 0,
+    /// Vertex data is a list of lines. Each pair of vertices composes a new line.
+    ///
+    /// Vertices `0 1 2 3` create two lines `0 1` and `2 3`
+    LineList = 1,
+    /// Vertex data is a strip of lines. Each set of two adjacent vertices form a line.
+    ///
+    /// Vertices `0 1 2 3` create three lines `0 1`, `1 2`, and `2 3`.
+    LineStrip = 2,
+    /// Vertex data is a list of triangles. Each set of 3 vertices composes a new triangle.
+    ///
+    /// Vertices `0 1 2 3 4 5` create two triangles `0 1 2` and `3 4 5`
+    TriangleList = 3,
+    /// Vertex data is a triangle strip. Each set of three adjacent vertices form a triangle.
+    ///
+    /// Vertices `0 1 2 3 4 5` creates four triangles `0 1 2`, `2 1 3`, `2 3 4`, and `4 3 5`
+    TriangleStrip = 4,
+}
+
+// #[derive(Debug, Clone, Copy)]
+/// * 默认值 Fill
+#[derive(Debug, Clone, Copy)]
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
+pub enum PolygonMode {
+    Fill = 0,
+    /// Polygons are drawn as line segments
+    Line = 1,
+    /// Polygons are drawn as points
+    Point = 2,
+}
+
+#[derive(Debug, Clone, Copy, Hash, PartialEq, Eq)]
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
+pub enum StencilOperation {
+    /// Keep stencil value unchanged.
+    /// #[default]
+    Keep = 0,
+    /// Set stencil value to zero.
+    Zero = 1,
+    /// Replace stencil value with value provided in most recent call to
+    /// [`RenderPass::set_stencil_reference`][RPssr].
+    ///
+    /// [RPssr]: ../wgpu/struct.RenderPass.html#method.set_stencil_reference
+    Replace = 2,
+    /// Bitwise inverts stencil value.
+    Invert = 3,
+    /// Increments stencil value by one, clamping on overflow.
+    IncrementClamp = 4,
+    /// Decrements stencil value by one, clamping on underflow.
+    DecrementClamp = 5,
+    /// Increments stencil value by one, wrapping on overflow.
+    IncrementWrap = 6,
+    /// Decrements stencil value by one, wrapping on underflow.
+    DecrementWrap = 7,
+}
+
+#[derive(Debug, Clone, Copy, Hash, PartialEq, Eq)]
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
+pub enum ERenderAlignment {
+    /// * 只保留了粒子的旋转信息, 节点树上的旋转信息被忽略
+    /// * 先应用相机的旋转矩阵的逆矩阵, 这样正方向与相机 中轴线 上视线方向刚好相反
+    /// * 再应用粒子旋转
+    /// * 即获得最终世界矩阵 
+    View,
+    /// * 节点树上的旋转信息被忽略
+    /// * 应用粒子旋转
+    /// * 即获得最终世界矩阵
+    World,
+    /// * 节点树上的旋转信息保留并应用
+    /// * 再应用粒子旋转
+    /// * 即获得最终世界矩阵
+    Local,
+    /// * 只保留了粒子的旋转信息, 节点树上的旋转信息被忽略
+    /// * 先应用粒子指向相机的方向的旋转信息, 这样正方向与相机 相机观察目标 的视线方向刚好相反
+    /// * 再应用粒子旋转
+    /// * 即获得最终世界矩阵 
+    Facing,
+    /// * 只保留了粒子的旋转信息, 节点树上的旋转信息被忽略
+    /// * 先应用粒子速度方向的旋转信息
+    /// * 再应用粒子旋转
+    /// * 即获得最终世界矩阵 
+    Velocity,
+    /// * 所有旋转信息被忽略,
+    /// * 发射时的 缩放 偏移 应用 粒子的缩放、局部坐标 获得粒子 全局 缩放 偏移，传入shader
+    StretchedBillboard,
+    /// * 所有旋转信息被忽略, 仅应用 粒子 Z 轴旋转信息
+    /// * 发射时的 缩放 偏移 应用 粒子的缩放、局部坐标 获得粒子 全局 缩放 偏移, 加上 粒子 z 旋转 和 固定 x 轴 90 度旋转, 即 粒子的世界矩阵, ，传入shader
+    HorizontalBillboard,
+    /// * 所有旋转信息被忽略, 粒子 Z 轴强制为指向相机的方向, 并应用 粒子 z 轴旋转信息
+    /// * 发射时的 缩放 偏移 应用 粒子的缩放、局部坐标 获得粒子 全局 缩放 偏移, 加上 粒子 z 旋转, 即 粒子的世界矩阵，传入shader
+    /// * 由 粒子 全局坐标 和 相机全局坐标 的 X-Z 轴投影获得渲染阶段的矩阵, 被粒子世界矩阵作用
+    VerticalBillboard,
+}
+#[derive(Debug, Clone, Copy, Hash, PartialEq, Eq)]
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
+pub enum EScalingMode {
+    Hierarchy,
+    Local,
+    Shape,
 }
