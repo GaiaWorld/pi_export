@@ -315,7 +315,7 @@ pub fn p3d_create_vertex_buffer(app: &mut Engine, param: &mut ActionSetScene3D, 
     let length = length as usize;
     let data = bytemuck::cast_slice::<f32, u8>(&data[0..length]).to_vec();
     
-    let mut cmds: crate::engine::ActionSets = param.0.get_mut(&mut app.world);
+    let mut cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
 
     if !ActionVertexBuffer::check(&cmds.geometrycmd.vb_mgr, KeyVertexBuffer::from(key.to_string())) {
         ActionVertexBuffer::create(&mut cmds.geometrycmd.vb_wait, KeyVertexBuffer::from(key.to_string()), data);
@@ -329,7 +329,7 @@ pub fn p3d_create_indices_buffer(app: &mut Engine, param: &mut ActionSetScene3D,
     let length = length as usize;
     let data = bytemuck::cast_slice::<u16, u8>(&data[0..length]).to_vec();
     
-    let mut cmds: crate::engine::ActionSets = param.0.get_mut(&mut app.world);
+    let mut cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
 
     if !ActionVertexBuffer::check(&cmds.geometrycmd.vb_mgr, KeyVertexBuffer::from(key.to_string())) {
         // log::warn!("CubeBuilder::KEY_BUFFER_INDICES");

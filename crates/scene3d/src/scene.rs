@@ -28,7 +28,7 @@ impl PassCfg {
 pub fn p3d_scene(app: &mut Engine, param: &mut ActionSetScene3D, pass01: &PassCfg, pass02: &PassCfg, pass03: &PassCfg, pass04: &PassCfg, pass05: &PassCfg, pass06: &PassCfg, pass07: &PassCfg, pass08: &PassCfg) -> f64 {
     let scene: Entity = app.world.spawn_empty().id();
 
-    let mut scenecmds: crate::engine::ActionSets = param.0.get_mut(&mut app.world);
+    let mut scenecmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
     scenecmds.animegroupcmd.scene_ctxs.init_scene(scene);
     scenecmds.scene.create.push(OpsSceneCreation::ops(
         scene,
@@ -47,15 +47,6 @@ pub fn p3d_scene(app: &mut Engine, param: &mut ActionSetScene3D, pass01: &PassCf
     as_f64(&scene)
 }
 
-#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
-#[pi_js_export]
-pub fn p3d_scene_dispose(app: &mut Engine, param: &mut ActionSetScene3D, scene: f64) {
-    let scene: Entity = as_entity(scene);
-
-    let mut scenecmds: crate::engine::ActionSets = param.0.get_mut(&mut app.world);
-    scenecmds.scene_dispose.push(OpsSceneDispose::ops(scene));
-}
-
 ///
 /// 相机渲染像素宽高
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
@@ -63,7 +54,7 @@ pub fn p3d_scene_dispose(app: &mut Engine, param: &mut ActionSetScene3D, scene: 
 pub fn p3d_layermask(app: &mut Engine, param: &mut ActionSetScene3D, node: f64, val: f64) {
     let node: Entity = as_entity(node);
 
-    let mut scenecmds: crate::engine::ActionSets = param.0.get_mut(&mut app.world);
+    let mut scenecmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
 
     scenecmds.layer_mask.push(OpsLayerMask::ops(node, val as u32));
 }

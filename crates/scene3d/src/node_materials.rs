@@ -26,18 +26,20 @@ pub enum BuiltinNodeMaterialBlock {
     BlockUVOffsetSpeed,
     
     BlockFog,
+    BlockCutoff,
 
     BlockMainTexture,
     BlockMainTextureUVOffsetSpeed,
 
+    BlockOpacity,
     BlockOpacityTexture,
     BlockOpacityTextureUVOffsetSpeed,
     
     BlockOpacity2Texture,
     BlockOpacity2TextureUVOffsetSpeed,
 
-    BlockEmissiveBase,
     BlockEmissiveTexture,
+    BlockEmissiveTextureUVOffsetSpeed,
     
     BlockMixTexture,
     BlockMixTextureUVOffsetSpeed,
@@ -60,14 +62,16 @@ impl BuiltinNodeMaterialBlock {
             BuiltinNodeMaterialBlock::BlockTextureChannel               => BlockTextureChannel               ::KEY,
             BuiltinNodeMaterialBlock::BlockUVOffsetSpeed                => BlockUVOffsetSpeed                ::KEY,
             BuiltinNodeMaterialBlock::BlockFog                          => BlockFog                          ::KEY,
+            BuiltinNodeMaterialBlock::BlockCutoff                       => BlockCutoff                       ::KEY,
             BuiltinNodeMaterialBlock::BlockMainTexture                  => BlockMainTexture                  ::KEY,
             BuiltinNodeMaterialBlock::BlockMainTextureUVOffsetSpeed     => BlockMainTextureUVOffsetSpeed     ::KEY,
+            BuiltinNodeMaterialBlock::BlockOpacity                      => BlockOpacity                      ::KEY,
             BuiltinNodeMaterialBlock::BlockOpacityTexture               => BlockOpacityTexture               ::KEY,
             BuiltinNodeMaterialBlock::BlockOpacityTextureUVOffsetSpeed  => BlockOpacityTextureUVOffsetSpeed  ::KEY,
             BuiltinNodeMaterialBlock::BlockOpacity2Texture              => BlockOpacity2Texture              ::KEY,
             BuiltinNodeMaterialBlock::BlockOpacity2TextureUVOffsetSpeed => BlockOpacity2TextureUVOffsetSpeed ::KEY,
-            BuiltinNodeMaterialBlock::BlockEmissiveBase                 => BlockEmissiveBase                 ::KEY,
             BuiltinNodeMaterialBlock::BlockEmissiveTexture              => BlockEmissiveTexture              ::KEY,
+            BuiltinNodeMaterialBlock::BlockEmissiveTextureUVOffsetSpeed => BlockEmissiveTextureUVOffsetSpeed ::KEY,
             BuiltinNodeMaterialBlock::BlockMixTexture                   => BlockMixTexture                   ::KEY,
             BuiltinNodeMaterialBlock::BlockMixTextureUVOffsetSpeed      => BlockMixTextureUVOffsetSpeed      ::KEY,
             BuiltinNodeMaterialBlock::BlockMaskTexture                  => BlockMaskTexture                  ::KEY,
@@ -306,6 +310,17 @@ pub fn p3d_shader_uniform_tex(uniforms: &mut MaterialUniformDefines, key: &str, 
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
+pub fn p3d_check_shader(
+    app: &mut Engine, param: &mut ActionSetScene3D,
+    key: &str
+) -> bool {
+    let cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
+
+    cmds.matcmd.metas.get(&KeyShaderMeta::from(key)).is_some()
+}
+
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
 pub fn p3d_regist_material(
     app: &mut Engine, param: &mut ActionSetScene3D,
     key: &str,
@@ -317,7 +332,7 @@ pub fn p3d_regist_material(
     varying: f64,
     includes: &NodematerialIncludes,
 ) {
-    let mut cmds: crate::engine::ActionSets = param.0.get_mut(&mut app.world);
+    let mut cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
 
     let mut nodemat = NodeMaterialBuilder::new();
     nodemat.vs_define = String::from(vs_define_code);
@@ -360,7 +375,7 @@ pub fn p3d_regist_material(
         nodemat.include(val.key(), &cmds.node_material_blocks);
     });
 
-    log::warn!("Material {:?}", key);
+    // log::warn!("Material {:?}", key);
 
     ActionMaterial::regist_material_meta(&cmds.matcmd.metas, &mut cmds.matcmd.metas_wait, KeyShaderMeta::from(key), nodemat.meta());
 }

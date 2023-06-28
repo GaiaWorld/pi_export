@@ -16,7 +16,7 @@ pub fn p3d_camera(app: &mut Engine, param: &mut ActionSetScene3D, scene: f64, to
     let id: Entity = app.world.spawn_empty().id();
     let scene: Entity = as_entity(scene);
 
-    let mut scenecmds: crate::engine::ActionSets = param.0.get_mut(&mut app.world);
+    let mut scenecmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
 
     scenecmds.transformcmds.tree.push(OpsTransformNodeParent::ops(id, scene));
     scenecmds.cameracmds.create.push(OpsCameraCreation::ops(scene, id, String::from(""), toscreen));
@@ -29,7 +29,7 @@ pub fn p3d_camera(app: &mut Engine, param: &mut ActionSetScene3D, scene: f64, to
 pub fn p3d_camera_size(app: &mut Engine, param: &mut ActionSetScene3D, camera: f64, size: f64) {
     let camera: Entity = as_entity(camera);
 
-    let mut scenecmds: crate::engine::ActionSets = param.0.get_mut(&mut app.world);
+    let mut scenecmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
 
     scenecmds.cameracmds.size.push(OpsCameraOrthSize::ops(camera, size as f32));
 }
@@ -39,7 +39,7 @@ pub fn p3d_camera_size(app: &mut Engine, param: &mut ActionSetScene3D, camera: f
 pub fn p3d_camera_active(app: &mut Engine, param: &mut ActionSetScene3D, camera: f64, active: bool) {
     let camera: Entity = as_entity(camera);
 
-    let mut scenecmds: crate::engine::ActionSets = param.0.get_mut(&mut app.world);
+    let mut scenecmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
 
     scenecmds.cameracmds.active.push(OpsCameraActive::ops(camera, active));
 }
@@ -49,7 +49,7 @@ pub fn p3d_camera_active(app: &mut Engine, param: &mut ActionSetScene3D, camera:
 pub fn p3d_camera_mode(app: &mut Engine, param: &mut ActionSetScene3D, camera: f64, as_orthographic: bool) {
     let camera: Entity = as_entity(camera);
 
-    let mut scenecmds: crate::engine::ActionSets = param.0.get_mut(&mut app.world);
+    let mut scenecmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
 
     scenecmds.cameracmds.mode.push(OpsCameraMode::ops(camera, as_orthographic));
 }
@@ -59,7 +59,7 @@ pub fn p3d_camera_mode(app: &mut Engine, param: &mut ActionSetScene3D, camera: f
 pub fn p3d_camera_fixed_mode(app: &mut Engine, param: &mut ActionSetScene3D, camera: f64, as_horizontal: bool) {
     let camera: Entity = as_entity(camera);
 
-    let mut scenecmds: crate::engine::ActionSets = param.0.get_mut(&mut app.world);
+    let mut scenecmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
 
     scenecmds.cameracmds.fixmode.push(OpsCameraFixedMode::ops(camera, as_horizontal));
 }
@@ -69,7 +69,7 @@ pub fn p3d_camera_fixed_mode(app: &mut Engine, param: &mut ActionSetScene3D, cam
 pub fn p3d_camera_target(app: &mut Engine, param: &mut ActionSetScene3D, camera: f64, x: f64, y: f64, z: f64) {
     let camera: Entity = as_entity(camera);
 
-    let mut scenecmds: crate::engine::ActionSets = param.0.get_mut(&mut app.world);
+    let mut scenecmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
 
     scenecmds.cameracmds.target.push(OpsCameraTarget::ops(camera, x as f32, y as f32, z as f32));
 }
@@ -81,7 +81,7 @@ pub fn p3d_camera_target(app: &mut Engine, param: &mut ActionSetScene3D, camera:
 pub fn p3d_camera_pxiel_size(app: &mut Engine, param: &mut ActionSetScene3D, camera: f64, w: f64, h: f64) {
     let camera: Entity = as_entity(camera);
 
-    let mut scenecmds: crate::engine::ActionSets = param.0.get_mut(&mut app.world);
+    let mut scenecmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
 
     scenecmds.cameracmds.pixelsize.push(OpsCameraPixelSize::ops(camera, w as u32, h as u32));
 }
@@ -93,7 +93,7 @@ pub fn p3d_camera_pxiel_size(app: &mut Engine, param: &mut ActionSetScene3D, cam
 pub fn p3d_camera_nearfar(app: &mut Engine, param: &mut ActionSetScene3D, camera: f64, near: f64, far: f64) {
     let camera: Entity = as_entity(camera);
 
-    let mut scenecmds: crate::engine::ActionSets = param.0.get_mut(&mut app.world);
+    let mut scenecmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
 
     scenecmds.cameracmds.nearfar.push(OpsCameraNearFar::ops(camera, near as f32, far as f32));
 }
@@ -110,7 +110,7 @@ pub fn p3d_camera_aspect(app: &mut Engine, param: &mut ActionSetScene3D, camera:
 
     let camera: Entity = as_entity(camera);
 
-    let mut scenecmds: crate::engine::ActionSets = param.0.get_mut(&mut app.world);
+    let mut scenecmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
 
     if let Some(aspect) = val {
         scenecmds.cameracmds.aspect.push(OpsCameraAspect::ops(camera, ViewerAspect::Custom(aspect as f32)));
@@ -140,31 +140,37 @@ pub fn p3d_pass_orders(orders: &mut PassOrders, pass: OpsPass) {
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
-pub fn p3d_camera_render(app: &mut Engine, param: &mut ActionSetScene3D, camera: f64, pre_node: Option<f64>, next_node: Option<f64>, pass_orders: &PassOrders, color_format: RenderFormat, depth: DepthStencilFormat) -> f64 {
+pub fn p3d_camera_render(app: &mut Engine, param: &mut ActionSetScene3D, camera: f64, name: String, pass_orders: &PassOrders, color_format: RenderFormat, depth: DepthStencilFormat) -> f64 {
 
     let camera: Entity = as_entity(camera);
-    let pre_node = if let Some(pre_node) = pre_node {
-        Some(Atom::from(as_entity(pre_node).to_bits().to_string()))
-    } else {
-        None
-    };
-    let next_node = if let Some(next_node) = next_node {
-        Some(Atom::from(as_entity(next_node).to_bits().to_string()))
-    } else {
-        None
-    };
+    // let pre_node = if let Some(pre_node) = pre_node {
+    //     Some(as_entity(pre_node))
+    // } else {
+    //     None
+    // };
+    // let next_node = if let Some(next_node) = next_node {
+    //     Some(as_entity(next_node))
+    // } else {
+    //     None
+    // };
 
     let id_renderer: Entity = app.world.spawn_empty().id();
 
-    let mut scenecmds: crate::engine::ActionSets = param.0.get_mut(&mut app.world);
+    let mut scenecmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
 
-    let desc = RendererGraphicDesc {
-        pre: pre_node,
-        curr: Atom::from(id_renderer.to_bits().to_string()),
-        next: next_node,
-        passorders: PassTagOrders::new(pass_orders.0.clone())
-    };
-    scenecmds.cameracmds.render.push(OpsCameraRendererInit::ops(camera, id_renderer, desc, color_format.val(), depth.format()));
+    // let mut orders: Vec<EPassTag> = vec![];
+    // pass_orders.0.iter().for_each(|pass| {
+    //     orders.push(pass.)
+    // });
+
+    // let desc = RendererGraphicDesc {
+    //     pre: pre_node,
+    //     curr: name.clone(),
+    //     next: next_node,
+    //     passorders: PassTagOrders::new(pass_orders.0.clone())
+    // };
+    scenecmds.renderercmds.create.push(OpsRendererCreate::ops(id_renderer, name.clone()));
+    scenecmds.cameracmds.render.push(OpsCameraRendererInit::ops(camera, id_renderer, name, pi_scene_context::pass::PassTagOrders::new(pass_orders.0.clone()), color_format.val(), depth.format()));
 
     as_f64(&id_renderer)
 }
@@ -176,9 +182,9 @@ pub fn p3d_camera_render(app: &mut Engine, param: &mut ActionSetScene3D, camera:
 pub fn p3d_render_auto_clear_color(app: &mut Engine, param: &mut ActionSetScene3D, renderer: f64, val: bool) {
     let renderer: Entity = as_entity(renderer);
 
-    let mut scenecmds: crate::engine::ActionSets = param.0.get_mut(&mut app.world);
+    let mut scenecmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
 
-    scenecmds.renderermodifycmds.push(OpsRendererCommand::AutoClearColor(renderer, val));
+    scenecmds.renderercmds.modify.push(OpsRendererCommand::AutoClearColor(renderer, val));
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
@@ -186,9 +192,9 @@ pub fn p3d_render_auto_clear_color(app: &mut Engine, param: &mut ActionSetScene3
 pub fn p3d_render_auto_clear_depth(app: &mut Engine, param: &mut ActionSetScene3D, renderer: f64, val: bool) {
     let renderer: Entity = as_entity(renderer);
 
-    let mut scenecmds: crate::engine::ActionSets = param.0.get_mut(&mut app.world);
+    let mut scenecmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
 
-    scenecmds.renderermodifycmds.push(OpsRendererCommand::AutoClearDepth(renderer, val));
+    scenecmds.renderercmds.modify.push(OpsRendererCommand::AutoClearDepth(renderer, val));
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
@@ -196,9 +202,9 @@ pub fn p3d_render_auto_clear_depth(app: &mut Engine, param: &mut ActionSetScene3
 pub fn p3d_render_auto_clear_stencil(app: &mut Engine, param: &mut ActionSetScene3D, renderer: f64, val: bool) {
     let renderer: Entity = as_entity(renderer);
 
-    let mut scenecmds: crate::engine::ActionSets = param.0.get_mut(&mut app.world);
+    let mut scenecmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
 
-    scenecmds.renderermodifycmds.push(OpsRendererCommand::AutoClearStencil(renderer, val));
+    scenecmds.renderercmds.modify.push(OpsRendererCommand::AutoClearStencil(renderer, val));
 }
 
 /// e g b a 数值为 0 ~ 255 u8
@@ -207,9 +213,9 @@ pub fn p3d_render_auto_clear_stencil(app: &mut Engine, param: &mut ActionSetScen
 pub fn p3d_render_clear_color(app: &mut Engine, param: &mut ActionSetScene3D, renderer: f64, r: f64, g: f64, b: f64, a: f64) {
     let renderer: Entity = as_entity(renderer);
 
-    let mut scenecmds: crate::engine::ActionSets = param.0.get_mut(&mut app.world);
+    let mut scenecmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
 
-    scenecmds.renderermodifycmds.push(OpsRendererCommand::ColorClear(renderer, RenderColorClear(r as u8, g as u8, b as u8, a as u8)));
+    scenecmds.renderercmds.modify.push(OpsRendererCommand::ColorClear(renderer, RenderColorClear(r as u8, g as u8, b as u8, a as u8)));
 }
 
 /// val 数值为 0.~1.
@@ -218,9 +224,9 @@ pub fn p3d_render_clear_color(app: &mut Engine, param: &mut ActionSetScene3D, re
 pub fn p3d_render_clear_depth(app: &mut Engine, param: &mut ActionSetScene3D, renderer: f64, val: f64) {
     let renderer: Entity = as_entity(renderer);
 
-    let mut scenecmds: crate::engine::ActionSets = param.0.get_mut(&mut app.world);
+    let mut scenecmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
 
-    scenecmds.renderermodifycmds.push(OpsRendererCommand::DepthClear(renderer, RenderDepthClear(val as f32)));
+    scenecmds.renderercmds.modify.push(OpsRendererCommand::DepthClear(renderer, RenderDepthClear(val as f32)));
 }
 ///
 /// val 数值为 u32
@@ -229,7 +235,7 @@ pub fn p3d_render_clear_depth(app: &mut Engine, param: &mut ActionSetScene3D, re
 pub fn p3d_render_clear_stencil(app: &mut Engine, param: &mut ActionSetScene3D, renderer: f64, val: f64) {
     let renderer: Entity = as_entity(renderer);
 
-    let mut scenecmds: crate::engine::ActionSets = param.0.get_mut(&mut app.world);
+    let mut scenecmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
 
-    scenecmds.renderermodifycmds.push(OpsRendererCommand::StencilClear(renderer, RenderStencilClear(val as u32)));
+    scenecmds.renderercmds.modify.push(OpsRendererCommand::StencilClear(renderer, RenderStencilClear(val as u32)));
 }

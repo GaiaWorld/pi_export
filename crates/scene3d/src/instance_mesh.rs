@@ -16,7 +16,7 @@ pub fn p3d_instance_mesh(app: &mut Engine, param: &mut ActionSetScene3D, source:
     let id: Entity = app.world.spawn_empty().id();
     let source: Entity = as_entity(source);
 
-    let mut cmds: crate::engine::ActionSets = param.0.get_mut(&mut app.world);
+    let mut cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
 
     cmds.instancemeshcmds.create.push(OpsInstanceMeshCreation::ops(source, id, String::from("")));
 
@@ -28,7 +28,7 @@ pub fn p3d_instance_mesh(app: &mut Engine, param: &mut ActionSetScene3D, source:
 pub fn p3d_instance_mesh_color(app: &mut Engine, param: &mut ActionSetScene3D, instance: f64, r: f64, g: f64, b: f64, a: f64) {
     let instance: Entity = as_entity(instance);
 
-    let mut cmds: crate::engine::ActionSets = param.0.get_mut(&mut app.world);
+    let mut cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
 
     cmds.instancemeshcmds.color.push(OpsInstanceColor::ops(instance, r as f32, g as f32, b as f32, a as f32));
 }
@@ -38,7 +38,7 @@ pub fn p3d_instance_mesh_color(app: &mut Engine, param: &mut ActionSetScene3D, i
 pub fn p3d_instance_mesh_tilloff(app: &mut Engine, param: &mut ActionSetScene3D, instance: f64, uscale: f64, vscale: f64, uoffset: f64, voffset: f64) {
     let instance: Entity = as_entity(instance);
 
-    let mut cmds: crate::engine::ActionSets = param.0.get_mut(&mut app.world);
+    let mut cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
 
     cmds.instancemeshcmds.tilloff.push(OpsInstanceTillOff::ops(instance, uscale as f32, vscale as f32, uoffset as f32, voffset as f32));
 }
