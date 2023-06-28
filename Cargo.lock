@@ -13,6 +13,22 @@ dependencies = [
 ]
 
 [[package]]
+name = "ab_glyph"
+version = "0.2.21"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "5110f1c78cf582855d895ecd0746b653db010cec6d9f5575293f27934d980a39"
+dependencies = [
+ "ab_glyph_rasterizer",
+ "owned_ttf_parser",
+]
+
+[[package]]
+name = "ab_glyph_rasterizer"
+version = "0.1.8"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "c71b1793ee61086797f5c80b6efa2b8ffa6d5dd703f118545808a7f2e27f7046"
+
+[[package]]
 name = "accesskit"
 version = "0.10.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -47,9 +63,9 @@ checksum = "aaf5b3c3828397ee832ba4a72fb1a4ace10f781e31885f774cbd531014059115"
 dependencies = [
  "accesskit",
  "accesskit_consumer",
- "arrayvec 0.7.2",
+ "arrayvec",
  "once_cell",
- "paste 1.0.12",
+ "paste",
  "windows 0.44.0",
 ]
 
@@ -173,12 +189,6 @@ checksum = "6b4930d2cb77ce62f89ee5d5289b4ac049559b1c45539271f5ed4fdc7db34545"
 
 [[package]]
 name = "arrayvec"
-version = "0.5.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "23b62fc65de8e4e7f52534fb52b0f3ed04746ae267519eef2a83941e8085068b"
-
-[[package]]
-name = "arrayvec"
 version = "0.7.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "8da52d66c7071e2e3fa2a1e5c6d088fec47b593032b254f5e980de8ea54454d6"
@@ -297,7 +307,7 @@ checksum = "d468802bab17cbc0cc575e9b053f41e72aa36bfa6b7f55e3529ffa43161b97fa"
 [[package]]
 name = "axis"
 version = "0.0.1"
-source = "git+https://github.com/GaiaWorld/pi_3d.git#4229a6e2eb80425cd47caf7a4dff6bc9a03913ae"
+source = "git+https://github.com/GaiaWorld/pi_3d.git#69852a04cda5a02b678c4f7aa35aca0fa3461835"
 dependencies = [
  "bevy",
  "bytemuck",
@@ -307,20 +317,20 @@ dependencies = [
  "futures",
  "log",
  "naga 0.10.0",
- "pi_assets 0.11.1",
+ "pi_assets",
  "pi_atom",
  "pi_engine_shell",
  "pi_hash",
  "pi_node_materials",
- "pi_render 0.1.0 (git+https://github.com/GaiaWorld/pi_render.git?branch=bevy_shader)",
+ "pi_render",
  "pi_scene_context",
  "pi_scene_math",
  "pi_share",
  "pi_slotmap",
- "render_derive 0.1.0 (git+https://github.com/GaiaWorld/pi_render.git?branch=bevy_shader)",
- "render_utils 0.1.0 (git+https://github.com/GaiaWorld/pi_render.git?branch=bevy_shader)",
+ "render_derive",
+ "render_utils",
  "smallvec",
- "wgpu 0.15.0",
+ "wgpu",
 ]
 
 [[package]]
@@ -393,7 +403,7 @@ dependencies = [
  "downcast-rs",
  "fastrand",
  "js-sys",
- "parking_lot 0.12.1",
+ "parking_lot",
  "serde",
  "thiserror",
  "wasm-bindgen",
@@ -667,7 +677,7 @@ dependencies = [
  "erased-serde",
  "glam",
  "once_cell",
- "parking_lot 0.12.1",
+ "parking_lot",
  "serde",
  "smallvec",
  "thiserror",
@@ -721,15 +731,15 @@ dependencies = [
  "image",
  "naga 0.11.0",
  "once_cell",
- "parking_lot 0.12.1",
+ "parking_lot",
  "profiling",
  "regex",
  "serde",
  "smallvec",
  "thiserror",
  "thread_local",
- "wgpu 0.15.0",
- "wgpu-hal 0.15.1",
+ "wgpu",
+ "wgpu-hal",
 ]
 
 [[package]]
@@ -826,7 +836,7 @@ dependencies = [
  "bevy_math",
  "bevy_reflect",
  "bevy_utils",
- "raw-window-handle 0.5.2",
+ "raw-window-handle",
 ]
 
 [[package]]
@@ -848,7 +858,7 @@ dependencies = [
  "bevy_window",
  "crossbeam-channel",
  "once_cell",
- "raw-window-handle 0.5.2",
+ "raw-window-handle",
  "wasm-bindgen",
  "web-sys",
  "winit 0.28.4",
@@ -970,12 +980,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "14c189c53d098945499cdfa7ecc63567cf3886b3332b312a5b4585d8d3a6a610"
 
 [[package]]
-name = "bytes"
-version = "1.4.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "89b2fd2a0dcf38d7971e2194b6b6eebab45ae01067456a7fd93d5547a61b70be"
-
-[[package]]
 name = "calloop"
 version = "0.10.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1015,12 +1019,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "cesu8"
-version = "1.1.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6d43a04d8753f35258c91f8ec639f792891f748a1edbd759cf1dcea3382ad83c"
-
-[[package]]
 name = "cfg-if"
 version = "1.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1048,37 +1046,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "67ba02a97a2bd10f4b59b25c7973101c79642302776489e030cd13cdab09ed15"
 
 [[package]]
-name = "cocoa"
-version = "0.24.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f425db7937052c684daec3bd6375c8abe2d146dca4b8b143d6db777c39138f3a"
-dependencies = [
- "bitflags",
- "block",
- "cocoa-foundation",
- "core-foundation",
- "core-graphics",
- "foreign-types 0.3.2",
- "libc",
- "objc",
-]
-
-[[package]]
-name = "cocoa-foundation"
-version = "0.1.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "931d3837c286f56e3c58423ce4eba12d08db2374461a785c86f672b08b5650d6"
-dependencies = [
- "bitflags",
- "block",
- "core-foundation",
- "core-graphics-types",
- "foreign-types 0.3.2",
- "libc",
- "objc",
-]
-
-[[package]]
 name = "codespan-reporting"
 version = "0.11.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1099,16 +1066,6 @@ name = "com-rs"
 version = "0.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "bf43edc576402991846b093a7ca18a3477e0ef9c588cde84964b5d3e43016642"
-
-[[package]]
-name = "combine"
-version = "4.6.6"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "35ed6e9d84f0b51a7f52daf1c7d71dd136fd7a3f41a8462b8cdb8c78d920fad4"
-dependencies = [
- "bytes",
- "memchr",
-]
 
 [[package]]
 name = "concurrent-queue"
@@ -1136,12 +1093,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "6051f239ecec86fde3410901ab7860d458d160371533842974fc61f96d15879b"
 
 [[package]]
-name = "copyless"
-version = "0.1.5"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a2df960f5d869b2dd8532793fde43eb5427cceb126c929747a26823ab0eeb536"
-
-[[package]]
 name = "core-foundation"
 version = "0.9.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1166,7 +1117,7 @@ dependencies = [
  "bitflags",
  "core-foundation",
  "core-graphics-types",
- "foreign-types 0.3.2",
+ "foreign-types",
  "libc",
 ]
 
@@ -1178,19 +1129,7 @@ checksum = "3a68b68b3446082644c91ac778bf50cd4104bfb002b5a6a7c44cca5a2c70788b"
 dependencies = [
  "bitflags",
  "core-foundation",
- "foreign-types 0.3.2",
- "libc",
-]
-
-[[package]]
-name = "core-text"
-version = "19.2.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "99d74ada66e07c1cefa18f8abfba765b486f250de2e4a999e5727fc0dd4b4a25"
-dependencies = [
- "core-foundation",
- "core-graphics",
- "foreign-types 0.3.2",
+ "foreign-types",
  "libc",
 ]
 
@@ -1286,29 +1225,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "crossfont"
-version = "0.5.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "21fd3add36ea31aba1520aa5288714dd63be506106753226d0eb387a93bc9c45"
-dependencies = [
- "cocoa",
- "core-foundation",
- "core-foundation-sys",
- "core-graphics",
- "core-text",
- "dwrote",
- "foreign-types 0.5.0",
- "freetype-rs",
- "libc",
- "log",
- "objc",
- "once_cell",
- "pkg-config",
- "servo-fontconfig",
- "winapi",
-]
-
-[[package]]
 name = "crunchy"
 version = "0.2.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1362,23 +1278,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "cty"
-version = "0.2.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b365fabc795046672053e29c954733ec3b05e4be654ab130fe8f1f94d7051f35"
-
-[[package]]
-name = "d3d12"
-version = "0.5.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "827914e1f53b1e0e025ecd3d967a7836b7bcb54520f90e21ef8df7b4d88a2759"
-dependencies = [
- "bitflags",
- "libloading",
- "winapi",
-]
-
-[[package]]
 name = "d3d12"
 version = "0.6.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1390,44 +1289,9 @@ dependencies = [
 ]
 
 [[package]]
-name = "darling"
-version = "0.13.4"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a01d95850c592940db9b8194bc39f4bc0e89dee5c4265e4b1807c34a9aba453c"
-dependencies = [
- "darling_core",
- "darling_macro",
-]
-
-[[package]]
-name = "darling_core"
-version = "0.13.4"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "859d65a907b6852c9361e3185c862aae7fafd2887876799fa55f5f99dc40d610"
-dependencies = [
- "fnv",
- "ident_case",
- "proc-macro2",
- "quote",
- "strsim",
- "syn 1.0.109",
-]
-
-[[package]]
-name = "darling_macro"
-version = "0.13.4"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9c972679f83bdf9c42bd905396b6c3588a843a17f0f16dfcfa3e2c5d57441835"
-dependencies = [
- "darling_core",
- "quote",
- "syn 1.0.109",
-]
-
-[[package]]
 name = "default_render"
 version = "0.0.1"
-source = "git+https://github.com/GaiaWorld/pi_3d.git#4229a6e2eb80425cd47caf7a4dff6bc9a03913ae"
+source = "git+https://github.com/GaiaWorld/pi_3d.git#69852a04cda5a02b678c4f7aa35aca0fa3461835"
 dependencies = [
  "bevy",
  "crossbeam",
@@ -1436,20 +1300,20 @@ dependencies = [
  "futures",
  "log",
  "naga 0.10.0",
- "pi_assets 0.11.1",
+ "pi_assets",
  "pi_atom",
  "pi_engine_shell",
  "pi_hash",
  "pi_node_materials",
- "pi_render 0.1.0 (git+https://github.com/GaiaWorld/pi_render.git?branch=bevy_shader)",
+ "pi_render",
  "pi_scene_context",
  "pi_scene_math",
  "pi_share",
  "pi_slotmap",
- "render_derive 0.1.0 (git+https://github.com/GaiaWorld/pi_render.git?branch=bevy_shader)",
- "render_utils 0.1.0 (git+https://github.com/GaiaWorld/pi_render.git?branch=bevy_shader)",
+ "render_derive",
+ "render_utils",
  "smallvec",
- "wgpu 0.15.0",
+ "wgpu",
 ]
 
 [[package]]
@@ -1533,20 +1397,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "bde03329ae10e79ede66c9ce4dc930aa8599043b0743008548680f25b91502d6"
 dependencies = [
  "dtoa",
-]
-
-[[package]]
-name = "dwrote"
-version = "0.11.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "439a1c2ba5611ad3ed731280541d36d2e9c4ac5e7fb818a27b604bdc5a6aa65b"
-dependencies = [
- "lazy_static",
- "libc",
- "serde",
- "serde_derive",
- "winapi",
- "wio",
 ]
 
 [[package]]
@@ -1646,16 +1496,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "0206175f82b8d6bf6652ff7d71a1e27fd2e4efde587fd368662814d6ec1d9ce0"
 
 [[package]]
-name = "expat-sys"
-version = "2.1.6"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "658f19728920138342f68408b7cf7644d90d4784353d8ebc32e7e8663dbe45fa"
-dependencies = [
- "cmake",
- "pkg-config",
-]
-
-[[package]]
 name = "exr"
 version = "1.6.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1750,7 +1590,7 @@ name = "font_kit"
 version = "0.1.0"
 source = "git+http://ser.yinengyun.com:10082/tech/font_kit.git#9b4ff16e0f287fab1f204aa09ed6c0c67e5b1c7e"
 dependencies = [
- "freetype-sys 0.13.1 (git+http://ser.yinengyun.com:10082/tech/freetype_sys.git)",
+ "freetype-sys",
  "image",
  "lazy_static",
  "libc",
@@ -1763,28 +1603,7 @@ version = "0.3.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f6f339eb8adc052cd2ca78910fda869aefa38d22d5cb648e6485e4d3fc06f3b1"
 dependencies = [
- "foreign-types-shared 0.1.1",
-]
-
-[[package]]
-name = "foreign-types"
-version = "0.5.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d737d9aa519fb7b749cbc3b962edcf310a8dd1f4b67c91c4f83975dbdd17d965"
-dependencies = [
- "foreign-types-macros",
- "foreign-types-shared 0.3.1",
-]
-
-[[package]]
-name = "foreign-types-macros"
-version = "0.2.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1a5c6c585bc94aaf2c7b51dd4c2ba22680844aba4c687be581871a6f518c5742"
-dependencies = [
- "proc-macro2",
- "quote",
- "syn 2.0.15",
+ "foreign-types-shared",
 ]
 
 [[package]]
@@ -1794,37 +1613,9 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "00b0228411908ca8685dba7fc2cdd70ec9990a6e753e89b6ac91a84c40fbaf4b"
 
 [[package]]
-name = "foreign-types-shared"
-version = "0.3.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "aa9a19cbb55df58761df49b23516a86d432839add4af60fc256da840f66ed35b"
-
-[[package]]
-name = "freetype-rs"
-version = "0.26.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "74eadec9d0a5c28c54bb9882e54787275152a4e36ce206b45d7451384e5bf5fb"
-dependencies = [
- "bitflags",
- "freetype-sys 0.13.1 (registry+https://github.com/rust-lang/crates.io-index)",
- "libc",
-]
-
-[[package]]
 name = "freetype-sys"
 version = "0.13.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a37d4011c0cc628dfa766fcc195454f4b068d7afdc2adfd28861191d866e731a"
-dependencies = [
- "cmake",
- "libc",
- "pkg-config",
-]
-
-[[package]]
-name = "freetype-sys"
-version = "0.13.1"
-source = "git+http://ser.yinengyun.com:10082/tech/freetype_sys.git#73146506b57e19de5eeb1902ef1e3eb1a9510a13"
+source = "git+http://ser.yinengyun.com:10082/tech/freetype_sys.git#a736dfb7cc41ca65ab49c4daa32e44654ceaf511"
 dependencies = [
  "cmake",
  "libc",
@@ -2037,18 +1828,6 @@ dependencies = [
 
 [[package]]
 name = "glow"
-version = "0.11.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d8bd5877156a19b8ac83a29b2306fe20537429d318f3ff0a1a2119f8d9c61919"
-dependencies = [
- "js-sys",
- "slotmap",
- "wasm-bindgen",
- "web-sys",
-]
-
-[[package]]
-name = "glow"
 version = "0.12.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "4e007a07a24de5ecae94160f141029e9a347282cfe25d1d58d85d845cf3130f1"
@@ -2188,7 +1967,7 @@ checksum = "db04bc24a18b9ea980628ecf00e6c0264f3c1426dac36c00cb49b6fbad8b0743"
 dependencies = [
  "atomic-polyfill",
  "hash32",
- "rustc_version 0.4.0",
+ "rustc_version",
  "serde",
  "spin",
  "stable_deref_trait",
@@ -2247,27 +2026,10 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "9a3a5bfb195931eeb336b2a7b4d761daec841b97f947d34394601737a7bba5e4"
 
 [[package]]
-name = "ident_case"
-version = "1.0.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b9e0384b61958566e926dc50660321d12159025e767c18e043daf26b70104c39"
-
-[[package]]
 name = "ieee754"
 version = "0.2.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "9007da9cacbd3e6343da136e98b0d2df013f553d35bdec8b518f07bea768e19c"
-
-[[package]]
-name = "im"
-version = "13.0.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8db49f8bc08d5cc4e2bb0f7d25a6d1db2c79bc6f7d7c86c96c657eb3d214125f"
-dependencies = [
- "rustc_version 0.2.3",
- "sized-chunks",
- "typenum",
-]
 
 [[package]]
 name = "image"
@@ -2297,12 +2059,6 @@ dependencies = [
  "autocfg",
  "hashbrown",
 ]
-
-[[package]]
-name = "inplace_it"
-version = "0.3.5"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e567468c50f3d4bc7397702e09b380139f9b9288b4e909b070571007f8b5bf78"
 
 [[package]]
 name = "instant"
@@ -2354,20 +2110,6 @@ name = "itoa"
 version = "1.0.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "453ad9f582a441959e5f0d088b02ce04cfe8d51a8eaf077f12ac6d3e94164ca6"
-
-[[package]]
-name = "jni"
-version = "0.18.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "24967112a1e4301ca5342ea339763613a37592b8a6ce6cf2e4494537c7a42faf"
-dependencies = [
- "cesu8",
- "combine",
- "jni-sys",
- "log",
- "thiserror",
- "walkdir",
-]
 
 [[package]]
 name = "jni-sys"
@@ -2519,7 +2261,7 @@ checksum = "2532096657941c2fea9c289d370a250971c689d4f143798ff67113ec042024a5"
 [[package]]
 name = "material_textures"
 version = "0.0.1"
-source = "git+https://github.com/GaiaWorld/pi_3d.git#4229a6e2eb80425cd47caf7a4dff6bc9a03913ae"
+source = "git+https://github.com/GaiaWorld/pi_3d.git#69852a04cda5a02b678c4f7aa35aca0fa3461835"
 dependencies = [
  "bevy",
  "crossbeam",
@@ -2528,19 +2270,19 @@ dependencies = [
  "futures",
  "log",
  "naga 0.10.0",
- "pi_assets 0.11.1",
+ "pi_assets",
  "pi_atom",
  "pi_engine_shell",
  "pi_hash",
- "pi_render 0.1.0 (git+https://github.com/GaiaWorld/pi_render.git?branch=bevy_shader)",
+ "pi_render",
  "pi_scene_context",
  "pi_scene_math",
  "pi_share",
  "pi_slotmap",
- "render_derive 0.1.0 (git+https://github.com/GaiaWorld/pi_render.git?branch=bevy_shader)",
- "render_utils 0.1.0 (git+https://github.com/GaiaWorld/pi_render.git?branch=bevy_shader)",
+ "render_derive",
+ "render_utils",
  "smallvec",
- "wgpu 0.15.0",
+ "wgpu",
 ]
 
 [[package]]
@@ -2595,7 +2337,7 @@ dependencies = [
  "bitflags",
  "block",
  "core-graphics-types",
- "foreign-types 0.3.2",
+ "foreign-types",
  "log",
  "objc",
 ]
@@ -2722,7 +2464,6 @@ checksum = "4fb2d0de08694bed883320212c18ee3008576bfe8c306f4c3c4a58b4876998be"
 dependencies = [
  "approx",
  "matrixmultiply",
- "mint",
  "nalgebra-macros 0.1.0",
  "num-complex",
  "num-rational",
@@ -2824,7 +2565,7 @@ dependencies = [
  "jni-sys",
  "ndk-sys",
  "num_enum",
- "raw-window-handle 0.5.2",
+ "raw-window-handle",
  "thiserror",
 ]
 
@@ -2833,35 +2574,6 @@ name = "ndk-context"
 version = "0.1.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "27b02d87554356db9e9a873add8782d4ea6e3e58ea071a9adb9a2e8ddb884a8b"
-
-[[package]]
-name = "ndk-glue"
-version = "0.7.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0434fabdd2c15e0aab768ca31d5b7b333717f03cf02037d5a0a3ff3c278ed67f"
-dependencies = [
- "libc",
- "log",
- "ndk",
- "ndk-context",
- "ndk-macro",
- "ndk-sys",
- "once_cell",
- "parking_lot 0.12.1",
-]
-
-[[package]]
-name = "ndk-macro"
-version = "0.3.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0df7ac00c4672f9d5aece54ee3347520b7e20f158656c7db2e6de01902eb7a6c"
-dependencies = [
- "darling",
- "proc-macro-crate",
- "proc-macro2",
- "quote",
- "syn 1.0.109",
-]
 
 [[package]]
 name = "ndk-sys"
@@ -3122,21 +2834,19 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b15813163c1d831bf4a13c3610c05c0d03b39feb07f7e09fa234dac9b15aaf39"
 
 [[package]]
+name = "owned_ttf_parser"
+version = "0.19.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "706de7e2214113d63a8238d1910463cfce781129a6f263d13fdb09ff64355ba4"
+dependencies = [
+ "ttf-parser",
+]
+
+[[package]]
 name = "parking"
 version = "2.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "14f2252c834a40ed9bb5422029649578e63aa341ac401f74e719dd1afda8394e"
-
-[[package]]
-name = "parking_lot"
-version = "0.11.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7d17b78036a60663b797adeaee46f5c9dfebb86948d1255007a1d6be0271ff99"
-dependencies = [
- "instant",
- "lock_api",
- "parking_lot_core 0.8.6",
-]
 
 [[package]]
 name = "parking_lot"
@@ -3145,21 +2855,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3742b2c103b9f06bc9fff0a37ff4912935851bee6d36f3c02bcc755bcfec228f"
 dependencies = [
  "lock_api",
- "parking_lot_core 0.9.7",
-]
-
-[[package]]
-name = "parking_lot_core"
-version = "0.8.6"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "60a2cfe6f0ad2bfc16aefa463b497d5c7a5ecd44a23efa72aa342d90177356dc"
-dependencies = [
- "cfg-if",
- "instant",
- "libc",
- "redox_syscall 0.2.16",
- "smallvec",
- "winapi",
+ "parking_lot_core",
 ]
 
 [[package]]
@@ -3182,7 +2878,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "62cf99dd4c1e7e6425ecea8a4a0d8682dbf1861332d3e7803d576ed6fc64fa67"
 dependencies = [
  "approx",
- "arrayvec 0.7.2",
+ "arrayvec",
  "bitflags",
  "downcast-rs",
  "either",
@@ -3199,31 +2895,12 @@ dependencies = [
 
 [[package]]
 name = "parry3d"
-version = "0.8.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c418a03e2ba297c931c530a690b305ce3b3dcc675caf16777f4f8565c8e84732"
-dependencies = [
- "approx",
- "bitflags",
- "downcast-rs",
- "either",
- "nalgebra 0.30.1",
- "num-derive",
- "num-traits",
- "rustc-hash",
- "simba 0.7.3",
- "slab",
- "smallvec",
-]
-
-[[package]]
-name = "parry3d"
 version = "0.9.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "89cd07f0e1e9e207662f430a4e758c357fdf89450a548ef1ce59113822fd5fa7"
 dependencies = [
  "approx",
- "arrayvec 0.7.2",
+ "arrayvec",
  "bitflags",
  "downcast-rs",
  "either",
@@ -3244,7 +2921,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "2d527d9e8d203c55e5d25811d6c65e120b577985cb9b64f00fdb9aaf8c3d80ea"
 dependencies = [
  "approx",
- "arrayvec 0.7.2",
+ "arrayvec",
  "bitflags",
  "downcast-rs",
  "either",
@@ -3261,7 +2938,7 @@ dependencies = [
 [[package]]
 name = "particle"
 version = "0.0.1"
-source = "git+https://github.com/GaiaWorld/pi_3d.git#4229a6e2eb80425cd47caf7a4dff6bc9a03913ae"
+source = "git+https://github.com/GaiaWorld/pi_3d.git#69852a04cda5a02b678c4f7aa35aca0fa3461835"
 dependencies = [
  "bytemuck",
  "crossbeam",
@@ -3272,31 +2949,18 @@ dependencies = [
  "naga 0.9.0",
  "nalgebra 0.32.2",
  "pi_atom",
- "pi_ecs",
- "pi_ecs_macros 0.1.0 (git+https://github.com/GaiaWorld/pi_ecs.git)",
- "pi_ecs_utils",
  "pi_engine_shell",
  "pi_hal",
  "pi_hash",
- "pi_render 0.1.0 (git+https://github.com/GaiaWorld/pi_render?branch=master-shader)",
+ "pi_render",
  "pi_scene_context",
  "pi_scene_math",
  "pi_slotmap",
  "rand",
- "render_derive 0.1.0 (git+https://github.com/GaiaWorld/pi_render?branch=master-shader)",
- "render_utils 0.1.0 (git+https://github.com/GaiaWorld/pi_render?branch=master-shader)",
+ "render_derive",
+ "render_utils",
  "smallvec",
- "wgpu 0.15.0",
-]
-
-[[package]]
-name = "paste"
-version = "0.1.18"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "45ca20c77d80be666aef2b45486da86238fabe33e38306bd3118fe4af33fa880"
-dependencies = [
- "paste-impl",
- "proc-macro-hack",
+ "wgpu",
 ]
 
 [[package]]
@@ -3304,15 +2968,6 @@ name = "paste"
 version = "1.0.12"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "9f746c4065a8fa3fe23974dd82f15431cc8d40779821001404d10d2e79ca7d79"
-
-[[package]]
-name = "paste-impl"
-version = "0.1.18"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d95a7db200b97ef370c8e6de0088252f7e0dfff7d047a28528e47456c0fc98b6"
-dependencies = [
- "proc-macro-hack",
-]
 
 [[package]]
 name = "percent-encoding"
@@ -3421,7 +3076,7 @@ dependencies = [
 [[package]]
 name = "pi_3d"
 version = "0.0.1"
-source = "git+https://github.com/GaiaWorld/pi_3d.git#4229a6e2eb80425cd47caf7a4dff6bc9a03913ae"
+source = "git+https://github.com/GaiaWorld/pi_3d.git#69852a04cda5a02b678c4f7aa35aca0fa3461835"
 dependencies = [
  "axis",
  "bevy",
@@ -3435,7 +3090,7 @@ dependencies = [
  "material_textures",
  "particle",
  "pi_animation",
- "pi_assets 0.11.1",
+ "pi_assets",
  "pi_async",
  "pi_atom",
  "pi_bevy_asset",
@@ -3449,18 +3104,18 @@ dependencies = [
  "pi_mesh_builder",
  "pi_node_materials",
  "pi_postprocess",
- "pi_render 0.1.0 (git+https://github.com/GaiaWorld/pi_render.git?branch=bevy_shader)",
+ "pi_render",
  "pi_scene_context",
  "pi_scene_math",
  "procedural_texture",
  "render_compile",
- "render_derive 0.1.0 (git+https://github.com/GaiaWorld/pi_render.git?branch=bevy_shader)",
- "render_utils 0.1.0 (git+https://github.com/GaiaWorld/pi_render.git?branch=bevy_shader)",
+ "render_derive",
+ "render_utils",
  "skeletons",
  "skybox",
  "smallvec",
  "unlit_material",
- "wgpu 0.15.0",
+ "wgpu",
 ]
 
 [[package]]
@@ -3483,23 +3138,6 @@ name = "pi_any"
 version = "0.1.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "11eb29c61d91c65135b354b529f2674c1b5482d4b4c745d71edf8639f68d33df"
-
-[[package]]
-name = "pi_assets"
-version = "0.10.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f2ac3a1084570fbc9baca290d1c47897d578ee9d1c7f4033d7c512602a6f5763"
-dependencies = [
- "flume",
- "futures",
- "log",
- "pi_async",
- "pi_cache",
- "pi_futures",
- "pi_hash",
- "pi_share",
- "pi_time",
-]
 
 [[package]]
 name = "pi_assets"
@@ -3535,24 +3173,11 @@ dependencies = [
  "log",
  "minstant",
  "num_cpus",
- "parking_lot 0.12.1",
+ "parking_lot",
  "pi_cancel_timer",
  "pi_hash",
  "pi_time",
  "slotmap",
-]
-
-[[package]]
-name = "pi_async_graph"
-version = "0.3.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4330423e5480c24200a1c6eed1260a54eb2f4a4af1c2eda62d1d8c8fabe45268"
-dependencies = [
- "flume",
- "pi_async",
- "pi_futures",
- "pi_graph",
- "pi_share",
 ]
 
 [[package]]
@@ -3591,10 +3216,10 @@ source = "git+https://github.com/GaiaWorld/pi_render_bevy.git#4f114d8a00e69bf4a9
 dependencies = [
  "bevy",
  "crossbeam",
- "pi_assets 0.11.1",
+ "pi_assets",
  "pi_atom",
  "pi_hash",
- "pi_render 0.1.0 (git+https://github.com/GaiaWorld/pi_render.git?branch=bevy_shader)",
+ "pi_render",
  "pi_share",
  "serde",
 ]
@@ -3609,9 +3234,9 @@ dependencies = [
  "fixedbitset",
  "flume",
  "log",
- "pi_assets 0.11.1",
+ "pi_assets",
  "pi_async",
- "pi_async_graph 0.4.2",
+ "pi_async_graph",
  "pi_bevy_ecs_macro",
  "pi_dirty",
  "pi_futures",
@@ -3643,12 +3268,12 @@ version = "0.1.0"
 source = "git+https://github.com/GaiaWorld/pi_render_bevy.git#4f114d8a00e69bf4a9ba6c189bdb946f9bb9a45a"
 dependencies = [
  "bevy",
- "pi_assets 0.11.1",
+ "pi_assets",
  "pi_bevy_asset",
  "pi_bevy_render_plugin",
  "pi_hash",
  "pi_postprocess",
- "pi_render 0.1.0 (git+https://github.com/GaiaWorld/pi_render.git?branch=bevy_shader)",
+ "pi_render",
  "pi_share",
 ]
 
@@ -3663,21 +3288,21 @@ dependencies = [
  "js-sys",
  "lazy_static",
  "log",
- "pi_assets 0.11.1",
+ "pi_assets",
  "pi_async",
  "pi_bevy_asset",
  "pi_futures",
  "pi_hash",
- "pi_render 0.1.0 (git+https://github.com/GaiaWorld/pi_render.git?branch=bevy_shader)",
+ "pi_render",
  "pi_share",
- "raw-window-handle 0.5.2",
- "render_derive 0.1.0 (git+https://github.com/GaiaWorld/pi_render.git?branch=bevy_shader)",
+ "raw-window-handle",
+ "render_derive",
  "thiserror",
  "tracing",
  "wasm-bindgen",
  "wasm-bindgen-futures",
  "web-sys",
- "wgpu 0.15.0",
+ "wgpu",
 ]
 
 [[package]]
@@ -3688,9 +3313,9 @@ dependencies = [
  "bevy",
  "glam",
  "log",
- "raw-window-handle 0.5.2",
+ "raw-window-handle",
  "web-sys",
- "winit 0.27.4",
+ "winit 0.28.6",
 ]
 
 [[package]]
@@ -3747,7 +3372,7 @@ dependencies = [
 [[package]]
 name = "pi_curves"
 version = "0.1.0"
-source = "git+https://github.com/GaiaWorld/pi_curves.git#2f87cf02da8d0f98f410658cf40d17ff51a88a64"
+source = "git+https://github.com/GaiaWorld/pi_curves.git#ec7e28faa2bf27327cbc62dad0354f6adee37934"
 dependencies = [
  "env_logger",
  "log",
@@ -3791,35 +3416,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "pi_ecs"
-version = "0.1.1"
-source = "git+https://github.com/GaiaWorld/pi_ecs.git#e46bb571032376d13b2cedf770291654f7e2d13f"
-dependencies = [
- "async-trait",
- "derive_deref",
- "fixedbitset",
- "flume",
- "futures",
- "log",
- "paste 0.1.18",
- "pi_any",
- "pi_async",
- "pi_async_graph 0.3.3",
- "pi_ecs_macros 0.1.0 (git+https://github.com/GaiaWorld/pi_ecs.git)",
- "pi_futures",
- "pi_graph",
- "pi_hash",
- "pi_listener",
- "pi_map",
- "pi_null",
- "pi_share",
- "pi_slotmap",
- "pi_time",
- "quote",
- "thiserror",
-]
-
-[[package]]
 name = "pi_ecs_macros"
 version = "0.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3832,38 +3428,9 @@ dependencies = [
 ]
 
 [[package]]
-name = "pi_ecs_macros"
-version = "0.1.0"
-source = "git+https://github.com/GaiaWorld/pi_ecs.git#e46bb571032376d13b2cedf770291654f7e2d13f"
-dependencies = [
- "find-crate",
- "proc-macro2",
- "quote",
- "syn 1.0.109",
-]
-
-[[package]]
-name = "pi_ecs_utils"
-version = "0.1.1"
-source = "git+https://github.com/GaiaWorld/pi_ecs_utils.git#235a2aef12cb2c6923ade2a6e020fed2bc0e7a0c"
-dependencies = [
- "derive_deref",
- "log",
- "pi_dirty",
- "pi_ecs",
- "pi_ecs_macros 0.1.0 (git+https://github.com/GaiaWorld/pi_ecs.git)",
- "pi_hash",
- "pi_map",
- "pi_null",
- "pi_print_any",
- "pi_share",
- "pi_slotmap_tree",
-]
-
-[[package]]
 name = "pi_engine_shell"
 version = "0.0.1"
-source = "git+https://github.com/GaiaWorld/pi_3d.git#4229a6e2eb80425cd47caf7a4dff6bc9a03913ae"
+source = "git+https://github.com/GaiaWorld/pi_3d.git#69852a04cda5a02b678c4f7aa35aca0fa3461835"
 dependencies = [
  "approx",
  "bevy",
@@ -3877,19 +3444,21 @@ dependencies = [
  "naga 0.10.0",
  "ncollide3d",
  "parry3d 0.9.0",
- "pi_assets 0.11.1",
+ "pi_animation",
+ "pi_assets",
  "pi_async",
  "pi_atom",
  "pi_bevy_asset",
  "pi_bevy_ecs_extend",
  "pi_bevy_render_plugin",
  "pi_bevy_winit_window",
+ "pi_curves",
  "pi_futures",
  "pi_graph",
  "pi_hal",
  "pi_hash",
  "pi_idtree 0.1.0",
- "pi_render 0.1.0 (git+https://github.com/GaiaWorld/pi_render.git?branch=bevy_shader)",
+ "pi_render",
  "pi_scene_math",
  "pi_share",
  "pi_slotmap",
@@ -3898,12 +3467,12 @@ dependencies = [
  "pi_time",
  "pi_window_renderer",
  "pollster",
- "render_derive 0.1.0 (git+https://github.com/GaiaWorld/pi_render.git?branch=bevy_shader)",
- "render_utils 0.1.0 (git+https://github.com/GaiaWorld/pi_render.git?branch=bevy_shader)",
+ "render_derive",
+ "render_utils",
  "smallvec",
  "spin_sleep",
- "wgpu 0.15.0",
- "winit 0.27.4",
+ "wgpu",
+ "winit 0.28.6",
 ]
 
 [[package]]
@@ -3922,7 +3491,7 @@ name = "pi_export_astar"
 version = "0.1.0"
 dependencies = [
  "bytemuck",
- "paste 1.0.12",
+ "paste",
  "pi_path_finding",
  "wasm-bindgen",
 ]
@@ -3935,8 +3504,8 @@ dependencies = [
  "derive_deref",
  "js-sys",
  "js_proxy_gen_macro",
- "paste 1.0.12",
- "pi_assets 0.11.1",
+ "paste",
+ "pi_assets",
  "pi_async",
  "pi_atom",
  "pi_bevy_asset",
@@ -3946,13 +3515,13 @@ dependencies = [
  "pi_bevy_winit_window",
  "pi_export_macro",
  "pi_hal",
- "pi_render 0.1.0 (git+https://github.com/GaiaWorld/pi_render.git?branch=bevy_shader)",
+ "pi_render",
  "pi_share",
  "pi_window_renderer",
  "wasm-bindgen",
  "wasm-bindgen-futures",
  "web-sys",
- "wgpu 0.15.0",
+ "wgpu",
 ]
 
 [[package]]
@@ -3983,9 +3552,9 @@ dependencies = [
  "nalgebra 0.32.2",
  "num-traits",
  "ordered-float",
- "paste 1.0.12",
+ "paste",
  "pi_animation",
- "pi_assets 0.11.1",
+ "pi_assets",
  "pi_async",
  "pi_atom",
  "pi_bevy_asset",
@@ -4012,7 +3581,7 @@ dependencies = [
  "pi_polygon",
  "pi_postprocess",
  "pi_print_any",
- "pi_render 0.1.0 (git+https://github.com/GaiaWorld/pi_render.git?branch=bevy_shader)",
+ "pi_render",
  "pi_share",
  "pi_slab",
  "pi_slotmap",
@@ -4033,15 +3602,15 @@ dependencies = [
  "uuid",
  "wasm-bindgen",
  "web-sys",
- "wgpu 0.15.0",
- "winit 0.27.4",
+ "wgpu",
+ "winit 0.28.6",
 ]
 
 [[package]]
 name = "pi_export_macro"
 version = "0.1.0"
 dependencies = [
- "paste 1.0.12",
+ "paste",
 ]
 
 [[package]]
@@ -4050,7 +3619,7 @@ version = "0.1.0"
 dependencies = [
  "json",
  "ordered-float",
- "paste 1.0.12",
+ "paste",
  "pi_atom",
 ]
 
@@ -4080,7 +3649,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "77ba6edf89ba9a693e4990ccf4f03f7760fcd9f2660f2126ba0ee40ff44bc215"
 dependencies = [
  "log",
- "paste 1.0.12",
+ "paste",
  "pi_dirty",
  "pi_enum_default_macro",
  "pi_heap",
@@ -4125,8 +3694,8 @@ dependencies = [
  "nalgebra 0.32.2",
  "num_cpus",
  "ordered-float",
- "parking_lot 0.12.1",
- "pi_assets 0.11.1",
+ "parking_lot",
+ "pi_assets",
  "pi_async",
  "pi_atom",
  "pi_futures",
@@ -4180,16 +3749,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "pi_listener"
-version = "0.2.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8f2c0565d7d06081142d1ba6bc7a5cedf5cff25239c2a6272acdefc5d309c9c2"
-dependencies = [
- "im",
- "pi_share",
-]
-
-[[package]]
 name = "pi_map"
 version = "0.1.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -4203,7 +3762,7 @@ dependencies = [
 [[package]]
 name = "pi_mesh_builder"
 version = "0.0.1"
-source = "git+https://github.com/GaiaWorld/pi_3d.git#4229a6e2eb80425cd47caf7a4dff6bc9a03913ae"
+source = "git+https://github.com/GaiaWorld/pi_3d.git#69852a04cda5a02b678c4f7aa35aca0fa3461835"
 dependencies = [
  "bevy",
  "bytemuck",
@@ -4213,20 +3772,20 @@ dependencies = [
  "futures",
  "log",
  "naga 0.10.0",
- "pi_assets 0.11.1",
+ "pi_assets",
  "pi_atom",
  "pi_engine_shell",
  "pi_hash",
  "pi_node_materials",
- "pi_render 0.1.0 (git+https://github.com/GaiaWorld/pi_render.git?branch=bevy_shader)",
+ "pi_render",
  "pi_scene_context",
  "pi_scene_math",
  "pi_share",
  "pi_slotmap",
- "render_derive 0.1.0 (git+https://github.com/GaiaWorld/pi_render.git?branch=bevy_shader)",
- "render_utils 0.1.0 (git+https://github.com/GaiaWorld/pi_render.git?branch=bevy_shader)",
+ "render_derive",
+ "render_utils",
  "smallvec",
- "wgpu 0.15.0",
+ "wgpu",
 ]
 
 [[package]]
@@ -4253,7 +3812,7 @@ dependencies = [
 [[package]]
 name = "pi_node_materials"
 version = "0.0.1"
-source = "git+https://github.com/GaiaWorld/pi_3d.git#4229a6e2eb80425cd47caf7a4dff6bc9a03913ae"
+source = "git+https://github.com/GaiaWorld/pi_3d.git#69852a04cda5a02b678c4f7aa35aca0fa3461835"
 dependencies = [
  "bevy",
  "crossbeam",
@@ -4263,20 +3822,20 @@ dependencies = [
  "log",
  "naga 0.10.0",
  "pi_animation",
- "pi_assets 0.11.1",
+ "pi_assets",
  "pi_atom",
  "pi_curves",
  "pi_engine_shell",
  "pi_hash",
- "pi_render 0.1.0 (git+https://github.com/GaiaWorld/pi_render.git?branch=bevy_shader)",
+ "pi_render",
  "pi_scene_context",
  "pi_scene_math",
  "pi_share",
  "pi_slotmap",
- "render_derive 0.1.0 (git+https://github.com/GaiaWorld/pi_render.git?branch=bevy_shader)",
- "render_utils 0.1.0 (git+https://github.com/GaiaWorld/pi_render.git?branch=bevy_shader)",
+ "render_derive",
+ "render_utils",
  "smallvec",
- "wgpu 0.15.0",
+ "wgpu",
 ]
 
 [[package]]
@@ -4328,18 +3887,18 @@ dependencies = [
  "log",
  "naga 0.11.0",
  "num-traits",
- "pi_assets 0.11.1",
+ "pi_assets",
  "pi_atom",
  "pi_enum_default_macro",
  "pi_hash",
  "pi_map",
- "pi_render 0.1.0 (git+https://github.com/GaiaWorld/pi_render.git?branch=bevy_shader)",
+ "pi_render",
  "pi_share",
  "pi_wy_rng",
  "pollster",
  "rand",
  "smallvec",
- "wgpu 0.15.0",
+ "wgpu",
 ]
 
 [[package]]
@@ -4353,21 +3912,13 @@ name = "pi_render"
 version = "0.1.0"
 source = "git+https://github.com/GaiaWorld/pi_render.git?branch=bevy_shader#63afc82faca2be7d4983f6f4690c3e29cd7cda7c"
 dependencies = [
- "render_core 0.1.0 (git+https://github.com/GaiaWorld/pi_render.git?branch=bevy_shader)",
-]
-
-[[package]]
-name = "pi_render"
-version = "0.1.0"
-source = "git+https://github.com/GaiaWorld/pi_render?branch=master-shader#fad087fbf7209960a235b1467f9389e2812445ed"
-dependencies = [
- "render_core 0.1.0 (git+https://github.com/GaiaWorld/pi_render?branch=master-shader)",
+ "render_core",
 ]
 
 [[package]]
 name = "pi_scene_context"
 version = "0.0.1"
-source = "git+https://github.com/GaiaWorld/pi_3d.git#4229a6e2eb80425cd47caf7a4dff6bc9a03913ae"
+source = "git+https://github.com/GaiaWorld/pi_3d.git#69852a04cda5a02b678c4f7aa35aca0fa3461835"
 dependencies = [
  "approx",
  "bevy",
@@ -4383,7 +3934,7 @@ dependencies = [
  "ncollide3d",
  "parry3d 0.9.0",
  "pi_animation",
- "pi_assets 0.11.1",
+ "pi_assets",
  "pi_async",
  "pi_atom",
  "pi_bevy_asset",
@@ -4400,7 +3951,7 @@ dependencies = [
  "pi_idtree 0.1.0",
  "pi_map",
  "pi_postprocess",
- "pi_render 0.1.0 (git+https://github.com/GaiaWorld/pi_render.git?branch=bevy_shader)",
+ "pi_render",
  "pi_scene_math",
  "pi_share",
  "pi_slotmap",
@@ -4408,19 +3959,19 @@ dependencies = [
  "pi_spatial",
  "pi_time",
  "pollster",
- "render_derive 0.1.0 (git+https://github.com/GaiaWorld/pi_render.git?branch=bevy_shader)",
- "render_utils 0.1.0 (git+https://github.com/GaiaWorld/pi_render.git?branch=bevy_shader)",
+ "render_derive",
+ "render_utils",
  "serde_derive",
  "smallvec",
  "spin_sleep",
- "wgpu 0.15.0",
- "winit 0.27.4",
+ "wgpu",
+ "winit 0.28.6",
 ]
 
 [[package]]
 name = "pi_scene_math"
 version = "0.0.1"
-source = "git+https://github.com/GaiaWorld/pi_scene#1fac434189a473830c2f8409cf642fbce275b030"
+source = "git+https://github.com/GaiaWorld/pi_scene#fef5f556208a47e16d7e44be0ffb88a352024c92"
 dependencies = [
  "approx",
  "nalgebra 0.32.2",
@@ -4433,7 +3984,7 @@ version = "0.4.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "5bbc8c187c5c51f12451033c34bccdc1e5e72d239ec294b6a954909653fb8670"
 dependencies = [
- "parking_lot 0.12.1",
+ "parking_lot",
 ]
 
 [[package]]
@@ -4499,8 +4050,8 @@ dependencies = [
 
 [[package]]
 name = "pi_spatial"
-version = "0.4.2"
-source = "git+https://github.com/GaiaWorld/pi_spatial.git#8a65dbacb1c9225b5d3c79ef9a03a6e2f0f0ee8d"
+version = "0.4.4"
+source = "git+https://github.com/GaiaWorld/pi_spatial.git#77bd4b9ef776622e38631b2cf2cb9c2ff9b6b9dc"
 dependencies = [
  "nalgebra 0.32.2",
  "num-traits",
@@ -4519,7 +4070,7 @@ dependencies = [
  "js-sys",
  "js_proxy_gen_macro",
  "log",
- "pi_assets 0.11.1",
+ "pi_assets",
  "pi_async",
  "pi_atom",
  "pi_bevy_asset",
@@ -4528,14 +4079,14 @@ dependencies = [
  "pi_export_base",
  "pi_hal",
  "pi_hash",
- "pi_render 0.1.0 (git+https://github.com/GaiaWorld/pi_render.git?branch=bevy_shader)",
+ "pi_render",
  "pi_spine_rs",
  "pi_web_logger",
  "pi_window_renderer",
  "wasm-bindgen",
  "wasm-bindgen-futures",
  "web-sys",
- "wgpu 0.15.0",
+ "wgpu",
 ]
 
 [[package]]
@@ -4555,7 +4106,7 @@ dependencies = [
  "log",
  "naga 0.11.0",
  "parry3d 0.13.4",
- "pi_assets 0.11.1",
+ "pi_assets",
  "pi_async",
  "pi_atom",
  "pi_bevy_asset",
@@ -4566,17 +4117,17 @@ dependencies = [
  "pi_hal",
  "pi_hash",
  "pi_map",
- "pi_render 0.1.0 (git+https://github.com/GaiaWorld/pi_render.git?branch=bevy_shader)",
+ "pi_render",
  "pi_scene_math",
  "pi_share",
  "pi_slotmap",
  "pi_slotmap_tree",
  "pi_spatial",
  "pi_window_renderer",
- "render_derive 0.1.0 (git+https://github.com/GaiaWorld/pi_render.git?branch=bevy_shader)",
- "render_utils 0.1.0 (git+https://github.com/GaiaWorld/pi_render.git?branch=bevy_shader)",
+ "render_derive",
+ "render_utils",
  "smallvec",
- "wgpu 0.15.0",
+ "wgpu",
 ]
 
 [[package]]
@@ -4590,7 +4141,7 @@ dependencies = [
  "futures",
  "log",
  "pi_animation",
- "pi_assets 0.11.1",
+ "pi_assets",
  "pi_atom",
  "pi_bevy_asset",
  "pi_bevy_ecs_extend",
@@ -4599,16 +4150,16 @@ dependencies = [
  "pi_hal",
  "pi_hash",
  "pi_map",
- "pi_render 0.1.0 (git+https://github.com/GaiaWorld/pi_render.git?branch=bevy_shader)",
+ "pi_render",
  "pi_scene_math",
  "pi_share",
  "pi_spine_render",
  "pi_window_renderer",
- "render_derive 0.1.0 (git+https://github.com/GaiaWorld/pi_render.git?branch=bevy_shader)",
- "render_utils 0.1.0 (git+https://github.com/GaiaWorld/pi_render.git?branch=bevy_shader)",
+ "render_derive",
+ "render_utils",
  "smallvec",
- "wgpu 0.15.0",
- "winit 0.27.4",
+ "wgpu",
+ "winit 0.28.6",
 ]
 
 [[package]]
@@ -4625,7 +4176,7 @@ dependencies = [
  "num-traits",
  "ordered-float",
  "parry2d",
- "paste 1.0.12",
+ "paste",
  "pi_animation",
  "pi_atom",
  "pi_curves",
@@ -4694,9 +4245,9 @@ dependencies = [
  "num-traits",
  "ordered-float",
  "parry2d",
- "paste 1.0.12",
+ "paste",
  "pi_animation",
- "pi_assets 0.11.1",
+ "pi_assets",
  "pi_async",
  "pi_atom",
  "pi_bevy_asset",
@@ -4720,7 +4271,7 @@ dependencies = [
  "pi_polygon",
  "pi_postprocess",
  "pi_print_any",
- "pi_render 0.1.0 (git+https://github.com/GaiaWorld/pi_render.git?branch=bevy_shader)",
+ "pi_render",
  "pi_share",
  "pi_slotmap",
  "pi_slotmap_tree",
@@ -4731,7 +4282,7 @@ dependencies = [
  "polygon2",
  "postcard",
  "render_compile",
- "render_derive 0.1.0 (git+https://github.com/GaiaWorld/pi_render.git?branch=bevy_shader)",
+ "render_derive",
  "serde",
  "serde_json",
  "smallvec",
@@ -4739,8 +4290,8 @@ dependencies = [
  "tracing",
  "uuid",
  "wasm-bindgen",
- "wgpu 0.15.0",
- "winit 0.27.4",
+ "wgpu",
+ "winit 0.28.6",
  "zerovec",
 ]
 
@@ -4755,6 +4306,7 @@ dependencies = [
  "pi_export_gui",
  "pi_spine_export",
  "pi_web_logger",
+ "scene3d_export",
  "wasm-bindgen",
 ]
 
@@ -4778,18 +4330,18 @@ dependencies = [
  "futures",
  "log",
  "naga 0.11.0",
- "pi_assets 0.11.1",
+ "pi_assets",
  "pi_async",
  "pi_bevy_asset",
  "pi_bevy_render_plugin",
  "pi_futures",
  "pi_hash",
- "pi_render 0.1.0 (git+https://github.com/GaiaWorld/pi_render.git?branch=bevy_shader)",
+ "pi_render",
  "pi_share",
- "raw-window-handle 0.5.2",
+ "raw-window-handle",
  "thiserror",
  "tracing",
- "wgpu 0.15.0",
+ "wgpu",
 ]
 
 [[package]]
@@ -4940,7 +4492,7 @@ dependencies = [
 [[package]]
 name = "procedural_texture"
 version = "0.0.1"
-source = "git+https://github.com/GaiaWorld/pi_3d.git#4229a6e2eb80425cd47caf7a4dff6bc9a03913ae"
+source = "git+https://github.com/GaiaWorld/pi_3d.git#69852a04cda5a02b678c4f7aa35aca0fa3461835"
 dependencies = [
  "bevy",
  "crossbeam",
@@ -4949,20 +4501,20 @@ dependencies = [
  "futures",
  "log",
  "naga 0.10.0",
- "pi_assets 0.11.1",
+ "pi_assets",
  "pi_atom",
  "pi_engine_shell",
  "pi_hash",
  "pi_node_materials",
- "pi_render 0.1.0 (git+https://github.com/GaiaWorld/pi_render.git?branch=bevy_shader)",
+ "pi_render",
  "pi_scene_context",
  "pi_scene_math",
  "pi_share",
  "pi_slotmap",
- "render_derive 0.1.0 (git+https://github.com/GaiaWorld/pi_render.git?branch=bevy_shader)",
- "render_utils 0.1.0 (git+https://github.com/GaiaWorld/pi_render.git?branch=bevy_shader)",
+ "render_derive",
+ "render_utils",
  "smallvec",
- "wgpu 0.15.0",
+ "wgpu",
 ]
 
 [[package]]
@@ -5061,15 +4613,6 @@ name = "range-alloc"
 version = "0.1.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "9c8a99fddc9f0ba0a85884b8d14e3592853e787d581ca1816c91349b10e4eeab"
-
-[[package]]
-name = "raw-window-handle"
-version = "0.4.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b800beb9b6e7d2df1fe337c9e3d04e3af22a124460fb4c30fcc22c9117cefb41"
-dependencies = [
- "cty",
-]
 
 [[package]]
 name = "raw-window-handle"
@@ -5193,15 +4736,15 @@ dependencies = [
  "nalgebra 0.32.2",
  "normpath",
  "once_cell",
- "parking_lot 0.12.1",
+ "parking_lot",
  "parry3d 0.13.4",
- "paste 1.0.12",
+ "paste",
  "pi_any",
- "pi_assets 0.11.1",
+ "pi_assets",
  "pi_async",
- "pi_async_graph 0.4.2",
+ "pi_async_graph",
  "pi_atom",
- "pi_ecs_macros 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "pi_ecs_macros",
  "pi_futures",
  "pi_graph",
  "pi_hal",
@@ -5213,61 +4756,13 @@ dependencies = [
  "pi_slotmap",
  "pi_time",
  "regex",
- "render_crevice 0.1.0 (git+https://github.com/GaiaWorld/pi_render.git?branch=bevy_shader)",
- "render_utils 0.1.0 (git+https://github.com/GaiaWorld/pi_render.git?branch=bevy_shader)",
+ "render_crevice",
+ "render_utils",
  "smallvec",
  "thiserror",
  "tracing",
  "uuid",
- "wgpu 0.15.0",
-]
-
-[[package]]
-name = "render_core"
-version = "0.1.0"
-source = "git+https://github.com/GaiaWorld/pi_render?branch=master-shader#fad087fbf7209960a235b1467f9389e2812445ed"
-dependencies = [
- "anyhow",
- "bitvec",
- "bytemuck",
- "derive-deref-rs",
- "downcast-rs",
- "futures",
- "guillotiere",
- "hex",
- "lazy_static",
- "log",
- "naga 0.9.0",
- "nalgebra 0.30.1",
- "normpath",
- "once_cell",
- "parking_lot 0.11.2",
- "parry3d 0.8.0",
- "paste 1.0.12",
- "pi_any",
- "pi_assets 0.10.1",
- "pi_async",
- "pi_async_graph 0.3.3",
- "pi_atom",
- "pi_ecs",
- "pi_ecs_macros 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
- "pi_futures",
- "pi_graph",
- "pi_hal",
- "pi_hash",
- "pi_map",
- "pi_null",
- "pi_share",
- "pi_slab",
- "pi_slotmap",
- "regex",
- "render_crevice 0.1.0 (git+https://github.com/GaiaWorld/pi_render?branch=master-shader)",
- "render_utils 0.1.0 (git+https://github.com/GaiaWorld/pi_render?branch=master-shader)",
- "smallvec",
- "thiserror",
- "uuid",
- "wgpu 0.13.1",
- "winit 0.27.4",
+ "wgpu",
 ]
 
 [[package]]
@@ -5278,18 +4773,7 @@ dependencies = [
  "bytemuck",
  "mint",
  "nalgebra 0.32.2",
- "render_crevice_derive 0.1.0 (git+https://github.com/GaiaWorld/pi_render.git?branch=bevy_shader)",
-]
-
-[[package]]
-name = "render_crevice"
-version = "0.1.0"
-source = "git+https://github.com/GaiaWorld/pi_render?branch=master-shader#fad087fbf7209960a235b1467f9389e2812445ed"
-dependencies = [
- "bytemuck",
- "mint",
- "nalgebra 0.30.1",
- "render_crevice_derive 0.1.0 (git+https://github.com/GaiaWorld/pi_render?branch=master-shader)",
+ "render_crevice_derive",
 ]
 
 [[package]]
@@ -5299,18 +4783,7 @@ source = "git+https://github.com/GaiaWorld/pi_render.git?branch=bevy_shader#63af
 dependencies = [
  "proc-macro2",
  "quote",
- "render_macro_utils 0.1.0 (git+https://github.com/GaiaWorld/pi_render.git?branch=bevy_shader)",
- "syn 1.0.109",
-]
-
-[[package]]
-name = "render_crevice_derive"
-version = "0.1.0"
-source = "git+https://github.com/GaiaWorld/pi_render?branch=master-shader#fad087fbf7209960a235b1467f9389e2812445ed"
-dependencies = [
- "proc-macro2",
- "quote",
- "render_macro_utils 0.1.0 (git+https://github.com/GaiaWorld/pi_render?branch=master-shader)",
+ "render_macro_utils",
  "syn 1.0.109",
 ]
 
@@ -5321,18 +4794,7 @@ source = "git+https://github.com/GaiaWorld/pi_render.git?branch=bevy_shader#63af
 dependencies = [
  "proc-macro2",
  "quote",
- "render_macro_utils 0.1.0 (git+https://github.com/GaiaWorld/pi_render.git?branch=bevy_shader)",
- "syn 1.0.109",
-]
-
-[[package]]
-name = "render_derive"
-version = "0.1.0"
-source = "git+https://github.com/GaiaWorld/pi_render?branch=master-shader#fad087fbf7209960a235b1467f9389e2812445ed"
-dependencies = [
- "proc-macro2",
- "quote",
- "render_macro_utils 0.1.0 (git+https://github.com/GaiaWorld/pi_render?branch=master-shader)",
+ "render_macro_utils",
  "syn 1.0.109",
 ]
 
@@ -5347,31 +4809,12 @@ dependencies = [
 ]
 
 [[package]]
-name = "render_macro_utils"
-version = "0.1.0"
-source = "git+https://github.com/GaiaWorld/pi_render?branch=master-shader#fad087fbf7209960a235b1467f9389e2812445ed"
-dependencies = [
- "cargo-manifest",
- "quote",
- "syn 1.0.109",
-]
-
-[[package]]
 name = "render_utils"
 version = "0.1.0"
 source = "git+https://github.com/GaiaWorld/pi_render.git?branch=bevy_shader#63afc82faca2be7d4983f6f4690c3e29cd7cda7c"
 dependencies = [
  "ahash",
- "render_derive 0.1.0 (git+https://github.com/GaiaWorld/pi_render.git?branch=bevy_shader)",
-]
-
-[[package]]
-name = "render_utils"
-version = "0.1.0"
-source = "git+https://github.com/GaiaWorld/pi_render?branch=master-shader#fad087fbf7209960a235b1467f9389e2812445ed"
-dependencies = [
- "ahash",
- "render_derive 0.1.0 (git+https://github.com/GaiaWorld/pi_render?branch=master-shader)",
+ "render_derive",
 ]
 
 [[package]]
@@ -5411,20 +4854,11 @@ checksum = "08d43f7aa6b08d49f382cde6a7982047c3426db949b1424bc4b7ec9ae12c6ce2"
 
 [[package]]
 name = "rustc_version"
-version = "0.2.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "138e3e0acb6c9fb258b19b67cb8abd63c00679d2851805ea151465464fe9030a"
-dependencies = [
- "semver 0.9.0",
-]
-
-[[package]]
-name = "rustc_version"
 version = "0.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "bfa0f585226d2e68097d4f95d113b15b83a82e819ab25717ec0590d9584ef366"
 dependencies = [
- "semver 1.0.17",
+ "semver",
 ]
 
 [[package]]
@@ -5449,15 +4883,6 @@ checksum = "f91339c0467de62360649f8d3e185ca8de4224ff281f66000de5eb2a77a79041"
 
 [[package]]
 name = "safe_arch"
-version = "0.5.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c1ff3d6d9696af502cc3110dacce942840fb06ff4514cad92236ecc455f2ce05"
-dependencies = [
- "bytemuck",
-]
-
-[[package]]
-name = "safe_arch"
 version = "0.6.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "794821e4ccb0d9f979512f9c1973480123f9bd62a90d74ab0f9426fcf8f4a529"
@@ -5466,44 +4891,42 @@ dependencies = [
 ]
 
 [[package]]
-name = "same-file"
-version = "1.0.6"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "93fc1dc3aaa9bfed95e02e6eadabb4baf7e3078b0bd1b4d7b6b0b68378900502"
-dependencies = [
- "winapi-util",
-]
-
-[[package]]
 name = "scene3d_export"
 version = "0.0.1"
 dependencies = [
  "bevy",
+ "bytemuck",
  "default_render",
+ "derive_deref",
  "js-sys",
+ "js_proxy_gen_macro",
  "log",
  "pi_3d",
- "pi_assets 0.11.1",
+ "pi_animation",
+ "pi_assets",
  "pi_async",
  "pi_atom",
  "pi_bevy_asset",
  "pi_bevy_ecs_extend",
  "pi_bevy_render_plugin",
+ "pi_curves",
  "pi_engine_shell",
  "pi_export_base",
  "pi_hal",
  "pi_hash",
  "pi_mesh_builder",
  "pi_node_materials",
- "pi_render 0.1.0 (git+https://github.com/GaiaWorld/pi_render.git?branch=bevy_shader)",
+ "pi_render",
  "pi_scene_context",
+ "pi_scene_math",
+ "pi_slotmap",
  "pi_web_logger",
  "pi_window_renderer",
  "unlit_material",
  "wasm-bindgen",
  "wasm-bindgen-futures",
  "web-sys",
- "wgpu 0.15.0",
+ "wgpu",
 ]
 
 [[package]]
@@ -5520,23 +4943,15 @@ checksum = "d29ab0c6d3fc0ee92fe66e2d99f700eab17a8d57d1c1d3b748380fb20baa78cd"
 
 [[package]]
 name = "sctk-adwaita"
-version = "0.4.3"
+version = "0.5.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "61270629cc6b4d77ec1907db1033d5c2e1a404c412743621981a871dc9c12339"
+checksum = "cda4e97be1fd174ccc2aae81c8b694e803fa99b34e8fd0f057a9d70698e3ed09"
 dependencies = [
- "crossfont",
+ "ab_glyph",
  "log",
+ "memmap2",
  "smithay-client-toolkit",
  "tiny-skia",
-]
-
-[[package]]
-name = "semver"
-version = "0.9.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1d7eb9ef2c18661902cc47e535f9bc51b78acd254da71d375c2f6720d9a40403"
-dependencies = [
- "semver-parser",
 ]
 
 [[package]]
@@ -5544,12 +4959,6 @@ name = "semver"
 version = "1.0.17"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "bebd363326d05ec3e2f532ab7660680f3b02130d780c299bca73469d521bc0ed"
-
-[[package]]
-name = "semver-parser"
-version = "0.7.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "388a1df253eca08550bef6c72392cfe7c30914bf41df5269b68cbd6ff8f570a3"
 
 [[package]]
 name = "serde"
@@ -5594,27 +5003,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "servo-fontconfig"
-version = "0.5.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c7e3e22fe5fd73d04ebf0daa049d3efe3eae55369ce38ab16d07ddd9ac5c217c"
-dependencies = [
- "libc",
- "servo-fontconfig-sys",
-]
-
-[[package]]
-name = "servo-fontconfig-sys"
-version = "5.1.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e36b879db9892dfa40f95da1c38a835d41634b825fbd8c4c418093d53c24b388"
-dependencies = [
- "expat-sys",
- "freetype-sys 0.13.1 (registry+https://github.com/rust-lang/crates.io-index)",
- "pkg-config",
-]
-
-[[package]]
 name = "sha2"
 version = "0.10.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -5643,7 +5031,7 @@ dependencies = [
  "approx",
  "num-complex",
  "num-traits",
- "paste 1.0.12",
+ "paste",
  "wide",
 ]
 
@@ -5656,7 +5044,7 @@ dependencies = [
  "approx",
  "num-complex",
  "num-traits",
- "paste 1.0.12",
+ "paste",
  "wide",
 ]
 
@@ -5676,18 +5064,9 @@ dependencies = [
 ]
 
 [[package]]
-name = "sized-chunks"
-version = "0.3.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f01db57d7ee89c8e053245deb77040a6cc8508311f381c88749c33d4b9b78785"
-dependencies = [
- "typenum",
-]
-
-[[package]]
 name = "skeletons"
 version = "0.0.1"
-source = "git+https://github.com/GaiaWorld/pi_3d.git#4229a6e2eb80425cd47caf7a4dff6bc9a03913ae"
+source = "git+https://github.com/GaiaWorld/pi_3d.git#69852a04cda5a02b678c4f7aa35aca0fa3461835"
 dependencies = [
  "bevy",
  "crossbeam",
@@ -5696,26 +5075,26 @@ dependencies = [
  "futures",
  "log",
  "naga 0.10.0",
- "pi_assets 0.11.1",
+ "pi_assets",
  "pi_atom",
  "pi_engine_shell",
  "pi_hash",
  "pi_node_materials",
- "pi_render 0.1.0 (git+https://github.com/GaiaWorld/pi_render.git?branch=bevy_shader)",
+ "pi_render",
  "pi_scene_context",
  "pi_scene_math",
  "pi_share",
  "pi_slotmap",
- "render_derive 0.1.0 (git+https://github.com/GaiaWorld/pi_render.git?branch=bevy_shader)",
- "render_utils 0.1.0 (git+https://github.com/GaiaWorld/pi_render.git?branch=bevy_shader)",
+ "render_derive",
+ "render_utils",
  "smallvec",
- "wgpu 0.15.0",
+ "wgpu",
 ]
 
 [[package]]
 name = "skybox"
 version = "0.0.1"
-source = "git+https://github.com/GaiaWorld/pi_3d.git#4229a6e2eb80425cd47caf7a4dff6bc9a03913ae"
+source = "git+https://github.com/GaiaWorld/pi_3d.git#69852a04cda5a02b678c4f7aa35aca0fa3461835"
 dependencies = [
  "bevy",
  "crossbeam",
@@ -5724,21 +5103,21 @@ dependencies = [
  "futures",
  "log",
  "naga 0.10.0",
- "pi_assets 0.11.1",
+ "pi_assets",
  "pi_atom",
  "pi_engine_shell",
  "pi_hash",
  "pi_mesh_builder",
  "pi_node_materials",
- "pi_render 0.1.0 (git+https://github.com/GaiaWorld/pi_render.git?branch=bevy_shader)",
+ "pi_render",
  "pi_scene_context",
  "pi_scene_math",
  "pi_share",
  "pi_slotmap",
- "render_derive 0.1.0 (git+https://github.com/GaiaWorld/pi_render.git?branch=bevy_shader)",
- "render_utils 0.1.0 (git+https://github.com/GaiaWorld/pi_render.git?branch=bevy_shader)",
+ "render_derive",
+ "render_utils",
  "smallvec",
- "wgpu 0.15.0",
+ "wgpu",
 ]
 
 [[package]]
@@ -5841,10 +5220,10 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a2eb9349b6444b326872e140eb1cf5e7c522154d69e7a0ffb0fb81c06b37543f"
 
 [[package]]
-name = "strsim"
-version = "0.10.0"
+name = "strict-num"
+version = "0.1.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "73473c0e59e6d5812c5dfe2a064a6444949f089e20eec9a2e5506596494e4623"
+checksum = "6637bab7722d379c8b41ba849228d680cc12d0a45ba1fa2b48f2a30577a06731"
 
 [[package]]
 name = "svg_fmt"
@@ -5959,27 +5338,27 @@ dependencies = [
 
 [[package]]
 name = "tiny-skia"
-version = "0.7.0"
+version = "0.8.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "642680569bb895b16e4b9d181c60be1ed136fa0c9c7f11d004daf053ba89bf82"
+checksum = "df8493a203431061e901613751931f047d1971337153f96d0e5e363d6dbf6a67"
 dependencies = [
  "arrayref",
- "arrayvec 0.5.2",
+ "arrayvec",
  "bytemuck",
  "cfg-if",
  "png",
- "safe_arch 0.5.2",
  "tiny-skia-path",
 ]
 
 [[package]]
 name = "tiny-skia-path"
-version = "0.7.0"
+version = "0.8.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c114d32f0c2ee43d585367cb013dfaba967ab9f62b90d9af0d696e955e70fa6c"
+checksum = "adbfb5d3f3dd57a0e11d12f4f13d4ebbbc1b5c15b7ab0a156d030b21da5f677c"
 dependencies = [
  "arrayref",
  "bytemuck",
+ "strict-num",
 ]
 
 [[package]]
@@ -6104,6 +5483,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "ttf-parser"
+version = "0.19.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a464a4b34948a5f67fddd2b823c62d9d92e44be75058b99939eae6c5b6960b33"
+
+[[package]]
 name = "twox-hash"
 version = "1.6.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -6147,7 +5532,7 @@ checksum = "f962df74c8c05a667b5ee8bcf162993134c104e96440b663c8daa176dc772d8c"
 [[package]]
 name = "unlit_material"
 version = "0.0.1"
-source = "git+https://github.com/GaiaWorld/pi_3d.git#4229a6e2eb80425cd47caf7a4dff6bc9a03913ae"
+source = "git+https://github.com/GaiaWorld/pi_3d.git#69852a04cda5a02b678c4f7aa35aca0fa3461835"
 dependencies = [
  "bevy",
  "crossbeam",
@@ -6156,20 +5541,20 @@ dependencies = [
  "futures",
  "log",
  "naga 0.10.0",
- "pi_assets 0.11.1",
+ "pi_assets",
  "pi_atom",
  "pi_engine_shell",
  "pi_hash",
  "pi_node_materials",
- "pi_render 0.1.0 (git+https://github.com/GaiaWorld/pi_render.git?branch=bevy_shader)",
+ "pi_render",
  "pi_scene_context",
  "pi_scene_math",
  "pi_share",
  "pi_slotmap",
- "render_derive 0.1.0 (git+https://github.com/GaiaWorld/pi_render.git?branch=bevy_shader)",
- "render_utils 0.1.0 (git+https://github.com/GaiaWorld/pi_render.git?branch=bevy_shader)",
+ "render_derive",
+ "render_utils",
  "smallvec",
- "wgpu 0.15.0",
+ "wgpu",
 ]
 
 [[package]]
@@ -6227,16 +5612,6 @@ name = "waker-fn"
 version = "1.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "9d5b2c62b4012a3e1eca5a7e077d13b3bf498c4073e33ccd58626607748ceeca"
-
-[[package]]
-name = "walkdir"
-version = "2.3.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "36df944cda56c7d8d8b7496af378e6b16de9284591917d307c9b4d313c44e698"
-dependencies = [
- "same-file",
- "winapi-util",
-]
 
 [[package]]
 name = "wasi"
@@ -6409,72 +5784,26 @@ checksum = "9193164d4de03a926d909d3bc7c30543cecb35400c02114792c2cae20d5e2dbb"
 
 [[package]]
 name = "wgpu"
-version = "0.13.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "277e967bf8b7820a76852645a6bce8bbd31c32fda2042e82d8e3ea75fda8892d"
-dependencies = [
- "arrayvec 0.7.2",
- "js-sys",
- "log",
- "naga 0.9.0",
- "parking_lot 0.11.2",
- "raw-window-handle 0.4.3",
- "smallvec",
- "wasm-bindgen",
- "wasm-bindgen-futures",
- "web-sys",
- "wgpu-core 0.13.2",
- "wgpu-hal 0.13.2",
- "wgpu-types 0.13.2",
-]
-
-[[package]]
-name = "wgpu"
 version = "0.15.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d14c6bfcf3b10f4273f522a95994553c0a5f2934976e62e61a720ae4bc2eb8f2"
 dependencies = [
- "arrayvec 0.7.2",
+ "arrayvec",
  "cfg-if",
  "js-sys",
  "log",
  "naga 0.11.0",
- "parking_lot 0.11.2",
+ "parking_lot",
  "profiling",
- "raw-window-handle 0.5.2",
+ "raw-window-handle",
  "smallvec",
  "static_assertions",
  "wasm-bindgen",
  "wasm-bindgen-futures",
  "web-sys",
- "wgpu-core 0.15.1",
- "wgpu-hal 0.15.1",
- "wgpu-types 0.15.0",
-]
-
-[[package]]
-name = "wgpu-core"
-version = "0.13.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "89b92788dec9d0c1bed849a1b83f01b2ee12819bf04a79c90f68e4173f7b5ba2"
-dependencies = [
- "arrayvec 0.7.2",
- "bit-vec",
- "bitflags",
- "cfg_aliases",
- "codespan-reporting",
- "copyless",
- "fxhash",
- "log",
- "naga 0.9.0",
- "parking_lot 0.11.2",
- "profiling",
- "raw-window-handle 0.4.3",
- "smallvec",
- "thiserror",
- "web-sys",
- "wgpu-hal 0.13.2",
- "wgpu-types 0.13.2",
+ "wgpu-core",
+ "wgpu-hal",
+ "wgpu-types",
 ]
 
 [[package]]
@@ -6483,60 +5812,21 @@ version = "0.15.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "7131408d940e335792645a98f03639573b0480e9e2e7cddbbab74f7c6d9f3fff"
 dependencies = [
- "arrayvec 0.7.2",
+ "arrayvec",
  "bit-vec",
  "bitflags",
  "codespan-reporting",
  "fxhash",
  "log",
  "naga 0.11.0",
- "parking_lot 0.11.2",
+ "parking_lot",
  "profiling",
- "raw-window-handle 0.5.2",
+ "raw-window-handle",
  "smallvec",
  "thiserror",
  "web-sys",
- "wgpu-hal 0.15.1",
- "wgpu-types 0.15.0",
-]
-
-[[package]]
-name = "wgpu-hal"
-version = "0.13.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "20cbdfc3d0637dba3d5536b93adef3d26023a0b96f0e1ee5ee9560a401d9f646"
-dependencies = [
- "android_system_properties",
- "arrayvec 0.7.2",
- "ash",
- "bit-set",
- "bitflags",
- "block",
- "core-graphics-types",
- "d3d12 0.5.0",
- "foreign-types 0.3.2",
- "fxhash",
- "glow 0.11.2",
- "gpu-alloc",
- "gpu-descriptor",
- "inplace_it",
- "js-sys",
- "khronos-egl",
- "libloading",
- "log",
- "metal",
- "naga 0.9.0",
- "objc",
- "parking_lot 0.11.2",
- "profiling",
- "range-alloc",
- "raw-window-handle 0.4.3",
- "renderdoc-sys",
- "thiserror",
- "wasm-bindgen",
- "web-sys",
- "wgpu-types 0.13.2",
- "winapi",
+ "wgpu-hal",
+ "wgpu-types",
 ]
 
 [[package]]
@@ -6546,16 +5836,16 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "82e95792925fe3d58950b9a5c2a191caa145e2bc570e2d233f0d7320f6a8e814"
 dependencies = [
  "android_system_properties",
- "arrayvec 0.7.2",
+ "arrayvec",
  "ash",
  "bit-set",
  "bitflags",
  "block",
  "core-graphics-types",
- "d3d12 0.6.0",
- "foreign-types 0.3.2",
+ "d3d12",
+ "foreign-types",
  "fxhash",
- "glow 0.12.1",
+ "glow",
  "gpu-alloc",
  "gpu-allocator",
  "gpu-descriptor",
@@ -6568,26 +5858,17 @@ dependencies = [
  "metal",
  "naga 0.11.0",
  "objc",
- "parking_lot 0.11.2",
+ "parking_lot",
  "profiling",
  "range-alloc",
- "raw-window-handle 0.5.2",
+ "raw-window-handle",
  "renderdoc-sys",
  "smallvec",
  "thiserror",
  "wasm-bindgen",
  "web-sys",
- "wgpu-types 0.15.0",
+ "wgpu-types",
  "winapi",
-]
-
-[[package]]
-name = "wgpu-types"
-version = "0.13.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1f762cbc08e1a51389859cf9c199c7aef544789cf3510889aab12c607f701604"
-dependencies = [
- "bitflags",
 ]
 
 [[package]]
@@ -6608,7 +5889,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b689b6c49d6549434bf944e6b0f39238cf63693cb7a147e9d887507fffa3b223"
 dependencies = [
  "bytemuck",
- "safe_arch 0.6.0",
+ "safe_arch",
 ]
 
 [[package]]
@@ -6698,19 +5979,6 @@ dependencies = [
 
 [[package]]
 name = "windows-sys"
-version = "0.36.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ea04155a16a59f9eab786fe12a4a450e75cdb175f9e0d80da1e17db09f55b8d2"
-dependencies = [
- "windows_aarch64_msvc 0.36.1",
- "windows_i686_gnu 0.36.1",
- "windows_i686_msvc 0.36.1",
- "windows_x86_64_gnu 0.36.1",
- "windows_x86_64_msvc 0.36.1",
-]
-
-[[package]]
-name = "windows-sys"
 version = "0.45.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "75283be5efb2831d37ea142365f009c02ec203cd29a3ebecbc093d52315b66d0"
@@ -6771,12 +6039,6 @@ checksum = "91ae572e1b79dba883e0d315474df7305d12f569b400fcf90581b06062f7e1bc"
 
 [[package]]
 name = "windows_aarch64_msvc"
-version = "0.36.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9bb8c3fd39ade2d67e9874ac4f3db21f0d710bee00fe7cab16949ec184eeaa47"
-
-[[package]]
-name = "windows_aarch64_msvc"
 version = "0.42.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e08e8864a60f06ef0d0ff4ba04124db8b0fb3be5776a5cd47641e942e58c4d43"
@@ -6786,12 +6048,6 @@ name = "windows_aarch64_msvc"
 version = "0.48.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b2ef27e0d7bdfcfc7b868b317c1d32c641a6fe4629c171b8928c7b08d98d7cf3"
-
-[[package]]
-name = "windows_i686_gnu"
-version = "0.36.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "180e6ccf01daf4c426b846dfc66db1fc518f074baa793aa7d9b9aaeffad6a3b6"
 
 [[package]]
 name = "windows_i686_gnu"
@@ -6807,12 +6063,6 @@ checksum = "622a1962a7db830d6fd0a69683c80a18fda201879f0f447f065a3b7467daa241"
 
 [[package]]
 name = "windows_i686_msvc"
-version = "0.36.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e2e7917148b2812d1eeafaeb22a97e4813dfa60a3f8f78ebe204bcc88f12f024"
-
-[[package]]
-name = "windows_i686_msvc"
 version = "0.42.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "44d840b6ec649f480a41c8d80f9c65108b92d89345dd94027bfe06ac444d1060"
@@ -6822,12 +6072,6 @@ name = "windows_i686_msvc"
 version = "0.48.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "4542c6e364ce21bf45d69fdd2a8e455fa38d316158cfd43b3ac1c5b1b19f8e00"
-
-[[package]]
-name = "windows_x86_64_gnu"
-version = "0.36.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4dcd171b8776c41b97521e5da127a2d86ad280114807d0b2ab1e462bc764d9e1"
 
 [[package]]
 name = "windows_x86_64_gnu"
@@ -6855,12 +6099,6 @@ checksum = "7896dbc1f41e08872e9d5e8f8baa8fdd2677f29468c4e156210174edc7f7b953"
 
 [[package]]
 name = "windows_x86_64_msvc"
-version = "0.36.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c811ca4a8c853ef420abd8592ba53ddbbac90410fab6903b3e79972a631f7680"
-
-[[package]]
-name = "windows_x86_64_msvc"
 version = "0.42.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "9aec5da331524158c6d1a4ac0ab1541149c0b9505fde06423b02f5ef0106b9f0"
@@ -6870,39 +6108,6 @@ name = "windows_x86_64_msvc"
 version = "0.48.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "1a515f5799fe4961cb532f983ce2b23082366b898e52ffbce459c86f67c8378a"
-
-[[package]]
-name = "winit"
-version = "0.27.4"
-source = "git+http://ser.yinengyun.com:10082/tech/winit.git#8b9073a2d3783df95f32839ece52b9c901703063"
-dependencies = [
- "bitflags",
- "cocoa",
- "core-foundation",
- "core-graphics",
- "dispatch",
- "instant",
- "jni",
- "libc",
- "log",
- "mio",
- "ndk",
- "ndk-glue",
- "objc",
- "once_cell",
- "parking_lot 0.12.1",
- "percent-encoding",
- "raw-window-handle 0.4.3",
- "raw-window-handle 0.5.2",
- "sctk-adwaita",
- "smithay-client-toolkit",
- "wasm-bindgen",
- "wayland-client",
- "wayland-protocols",
- "web-sys",
- "windows-sys 0.36.1",
- "x11-dl",
-]
 
 [[package]]
 name = "winit"
@@ -6923,12 +6128,46 @@ dependencies = [
  "objc2",
  "once_cell",
  "orbclient",
- "raw-window-handle 0.5.2",
+ "raw-window-handle",
  "redox_syscall 0.3.5",
  "wasm-bindgen",
  "wayland-scanner",
  "web-sys",
  "windows-sys 0.45.0",
+]
+
+[[package]]
+name = "winit"
+version = "0.28.6"
+source = "git+http://ser.yinengyun.com:10082/tech/winit.git#8276b60051f5a457b203688d2535969828b857ec"
+dependencies = [
+ "android-activity",
+ "bitflags",
+ "cfg_aliases",
+ "core-foundation",
+ "core-graphics",
+ "dispatch",
+ "instant",
+ "libc",
+ "log",
+ "mio",
+ "ndk",
+ "objc2",
+ "once_cell",
+ "orbclient",
+ "percent-encoding",
+ "raw-window-handle",
+ "redox_syscall 0.3.5",
+ "sctk-adwaita",
+ "smithay-client-toolkit",
+ "wasm-bindgen",
+ "wayland-client",
+ "wayland-commons",
+ "wayland-protocols",
+ "wayland-scanner",
+ "web-sys",
+ "windows-sys 0.45.0",
+ "x11-dl",
 ]
 
 [[package]]
@@ -6938,15 +6177,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "61de7bac303dc551fe038e2b3cef0f571087a47571ea6e79a87692ac99b99699"
 dependencies = [
  "memchr",
-]
-
-[[package]]
-name = "wio"
-version = "0.2.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5d129932f4644ac2396cb456385cbf9e63b5b30c6e8dc4820bdca4eb082037a5"
-dependencies = [
- "winapi",
 ]
 
 [[package]]
