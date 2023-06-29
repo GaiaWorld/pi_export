@@ -23,7 +23,7 @@ js_proxy_gen_macro = { git = "https://github.com/GaiaWorld/pi_lib.git" }
 
 pi_hash = "0.1"
 pi_atom = "0.2"
-pi_assets = "0.11"
+pi_assets = "0.12"
 # pi_export_gui = { path = "../gui" }
 pi_export_base = { path = "../base" }
 pi_spine_rs = { git = "https://github.com/GaiaWorld/pi_spine_rs.git" }

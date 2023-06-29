@@ -20,7 +20,7 @@ probabilistic-collections = { git = "https://github.com/GaiaWorld/pi_probabilist
 # wgpu = {path = "../wgpu/wgpu"}
 # smallvec = {path = "../smallvec"}
 # pi_cache = {path = "../pi_cache"}
-
+# pi_assets = {path = "../pi_assets"}
 # [profile.release]
 # debug= true
 

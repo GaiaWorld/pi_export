@@ -54,7 +54,7 @@ pi_graph = "0.1"
 fixedbitset = {version="0.4", features = ["serde"]}
 bytemuck = { version = "1.4", features = ["derive"] }
 naga = { version = "0.11"}
-pi_assets = "0.11"
+pi_assets = "0.12"
 image = "0.24"
 polygon2 = "0.3"
 json ="0.12"
@@ -84,6 +84,7 @@ pi_bevy_ecs_extend = { git = "https://github.com/GaiaWorld/pi_render_bevy.git"}
 pi_bevy_render_plugin = { git = "https://github.com/GaiaWorld/pi_render_bevy.git"}
 pi_bevy_asset = { git = "https://github.com/GaiaWorld/pi_render_bevy.git"}
 pi_bevy_winit_window = { git = "https://github.com/GaiaWorld/pi_render_bevy.git"}
+pi_window_renderer = { git = "https://github.com/GaiaWorld/pi_render_bevy.git"}
 wasm-bindgen = { version = "0.2", features = ["serde-serialize"] }
 bevy = {version="0.10", default-features = false}
 

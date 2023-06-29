@@ -9,16 +9,19 @@
 #![feature(print_internals)]
 
 
-use bevy::{ecs::{
+use bevy::ecs::{
     entity::Entities,
     query::QueryState,
     system::{Query, Res, SystemState},
-}, prelude::{Deref, DerefMut}};
-use js_proxy_gen_macro::pi_js_export;
+};
+use pi_bevy_asset::{AssetDesc, AssetConfig};
 use pi_bevy_ecs_extend::prelude::{Down, Layer, OrDefault, Up};
+use pi_hash::XHashMap;
 use pi_null::Null;
+use pi_render::{rhi::{asset::{RenderRes, TextureRes}, buffer::Buffer, pipeline::RenderPipeline, bind_group::BindGroup}, renderer::sampler::SamplerRes};
 use pi_style::style::Aabb2;
 use serde::{Serialize, Deserialize};
+use wgpu::TextureView;
 use std::mem::transmute;
 
 
@@ -243,3 +246,121 @@ pub struct AbQueryArgs<'s, 'w> {
     result: EntityKey,
     max_z: usize,
 }
+
+pub fn parse_asset_config(asset_config: &str) -> AssetConfig {
+	let map: XHashMap<String, AssetDesc> = match serde_json::from_str(asset_config) {
+		Ok(r) => r,
+		_ => {
+			log::warn!("asset_config is invalid,  {:?}", asset_config);
+			XHashMap::default()
+		}
+	};
+	let mut asset_config = AssetConfig::default();
+	for (key, desc) in map.into_iter() {
+		match key.as_str() {
+			"texture_view" => asset_config.insert::<RenderRes<TextureView>>(desc),
+			"buffer" => asset_config.insert::<RenderRes<Buffer>>(desc),
+			"sampler" => asset_config.insert::<SamplerRes>(desc),
+			"bind_group" => asset_config.insert::<RenderRes<BindGroup>>(desc),
+			"texture" => asset_config.insert::<TextureRes>(desc),
+			"render_pipeline" => asset_config.insert::<RenderRes<RenderPipeline>>(desc),
+			
+			_ => {},
+		}
+	}
+	asset_config
+}
+
+// // 设置资源配置
+// pub fn set_asset_cfg() {
+
+// }
+
+// (ShareAssetMgr::<RenderRes<TextureView>>::new_with_config(
+// 	|                                                       ^^^^^^^^^^^^^^^ function or associated item not found in `ShareAssetMgr<RenderRes<TextureView>>`
+ 
+//  error[E0599]: no function or associated item named `new_with_config` found for struct `ShareAssetMgr<RenderRes<pi_render::rhi::buffer::Buffer>>` in the current scope
+// 	--> D:\0_rust\pi_render_bevy\crates\render\src\plugin.rs:116:40
+// 	 |
+//  116 |             ShareAssetMgr::<RenderRes<Buffer>>::new_with_config(
+// 	 |                                                 ^^^^^^^^^^^^^^^ function or associated item not found in `ShareAssetMgr<RenderRes<Buffer>>`
+ 
+//  error[E0599]: no function or associated item named `new_with_config` found for struct `ShareAssetMgr<pi_render::rhi::sampler::Sampler>` in the current scope
+// 	--> D:\0_rust\pi_render_bevy\crates\render\src\plugin.rs:128:33
+// 	 |
+//  128 |             ShareAssetMgr::<SamplerRes>::new_with_config(
+// 	 |                                          ^^^^^^^^^^^^^^^ function or associated item not found in `ShareAssetMgr<Sampler>`
+ 
+//  error[E0599]: no function or associated item named `new_with_config` found for struct `ShareAssetMgr<RenderRes<pi_render::rhi::bind_group::BindGroup>>` in the current scope
+// 	--> D:\0_rust\pi_render_bevy\crates\render\src\plugin.rs:139:43
+// 	 |
+//  139 |             ShareAssetMgr::<RenderRes<BindGroup>>::new_with_config(
+// 	 |                                                    ^^^^^^^^^^^^^^^ function or associated item not found in `ShareAssetMgr<RenderRes<BindGroup>>`
+ 
+//  error[E0599]: no function or associated item named `new_with_config` found for struct `ShareAssetMgr<TextureRes>` in the current scope
+// 	--> D:\0_rust\pi_render_bevy\crates\render\src\plugin.rs:150:33
+// 	 |
+//  150 |             ShareAssetMgr::<TextureRes>::new_with_config(
+// 	 |                                          ^^^^^^^^^^^^^^^ function or associated item not found in `ShareAssetMgr<TextureRes>`
+ 
+//  error[E0599]: no function or associated item named `new_with_config` found for struct `ShareAssetMgr<RenderRes<pi_render::rhi::pipeline::RenderPipeline>>` in the current scope
+// 	--> D:\0_rust\pi_render_bevy\crates\render\src\plugin.rs:161:48
+// 	 |
+//  161 |             ShareAssetMgr::<RenderRes<RenderPipeline>>::new_with_config(
+
+// 	error[E0599]: no function or associated item named `new` found for struct `ShareAssetMgr<D>` in the current scope
+//    --> C:\Users\chuanyan\.cargo\git\checkouts\pi_3d-d047a1290caebb2b\69852a0\crates\pi_engine_shell\src\assets\sync_load.rs:278:55
+//     |
+// 278 |             world.insert_resource(ShareAssetMgr::<D>::new(GarbageEmpty(), self.0, self.1, self.2));
+//     |                                                       ^^^ function or associated item not found in `ShareAssetMgr<D>`
+//     |
+// note: the function `new` is implemented on `std::sync::Arc<AssetMgr<D>>`
+//    --> C:\Users\chuanyan\.cargo\git\checkouts\pi_3d-d047a1290caebb2b\69852a0\crates\pi_engine_shell\src\assets\sync_load.rs:278:35
+//     |
+// 278 |             world.insert_resource(ShareAssetMgr::<D>::new(GarbageEmpty(), self.0, self.1, self.2));
+//     |                                   ^^^^^^^^^^^^^^^^^^
+
+// error[E0599]: no function or associated item named `new` found for struct `ShareAssetMgr<D>` in the current scope
+//    --> C:\Users\chuanyan\.cargo\git\checkouts\pi_3d-d047a1290caebb2b\69852a0\crates\pi_engine_shell\src\assets\sync_load.rs:329:55
+//     |
+// 329 |             world.insert_resource(ShareAssetMgr::<D>::new(GarbageEmpty(), self.0, self.1, self.2));
+//     |                                                       ^^^ function or associated item not found in `ShareAssetMgr<D>`
+//     |
+// note: the function `new` is implemented on `std::sync::Arc<AssetMgr<D>>`
+//    --> C:\Users\chuanyan\.cargo\git\checkouts\pi_3d-d047a1290caebb2b\69852a0\crates\pi_engine_shell\src\assets\sync_load.rs:329:35
+//     |
+// 329 |             world.insert_resource(ShareAssetMgr::<D>::new(GarbageEmpty(), self.0, self.1, self.2));
+//     |                                   ^^^^^^^^^^^^^^^^^^
+
+// error[E0599]: no function or associated item named `new` found for struct `ShareAssetMgr<D>` in the current scope
+//    --> C:\Users\chuanyan\.cargo\git\checkouts\pi_3d-d047a1290caebb2b\69852a0\crates\pi_engine_shell\src\assets\sync_load_option.rs:266:59
+//     |
+// 266 |             app.world.insert_resource(ShareAssetMgr::<D>::new(GarbageEmpty(), self.0, self.1, self.2));
+//     |                                                           ^^^ function or associated item not found in `ShareAssetMgr<D>`
+//     |
+// note: the function `new` is implemented on `std::sync::Arc<AssetMgr<D>>`
+//    --> C:\Users\chuanyan\.cargo\git\checkouts\pi_3d-d047a1290caebb2b\69852a0\crates\pi_engine_shell\src\assets\sync_load_option.rs:266:39
+//     |
+// 266 |             app.world.insert_resource(ShareAssetMgr::<D>::new(GarbageEmpty(), self.0, self.1, self.2));
+//     |                                       ^^^^^^^^^^^^^^^^^^
+
+// error[E0599]: no function or associated item named `new` found for struct `ShareAssetMgr<base::TypeFrameCurve<D>>` in the current scope
+//   --> C:\Users\chuanyan\.cargo\git\checkouts\pi_3d-d047a1290caebb2b\69852a0\crates\pi_engine_shell\src\animation\mod.rs:68:71
+//    |
+// 68 |         app.world.insert_resource(ShareAssetMgr::<TypeFrameCurve<D>>::new(GarbageEmpty(), self.0, self.1, self.2));
+// no function or associated item named `create` found for struct `pi_engine_shell::prelude::ShareAssetMgr<pi_engine_shell::prelude::BindGroup>` in the current scope
+// --> C:\Users\chuanyan\.cargo\git\checkouts\pi_3d-d047a1290caebb2b\69852a0\crates\pi_scene_context\src\bindgroup\mod.rs:96:57
+//  |
+// 96 |         app.insert_resource(ShareAssetMgr::<BindGroup>::create(GarbageEmpty(), false, &cfg));
+//  |                                                         ^^^^^^ function or associated item not found in `ShareAssetMgr<BindGroup>`
+//  |
+//  = help: items from traits can only be used if the trait is implemented and in scope
+//  = note: the following traits define an item `create`, perhaps you need to implement one of them:
+// 		 candidate #1: `vertex_buffer_useinfo::AsKeyVertexBuffer`
+// 		 candidate #2: `geometry::geometry::RenderVerticesFrom`
+// 		 candidate #3: `geometry::geometry::RenderIndicesFrom`
+
+// error[E0599]: no function or associated item named `create` found for struct `pi_engine_shell::prelude::ShareAssetMgr<pi_engine_shell::prelude::BindGroupLayout>` in the current scope
+// --> C:\Users\chuanyan\.cargo\git\checkouts\pi_3d-d047a1290caebb2b\69852a0\crates\pi_scene_context\src\bindgroup\mod.rs:97:63
+//  |
+// 97 |         app.insert_resource(ShareAssetMgr::<BindGroupLayout>::create(GarbageEmpty(), false, &cfg));

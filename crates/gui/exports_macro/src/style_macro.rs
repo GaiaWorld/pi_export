@@ -32,8 +32,6 @@ use pi_bevy_render_plugin::FrameState;
 use crate::{OffsetDocument, Size};
 use pi_ui_render::resource::animation_sheet::KeyFramesSheet;
 
-use pi_ui_render::resource::FragmentCommand;
-
 #[cfg(target_arch="wasm32")]
 use wasm_bindgen::prelude::wasm_bindgen;
 pub enum Edge {

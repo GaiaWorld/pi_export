@@ -1,6 +1,8 @@
 use pi_ui_render::{prelude::{UserCommands, UiPlugin}};
 use pi_bevy_post_process::PiPostProcessPlugin;
 use pi_bevy_render_plugin::{PiRenderPlugin, FrameState};
+use pi_window_renderer::PluginWindowRender;
+use pi_bevy_asset::PiAssetPlugin;
 use pi_idtree::InsertType;
 
 use crate::insert_as_root;
@@ -18,9 +20,11 @@ use std::{intrinsics::transmute, sync::Arc};
 pub use winit::window::Window;
 
 #[cfg(feature="pi_js_export")]
-pub fn create_engine(window: &Arc<Window>, _r: f64, width: u32, height: u32) -> Engine {
+pub fn create_engine(window: &Arc<Window>, width: u32, height: u32, asset_total_capacity: u32, asset_config: &str) -> Engine {
     use bevy::prelude::{CoreSet, IntoSystemSetConfig};
     use pi_bevy_render_plugin::should_run;
+    use crate::parse_asset_config;
+
 
     let mut app = App::default();
 
@@ -41,7 +45,9 @@ pub fn create_engine(window: &Arc<Window>, _r: f64, width: u32, height: u32) -> 
 		.add_plugin(window_plugin)
 		.add_plugin(pi_bevy_winit_window::WinitPlugin::new(window.clone()).with_size(width, height))
 		// .add_plugin(WorldInspectorPlugin::new())
+		.add_plugin(PiAssetPlugin {total_capacity: asset_total_capacity as usize, asset_config: parse_asset_config(asset_config)})
 		.add_plugin(PiRenderPlugin {frame_init_state: FrameState::UnActive})
+		.add_plugin(PluginWindowRender)
 		.add_plugin(PiPostProcessPlugin);
 	app.configure_set(CoreSet::First.run_if(should_run));
     Engine(app)
