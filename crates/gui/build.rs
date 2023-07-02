@@ -19,8 +19,8 @@ fn main() -> Result<(), std::io::Error> {
             .expect("failed cargo expand")
 			.stdout;
 	let s = String::from_utf8(out).expect("failed from_utf8");
-	let first_line = s.find("{").expect("failed {");
-	let last_close = s.rfind("}").expect("failed }");
+	let first_line = s.find("{").expect(format!("failed {{, str: {}", s).as_str());
+	let last_close = s.rfind("}").expect(format!("failed }}, str: {}", s).as_str());
 
 	std::fs::write("src/style.rs", &s[first_line + 1 ..last_close])?;
 	Ok(())
