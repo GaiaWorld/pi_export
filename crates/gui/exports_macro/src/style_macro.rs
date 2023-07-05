@@ -54,17 +54,17 @@ pub struct PlayContext {
 
 #[macro_export]
 macro_rules! other_out_export {
-	($func_name:ident, $context: ident, $node: ident, $expr:expr, $($name_ref: ident: &$ty_ref: ty,)*; $($name: ident: $ty: ty,)*) => {
+	($func_name:ident, $context: ident, $node: ident, $expr:expr, $($mut_name_ref: ident: &mut $mut_ty_ref: ty,)*; $($name_ref: ident: &$ty_ref: ty,)*; $($name: ident: $ty: ty,)*) => {
 		#[cfg(feature="pi_js_export")]
 		
-		pub fn $func_name($context: &mut Gui, $node: f64, $($name_ref: &$ty_ref,)* $($name: $ty,)*) {
+		pub fn $func_name($context: &mut Gui, $node: f64, $($mut_name_ref: &mut $mut_ty_ref,)* $($name_ref: &$ty_ref,)* $($name: $ty,)*) {
 			let $node = unsafe {Entity::from_bits(transmute::<f64, u64>($node))};
 			$expr
 		}
 
 		#[cfg(target_arch="wasm32")]
 		#[wasm_bindgen]
-		pub fn $func_name($context: &mut Gui, $node: f64, $($name_ref: &$ty_ref,)* $($name: $ty,)*) {
+		pub fn $func_name($context: &mut Gui, $node: f64, $($mut_name_ref: &mut $mut_ty_ref,)* $($name_ref: &$ty_ref,)* $($name: $ty,)*) {
 			let $node = unsafe {Entity::from_bits(transmute::<f64, u64>($node))};
 			$expr
 		}
@@ -74,6 +74,7 @@ macro_rules! other_out_export {
 				let mut i = -1;
 				i += 1;
 				let node = unsafe {Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))}.index();
+				$(i += 1; let $mut_name_ref = pi_export_play::as_value::<$mut_ty_ref>(json, i as usize).unwrap(); let $mut_name_ref = &mut $mut_name_ref;)*
 				$(i += 1; let $name_ref = pi_export_play::as_value::<$ty_ref>(json, i as usize).unwrap(); let $name_ref = &$name_ref;)*
 				$(i += 1; let $name = pi_export_play::as_value::<$ty>(json, i as usize).unwrap();)*
 				// let node = context.nodes.get(node).unwrap().clone();
@@ -81,44 +82,45 @@ macro_rules! other_out_export {
 					Some(r) => r.clone(),
 					None => return,
 				};
-				$func_name(gui, node,  $($name_ref,)* $($name,)*);
+				$func_name(gui, node, $($mut_name_ref,)* $($name_ref,)* $($name,)*);
 			}
 		}
 	};
 
-	($func_name:ident, [$($context: ident: $context_ty: ty,)*], $expr:expr, [$($name_ref: ident: &$ty_ref: ty,)*], [$($name: ident: $ty: ty,)*]) => {
+	($func_name:ident, [$($context: ident: $context_ty: ty,)*], $expr:expr, $($mut_name_ref: ident: &mut $mut_ty_ref: ty,)*; $($name_ref: ident: &$ty_ref: ty,)*; $($name: ident: $ty: ty,)*) => {
 		#[cfg(feature="pi_js_export")]
 		
-		pub fn $func_name($($context: $context_ty,)* $($name_ref: &$ty_ref,)* $($name: $ty,)*) {
+		pub fn $func_name($($context: $context_ty,)* $($mut_name_ref: &mut $mut_ty_ref,)* $($name_ref: &$ty_ref,)* $($name: $ty,)*) {
 			$expr
 		}
 
 		#[cfg(target_arch="wasm32")]
 		#[wasm_bindgen]
-		pub fn $func_name($($context: $context_ty,)* $($name_ref: &$ty_ref,)* $($name: $ty,)*) {
+		pub fn $func_name($($context: $context_ty,)* $($mut_name_ref: &mut $mut_ty_ref,)* $($name_ref: &$ty_ref,)* $($name: $ty,)*) {
 			$expr
 		}
 
 		$crate::paste::item! {
 			pub fn [<play_ $func_name>](gui: &mut Gui, engine: &mut Engine, _context: &mut PlayContext, _json: &Vec<json::JsonValue>) {
 				let mut _i = -1;
+				$(_i += 1; let $mut_name_ref = pi_export_play::as_value::<$mut_ty_ref>(_json, _i as usize).unwrap(); let $mut_name_ref = &mut $mut_name_ref;)*
 				$(_i += 1; let $name_ref = pi_export_play::as_value::<$ty_ref>(_json, _i as usize).unwrap(); let $name_ref = &$name_ref;)*
 				$(_i += 1; let $name = pi_export_play::as_value::<$ty>(_json, _i as usize).unwrap();)*
-				$func_name($($context,)* $($name_ref,)* $($name,)*);
+				$func_name($($context,)* $($mut_name_ref,)* $($name_ref,)* $($name,)*);
 			}
 		}
 	};
 
-	($func_name:ident, $context: ident, $expr:expr, $($name_ref: ident: &$ty_ref: ty,)*; $($name: ident: $ty: ty,)*) => {
+	($func_name:ident, $context: ident, $expr:expr, $($mut_name_ref: ident: &mut $mut_ty_ref: ty,)*; $($name_ref: ident: &$ty_ref: ty,)*; $($name: ident: $ty: ty,)*) => {
 		#[cfg(feature="pi_js_export")]
 		
-		pub fn $func_name($context: &mut Gui, $($name_ref: &$ty_ref,)* $($name: $ty,)*) {
+		pub fn $func_name($context: &mut Gui, $($mut_name_ref: &mut $mut_ty_ref,)* $($name_ref: &$ty_ref,)* $($name: $ty,)*) {
 			$expr
 		}
 
 		#[cfg(target_arch="wasm32")]
 		#[wasm_bindgen]
-		pub fn $func_name($context: &mut Gui, $($name_ref: &$ty_ref,)* $($name: $ty,)*) {
+		pub fn $func_name($context: &mut Gui, $($mut_name_ref: &mut $mut_ty_ref,)* $($name_ref: &$ty_ref,)* $($name: $ty,)*) {
 			$expr
 		}
 
@@ -126,12 +128,37 @@ macro_rules! other_out_export {
 			#[allow(unused_variables)]
 			pub fn [<play_ $func_name>](gui: &mut Gui, engine: &mut Engine,  context: &mut PlayContext, json: &Vec<json::JsonValue>) {
 				let i = -1;
+				$(let i = i + 1; let $mut_name_ref = pi_export_play::as_value::<$mut_ty_ref>(json, i as usize).unwrap(); let $mut_name_ref = &mut $mut_name_ref;)*
 				$(let i = i + 1; let $name_ref = pi_export_play::as_value::<$ty_ref>(json, i as usize).unwrap();let $name_ref = &$name_ref;)*
 				$(let i = i + 1; let $name = pi_export_play::as_value::<$ty>(json, i as usize).unwrap();)*
-				$func_name(gui, $($name_ref,)* $($name,)*);
+				$func_name(gui, $($mut_name_ref,)* $($name_ref,)* $($name,)*);
 			}
 		}
 	};
+
+	// ($func_name:ident, $context: ident, $expr:expr, $($name_ref: ident: &$ty_ref: ty,)*; $($name: ident: $ty: ty,)*) => {
+	// 	#[cfg(feature="pi_js_export")]
+		
+	// 	pub fn $func_name($context: &mut Gui, $($name_ref: &$ty_ref,)* $($name: $ty,)*) {
+	// 		$expr
+	// 	}
+
+	// 	#[cfg(target_arch="wasm32")]
+	// 	#[wasm_bindgen]
+	// 	pub fn $func_name($context: &mut Gui, $($name_ref: &$ty_ref,)* $($name: $ty,)*) {
+	// 		$expr
+	// 	}
+
+	// 	$crate::paste::item! {
+	// 		#[allow(unused_variables)]
+	// 		pub fn [<play_ $func_name>](gui: &mut Gui, engine: &mut Engine,  context: &mut PlayContext, json: &Vec<json::JsonValue>) {
+	// 			let i = -1;
+	// 			$(let i = i + 1; let $name_ref = pi_export_play::as_value::<$ty_ref>(json, i as usize).unwrap();let $name_ref = &$name_ref;)*
+	// 			$(let i = i + 1; let $name = pi_export_play::as_value::<$ty>(json, i as usize).unwrap();)*
+	// 			$func_name(gui, $($mut_name_ref,)* $($name_ref,)* $($name,)*);
+	// 		}
+	// 	}
+	// };
 
 	// 带返回值的接口
 	(@with_return_node, $func_name:ident, $($context: ident: $context_ty: ty,)*; $node: ident, $return_ty: ty, $expr:expr, $($name_ref: ident: &$ty_ref: ty,)*; $($name: ident: $ty: ty,)*) => {
@@ -1030,14 +1057,14 @@ style_out_export!(@expr animation_timing_function_str, AnimationTimingFunctionTy
 	}
 }, value: &str,;);
 
-other_out_export!(set_default_style, gui, gui.commands.set_default_style_by_str(value, 0), value: &str,;);
+other_out_export!(set_default_style, gui, gui.commands.set_default_style_by_str(value, 0),; value: &str,;);
 
 other_out_export!(
     create_class,
     gui,
     {
         gui.commands.add_css(css, scope_hash as usize);
-    },
+    },;
 	css: &str,
 	;
     scope_hash: u32,
@@ -1053,7 +1080,7 @@ other_out_export!(
             s.push(*i as usize);
         }
         gui.commands.set_class(node, ClassName(s));
-    },;
+    },;;
     class_name: Vec<u32>,
 );
 
@@ -1068,6 +1095,35 @@ other_out_export!(
 //     // log::warn!("entity :{:?}", entity);
 //     unsafe { transmute(entity.to_bits()) }
 // }
+
+// // 创建模板
+// other_out_export!(
+// 	@with_return,
+//     create_fragment,
+// 	u32,
+// 	{
+// 		let mut arr = Float64ArrayMut(arr);
+// 		let mut index = 0;
+// 		let mut entitys = Vec::with_capacity(count as usize);
+// 		while index < count {
+// 			let entity = gui.entitys.reserve_entity();
+// 			arr.set_index(index, unsafe { transmute(entity.to_bits()) });
+// 			entitys.push(entity);
+// 			index = index + 1;
+// 		}
+// 		gui.commands
+// 			.fragment_commands.push(FragmentCommand {
+// 				key,
+// 				entitys
+// 			});
+// 		0
+// 	},
+// 	gui: &mut Gui,;
+// 	;
+// 	arr: Float64Array,
+// 	count: u32,
+// 	key: u32,
+// );
 
 // 创建节点
 other_out_export!(
@@ -1131,7 +1187,7 @@ other_out_export!(
     destroy_node,
     gui,
     node,
-    {gui.commands.destroy_node(node);},;
+    {gui.commands.destroy_node(node);},;;
 );
 
 other_out_export!(
@@ -1140,7 +1196,7 @@ other_out_export!(
     node,
     {
 		gui.commands.append(node, unsafe { transmute(EntityKey::null().to_bits())});
-	},;
+	},;;
 );
 
 other_out_export!(
@@ -1150,7 +1206,7 @@ other_out_export!(
     {	
 		let parent = Entity::from_bits(unsafe { transmute(parent) });
 		gui.commands.append(node, parent);
-	},;
+	},;;
 	parent: f64,
 );
 
@@ -1163,7 +1219,7 @@ other_out_export!(
 			node,
 			Entity::from_bits(unsafe { transmute(borther) }),
 		);
-	},;
+	},;;
 	borther: f64,
 );
 
@@ -1173,7 +1229,7 @@ other_out_export!(
     node,
     {
 		gui.commands.remove_node(node);
-	},;
+	},;;
 );
 
 other_out_export!(
@@ -1185,7 +1241,7 @@ other_out_export!(
 			pi_ui_render::components::user::Viewport(Aabb2::new(Point2::new(x as f32, y as f32), Point2::new(width as f32, height as f32))),
 			root,
 		));
-	},;
+	},;;
 	x: i32, y: i32, width: i32, height: i32, root: f64,
 );
 
@@ -1200,7 +1256,7 @@ other_out_export!(
 			pi_ui_render::components::user::Canvas(brush),
 			node,
 		));
-	},;
+	},;;
 	node: f64, brush: f64,
 );
 
@@ -1214,7 +1270,7 @@ other_out_export!(
 			unsafe { transmute::<_, pi_ui_render::components::user::RenderTargetType>(target_ty) };
 			node,
 		));
-	},;
+	},;;
 	node: f64, target_ty: u8,
 );
 
@@ -1225,14 +1281,30 @@ other_out_export!(
 		let root = unsafe { Entity::from_bits(transmute::<f64, u64>(root)) };
 		gui.commands
 			.push_cmd(NodeCmd(pi_ui_render::components::user::ClearColor(CgColor::new(r, g, b, a), is_clear_window), root));
-	},;
+	},;;
 	r: f32, g: f32, b: f32, a: f32, root: f64, is_clear_window: bool,
+);
+
+other_out_export!(
+    create_fragment_by_bin,
+    gui,
+    match postcard::from_bytes::<pi_ui_render::resource::fragment::Fragments>(bin) {
+		Ok(r) => {
+			gui.commands.push_cmd(pi_ui_render::resource::ExtendFragmentCmd(r));
+		}
+		Err(e) => {
+			log::warn!("deserialize_fragment error: {:?}, {:?}", e, bin);
+			return;
+		}
+	},;
+	bin: &[u8],;
+	
 );
 
 other_out_export!(
     create_class_by_bin,
     gui,
-    match bincode::deserialize::<Vec<pi_style::style_parse::ClassMap>>(bin) {
+    match postcard::from_bytes::<Vec<pi_style::style_parse::ClassMap>>(bin) {
 		Ok(r) => {
 			gui.commands.push_cmd(pi_ui_render::resource::ExtendCssCmd(r));
 		}
@@ -1240,7 +1312,7 @@ other_out_export!(
 			log::warn!("deserialize_class_map error: {:?}, {:?}", e, bin);
 			return;
 		}
-	},
+	},;
 	bin: &[u8],;
 	
 );
@@ -1253,7 +1325,7 @@ other_out_export!(
     {
 		let node: Entity = Entity::from_bits(unsafe { transmute(root) });
     	gui.commands.push_cmd(NodeCmd(pi_ui_render::components::user::RenderDirty(true), node));
-	},;
+	},;;
 	root: f64,
 );
 
@@ -1267,8 +1339,8 @@ other_out_export!(
 		*engine.world.get_resource_mut::<FrameState>().unwrap() = FrameState::Active;
 		engine.update();
 	},
-	[],
-	[_cur_time: u32,]
+	;;
+	_cur_time: u32,
 );
 
 // 
@@ -1284,9 +1356,7 @@ other_out_export!(
 		*engine.world.get_resource_mut::<RunState>().unwrap() = RunState::SETTING;
 		*engine.world.get_resource_mut::<FrameState>().unwrap() = FrameState::UnActive;
 		engine.update();
-	},
-	[],
-	[]
+	},;;
 );
 
 other_out_export!(
@@ -1301,9 +1371,7 @@ other_out_export!(
 		*engine.world.get_resource_mut::<RunState>().unwrap() = RunState::MATRIX;
 		*engine.world.get_resource_mut::<FrameState>().unwrap() = FrameState::Active;
 		engine.update();
-	},
-	[],
-	[]
+	},;;
 );
 
 other_out_export!(
@@ -1318,9 +1386,7 @@ other_out_export!(
 		*engine.world.get_resource_mut::<RunState>().unwrap() = RunState::LAYOUT;
 		*engine.world.get_resource_mut::<FrameState>().unwrap() = FrameState::UnActive;
 		engine.update();
-	},
-	[],
-	[]
+	},;;
 );
 
 other_out_export!(
@@ -1335,16 +1401,14 @@ other_out_export!(
 		*engine.world.get_resource_mut::<RunState>().unwrap() = RunState::MATRIX;
 		*engine.world.get_resource_mut::<FrameState>().unwrap() = FrameState::UnActive;
 		engine.update();
-	},
-	[],
-	[]
+	},;;
 );
 
 // TODO
 other_out_export!(
     bind_render_target,
     _gui,
-    {},;
+    {},;;
 );
 
 // TODO
@@ -1353,7 +1417,7 @@ other_out_export!(
     _gui,
     {
 		
-	},;
+	},;;
 	_pixel_ratio: f32,
 );
 
@@ -1363,7 +1427,7 @@ other_out_export!(
     _gui,
     {
 		
-	},;
+	},;;
 );
 
 // TODO
@@ -1372,7 +1436,7 @@ other_out_export!(
     _gui,
     {
 		
-	},;
+	},;;
 	_x: i32, _y: i32, _width: i32, _height: i32,
 );
 
@@ -1382,7 +1446,7 @@ other_out_export!(
     _gui,
     {
 		
-	},;
+	},;;
 	_scale_x: f32, _scale_y: f32, _translate_x: f32, _translate_y: f32, _rotate: f32, _width: f64, _height: f64,
 );
 
@@ -1393,7 +1457,7 @@ other_out_export!(
 	_node,
     {
 		
-	},;
+	},;;
 );
 
 // TODO
@@ -1403,7 +1467,7 @@ other_out_export!(
     _gui,
     {
 	
-	},
+	},;
 	_shader_name: &str, _shader_code: &str,
 	;
 	
@@ -1554,54 +1618,123 @@ other_out_export!(
 	u32,
     0,;
 );
+other_out_export!(
+	@with_return_node, 
+    get_enable,
+    gui: &mut Gui,
+	engine: &Engine,;
+	node,
+	bool,
+    if let Ok(is_show) = gui.enable_query.get(&engine.world, node) {
+		is_show.get_enable()
+	} else {
+		false
+	},;
+);
 
 // 返回值原类型为f32,这里之所以返回u32，是因为在iphonex以上的机型的浏览器上多次连续调用返回值为浮点数时，浏览器会自动刷新或白屏，原因未知
 // 节点到gui的上边界的距离
-// TODO
 other_out_export!(
 	@with_return_node, 
     offset_top,
-    _gui: &Gui,;
-	_node,
+    gui: &mut Gui,
+	engine: &Engine,;
+	node,
 	u32,
-    0,;
+    {
+		let mut r = 0.0;
+		if let Ok(parent) = gui.up_query.get(&engine.world, node) {
+			if let Ok(parent_layout) = gui.layout_query.get(&engine.world, node) {
+				r += parent_layout.padding.top + parent_layout.border.top;
+			}
+		}
+		if let Ok(layout) = gui.layout_query.get(&engine.world, node) {
+			r += layout.rect.top;
+		}
+		r.round() as u32
+	},;
 );
 
 // 返回值原类型为f32,这里之所以返回u32，是因为在iphonex以上的机型的浏览器上多次连续调用返回值为浮点数时，浏览器会自动刷新或白屏，原因未知
 // 节点到gui的左边界的距离
-// TODO
 other_out_export!(
 	@with_return_node, 
     offset_left,
-    _gui: &Gui,;
-	_node,
+    gui: &mut Gui,
+	engine: &Engine,;
+	node,
 	u32,
-    0,;
+    {
+		let mut r = 0.0;
+		if let Ok(parent) = gui.up_query.get(&engine.world, node) {
+			if let Ok(parent_layout) = gui.layout_query.get(&engine.world, node) {
+				r += parent_layout.padding.left + parent_layout.border.left;
+			}
+		}
+		if let Ok(layout) = gui.layout_query.get(&engine.world, node) {
+			r += layout.rect.left;
+		}
+		r.round() as u32
+	},;
 );
 
 // 返回值原类型为f32,这里之所以返回u32，是因为在iphonex以上的机型的浏览器上多次连续调用返回值为浮点数时，浏览器会自动刷新或白屏，原因未知
 // 节点的布局宽度
-// TODO
 other_out_export!(
 	@with_return_node, 
     offset_width,
-    _gui: &Gui,;
-	_node,
+    gui: &mut Gui,
+	engine: &Engine,;
+	node,
 	u32,
-    0,;
+    {
+		let r = if let Ok(layout) = gui.layout_query.get(&engine.world, node) {
+			layout.rect.right - layout.rect.left
+		} else {
+			0.0
+		}
+		r.round() as u32
+	},;
 );
 
 // 返回值原类型为f32,这里之所以返回u32，是因为在iphonex以上的机型的浏览器上多次连续调用返回值为浮点数时，浏览器会自动刷新或白屏，原因未知
 // 节点布局高度
-// TODO
 other_out_export!(
 	@with_return_node, 
     offset_height,
-    _gui: &Gui,;
-	_node,
+    gui: &mut Gui,
+	engine: &Engine,;
+	node,
 	u32,
-    0,;
+    {
+		let r = if let Ok(layout) = gui.layout_query.get(&engine.world, node) {
+			layout.rect.bottom - layout.rect.top
+		} else {
+			0.0
+		}
+		r.round() as u32
+	},;
 );
+
+/// 等同于html的getBoundingClientRect TODO
+/// left top width height
+other_out_export!(
+	@with_return_node, 
+    get_class_name,
+    gui: &mut Gui,
+	engine: &mut Engine,;
+	node,
+	String,
+    {
+		let node = Entity::from_bits(unsafe { transmute(node) });
+		let value = match engine.world.query::<&ClassName>().get(&engine.world, node) {
+			Ok(r) => Some(&r.0),
+			_ => None,
+		};
+		serde_json::to_string(&value).unwrap()
+	},;
+);
+
 
 /// 等同于html的getBoundingClientRect TODO
 /// left top width height

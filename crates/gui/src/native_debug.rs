@@ -5,7 +5,6 @@ use pi_bevy_ecs_extend::prelude::Down;
 use pi_bevy_ecs_extend::prelude::Up;
 use pi_bevy_render_plugin::PiRenderGraph;
 use pi_flex_layout::prelude::*;
-use smallvec::SmallVec;
 use pi_null::Null;
 use pi_style::style_parse::Attribute;
 use pi_ui_render::components::calc::InPassId;

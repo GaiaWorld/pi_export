@@ -3,7 +3,7 @@
 use std::{sync::Arc, cell::RefCell};
 
 use derive_deref::{Deref, DerefMut};
-use pi_assets::{allocator::Allocator, asset::{Asset, Handle}, mgr::AssetMgr};
+use pi_assets::{allocator::Allocator, asset::{Asset, Handle, Size}, mgr::AssetMgr};
 use pi_share::Share;
 use bevy::app::App;
 #[cfg(target_arch = "wasm32")]
@@ -181,6 +181,9 @@ pub struct JsRes {
 
 impl Asset for JsRes {
     type Key = u32;
+}
+
+impl Size for JsRes {
 	/// 资产的大小
 	fn size(&self) -> usize {
 		self.cost

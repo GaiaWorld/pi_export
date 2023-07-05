@@ -43,16 +43,14 @@
     #[allow(unused_attributes)]
     pub fn set_align_content(gui: &mut Gui, node_id: f64, v: f64) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands
-            .set_style(node_id, AlignContentType(unsafe { transmute(v as u8) }));
+        gui.commands.set_style(node_id, AlignContentType(unsafe { transmute(v as u8) }));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_align_content(gui: &mut Gui, node_id: f64, v: f64) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands
-            .set_style(node_id, AlignContentType(unsafe { transmute(v as u8) }));
+        gui.commands.set_style(node_id, AlignContentType(unsafe { transmute(v as u8) }));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
@@ -75,8 +73,10 @@
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
+        }
+            .index();
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
             None => return,
@@ -92,9 +92,10 @@
         json: &Vec<json::JsonValue>,
     ) {
         let mut i = 0;
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
-                .index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))
+        }
+            .index();
         i += 1;
         let v = pi_export_play::as_value::<f64>(json, i).unwrap();
         i += 1;
@@ -108,16 +109,14 @@
     #[allow(unused_attributes)]
     pub fn set_align_items(gui: &mut Gui, node_id: f64, v: f64) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands
-            .set_style(node_id, AlignItemsType(unsafe { transmute(v as u8) }));
+        gui.commands.set_style(node_id, AlignItemsType(unsafe { transmute(v as u8) }));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_align_items(gui: &mut Gui, node_id: f64, v: f64) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands
-            .set_style(node_id, AlignItemsType(unsafe { transmute(v as u8) }));
+        gui.commands.set_style(node_id, AlignItemsType(unsafe { transmute(v as u8) }));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
@@ -140,8 +139,10 @@
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
+        }
+            .index();
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
             None => return,
@@ -157,9 +158,10 @@
         json: &Vec<json::JsonValue>,
     ) {
         let mut i = 0;
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
-                .index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))
+        }
+            .index();
         i += 1;
         let v = pi_export_play::as_value::<f64>(json, i).unwrap();
         i += 1;
@@ -205,8 +207,10 @@
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
+        }
+            .index();
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
             None => return,
@@ -222,9 +226,10 @@
         json: &Vec<json::JsonValue>,
     ) {
         let mut i = 0;
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
-                .index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))
+        }
+            .index();
         i += 1;
         let v = pi_export_play::as_value::<f64>(json, i).unwrap();
         i += 1;
@@ -270,8 +275,10 @@
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
+        }
+            .index();
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
             None => return,
@@ -287,9 +294,10 @@
         json: &Vec<json::JsonValue>,
     ) {
         let mut i = 0;
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
-                .index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))
+        }
+            .index();
         i += 1;
         let v = pi_export_play::as_value::<f64>(json, i).unwrap();
         i += 1;
@@ -303,16 +311,14 @@
     #[allow(unused_attributes)]
     pub fn set_flex_wrap(gui: &mut Gui, node_id: f64, v: f64) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands
-            .set_style(node_id, FlexWrapType(unsafe { transmute(v as u8) }));
+        gui.commands.set_style(node_id, FlexWrapType(unsafe { transmute(v as u8) }));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_flex_wrap(gui: &mut Gui, node_id: f64, v: f64) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands
-            .set_style(node_id, FlexWrapType(unsafe { transmute(v as u8) }));
+        gui.commands.set_style(node_id, FlexWrapType(unsafe { transmute(v as u8) }));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
@@ -335,8 +341,10 @@
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
+        }
+            .index();
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
             None => return,
@@ -352,9 +360,10 @@
         json: &Vec<json::JsonValue>,
     ) {
         let mut i = 0;
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
-                .index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))
+        }
+            .index();
         i += 1;
         let v = pi_export_play::as_value::<f64>(json, i).unwrap();
         i += 1;
@@ -368,16 +377,14 @@
     #[allow(unused_attributes)]
     pub fn set_align_self(gui: &mut Gui, node_id: f64, v: f64) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands
-            .set_style(node_id, AlignSelfType(unsafe { transmute(v as u8) }));
+        gui.commands.set_style(node_id, AlignSelfType(unsafe { transmute(v as u8) }));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_align_self(gui: &mut Gui, node_id: f64, v: f64) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands
-            .set_style(node_id, AlignSelfType(unsafe { transmute(v as u8) }));
+        gui.commands.set_style(node_id, AlignSelfType(unsafe { transmute(v as u8) }));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
@@ -400,8 +407,10 @@
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
+        }
+            .index();
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
             None => return,
@@ -417,9 +426,10 @@
         json: &Vec<json::JsonValue>,
     ) {
         let mut i = 0;
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
-                .index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))
+        }
+            .index();
         i += 1;
         let v = pi_export_play::as_value::<f64>(json, i).unwrap();
         i += 1;
@@ -433,16 +443,14 @@
     #[allow(unused_attributes)]
     pub fn set_position_type(gui: &mut Gui, node_id: f64, v: f64) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands
-            .set_style(node_id, PositionTypeType(unsafe { transmute(v as u8) }));
+        gui.commands.set_style(node_id, PositionTypeType(unsafe { transmute(v as u8) }));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_position_type(gui: &mut Gui, node_id: f64, v: f64) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands
-            .set_style(node_id, PositionTypeType(unsafe { transmute(v as u8) }));
+        gui.commands.set_style(node_id, PositionTypeType(unsafe { transmute(v as u8) }));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
@@ -465,8 +473,10 @@
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
+        }
+            .index();
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
             None => return,
@@ -482,9 +492,10 @@
         json: &Vec<json::JsonValue>,
     ) {
         let mut i = 0;
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
-                .index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))
+        }
+            .index();
         i += 1;
         let v = pi_export_play::as_value::<f64>(json, i).unwrap();
         i += 1;
@@ -528,8 +539,10 @@
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
+        }
+            .index();
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
             None => return,
@@ -545,9 +558,10 @@
         json: &Vec<json::JsonValue>,
     ) {
         let mut i = 0;
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
-                .index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))
+        }
+            .index();
         i += 1;
         let v = pi_export_play::as_value::<f32>(json, i).unwrap();
         i += 1;
@@ -591,8 +605,10 @@
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
+        }
+            .index();
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
             None => return,
@@ -608,9 +624,10 @@
         json: &Vec<json::JsonValue>,
     ) {
         let mut i = 0;
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
-                .index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))
+        }
+            .index();
         i += 1;
         let v = pi_export_play::as_value::<f32>(json, i).unwrap();
         i += 1;
@@ -624,16 +641,14 @@
     #[allow(unused_attributes)]
     pub fn set_flex_basis_percent(gui: &mut Gui, node_id: f64, v: f32) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands
-            .set_style(node_id, FlexBasisType(Dimension::Percent(v)));
+        gui.commands.set_style(node_id, FlexBasisType(Dimension::Percent(v)));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_flex_basis_percent(gui: &mut Gui, node_id: f64, v: f32) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands
-            .set_style(node_id, FlexBasisType(Dimension::Percent(v)));
+        gui.commands.set_style(node_id, FlexBasisType(Dimension::Percent(v)));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
@@ -656,8 +671,10 @@
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
+        }
+            .index();
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
             None => return,
@@ -673,9 +690,10 @@
         json: &Vec<json::JsonValue>,
     ) {
         let mut i = 0;
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
-                .index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))
+        }
+            .index();
         i += 1;
         let v = pi_export_play::as_value::<f32>(json, i).unwrap();
         i += 1;
@@ -689,16 +707,14 @@
     #[allow(unused_attributes)]
     pub fn set_flex_basis(gui: &mut Gui, node_id: f64, v: f32) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands
-            .set_style(node_id, FlexBasisType(Dimension::Points(v)));
+        gui.commands.set_style(node_id, FlexBasisType(Dimension::Points(v)));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_flex_basis(gui: &mut Gui, node_id: f64, v: f32) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands
-            .set_style(node_id, FlexBasisType(Dimension::Points(v)));
+        gui.commands.set_style(node_id, FlexBasisType(Dimension::Points(v)));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
@@ -721,8 +737,10 @@
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
+        }
+            .index();
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
             None => return,
@@ -738,9 +756,10 @@
         json: &Vec<json::JsonValue>,
     ) {
         let mut i = 0;
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
-                .index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))
+        }
+            .index();
         i += 1;
         let v = pi_export_play::as_value::<f32>(json, i).unwrap();
         i += 1;
@@ -754,16 +773,14 @@
     #[allow(unused_attributes)]
     pub fn set_flex_basis_auto(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands
-            .set_style(node_id, FlexBasisType(Dimension::Auto));
+        gui.commands.set_style(node_id, FlexBasisType(Dimension::Auto));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_flex_basis_auto(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands
-            .set_style(node_id, FlexBasisType(Dimension::Auto));
+        gui.commands.set_style(node_id, FlexBasisType(Dimension::Auto));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
@@ -786,8 +803,10 @@
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
+        }
+            .index();
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
             None => return,
@@ -803,9 +822,10 @@
         json: &Vec<json::JsonValue>,
     ) {
         let mut i = 0;
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
-                .index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))
+        }
+            .index();
         i += 1;
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
@@ -817,16 +837,14 @@
     #[allow(unused_attributes)]
     pub fn set_width_percent(gui: &mut Gui, node_id: f64, v: f32) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands
-            .set_style(node_id, WidthType(Dimension::Percent(v)));
+        gui.commands.set_style(node_id, WidthType(Dimension::Percent(v)));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_width_percent(gui: &mut Gui, node_id: f64, v: f32) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands
-            .set_style(node_id, WidthType(Dimension::Percent(v)));
+        gui.commands.set_style(node_id, WidthType(Dimension::Percent(v)));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
@@ -849,8 +867,10 @@
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
+        }
+            .index();
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
             None => return,
@@ -866,9 +886,10 @@
         json: &Vec<json::JsonValue>,
     ) {
         let mut i = 0;
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
-                .index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))
+        }
+            .index();
         i += 1;
         let v = pi_export_play::as_value::<f32>(json, i).unwrap();
         i += 1;
@@ -882,16 +903,14 @@
     #[allow(unused_attributes)]
     pub fn set_width(gui: &mut Gui, node_id: f64, v: f32) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands
-            .set_style(node_id, WidthType(Dimension::Points(v)));
+        gui.commands.set_style(node_id, WidthType(Dimension::Points(v)));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_width(gui: &mut Gui, node_id: f64, v: f32) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands
-            .set_style(node_id, WidthType(Dimension::Points(v)));
+        gui.commands.set_style(node_id, WidthType(Dimension::Points(v)));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
@@ -914,8 +933,10 @@
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
+        }
+            .index();
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
             None => return,
@@ -931,9 +952,10 @@
         json: &Vec<json::JsonValue>,
     ) {
         let mut i = 0;
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
-                .index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))
+        }
+            .index();
         i += 1;
         let v = pi_export_play::as_value::<f32>(json, i).unwrap();
         i += 1;
@@ -977,8 +999,10 @@
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
+        }
+            .index();
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
             None => return,
@@ -994,9 +1018,10 @@
         json: &Vec<json::JsonValue>,
     ) {
         let mut i = 0;
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
-                .index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))
+        }
+            .index();
         i += 1;
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
@@ -1008,16 +1033,14 @@
     #[allow(unused_attributes)]
     pub fn set_height_percent(gui: &mut Gui, node_id: f64, v: f32) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands
-            .set_style(node_id, HeightType(Dimension::Percent(v)));
+        gui.commands.set_style(node_id, HeightType(Dimension::Percent(v)));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_height_percent(gui: &mut Gui, node_id: f64, v: f32) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands
-            .set_style(node_id, HeightType(Dimension::Percent(v)));
+        gui.commands.set_style(node_id, HeightType(Dimension::Percent(v)));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
@@ -1040,8 +1063,10 @@
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
+        }
+            .index();
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
             None => return,
@@ -1057,9 +1082,10 @@
         json: &Vec<json::JsonValue>,
     ) {
         let mut i = 0;
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
-                .index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))
+        }
+            .index();
         i += 1;
         let v = pi_export_play::as_value::<f32>(json, i).unwrap();
         i += 1;
@@ -1073,16 +1099,14 @@
     #[allow(unused_attributes)]
     pub fn set_height(gui: &mut Gui, node_id: f64, v: f32) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands
-            .set_style(node_id, HeightType(Dimension::Points(v)));
+        gui.commands.set_style(node_id, HeightType(Dimension::Points(v)));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_height(gui: &mut Gui, node_id: f64, v: f32) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands
-            .set_style(node_id, HeightType(Dimension::Points(v)));
+        gui.commands.set_style(node_id, HeightType(Dimension::Points(v)));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
@@ -1105,8 +1129,10 @@
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
+        }
+            .index();
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
             None => return,
@@ -1122,9 +1148,10 @@
         json: &Vec<json::JsonValue>,
     ) {
         let mut i = 0;
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
-                .index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))
+        }
+            .index();
         i += 1;
         let v = pi_export_play::as_value::<f32>(json, i).unwrap();
         i += 1;
@@ -1168,8 +1195,10 @@
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
+        }
+            .index();
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
             None => return,
@@ -1185,9 +1214,10 @@
         json: &Vec<json::JsonValue>,
     ) {
         let mut i = 0;
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
-                .index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))
+        }
+            .index();
         i += 1;
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
@@ -1199,16 +1229,14 @@
     #[allow(unused_attributes)]
     pub fn set_min_width_percent(gui: &mut Gui, node_id: f64, v: f32) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands
-            .set_style(node_id, MinWidthType(Dimension::Percent(v)));
+        gui.commands.set_style(node_id, MinWidthType(Dimension::Percent(v)));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_min_width_percent(gui: &mut Gui, node_id: f64, v: f32) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands
-            .set_style(node_id, MinWidthType(Dimension::Percent(v)));
+        gui.commands.set_style(node_id, MinWidthType(Dimension::Percent(v)));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
@@ -1231,8 +1259,10 @@
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
+        }
+            .index();
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
             None => return,
@@ -1248,9 +1278,10 @@
         json: &Vec<json::JsonValue>,
     ) {
         let mut i = 0;
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
-                .index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))
+        }
+            .index();
         i += 1;
         let v = pi_export_play::as_value::<f32>(json, i).unwrap();
         i += 1;
@@ -1264,16 +1295,14 @@
     #[allow(unused_attributes)]
     pub fn set_min_width(gui: &mut Gui, node_id: f64, v: f32) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands
-            .set_style(node_id, MinWidthType(Dimension::Points(v)));
+        gui.commands.set_style(node_id, MinWidthType(Dimension::Points(v)));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_min_width(gui: &mut Gui, node_id: f64, v: f32) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands
-            .set_style(node_id, MinWidthType(Dimension::Points(v)));
+        gui.commands.set_style(node_id, MinWidthType(Dimension::Points(v)));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
@@ -1296,8 +1325,10 @@
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
+        }
+            .index();
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
             None => return,
@@ -1313,9 +1344,10 @@
         json: &Vec<json::JsonValue>,
     ) {
         let mut i = 0;
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
-                .index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))
+        }
+            .index();
         i += 1;
         let v = pi_export_play::as_value::<f32>(json, i).unwrap();
         i += 1;
@@ -1329,16 +1361,14 @@
     #[allow(unused_attributes)]
     pub fn set_min_width_auto(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands
-            .set_style(node_id, MinWidthType(Dimension::Auto));
+        gui.commands.set_style(node_id, MinWidthType(Dimension::Auto));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_min_width_auto(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands
-            .set_style(node_id, MinWidthType(Dimension::Auto));
+        gui.commands.set_style(node_id, MinWidthType(Dimension::Auto));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
@@ -1361,8 +1391,10 @@
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
+        }
+            .index();
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
             None => return,
@@ -1378,9 +1410,10 @@
         json: &Vec<json::JsonValue>,
     ) {
         let mut i = 0;
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
-                .index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))
+        }
+            .index();
         i += 1;
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
@@ -1392,16 +1425,14 @@
     #[allow(unused_attributes)]
     pub fn set_min_height_percent(gui: &mut Gui, node_id: f64, v: f32) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands
-            .set_style(node_id, MinHeightType(Dimension::Percent(v)));
+        gui.commands.set_style(node_id, MinHeightType(Dimension::Percent(v)));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_min_height_percent(gui: &mut Gui, node_id: f64, v: f32) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands
-            .set_style(node_id, MinHeightType(Dimension::Percent(v)));
+        gui.commands.set_style(node_id, MinHeightType(Dimension::Percent(v)));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
@@ -1424,8 +1455,10 @@
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
+        }
+            .index();
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
             None => return,
@@ -1441,9 +1474,10 @@
         json: &Vec<json::JsonValue>,
     ) {
         let mut i = 0;
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
-                .index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))
+        }
+            .index();
         i += 1;
         let v = pi_export_play::as_value::<f32>(json, i).unwrap();
         i += 1;
@@ -1457,16 +1491,14 @@
     #[allow(unused_attributes)]
     pub fn set_min_height(gui: &mut Gui, node_id: f64, v: f32) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands
-            .set_style(node_id, MinHeightType(Dimension::Points(v)));
+        gui.commands.set_style(node_id, MinHeightType(Dimension::Points(v)));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_min_height(gui: &mut Gui, node_id: f64, v: f32) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands
-            .set_style(node_id, MinHeightType(Dimension::Points(v)));
+        gui.commands.set_style(node_id, MinHeightType(Dimension::Points(v)));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
@@ -1489,8 +1521,10 @@
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
+        }
+            .index();
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
             None => return,
@@ -1506,9 +1540,10 @@
         json: &Vec<json::JsonValue>,
     ) {
         let mut i = 0;
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
-                .index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))
+        }
+            .index();
         i += 1;
         let v = pi_export_play::as_value::<f32>(json, i).unwrap();
         i += 1;
@@ -1522,16 +1557,14 @@
     #[allow(unused_attributes)]
     pub fn set_min_height_auto(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands
-            .set_style(node_id, MinHeightType(Dimension::Auto));
+        gui.commands.set_style(node_id, MinHeightType(Dimension::Auto));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_min_height_auto(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands
-            .set_style(node_id, MinHeightType(Dimension::Auto));
+        gui.commands.set_style(node_id, MinHeightType(Dimension::Auto));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
@@ -1554,8 +1587,10 @@
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
+        }
+            .index();
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
             None => return,
@@ -1571,9 +1606,10 @@
         json: &Vec<json::JsonValue>,
     ) {
         let mut i = 0;
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
-                .index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))
+        }
+            .index();
         i += 1;
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
@@ -1585,16 +1621,14 @@
     #[allow(unused_attributes)]
     pub fn set_max_width_percent(gui: &mut Gui, node_id: f64, v: f32) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands
-            .set_style(node_id, MaxWidthType(Dimension::Percent(v)));
+        gui.commands.set_style(node_id, MaxWidthType(Dimension::Percent(v)));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_max_width_percent(gui: &mut Gui, node_id: f64, v: f32) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands
-            .set_style(node_id, MaxWidthType(Dimension::Percent(v)));
+        gui.commands.set_style(node_id, MaxWidthType(Dimension::Percent(v)));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
@@ -1617,8 +1651,10 @@
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
+        }
+            .index();
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
             None => return,
@@ -1634,9 +1670,10 @@
         json: &Vec<json::JsonValue>,
     ) {
         let mut i = 0;
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
-                .index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))
+        }
+            .index();
         i += 1;
         let v = pi_export_play::as_value::<f32>(json, i).unwrap();
         i += 1;
@@ -1650,16 +1687,14 @@
     #[allow(unused_attributes)]
     pub fn set_max_width(gui: &mut Gui, node_id: f64, v: f32) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands
-            .set_style(node_id, MaxWidthType(Dimension::Points(v)));
+        gui.commands.set_style(node_id, MaxWidthType(Dimension::Points(v)));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_max_width(gui: &mut Gui, node_id: f64, v: f32) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands
-            .set_style(node_id, MaxWidthType(Dimension::Points(v)));
+        gui.commands.set_style(node_id, MaxWidthType(Dimension::Points(v)));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
@@ -1682,8 +1717,10 @@
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
+        }
+            .index();
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
             None => return,
@@ -1699,9 +1736,10 @@
         json: &Vec<json::JsonValue>,
     ) {
         let mut i = 0;
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
-                .index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))
+        }
+            .index();
         i += 1;
         let v = pi_export_play::as_value::<f32>(json, i).unwrap();
         i += 1;
@@ -1715,16 +1753,14 @@
     #[allow(unused_attributes)]
     pub fn set_max_width_auto(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands
-            .set_style(node_id, MaxWidthType(Dimension::Auto));
+        gui.commands.set_style(node_id, MaxWidthType(Dimension::Auto));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_max_width_auto(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands
-            .set_style(node_id, MaxWidthType(Dimension::Auto));
+        gui.commands.set_style(node_id, MaxWidthType(Dimension::Auto));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
@@ -1747,8 +1783,10 @@
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
+        }
+            .index();
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
             None => return,
@@ -1764,9 +1802,10 @@
         json: &Vec<json::JsonValue>,
     ) {
         let mut i = 0;
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
-                .index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))
+        }
+            .index();
         i += 1;
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
@@ -1778,16 +1817,14 @@
     #[allow(unused_attributes)]
     pub fn set_max_height_percent(gui: &mut Gui, node_id: f64, v: f32) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands
-            .set_style(node_id, MaxHeightType(Dimension::Percent(v)));
+        gui.commands.set_style(node_id, MaxHeightType(Dimension::Percent(v)));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_max_height_percent(gui: &mut Gui, node_id: f64, v: f32) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands
-            .set_style(node_id, MaxHeightType(Dimension::Percent(v)));
+        gui.commands.set_style(node_id, MaxHeightType(Dimension::Percent(v)));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
@@ -1810,8 +1847,10 @@
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
+        }
+            .index();
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
             None => return,
@@ -1827,9 +1866,10 @@
         json: &Vec<json::JsonValue>,
     ) {
         let mut i = 0;
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
-                .index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))
+        }
+            .index();
         i += 1;
         let v = pi_export_play::as_value::<f32>(json, i).unwrap();
         i += 1;
@@ -1843,16 +1883,14 @@
     #[allow(unused_attributes)]
     pub fn set_max_height(gui: &mut Gui, node_id: f64, v: f32) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands
-            .set_style(node_id, MaxHeightType(Dimension::Points(v)));
+        gui.commands.set_style(node_id, MaxHeightType(Dimension::Points(v)));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_max_height(gui: &mut Gui, node_id: f64, v: f32) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands
-            .set_style(node_id, MaxHeightType(Dimension::Points(v)));
+        gui.commands.set_style(node_id, MaxHeightType(Dimension::Points(v)));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
@@ -1875,8 +1913,10 @@
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
+        }
+            .index();
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
             None => return,
@@ -1892,9 +1932,10 @@
         json: &Vec<json::JsonValue>,
     ) {
         let mut i = 0;
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
-                .index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))
+        }
+            .index();
         i += 1;
         let v = pi_export_play::as_value::<f32>(json, i).unwrap();
         i += 1;
@@ -1908,16 +1949,14 @@
     #[allow(unused_attributes)]
     pub fn set_max_height_auto(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands
-            .set_style(node_id, MaxHeightType(Dimension::Auto));
+        gui.commands.set_style(node_id, MaxHeightType(Dimension::Auto));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_max_height_auto(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands
-            .set_style(node_id, MaxHeightType(Dimension::Auto));
+        gui.commands.set_style(node_id, MaxHeightType(Dimension::Auto));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
@@ -1940,8 +1979,10 @@
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
+        }
+            .index();
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
             None => return,
@@ -1957,9 +1998,10 @@
         json: &Vec<json::JsonValue>,
     ) {
         let mut i = 0;
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
-                .index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))
+        }
+            .index();
         i += 1;
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
@@ -1972,18 +2014,18 @@
     pub fn set_padding_percent(gui: &mut Gui, node_id: f64, edge: f64, v: f32) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
         match unsafe { transmute(edge as u8) } {
-            Edge::Top => gui
-                .commands
-                .set_style(node_id, PaddingTopType(Dimension::Percent(v))),
-            Edge::Right => gui
-                .commands
-                .set_style(node_id, PaddingRightType(Dimension::Percent(v))),
-            Edge::Bottom => gui
-                .commands
-                .set_style(node_id, PaddingBottomType(Dimension::Percent(v))),
-            Edge::Left => gui
-                .commands
-                .set_style(node_id, PaddingLeftType(Dimension::Percent(v))),
+            Edge::Top => {
+                gui.commands.set_style(node_id, PaddingTopType(Dimension::Percent(v)))
+            }
+            Edge::Right => {
+                gui.commands.set_style(node_id, PaddingRightType(Dimension::Percent(v)))
+            }
+            Edge::Bottom => {
+                gui.commands.set_style(node_id, PaddingBottomType(Dimension::Percent(v)))
+            }
+            Edge::Left => {
+                gui.commands.set_style(node_id, PaddingLeftType(Dimension::Percent(v)))
+            }
             _ => return,
         };
     }
@@ -1993,18 +2035,18 @@
     pub fn set_padding_percent(gui: &mut Gui, node_id: f64, edge: f64, v: f32) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
         match unsafe { transmute(edge as u8) } {
-            Edge::Top => gui
-                .commands
-                .set_style(node_id, PaddingTopType(Dimension::Percent(v))),
-            Edge::Right => gui
-                .commands
-                .set_style(node_id, PaddingRightType(Dimension::Percent(v))),
-            Edge::Bottom => gui
-                .commands
-                .set_style(node_id, PaddingBottomType(Dimension::Percent(v))),
-            Edge::Left => gui
-                .commands
-                .set_style(node_id, PaddingLeftType(Dimension::Percent(v))),
+            Edge::Top => {
+                gui.commands.set_style(node_id, PaddingTopType(Dimension::Percent(v)))
+            }
+            Edge::Right => {
+                gui.commands.set_style(node_id, PaddingRightType(Dimension::Percent(v)))
+            }
+            Edge::Bottom => {
+                gui.commands.set_style(node_id, PaddingBottomType(Dimension::Percent(v)))
+            }
+            Edge::Left => {
+                gui.commands.set_style(node_id, PaddingLeftType(Dimension::Percent(v)))
+            }
             _ => return,
         };
     }
@@ -2041,8 +2083,10 @@
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
+        }
+            .index();
         let edge = pi_export_play::as_value::<f64>(json, 1).unwrap();
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
@@ -2059,9 +2103,10 @@
     ) {
         let mut i = -1;
         i += 1;
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
-                .index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))
+        }
+            .index();
         i += 1;
         let edge = pi_export_play::as_value::<f64>(json, i as usize).unwrap();
         i += 1;
@@ -2077,18 +2122,18 @@
     pub fn set_padding(gui: &mut Gui, node_id: f64, edge: f64, v: f32) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
         match unsafe { transmute(edge as u8) } {
-            Edge::Top => gui
-                .commands
-                .set_style(node_id, PaddingTopType(Dimension::Points(v))),
-            Edge::Right => gui
-                .commands
-                .set_style(node_id, PaddingRightType(Dimension::Points(v))),
-            Edge::Bottom => gui
-                .commands
-                .set_style(node_id, PaddingBottomType(Dimension::Points(v))),
-            Edge::Left => gui
-                .commands
-                .set_style(node_id, PaddingLeftType(Dimension::Points(v))),
+            Edge::Top => {
+                gui.commands.set_style(node_id, PaddingTopType(Dimension::Points(v)))
+            }
+            Edge::Right => {
+                gui.commands.set_style(node_id, PaddingRightType(Dimension::Points(v)))
+            }
+            Edge::Bottom => {
+                gui.commands.set_style(node_id, PaddingBottomType(Dimension::Points(v)))
+            }
+            Edge::Left => {
+                gui.commands.set_style(node_id, PaddingLeftType(Dimension::Points(v)))
+            }
             _ => return,
         };
     }
@@ -2098,18 +2143,18 @@
     pub fn set_padding(gui: &mut Gui, node_id: f64, edge: f64, v: f32) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
         match unsafe { transmute(edge as u8) } {
-            Edge::Top => gui
-                .commands
-                .set_style(node_id, PaddingTopType(Dimension::Points(v))),
-            Edge::Right => gui
-                .commands
-                .set_style(node_id, PaddingRightType(Dimension::Points(v))),
-            Edge::Bottom => gui
-                .commands
-                .set_style(node_id, PaddingBottomType(Dimension::Points(v))),
-            Edge::Left => gui
-                .commands
-                .set_style(node_id, PaddingLeftType(Dimension::Points(v))),
+            Edge::Top => {
+                gui.commands.set_style(node_id, PaddingTopType(Dimension::Points(v)))
+            }
+            Edge::Right => {
+                gui.commands.set_style(node_id, PaddingRightType(Dimension::Points(v)))
+            }
+            Edge::Bottom => {
+                gui.commands.set_style(node_id, PaddingBottomType(Dimension::Points(v)))
+            }
+            Edge::Left => {
+                gui.commands.set_style(node_id, PaddingLeftType(Dimension::Points(v)))
+            }
             _ => return,
         };
     }
@@ -2146,8 +2191,10 @@
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
+        }
+            .index();
         let edge = pi_export_play::as_value::<f64>(json, 1).unwrap();
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
@@ -2164,9 +2211,10 @@
     ) {
         let mut i = -1;
         i += 1;
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
-                .index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))
+        }
+            .index();
         i += 1;
         let edge = pi_export_play::as_value::<f64>(json, i as usize).unwrap();
         i += 1;
@@ -2182,18 +2230,16 @@
     pub fn set_padding_auto(gui: &mut Gui, node_id: f64, edge: f64) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
         match unsafe { transmute(edge as u8) } {
-            Edge::Top => gui
-                .commands
-                .set_style(node_id, PaddingTopType(Dimension::Auto)),
-            Edge::Right => gui
-                .commands
-                .set_style(node_id, PaddingRightType(Dimension::Auto)),
-            Edge::Bottom => gui
-                .commands
-                .set_style(node_id, PaddingBottomType(Dimension::Auto)),
-            Edge::Left => gui
-                .commands
-                .set_style(node_id, PaddingLeftType(Dimension::Auto)),
+            Edge::Top => gui.commands.set_style(node_id, PaddingTopType(Dimension::Auto)),
+            Edge::Right => {
+                gui.commands.set_style(node_id, PaddingRightType(Dimension::Auto))
+            }
+            Edge::Bottom => {
+                gui.commands.set_style(node_id, PaddingBottomType(Dimension::Auto))
+            }
+            Edge::Left => {
+                gui.commands.set_style(node_id, PaddingLeftType(Dimension::Auto))
+            }
             _ => return,
         };
     }
@@ -2203,18 +2249,16 @@
     pub fn set_padding_auto(gui: &mut Gui, node_id: f64, edge: f64) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
         match unsafe { transmute(edge as u8) } {
-            Edge::Top => gui
-                .commands
-                .set_style(node_id, PaddingTopType(Dimension::Auto)),
-            Edge::Right => gui
-                .commands
-                .set_style(node_id, PaddingRightType(Dimension::Auto)),
-            Edge::Bottom => gui
-                .commands
-                .set_style(node_id, PaddingBottomType(Dimension::Auto)),
-            Edge::Left => gui
-                .commands
-                .set_style(node_id, PaddingLeftType(Dimension::Auto)),
+            Edge::Top => gui.commands.set_style(node_id, PaddingTopType(Dimension::Auto)),
+            Edge::Right => {
+                gui.commands.set_style(node_id, PaddingRightType(Dimension::Auto))
+            }
+            Edge::Bottom => {
+                gui.commands.set_style(node_id, PaddingBottomType(Dimension::Auto))
+            }
+            Edge::Left => {
+                gui.commands.set_style(node_id, PaddingLeftType(Dimension::Auto))
+            }
             _ => return,
         };
     }
@@ -2251,8 +2295,10 @@
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
+        }
+            .index();
         let edge = pi_export_play::as_value::<f64>(json, 1).unwrap();
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
@@ -2269,9 +2315,10 @@
     ) {
         let mut i = -1;
         i += 1;
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
-                .index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))
+        }
+            .index();
         i += 1;
         let edge = pi_export_play::as_value::<f64>(json, i as usize).unwrap();
         let node = match context.nodes.get(node as usize) {
@@ -2285,18 +2332,18 @@
     pub fn set_margin_percent(gui: &mut Gui, node_id: f64, edge: f64, v: f32) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
         match unsafe { transmute(edge as u8) } {
-            Edge::Top => gui
-                .commands
-                .set_style(node_id, MarginTopType(Dimension::Percent(v))),
-            Edge::Right => gui
-                .commands
-                .set_style(node_id, MarginRightType(Dimension::Percent(v))),
-            Edge::Bottom => gui
-                .commands
-                .set_style(node_id, MarginBottomType(Dimension::Percent(v))),
-            Edge::Left => gui
-                .commands
-                .set_style(node_id, MarginLeftType(Dimension::Percent(v))),
+            Edge::Top => {
+                gui.commands.set_style(node_id, MarginTopType(Dimension::Percent(v)))
+            }
+            Edge::Right => {
+                gui.commands.set_style(node_id, MarginRightType(Dimension::Percent(v)))
+            }
+            Edge::Bottom => {
+                gui.commands.set_style(node_id, MarginBottomType(Dimension::Percent(v)))
+            }
+            Edge::Left => {
+                gui.commands.set_style(node_id, MarginLeftType(Dimension::Percent(v)))
+            }
             _ => return,
         };
     }
@@ -2306,18 +2353,18 @@
     pub fn set_margin_percent(gui: &mut Gui, node_id: f64, edge: f64, v: f32) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
         match unsafe { transmute(edge as u8) } {
-            Edge::Top => gui
-                .commands
-                .set_style(node_id, MarginTopType(Dimension::Percent(v))),
-            Edge::Right => gui
-                .commands
-                .set_style(node_id, MarginRightType(Dimension::Percent(v))),
-            Edge::Bottom => gui
-                .commands
-                .set_style(node_id, MarginBottomType(Dimension::Percent(v))),
-            Edge::Left => gui
-                .commands
-                .set_style(node_id, MarginLeftType(Dimension::Percent(v))),
+            Edge::Top => {
+                gui.commands.set_style(node_id, MarginTopType(Dimension::Percent(v)))
+            }
+            Edge::Right => {
+                gui.commands.set_style(node_id, MarginRightType(Dimension::Percent(v)))
+            }
+            Edge::Bottom => {
+                gui.commands.set_style(node_id, MarginBottomType(Dimension::Percent(v)))
+            }
+            Edge::Left => {
+                gui.commands.set_style(node_id, MarginLeftType(Dimension::Percent(v)))
+            }
             _ => return,
         };
     }
@@ -2354,8 +2401,10 @@
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
+        }
+            .index();
         let edge = pi_export_play::as_value::<f64>(json, 1).unwrap();
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
@@ -2372,9 +2421,10 @@
     ) {
         let mut i = -1;
         i += 1;
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
-                .index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))
+        }
+            .index();
         i += 1;
         let edge = pi_export_play::as_value::<f64>(json, i as usize).unwrap();
         i += 1;
@@ -2390,18 +2440,18 @@
     pub fn set_margin(gui: &mut Gui, node_id: f64, edge: f64, v: f32) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
         match unsafe { transmute(edge as u8) } {
-            Edge::Top => gui
-                .commands
-                .set_style(node_id, MarginTopType(Dimension::Points(v))),
-            Edge::Right => gui
-                .commands
-                .set_style(node_id, MarginRightType(Dimension::Points(v))),
-            Edge::Bottom => gui
-                .commands
-                .set_style(node_id, MarginBottomType(Dimension::Points(v))),
-            Edge::Left => gui
-                .commands
-                .set_style(node_id, MarginLeftType(Dimension::Points(v))),
+            Edge::Top => {
+                gui.commands.set_style(node_id, MarginTopType(Dimension::Points(v)))
+            }
+            Edge::Right => {
+                gui.commands.set_style(node_id, MarginRightType(Dimension::Points(v)))
+            }
+            Edge::Bottom => {
+                gui.commands.set_style(node_id, MarginBottomType(Dimension::Points(v)))
+            }
+            Edge::Left => {
+                gui.commands.set_style(node_id, MarginLeftType(Dimension::Points(v)))
+            }
             _ => return,
         };
     }
@@ -2411,18 +2461,18 @@
     pub fn set_margin(gui: &mut Gui, node_id: f64, edge: f64, v: f32) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
         match unsafe { transmute(edge as u8) } {
-            Edge::Top => gui
-                .commands
-                .set_style(node_id, MarginTopType(Dimension::Points(v))),
-            Edge::Right => gui
-                .commands
-                .set_style(node_id, MarginRightType(Dimension::Points(v))),
-            Edge::Bottom => gui
-                .commands
-                .set_style(node_id, MarginBottomType(Dimension::Points(v))),
-            Edge::Left => gui
-                .commands
-                .set_style(node_id, MarginLeftType(Dimension::Points(v))),
+            Edge::Top => {
+                gui.commands.set_style(node_id, MarginTopType(Dimension::Points(v)))
+            }
+            Edge::Right => {
+                gui.commands.set_style(node_id, MarginRightType(Dimension::Points(v)))
+            }
+            Edge::Bottom => {
+                gui.commands.set_style(node_id, MarginBottomType(Dimension::Points(v)))
+            }
+            Edge::Left => {
+                gui.commands.set_style(node_id, MarginLeftType(Dimension::Points(v)))
+            }
             _ => return,
         };
     }
@@ -2459,8 +2509,10 @@
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
+        }
+            .index();
         let edge = pi_export_play::as_value::<f64>(json, 1).unwrap();
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
@@ -2477,9 +2529,10 @@
     ) {
         let mut i = -1;
         i += 1;
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
-                .index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))
+        }
+            .index();
         i += 1;
         let edge = pi_export_play::as_value::<f64>(json, i as usize).unwrap();
         i += 1;
@@ -2495,18 +2548,16 @@
     pub fn set_margin_auto(gui: &mut Gui, node_id: f64, edge: f64) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
         match unsafe { transmute(edge as u8) } {
-            Edge::Top => gui
-                .commands
-                .set_style(node_id, MarginTopType(Dimension::Auto)),
-            Edge::Right => gui
-                .commands
-                .set_style(node_id, MarginRightType(Dimension::Auto)),
-            Edge::Bottom => gui
-                .commands
-                .set_style(node_id, MarginBottomType(Dimension::Auto)),
-            Edge::Left => gui
-                .commands
-                .set_style(node_id, MarginLeftType(Dimension::Auto)),
+            Edge::Top => gui.commands.set_style(node_id, MarginTopType(Dimension::Auto)),
+            Edge::Right => {
+                gui.commands.set_style(node_id, MarginRightType(Dimension::Auto))
+            }
+            Edge::Bottom => {
+                gui.commands.set_style(node_id, MarginBottomType(Dimension::Auto))
+            }
+            Edge::Left => {
+                gui.commands.set_style(node_id, MarginLeftType(Dimension::Auto))
+            }
             _ => return,
         };
     }
@@ -2516,18 +2567,16 @@
     pub fn set_margin_auto(gui: &mut Gui, node_id: f64, edge: f64) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
         match unsafe { transmute(edge as u8) } {
-            Edge::Top => gui
-                .commands
-                .set_style(node_id, MarginTopType(Dimension::Auto)),
-            Edge::Right => gui
-                .commands
-                .set_style(node_id, MarginRightType(Dimension::Auto)),
-            Edge::Bottom => gui
-                .commands
-                .set_style(node_id, MarginBottomType(Dimension::Auto)),
-            Edge::Left => gui
-                .commands
-                .set_style(node_id, MarginLeftType(Dimension::Auto)),
+            Edge::Top => gui.commands.set_style(node_id, MarginTopType(Dimension::Auto)),
+            Edge::Right => {
+                gui.commands.set_style(node_id, MarginRightType(Dimension::Auto))
+            }
+            Edge::Bottom => {
+                gui.commands.set_style(node_id, MarginBottomType(Dimension::Auto))
+            }
+            Edge::Left => {
+                gui.commands.set_style(node_id, MarginLeftType(Dimension::Auto))
+            }
             _ => return,
         };
     }
@@ -2564,8 +2613,10 @@
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
+        }
+            .index();
         let edge = pi_export_play::as_value::<f64>(json, 1).unwrap();
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
@@ -2582,9 +2633,10 @@
     ) {
         let mut i = -1;
         i += 1;
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
-                .index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))
+        }
+            .index();
         i += 1;
         let edge = pi_export_play::as_value::<f64>(json, i as usize).unwrap();
         let node = match context.nodes.get(node as usize) {
@@ -2598,18 +2650,18 @@
     pub fn set_border_percent(gui: &mut Gui, node_id: f64, edge: f64, v: f32) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
         match unsafe { transmute(edge as u8) } {
-            Edge::Top => gui
-                .commands
-                .set_style(node_id, BorderTopType(Dimension::Percent(v))),
-            Edge::Right => gui
-                .commands
-                .set_style(node_id, BorderRightType(Dimension::Percent(v))),
-            Edge::Bottom => gui
-                .commands
-                .set_style(node_id, BorderBottomType(Dimension::Percent(v))),
-            Edge::Left => gui
-                .commands
-                .set_style(node_id, BorderLeftType(Dimension::Percent(v))),
+            Edge::Top => {
+                gui.commands.set_style(node_id, BorderTopType(Dimension::Percent(v)))
+            }
+            Edge::Right => {
+                gui.commands.set_style(node_id, BorderRightType(Dimension::Percent(v)))
+            }
+            Edge::Bottom => {
+                gui.commands.set_style(node_id, BorderBottomType(Dimension::Percent(v)))
+            }
+            Edge::Left => {
+                gui.commands.set_style(node_id, BorderLeftType(Dimension::Percent(v)))
+            }
             _ => return,
         };
     }
@@ -2619,18 +2671,18 @@
     pub fn set_border_percent(gui: &mut Gui, node_id: f64, edge: f64, v: f32) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
         match unsafe { transmute(edge as u8) } {
-            Edge::Top => gui
-                .commands
-                .set_style(node_id, BorderTopType(Dimension::Percent(v))),
-            Edge::Right => gui
-                .commands
-                .set_style(node_id, BorderRightType(Dimension::Percent(v))),
-            Edge::Bottom => gui
-                .commands
-                .set_style(node_id, BorderBottomType(Dimension::Percent(v))),
-            Edge::Left => gui
-                .commands
-                .set_style(node_id, BorderLeftType(Dimension::Percent(v))),
+            Edge::Top => {
+                gui.commands.set_style(node_id, BorderTopType(Dimension::Percent(v)))
+            }
+            Edge::Right => {
+                gui.commands.set_style(node_id, BorderRightType(Dimension::Percent(v)))
+            }
+            Edge::Bottom => {
+                gui.commands.set_style(node_id, BorderBottomType(Dimension::Percent(v)))
+            }
+            Edge::Left => {
+                gui.commands.set_style(node_id, BorderLeftType(Dimension::Percent(v)))
+            }
             _ => return,
         };
     }
@@ -2667,8 +2719,10 @@
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
+        }
+            .index();
         let edge = pi_export_play::as_value::<f64>(json, 1).unwrap();
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
@@ -2685,9 +2739,10 @@
     ) {
         let mut i = -1;
         i += 1;
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
-                .index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))
+        }
+            .index();
         i += 1;
         let edge = pi_export_play::as_value::<f64>(json, i as usize).unwrap();
         i += 1;
@@ -2703,18 +2758,18 @@
     pub fn set_border(gui: &mut Gui, node_id: f64, edge: f64, v: f32) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
         match unsafe { transmute(edge as u8) } {
-            Edge::Top => gui
-                .commands
-                .set_style(node_id, BorderTopType(Dimension::Points(v))),
-            Edge::Right => gui
-                .commands
-                .set_style(node_id, BorderRightType(Dimension::Points(v))),
-            Edge::Bottom => gui
-                .commands
-                .set_style(node_id, BorderBottomType(Dimension::Points(v))),
-            Edge::Left => gui
-                .commands
-                .set_style(node_id, BorderLeftType(Dimension::Points(v))),
+            Edge::Top => {
+                gui.commands.set_style(node_id, BorderTopType(Dimension::Points(v)))
+            }
+            Edge::Right => {
+                gui.commands.set_style(node_id, BorderRightType(Dimension::Points(v)))
+            }
+            Edge::Bottom => {
+                gui.commands.set_style(node_id, BorderBottomType(Dimension::Points(v)))
+            }
+            Edge::Left => {
+                gui.commands.set_style(node_id, BorderLeftType(Dimension::Points(v)))
+            }
             _ => return,
         };
     }
@@ -2724,18 +2779,18 @@
     pub fn set_border(gui: &mut Gui, node_id: f64, edge: f64, v: f32) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
         match unsafe { transmute(edge as u8) } {
-            Edge::Top => gui
-                .commands
-                .set_style(node_id, BorderTopType(Dimension::Points(v))),
-            Edge::Right => gui
-                .commands
-                .set_style(node_id, BorderRightType(Dimension::Points(v))),
-            Edge::Bottom => gui
-                .commands
-                .set_style(node_id, BorderBottomType(Dimension::Points(v))),
-            Edge::Left => gui
-                .commands
-                .set_style(node_id, BorderLeftType(Dimension::Points(v))),
+            Edge::Top => {
+                gui.commands.set_style(node_id, BorderTopType(Dimension::Points(v)))
+            }
+            Edge::Right => {
+                gui.commands.set_style(node_id, BorderRightType(Dimension::Points(v)))
+            }
+            Edge::Bottom => {
+                gui.commands.set_style(node_id, BorderBottomType(Dimension::Points(v)))
+            }
+            Edge::Left => {
+                gui.commands.set_style(node_id, BorderLeftType(Dimension::Points(v)))
+            }
             _ => return,
         };
     }
@@ -2772,8 +2827,10 @@
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
+        }
+            .index();
         let edge = pi_export_play::as_value::<f64>(json, 1).unwrap();
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
@@ -2790,9 +2847,10 @@
     ) {
         let mut i = -1;
         i += 1;
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
-                .index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))
+        }
+            .index();
         i += 1;
         let edge = pi_export_play::as_value::<f64>(json, i as usize).unwrap();
         i += 1;
@@ -2808,18 +2866,16 @@
     pub fn set_border_auto(gui: &mut Gui, node_id: f64, edge: f64) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
         match unsafe { transmute(edge as u8) } {
-            Edge::Top => gui
-                .commands
-                .set_style(node_id, BorderTopType(Dimension::Auto)),
-            Edge::Right => gui
-                .commands
-                .set_style(node_id, BorderRightType(Dimension::Auto)),
-            Edge::Bottom => gui
-                .commands
-                .set_style(node_id, BorderBottomType(Dimension::Auto)),
-            Edge::Left => gui
-                .commands
-                .set_style(node_id, BorderLeftType(Dimension::Auto)),
+            Edge::Top => gui.commands.set_style(node_id, BorderTopType(Dimension::Auto)),
+            Edge::Right => {
+                gui.commands.set_style(node_id, BorderRightType(Dimension::Auto))
+            }
+            Edge::Bottom => {
+                gui.commands.set_style(node_id, BorderBottomType(Dimension::Auto))
+            }
+            Edge::Left => {
+                gui.commands.set_style(node_id, BorderLeftType(Dimension::Auto))
+            }
             _ => return,
         };
     }
@@ -2829,18 +2885,16 @@
     pub fn set_border_auto(gui: &mut Gui, node_id: f64, edge: f64) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
         match unsafe { transmute(edge as u8) } {
-            Edge::Top => gui
-                .commands
-                .set_style(node_id, BorderTopType(Dimension::Auto)),
-            Edge::Right => gui
-                .commands
-                .set_style(node_id, BorderRightType(Dimension::Auto)),
-            Edge::Bottom => gui
-                .commands
-                .set_style(node_id, BorderBottomType(Dimension::Auto)),
-            Edge::Left => gui
-                .commands
-                .set_style(node_id, BorderLeftType(Dimension::Auto)),
+            Edge::Top => gui.commands.set_style(node_id, BorderTopType(Dimension::Auto)),
+            Edge::Right => {
+                gui.commands.set_style(node_id, BorderRightType(Dimension::Auto))
+            }
+            Edge::Bottom => {
+                gui.commands.set_style(node_id, BorderBottomType(Dimension::Auto))
+            }
+            Edge::Left => {
+                gui.commands.set_style(node_id, BorderLeftType(Dimension::Auto))
+            }
             _ => return,
         };
     }
@@ -2877,8 +2931,10 @@
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
+        }
+            .index();
         let edge = pi_export_play::as_value::<f64>(json, 1).unwrap();
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
@@ -2895,9 +2951,10 @@
     ) {
         let mut i = -1;
         i += 1;
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
-                .index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))
+        }
+            .index();
         i += 1;
         let edge = pi_export_play::as_value::<f64>(json, i as usize).unwrap();
         let node = match context.nodes.get(node as usize) {
@@ -2911,18 +2968,19 @@
     pub fn set_position_percent(gui: &mut Gui, node_id: f64, edge: f64, v: f32) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
         match unsafe { transmute(edge as u8) } {
-            Edge::Top => gui
-                .commands
-                .set_style(node_id, PositionTopType(Dimension::Percent(v))),
-            Edge::Right => gui
-                .commands
-                .set_style(node_id, PositionRightType(Dimension::Percent(v))),
-            Edge::Bottom => gui
-                .commands
-                .set_style(node_id, PositionBottomType(Dimension::Percent(v))),
-            Edge::Left => gui
-                .commands
-                .set_style(node_id, PositionLeftType(Dimension::Percent(v))),
+            Edge::Top => {
+                gui.commands.set_style(node_id, PositionTopType(Dimension::Percent(v)))
+            }
+            Edge::Right => {
+                gui.commands.set_style(node_id, PositionRightType(Dimension::Percent(v)))
+            }
+            Edge::Bottom => {
+                gui.commands
+                    .set_style(node_id, PositionBottomType(Dimension::Percent(v)))
+            }
+            Edge::Left => {
+                gui.commands.set_style(node_id, PositionLeftType(Dimension::Percent(v)))
+            }
             _ => return,
         };
     }
@@ -2932,18 +2990,19 @@
     pub fn set_position_percent(gui: &mut Gui, node_id: f64, edge: f64, v: f32) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
         match unsafe { transmute(edge as u8) } {
-            Edge::Top => gui
-                .commands
-                .set_style(node_id, PositionTopType(Dimension::Percent(v))),
-            Edge::Right => gui
-                .commands
-                .set_style(node_id, PositionRightType(Dimension::Percent(v))),
-            Edge::Bottom => gui
-                .commands
-                .set_style(node_id, PositionBottomType(Dimension::Percent(v))),
-            Edge::Left => gui
-                .commands
-                .set_style(node_id, PositionLeftType(Dimension::Percent(v))),
+            Edge::Top => {
+                gui.commands.set_style(node_id, PositionTopType(Dimension::Percent(v)))
+            }
+            Edge::Right => {
+                gui.commands.set_style(node_id, PositionRightType(Dimension::Percent(v)))
+            }
+            Edge::Bottom => {
+                gui.commands
+                    .set_style(node_id, PositionBottomType(Dimension::Percent(v)))
+            }
+            Edge::Left => {
+                gui.commands.set_style(node_id, PositionLeftType(Dimension::Percent(v)))
+            }
             _ => return,
         };
     }
@@ -2980,8 +3039,10 @@
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
+        }
+            .index();
         let edge = pi_export_play::as_value::<f64>(json, 1).unwrap();
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
@@ -2998,9 +3059,10 @@
     ) {
         let mut i = -1;
         i += 1;
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
-                .index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))
+        }
+            .index();
         i += 1;
         let edge = pi_export_play::as_value::<f64>(json, i as usize).unwrap();
         i += 1;
@@ -3016,18 +3078,18 @@
     pub fn set_position(gui: &mut Gui, node_id: f64, edge: f64, v: f32) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
         match unsafe { transmute(edge as u8) } {
-            Edge::Top => gui
-                .commands
-                .set_style(node_id, PositionTopType(Dimension::Points(v))),
-            Edge::Right => gui
-                .commands
-                .set_style(node_id, PositionRightType(Dimension::Points(v))),
-            Edge::Bottom => gui
-                .commands
-                .set_style(node_id, PositionBottomType(Dimension::Points(v))),
-            Edge::Left => gui
-                .commands
-                .set_style(node_id, PositionLeftType(Dimension::Points(v))),
+            Edge::Top => {
+                gui.commands.set_style(node_id, PositionTopType(Dimension::Points(v)))
+            }
+            Edge::Right => {
+                gui.commands.set_style(node_id, PositionRightType(Dimension::Points(v)))
+            }
+            Edge::Bottom => {
+                gui.commands.set_style(node_id, PositionBottomType(Dimension::Points(v)))
+            }
+            Edge::Left => {
+                gui.commands.set_style(node_id, PositionLeftType(Dimension::Points(v)))
+            }
             _ => return,
         };
     }
@@ -3037,18 +3099,18 @@
     pub fn set_position(gui: &mut Gui, node_id: f64, edge: f64, v: f32) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
         match unsafe { transmute(edge as u8) } {
-            Edge::Top => gui
-                .commands
-                .set_style(node_id, PositionTopType(Dimension::Points(v))),
-            Edge::Right => gui
-                .commands
-                .set_style(node_id, PositionRightType(Dimension::Points(v))),
-            Edge::Bottom => gui
-                .commands
-                .set_style(node_id, PositionBottomType(Dimension::Points(v))),
-            Edge::Left => gui
-                .commands
-                .set_style(node_id, PositionLeftType(Dimension::Points(v))),
+            Edge::Top => {
+                gui.commands.set_style(node_id, PositionTopType(Dimension::Points(v)))
+            }
+            Edge::Right => {
+                gui.commands.set_style(node_id, PositionRightType(Dimension::Points(v)))
+            }
+            Edge::Bottom => {
+                gui.commands.set_style(node_id, PositionBottomType(Dimension::Points(v)))
+            }
+            Edge::Left => {
+                gui.commands.set_style(node_id, PositionLeftType(Dimension::Points(v)))
+            }
             _ => return,
         };
     }
@@ -3085,8 +3147,10 @@
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
+        }
+            .index();
         let edge = pi_export_play::as_value::<f64>(json, 1).unwrap();
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
@@ -3103,9 +3167,10 @@
     ) {
         let mut i = -1;
         i += 1;
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
-                .index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))
+        }
+            .index();
         i += 1;
         let edge = pi_export_play::as_value::<f64>(json, i as usize).unwrap();
         i += 1;
@@ -3121,18 +3186,18 @@
     pub fn set_position_auto(gui: &mut Gui, node_id: f64, edge: f64) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
         match unsafe { transmute(edge as u8) } {
-            Edge::Top => gui
-                .commands
-                .set_style(node_id, PositionTopType(Dimension::Auto)),
-            Edge::Right => gui
-                .commands
-                .set_style(node_id, PositionRightType(Dimension::Auto)),
-            Edge::Bottom => gui
-                .commands
-                .set_style(node_id, PositionBottomType(Dimension::Auto)),
-            Edge::Left => gui
-                .commands
-                .set_style(node_id, PositionLeftType(Dimension::Auto)),
+            Edge::Top => {
+                gui.commands.set_style(node_id, PositionTopType(Dimension::Auto))
+            }
+            Edge::Right => {
+                gui.commands.set_style(node_id, PositionRightType(Dimension::Auto))
+            }
+            Edge::Bottom => {
+                gui.commands.set_style(node_id, PositionBottomType(Dimension::Auto))
+            }
+            Edge::Left => {
+                gui.commands.set_style(node_id, PositionLeftType(Dimension::Auto))
+            }
             _ => return,
         };
     }
@@ -3142,18 +3207,18 @@
     pub fn set_position_auto(gui: &mut Gui, node_id: f64, edge: f64) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
         match unsafe { transmute(edge as u8) } {
-            Edge::Top => gui
-                .commands
-                .set_style(node_id, PositionTopType(Dimension::Auto)),
-            Edge::Right => gui
-                .commands
-                .set_style(node_id, PositionRightType(Dimension::Auto)),
-            Edge::Bottom => gui
-                .commands
-                .set_style(node_id, PositionBottomType(Dimension::Auto)),
-            Edge::Left => gui
-                .commands
-                .set_style(node_id, PositionLeftType(Dimension::Auto)),
+            Edge::Top => {
+                gui.commands.set_style(node_id, PositionTopType(Dimension::Auto))
+            }
+            Edge::Right => {
+                gui.commands.set_style(node_id, PositionRightType(Dimension::Auto))
+            }
+            Edge::Bottom => {
+                gui.commands.set_style(node_id, PositionBottomType(Dimension::Auto))
+            }
+            Edge::Left => {
+                gui.commands.set_style(node_id, PositionLeftType(Dimension::Auto))
+            }
             _ => return,
         };
     }
@@ -3190,8 +3255,10 @@
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
+        }
+            .index();
         let edge = pi_export_play::as_value::<f64>(json, 1).unwrap();
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
@@ -3208,9 +3275,10 @@
     ) {
         let mut i = -1;
         i += 1;
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
-                .index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))
+        }
+            .index();
         i += 1;
         let edge = pi_export_play::as_value::<f64>(json, i as usize).unwrap();
         let node = match context.nodes.get(node as usize) {
@@ -3221,22 +3289,38 @@
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
-    pub fn set_background_rgba_color(gui: &mut Gui, node_id: f64, r: f32, g: f32, b: f32, a: f32) {
+    pub fn set_background_rgba_color(
+        gui: &mut Gui,
+        node_id: f64,
+        r: f32,
+        g: f32,
+        b: f32,
+        a: f32,
+    ) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands.set_style(
-            node_id,
-            BackgroundColorType(Color::RGBA(CgColor::new(r, g, b, a))),
-        );
+        gui.commands
+            .set_style(
+                node_id,
+                BackgroundColorType(Color::RGBA(CgColor::new(r, g, b, a))),
+            );
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
-    pub fn set_background_rgba_color(gui: &mut Gui, node_id: f64, r: f32, g: f32, b: f32, a: f32) {
+    pub fn set_background_rgba_color(
+        gui: &mut Gui,
+        node_id: f64,
+        r: f32,
+        g: f32,
+        b: f32,
+        a: f32,
+    ) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands.set_style(
-            node_id,
-            BackgroundColorType(Color::RGBA(CgColor::new(r, g, b, a))),
-        );
+        gui.commands
+            .set_style(
+                node_id,
+                BackgroundColorType(Color::RGBA(CgColor::new(r, g, b, a))),
+            );
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
@@ -3259,8 +3343,10 @@
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
+        }
+            .index();
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
             None => return,
@@ -3276,9 +3362,10 @@
         json: &Vec<json::JsonValue>,
     ) {
         let mut i = 0;
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
-                .index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))
+        }
+            .index();
         i += 1;
         let r = pi_export_play::as_value::<f32>(json, i).unwrap();
         i += 1;
@@ -3303,13 +3390,18 @@
         color_and_positions: Vec<f32>,
     ) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands.set_style(
-            node_id,
-            BackgroundColorType(Color::LinearGradient(to_linear_gradient_color(
-                color_and_positions.as_slice(),
-                direction,
-            ))),
-        );
+        gui.commands
+            .set_style(
+                node_id,
+                BackgroundColorType(
+                    Color::LinearGradient(
+                        to_linear_gradient_color(
+                            color_and_positions.as_slice(),
+                            direction,
+                        ),
+                    ),
+                ),
+            );
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
@@ -3321,13 +3413,18 @@
         color_and_positions: Vec<f32>,
     ) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands.set_style(
-            node_id,
-            BackgroundColorType(Color::LinearGradient(to_linear_gradient_color(
-                color_and_positions.as_slice(),
-                direction,
-            ))),
-        );
+        gui.commands
+            .set_style(
+                node_id,
+                BackgroundColorType(
+                    Color::LinearGradient(
+                        to_linear_gradient_color(
+                            color_and_positions.as_slice(),
+                            direction,
+                        ),
+                    ),
+                ),
+            );
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
@@ -3350,8 +3447,10 @@
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
+        }
+            .index();
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
             None => return,
@@ -3367,9 +3466,10 @@
         json: &Vec<json::JsonValue>,
     ) {
         let mut i = 0;
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
-                .index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))
+        }
+            .index();
         i += 1;
         let direction = pi_export_play::as_value::<f32>(json, i).unwrap();
         i += 1;
@@ -3383,18 +3483,30 @@
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
-    pub fn set_border_color(gui: &mut Gui, node_id: f64, r: f32, g: f32, b: f32, a: f32) {
+    pub fn set_border_color(
+        gui: &mut Gui,
+        node_id: f64,
+        r: f32,
+        g: f32,
+        b: f32,
+        a: f32,
+    ) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands
-            .set_style(node_id, BorderColorType(CgColor::new(r, g, b, a)));
+        gui.commands.set_style(node_id, BorderColorType(CgColor::new(r, g, b, a)));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
-    pub fn set_border_color(gui: &mut Gui, node_id: f64, r: f32, g: f32, b: f32, a: f32) {
+    pub fn set_border_color(
+        gui: &mut Gui,
+        node_id: f64,
+        r: f32,
+        g: f32,
+        b: f32,
+        a: f32,
+    ) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands
-            .set_style(node_id, BorderColorType(CgColor::new(r, g, b, a)));
+        gui.commands.set_style(node_id, BorderColorType(CgColor::new(r, g, b, a)));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
@@ -3417,8 +3529,10 @@
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
+        }
+            .index();
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
             None => return,
@@ -3434,9 +3548,10 @@
         json: &Vec<json::JsonValue>,
     ) {
         let mut i = 0;
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
-                .index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))
+        }
+            .index();
         i += 1;
         let r = pi_export_play::as_value::<f32>(json, i).unwrap();
         i += 1;
@@ -3456,38 +3571,44 @@
     #[allow(unused_attributes)]
     pub fn set_border_radius(gui: &mut Gui, node_id: f64, s: &str) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands.set_style(
-            node_id,
-            BorderRadiusType({
-                let mut input = cssparser::ParserInput::new(s);
-                let mut parse = cssparser::Parser::new(&mut input);
-                let border_radius = pi_style::style_parse::parse_border_radius(&mut parse);
-                if let Ok(value) = border_radius {
-                    value
-                } else {
-                    Default::default()
-                }
-            }),
-        );
+        gui.commands
+            .set_style(
+                node_id,
+                BorderRadiusType({
+                    let mut input = cssparser::ParserInput::new(s);
+                    let mut parse = cssparser::Parser::new(&mut input);
+                    let border_radius = pi_style::style_parse::parse_border_radius(
+                        &mut parse,
+                    );
+                    if let Ok(value) = border_radius {
+                        value
+                    } else {
+                        Default::default()
+                    }
+                }),
+            );
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_border_radius(gui: &mut Gui, node_id: f64, s: &str) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands.set_style(
-            node_id,
-            BorderRadiusType({
-                let mut input = cssparser::ParserInput::new(s);
-                let mut parse = cssparser::Parser::new(&mut input);
-                let border_radius = pi_style::style_parse::parse_border_radius(&mut parse);
-                if let Ok(value) = border_radius {
-                    value
-                } else {
-                    Default::default()
-                }
-            }),
-        );
+        gui.commands
+            .set_style(
+                node_id,
+                BorderRadiusType({
+                    let mut input = cssparser::ParserInput::new(s);
+                    let mut parse = cssparser::Parser::new(&mut input);
+                    let border_radius = pi_style::style_parse::parse_border_radius(
+                        &mut parse,
+                    );
+                    if let Ok(value) = border_radius {
+                        value
+                    } else {
+                        Default::default()
+                    }
+                }),
+            );
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
@@ -3510,8 +3631,10 @@
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
+        }
+            .index();
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
             None => return,
@@ -3527,9 +3650,10 @@
         json: &Vec<json::JsonValue>,
     ) {
         let mut i = 0;
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
-                .index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))
+        }
+            .index();
         i += 1;
         let s = pi_export_play::as_value::<str>(json, i).unwrap();
         i += 1;
@@ -3555,16 +3679,17 @@
         a: f32,
     ) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands.set_style(
-            node_id,
-            BoxShadowType(BoxShadow {
-                h: h,
-                v: v,
-                blur: blur,
-                spread: spread,
-                color: CgColor::new(r, g, b, a),
-            }),
-        );
+        gui.commands
+            .set_style(
+                node_id,
+                BoxShadowType(BoxShadow {
+                    h: h,
+                    v: v,
+                    blur: blur,
+                    spread: spread,
+                    color: CgColor::new(r, g, b, a),
+                }),
+            );
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
@@ -3582,16 +3707,17 @@
         a: f32,
     ) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands.set_style(
-            node_id,
-            BoxShadowType(BoxShadow {
-                h: h,
-                v: v,
-                blur: blur,
-                spread: spread,
-                color: CgColor::new(r, g, b, a),
-            }),
-        );
+        gui.commands
+            .set_style(
+                node_id,
+                BoxShadowType(BoxShadow {
+                    h: h,
+                    v: v,
+                    blur: blur,
+                    spread: spread,
+                    color: CgColor::new(r, g, b, a),
+                }),
+            );
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
@@ -3614,8 +3740,10 @@
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
+        }
+            .index();
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
             None => return,
@@ -3631,9 +3759,10 @@
         json: &Vec<json::JsonValue>,
     ) {
         let mut i = 0;
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
-                .index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))
+        }
+            .index();
         i += 1;
         let h = pi_export_play::as_value::<f32>(json, i).unwrap();
         i += 1;
@@ -3661,16 +3790,14 @@
     #[allow(unused_attributes)]
     pub fn set_object_fit(gui: &mut Gui, node_id: f64, v: f64) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands
-            .set_style(node_id, ObjectFitType(unsafe { transmute(v as u8) }));
+        gui.commands.set_style(node_id, ObjectFitType(unsafe { transmute(v as u8) }));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_object_fit(gui: &mut Gui, node_id: f64, v: f64) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands
-            .set_style(node_id, ObjectFitType(unsafe { transmute(v as u8) }));
+        gui.commands.set_style(node_id, ObjectFitType(unsafe { transmute(v as u8) }));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
@@ -3693,8 +3820,10 @@
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
+        }
+            .index();
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
             None => return,
@@ -3710,9 +3839,10 @@
         json: &Vec<json::JsonValue>,
     ) {
         let mut i = 0;
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
-                .index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))
+        }
+            .index();
         i += 1;
         let v = pi_export_play::as_value::<f64>(json, i).unwrap();
         i += 1;
@@ -3726,26 +3856,28 @@
     #[allow(unused_attributes)]
     pub fn set_background_repeat(gui: &mut Gui, node_id: f64, x: u8, y: u8) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands.set_style(
-            node_id,
-            BackgroundRepeatType(ImageRepeat {
-                x: unsafe { transmute(x as u8) },
-                y: unsafe { transmute(y as u8) },
-            }),
-        );
+        gui.commands
+            .set_style(
+                node_id,
+                BackgroundRepeatType(ImageRepeat {
+                    x: unsafe { transmute(x as u8) },
+                    y: unsafe { transmute(y as u8) },
+                }),
+            );
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_background_repeat(gui: &mut Gui, node_id: f64, x: u8, y: u8) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands.set_style(
-            node_id,
-            BackgroundRepeatType(ImageRepeat {
-                x: unsafe { transmute(x as u8) },
-                y: unsafe { transmute(y as u8) },
-            }),
-        );
+        gui.commands
+            .set_style(
+                node_id,
+                BackgroundRepeatType(ImageRepeat {
+                    x: unsafe { transmute(x as u8) },
+                    y: unsafe { transmute(y as u8) },
+                }),
+            );
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
@@ -3768,8 +3900,10 @@
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
+        }
+            .index();
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
             None => return,
@@ -3785,9 +3919,10 @@
         json: &Vec<json::JsonValue>,
     ) {
         let mut i = 0;
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
-                .index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))
+        }
+            .index();
         i += 1;
         let x = pi_export_play::as_value::<u8>(json, i).unwrap();
         i += 1;
@@ -3808,13 +3943,18 @@
         color_and_positions: Vec<f32>,
     ) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands.set_style(
-            node_id,
-            MaskImageType(MaskImage::LinearGradient(to_linear_gradient_color(
-                color_and_positions.as_slice(),
-                direction,
-            ))),
-        );
+        gui.commands
+            .set_style(
+                node_id,
+                MaskImageType(
+                    MaskImage::LinearGradient(
+                        to_linear_gradient_color(
+                            color_and_positions.as_slice(),
+                            direction,
+                        ),
+                    ),
+                ),
+            );
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
@@ -3826,13 +3966,18 @@
         color_and_positions: Vec<f32>,
     ) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands.set_style(
-            node_id,
-            MaskImageType(MaskImage::LinearGradient(to_linear_gradient_color(
-                color_and_positions.as_slice(),
-                direction,
-            ))),
-        );
+        gui.commands
+            .set_style(
+                node_id,
+                MaskImageType(
+                    MaskImage::LinearGradient(
+                        to_linear_gradient_color(
+                            color_and_positions.as_slice(),
+                            direction,
+                        ),
+                    ),
+                ),
+            );
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
@@ -3855,8 +4000,10 @@
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
+        }
+            .index();
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
             None => return,
@@ -3872,9 +4019,10 @@
         json: &Vec<json::JsonValue>,
     ) {
         let mut i = 0;
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
-                .index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))
+        }
+            .index();
         i += 1;
         let direction = pi_export_play::as_value::<f32>(json, i).unwrap();
         i += 1;
@@ -3888,47 +4036,65 @@
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
-    pub fn set_image_clip(gui: &mut Gui, node_id: f64, u1: f32, v1: f32, u2: f32, v2: f32) {
+    pub fn set_image_clip(
+        gui: &mut Gui,
+        node_id: f64,
+        u1: f32,
+        v1: f32,
+        u2: f32,
+        v2: f32,
+    ) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands.set_style(
-            node_id,
-            BackgroundImageClipType(NotNanRect::new(
-                unsafe { NotNan::new_unchecked(v1) },
-                unsafe { NotNan::new_unchecked(u2) },
-                unsafe { NotNan::new_unchecked(v2) },
-                unsafe { NotNan::new_unchecked(u1) },
-            )),
-        );
+        gui.commands
+            .set_style(
+                node_id,
+                BackgroundImageClipType(
+                    NotNanRect::new(
+                        unsafe { NotNan::new_unchecked(v1) },
+                        unsafe { NotNan::new_unchecked(u2) },
+                        unsafe { NotNan::new_unchecked(v2) },
+                        unsafe { NotNan::new_unchecked(u1) },
+                    ),
+                ),
+            );
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
-    pub fn set_image_clip(gui: &mut Gui, node_id: f64, u1: f32, v1: f32, u2: f32, v2: f32) {
+    pub fn set_image_clip(
+        gui: &mut Gui,
+        node_id: f64,
+        u1: f32,
+        v1: f32,
+        u2: f32,
+        v2: f32,
+    ) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands.set_style(
-            node_id,
-            BackgroundImageClipType(NotNanRect::new(
-                unsafe { NotNan::new_unchecked(v1) },
-                unsafe { NotNan::new_unchecked(u2) },
-                unsafe { NotNan::new_unchecked(v2) },
-                unsafe { NotNan::new_unchecked(u1) },
-            )),
-        );
+        gui.commands
+            .set_style(
+                node_id,
+                BackgroundImageClipType(
+                    NotNanRect::new(
+                        unsafe { NotNan::new_unchecked(v1) },
+                        unsafe { NotNan::new_unchecked(u2) },
+                        unsafe { NotNan::new_unchecked(v2) },
+                        unsafe { NotNan::new_unchecked(u1) },
+                    ),
+                ),
+            );
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn reset_image_clip(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands
-            .set_style(node_id, ResetBackgroundImageClipType);
+        gui.commands.set_style(node_id, ResetBackgroundImageClipType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_image_clip(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands
-            .set_style(node_id, ResetBackgroundImageClipType);
+        gui.commands.set_style(node_id, ResetBackgroundImageClipType);
     }
     #[allow(unused_variables)]
     #[allow(unused_assignments)]
@@ -3938,8 +4104,10 @@
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
+        }
+            .index();
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
             None => return,
@@ -3955,9 +4123,10 @@
         json: &Vec<json::JsonValue>,
     ) {
         let mut i = 0;
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
-                .index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))
+        }
+            .index();
         i += 1;
         let u1 = pi_export_play::as_value::<f32>(json, i).unwrap();
         i += 1;
@@ -3975,32 +4144,52 @@
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
-    pub fn set_mask_image_clip(gui: &mut Gui, node_id: f64, u1: f32, v1: f32, u2: f32, v2: f32) {
+    pub fn set_mask_image_clip(
+        gui: &mut Gui,
+        node_id: f64,
+        u1: f32,
+        v1: f32,
+        u2: f32,
+        v2: f32,
+    ) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands.set_style(
-            node_id,
-            MaskImageClipType(NotNanRect::new(
-                unsafe { NotNan::new_unchecked(v1) },
-                unsafe { NotNan::new_unchecked(u2) },
-                unsafe { NotNan::new_unchecked(v2) },
-                unsafe { NotNan::new_unchecked(u1) },
-            )),
-        );
+        gui.commands
+            .set_style(
+                node_id,
+                MaskImageClipType(
+                    NotNanRect::new(
+                        unsafe { NotNan::new_unchecked(v1) },
+                        unsafe { NotNan::new_unchecked(u2) },
+                        unsafe { NotNan::new_unchecked(v2) },
+                        unsafe { NotNan::new_unchecked(u1) },
+                    ),
+                ),
+            );
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
-    pub fn set_mask_image_clip(gui: &mut Gui, node_id: f64, u1: f32, v1: f32, u2: f32, v2: f32) {
+    pub fn set_mask_image_clip(
+        gui: &mut Gui,
+        node_id: f64,
+        u1: f32,
+        v1: f32,
+        u2: f32,
+        v2: f32,
+    ) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands.set_style(
-            node_id,
-            MaskImageClipType(NotNanRect::new(
-                unsafe { NotNan::new_unchecked(v1) },
-                unsafe { NotNan::new_unchecked(u2) },
-                unsafe { NotNan::new_unchecked(v2) },
-                unsafe { NotNan::new_unchecked(u1) },
-            )),
-        );
+        gui.commands
+            .set_style(
+                node_id,
+                MaskImageClipType(
+                    NotNanRect::new(
+                        unsafe { NotNan::new_unchecked(v1) },
+                        unsafe { NotNan::new_unchecked(u2) },
+                        unsafe { NotNan::new_unchecked(v2) },
+                        unsafe { NotNan::new_unchecked(u1) },
+                    ),
+                ),
+            );
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
@@ -4023,8 +4212,10 @@
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
+        }
+            .index();
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
             None => return,
@@ -4040,9 +4231,10 @@
         json: &Vec<json::JsonValue>,
     ) {
         let mut i = 0;
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
-                .index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))
+        }
+            .index();
         i += 1;
         let u1 = pi_export_play::as_value::<f32>(json, i).unwrap();
         i += 1;
@@ -4060,32 +4252,52 @@
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
-    pub fn set_border_image_clip(gui: &mut Gui, node_id: f64, u1: f32, v1: f32, u2: f32, v2: f32) {
+    pub fn set_border_image_clip(
+        gui: &mut Gui,
+        node_id: f64,
+        u1: f32,
+        v1: f32,
+        u2: f32,
+        v2: f32,
+    ) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands.set_style(
-            node_id,
-            BorderImageClipType(NotNanRect::new(
-                unsafe { NotNan::new_unchecked(v1) },
-                unsafe { NotNan::new_unchecked(u2) },
-                unsafe { NotNan::new_unchecked(v2) },
-                unsafe { NotNan::new_unchecked(u1) },
-            )),
-        );
+        gui.commands
+            .set_style(
+                node_id,
+                BorderImageClipType(
+                    NotNanRect::new(
+                        unsafe { NotNan::new_unchecked(v1) },
+                        unsafe { NotNan::new_unchecked(u2) },
+                        unsafe { NotNan::new_unchecked(v2) },
+                        unsafe { NotNan::new_unchecked(u1) },
+                    ),
+                ),
+            );
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
-    pub fn set_border_image_clip(gui: &mut Gui, node_id: f64, u1: f32, v1: f32, u2: f32, v2: f32) {
+    pub fn set_border_image_clip(
+        gui: &mut Gui,
+        node_id: f64,
+        u1: f32,
+        v1: f32,
+        u2: f32,
+        v2: f32,
+    ) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands.set_style(
-            node_id,
-            BorderImageClipType(NotNanRect::new(
-                unsafe { NotNan::new_unchecked(v1) },
-                unsafe { NotNan::new_unchecked(u2) },
-                unsafe { NotNan::new_unchecked(v2) },
-                unsafe { NotNan::new_unchecked(u1) },
-            )),
-        );
+        gui.commands
+            .set_style(
+                node_id,
+                BorderImageClipType(
+                    NotNanRect::new(
+                        unsafe { NotNan::new_unchecked(v1) },
+                        unsafe { NotNan::new_unchecked(u2) },
+                        unsafe { NotNan::new_unchecked(v2) },
+                        unsafe { NotNan::new_unchecked(u1) },
+                    ),
+                ),
+            );
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
@@ -4108,8 +4320,10 @@
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
+        }
+            .index();
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
             None => return,
@@ -4125,9 +4339,10 @@
         json: &Vec<json::JsonValue>,
     ) {
         let mut i = 0;
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
-                .index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))
+        }
+            .index();
         i += 1;
         let u1 = pi_export_play::as_value::<f32>(json, i).unwrap();
         i += 1;
@@ -4155,16 +4370,17 @@
         fill: bool,
     ) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands.set_style(
-            node_id,
-            BorderImageSliceType(BorderImageSlice {
-                top: unsafe { NotNan::new_unchecked(top) },
-                right: unsafe { NotNan::new_unchecked(right) },
-                bottom: unsafe { NotNan::new_unchecked(bottom) },
-                left: unsafe { NotNan::new_unchecked(left) },
-                fill,
-            }),
-        );
+        gui.commands
+            .set_style(
+                node_id,
+                BorderImageSliceType(BorderImageSlice {
+                    top: unsafe { NotNan::new_unchecked(top) },
+                    right: unsafe { NotNan::new_unchecked(right) },
+                    bottom: unsafe { NotNan::new_unchecked(bottom) },
+                    left: unsafe { NotNan::new_unchecked(left) },
+                    fill,
+                }),
+            );
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
@@ -4179,16 +4395,17 @@
         fill: bool,
     ) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands.set_style(
-            node_id,
-            BorderImageSliceType(BorderImageSlice {
-                top: unsafe { NotNan::new_unchecked(top) },
-                right: unsafe { NotNan::new_unchecked(right) },
-                bottom: unsafe { NotNan::new_unchecked(bottom) },
-                left: unsafe { NotNan::new_unchecked(left) },
-                fill,
-            }),
-        );
+        gui.commands
+            .set_style(
+                node_id,
+                BorderImageSliceType(BorderImageSlice {
+                    top: unsafe { NotNan::new_unchecked(top) },
+                    right: unsafe { NotNan::new_unchecked(right) },
+                    bottom: unsafe { NotNan::new_unchecked(bottom) },
+                    left: unsafe { NotNan::new_unchecked(left) },
+                    fill,
+                }),
+            );
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
@@ -4211,8 +4428,10 @@
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
+        }
+            .index();
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
             None => return,
@@ -4228,9 +4447,10 @@
         json: &Vec<json::JsonValue>,
     ) {
         let mut i = 0;
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
-                .index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))
+        }
+            .index();
         i += 1;
         let top = pi_export_play::as_value::<f32>(json, i).unwrap();
         i += 1;
@@ -4250,28 +4470,40 @@
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
-    pub fn set_border_image_repeat(gui: &mut Gui, node_id: f64, vertical: u8, horizontal: u8) {
+    pub fn set_border_image_repeat(
+        gui: &mut Gui,
+        node_id: f64,
+        vertical: u8,
+        horizontal: u8,
+    ) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands.set_style(
-            node_id,
-            BorderImageRepeatType(ImageRepeat {
-                x: unsafe { transmute(vertical as u8) },
-                y: unsafe { transmute(horizontal as u8) },
-            }),
-        );
+        gui.commands
+            .set_style(
+                node_id,
+                BorderImageRepeatType(ImageRepeat {
+                    x: unsafe { transmute(vertical as u8) },
+                    y: unsafe { transmute(horizontal as u8) },
+                }),
+            );
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
-    pub fn set_border_image_repeat(gui: &mut Gui, node_id: f64, vertical: u8, horizontal: u8) {
+    pub fn set_border_image_repeat(
+        gui: &mut Gui,
+        node_id: f64,
+        vertical: u8,
+        horizontal: u8,
+    ) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands.set_style(
-            node_id,
-            BorderImageRepeatType(ImageRepeat {
-                x: unsafe { transmute(vertical as u8) },
-                y: unsafe { transmute(horizontal as u8) },
-            }),
-        );
+        gui.commands
+            .set_style(
+                node_id,
+                BorderImageRepeatType(ImageRepeat {
+                    x: unsafe { transmute(vertical as u8) },
+                    y: unsafe { transmute(horizontal as u8) },
+                }),
+            );
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
@@ -4294,8 +4526,10 @@
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
+        }
+            .index();
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
             None => return,
@@ -4311,9 +4545,10 @@
         json: &Vec<json::JsonValue>,
     ) {
         let mut i = 0;
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
-                .index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))
+        }
+            .index();
         i += 1;
         let vertical = pi_export_play::as_value::<u8>(json, i).unwrap();
         i += 1;
@@ -4359,8 +4594,10 @@
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
+        }
+            .index();
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
             None => return,
@@ -4376,9 +4613,10 @@
         json: &Vec<json::JsonValue>,
     ) {
         let mut i = 0;
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
-                .index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))
+        }
+            .index();
         i += 1;
         let v = pi_export_play::as_value::<bool>(json, i).unwrap();
         i += 1;
@@ -4422,8 +4660,10 @@
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
+        }
+            .index();
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
             None => return,
@@ -4439,9 +4679,10 @@
         json: &Vec<json::JsonValue>,
     ) {
         let mut i = 0;
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
-                .index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))
+        }
+            .index();
         i += 1;
         let v = pi_export_play::as_value::<f32>(json, i).unwrap();
         i += 1;
@@ -4455,16 +4696,14 @@
     #[allow(unused_attributes)]
     pub fn set_display(gui: &mut Gui, node_id: f64, v: f64) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands
-            .set_style(node_id, DisplayType(unsafe { transmute(v as u8) }));
+        gui.commands.set_style(node_id, DisplayType(unsafe { transmute(v as u8) }));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_display(gui: &mut Gui, node_id: f64, v: f64) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands
-            .set_style(node_id, DisplayType(unsafe { transmute(v as u8) }));
+        gui.commands.set_style(node_id, DisplayType(unsafe { transmute(v as u8) }));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
@@ -4487,8 +4726,10 @@
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
+        }
+            .index();
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
             None => return,
@@ -4504,9 +4745,10 @@
         json: &Vec<json::JsonValue>,
     ) {
         let mut i = 0;
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
-                .index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))
+        }
+            .index();
         i += 1;
         let v = pi_export_play::as_value::<f64>(json, i).unwrap();
         i += 1;
@@ -4550,8 +4792,10 @@
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
+        }
+            .index();
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
             None => return,
@@ -4567,9 +4811,10 @@
         json: &Vec<json::JsonValue>,
     ) {
         let mut i = 0;
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
-                .index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))
+        }
+            .index();
         i += 1;
         let v = pi_export_play::as_value::<bool>(json, i).unwrap();
         i += 1;
@@ -4583,16 +4828,14 @@
     #[allow(unused_attributes)]
     pub fn set_enable(gui: &mut Gui, node_id: f64, v: f64) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands
-            .set_style(node_id, EnableType(unsafe { transmute(v as u8) }));
+        gui.commands.set_style(node_id, EnableType(unsafe { transmute(v as u8) }));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_enable(gui: &mut Gui, node_id: f64, v: f64) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands
-            .set_style(node_id, EnableType(unsafe { transmute(v as u8) }));
+        gui.commands.set_style(node_id, EnableType(unsafe { transmute(v as u8) }));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
@@ -4615,8 +4858,10 @@
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
+        }
+            .index();
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
             None => return,
@@ -4632,9 +4877,10 @@
         json: &Vec<json::JsonValue>,
     ) {
         let mut i = 0;
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
-                .index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))
+        }
+            .index();
         i += 1;
         let v = pi_export_play::as_value::<f64>(json, i).unwrap();
         i += 1;
@@ -4648,16 +4894,14 @@
     #[allow(unused_attributes)]
     pub fn set_blend_mode(gui: &mut Gui, node_id: f64, v: f64) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands
-            .set_style(node_id, BlendModeType(unsafe { transmute(v as u8) }));
+        gui.commands.set_style(node_id, BlendModeType(unsafe { transmute(v as u8) }));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_blend_mode(gui: &mut Gui, node_id: f64, v: f64) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands
-            .set_style(node_id, BlendModeType(unsafe { transmute(v as u8) }));
+        gui.commands.set_style(node_id, BlendModeType(unsafe { transmute(v as u8) }));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
@@ -4680,8 +4924,10 @@
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
+        }
+            .index();
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
             None => return,
@@ -4697,9 +4943,10 @@
         json: &Vec<json::JsonValue>,
     ) {
         let mut i = 0;
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
-                .index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))
+        }
+            .index();
         i += 1;
         let v = pi_export_play::as_value::<f64>(json, i).unwrap();
         i += 1;
@@ -4743,8 +4990,10 @@
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
+        }
+            .index();
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
             None => return,
@@ -4760,9 +5009,10 @@
         json: &Vec<json::JsonValue>,
     ) {
         let mut i = 0;
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
-                .index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))
+        }
+            .index();
         i += 1;
         let v = pi_export_play::as_value::<i32>(json, i).unwrap();
         i += 1;
@@ -4806,8 +5056,10 @@
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
+        }
+            .index();
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
             None => return,
@@ -4823,9 +5075,10 @@
         json: &Vec<json::JsonValue>,
     ) {
         let mut i = 0;
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
-                .index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))
+        }
+            .index();
         i += 1;
         let v = pi_export_play::as_value::<f32>(json, i).unwrap();
         i += 1;
@@ -4852,16 +5105,14 @@
     #[allow(unused_attributes)]
     pub fn reset_transform_will_change(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands
-            .set_style(node_id, ResetTransformWillChangeType);
+        gui.commands.set_style(node_id, ResetTransformWillChangeType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_transform_will_change(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands
-            .set_style(node_id, ResetTransformWillChangeType);
+        gui.commands.set_style(node_id, ResetTransformWillChangeType);
     }
     #[allow(unused_variables)]
     #[allow(unused_assignments)]
@@ -4871,8 +5122,10 @@
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
+        }
+            .index();
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
             None => return,
@@ -4888,9 +5141,10 @@
         json: &Vec<json::JsonValue>,
     ) {
         let mut i = 0;
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
-                .index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))
+        }
+            .index();
         i += 1;
         let v = pi_export_play::as_value::<bool>(json, i).unwrap();
         i += 1;
@@ -4904,64 +5158,66 @@
     #[allow(unused_attributes)]
     pub fn set_filter_hsi(gui: &mut Gui, node_id: f64, h: f32, s: f32, _i: f32) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands.set_style(
-            node_id,
-            HsiType({
-                let (mut h, mut s, mut _i) = (h, s, _i);
-                if h > 180.0 {
-                    h = 180.0;
-                } else if h < -180.0 {
-                    h = -180.0
-                }
-                if s > 100.0 {
-                    s = 100.0;
-                } else if s < -100.0 {
-                    s = -100.0
-                }
-                if _i > 100.0 {
-                    _i = 100.0;
-                } else if _i < -100.0 {
-                    _i = -100.0
-                }
-                Hsi {
-                    hue_rotate: h / 360.0,
-                    saturate: s / 100.0,
-                    bright_ness: _i / 100.0,
-                }
-            }),
-        );
+        gui.commands
+            .set_style(
+                node_id,
+                HsiType({
+                    let (mut h, mut s, mut _i) = (h, s, _i);
+                    if h > 180.0 {
+                        h = 180.0;
+                    } else if h < -180.0 {
+                        h = -180.0
+                    }
+                    if s > 100.0 {
+                        s = 100.0;
+                    } else if s < -100.0 {
+                        s = -100.0
+                    }
+                    if _i > 100.0 {
+                        _i = 100.0;
+                    } else if _i < -100.0 {
+                        _i = -100.0
+                    }
+                    Hsi {
+                        hue_rotate: h / 360.0,
+                        saturate: s / 100.0,
+                        bright_ness: _i / 100.0,
+                    }
+                }),
+            );
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_filter_hsi(gui: &mut Gui, node_id: f64, h: f32, s: f32, _i: f32) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands.set_style(
-            node_id,
-            HsiType({
-                let (mut h, mut s, mut _i) = (h, s, _i);
-                if h > 180.0 {
-                    h = 180.0;
-                } else if h < -180.0 {
-                    h = -180.0
-                }
-                if s > 100.0 {
-                    s = 100.0;
-                } else if s < -100.0 {
-                    s = -100.0
-                }
-                if _i > 100.0 {
-                    _i = 100.0;
-                } else if _i < -100.0 {
-                    _i = -100.0
-                }
-                Hsi {
-                    hue_rotate: h / 360.0,
-                    saturate: s / 100.0,
-                    bright_ness: _i / 100.0,
-                }
-            }),
-        );
+        gui.commands
+            .set_style(
+                node_id,
+                HsiType({
+                    let (mut h, mut s, mut _i) = (h, s, _i);
+                    if h > 180.0 {
+                        h = 180.0;
+                    } else if h < -180.0 {
+                        h = -180.0
+                    }
+                    if s > 100.0 {
+                        s = 100.0;
+                    } else if s < -100.0 {
+                        s = -100.0
+                    }
+                    if _i > 100.0 {
+                        _i = 100.0;
+                    } else if _i < -100.0 {
+                        _i = -100.0
+                    }
+                    Hsi {
+                        hue_rotate: h / 360.0,
+                        saturate: s / 100.0,
+                        bright_ness: _i / 100.0,
+                    }
+                }),
+            );
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
@@ -4984,8 +5240,10 @@
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
+        }
+            .index();
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
             None => return,
@@ -5001,9 +5259,10 @@
         json: &Vec<json::JsonValue>,
     ) {
         let mut i = 0;
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
-                .index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))
+        }
+            .index();
         i += 1;
         let h = pi_export_play::as_value::<f32>(json, i).unwrap();
         i += 1;
@@ -5021,46 +5280,48 @@
     #[allow(unused_attributes)]
     pub fn set_translate(gui: &mut Gui, node_id: f64, s: &str) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands.set_style(
-            node_id,
-            TranslateType({
-                let mut input = cssparser::ParserInput::new(s);
-                let mut parse = cssparser::Parser::new(&mut input);
-                let translate = pi_style::style_parse::parse_mult(
-                    &mut parse,
-                    [LengthUnit::default(), LengthUnit::default()],
-                    pi_style::style_parse::parse_len_or_percent,
-                );
-                if let Ok(translate) = translate {
-                    translate
-                } else {
-                    Default::default()
-                }
-            }),
-        );
+        gui.commands
+            .set_style(
+                node_id,
+                TranslateType({
+                    let mut input = cssparser::ParserInput::new(s);
+                    let mut parse = cssparser::Parser::new(&mut input);
+                    let translate = pi_style::style_parse::parse_mult(
+                        &mut parse,
+                        [LengthUnit::default(), LengthUnit::default()],
+                        pi_style::style_parse::parse_len_or_percent,
+                    );
+                    if let Ok(translate) = translate {
+                        translate
+                    } else {
+                        Default::default()
+                    }
+                }),
+            );
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_translate(gui: &mut Gui, node_id: f64, s: &str) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands.set_style(
-            node_id,
-            TranslateType({
-                let mut input = cssparser::ParserInput::new(s);
-                let mut parse = cssparser::Parser::new(&mut input);
-                let translate = pi_style::style_parse::parse_mult(
-                    &mut parse,
-                    [LengthUnit::default(), LengthUnit::default()],
-                    pi_style::style_parse::parse_len_or_percent,
-                );
-                if let Ok(translate) = translate {
-                    translate
-                } else {
-                    Default::default()
-                }
-            }),
-        );
+        gui.commands
+            .set_style(
+                node_id,
+                TranslateType({
+                    let mut input = cssparser::ParserInput::new(s);
+                    let mut parse = cssparser::Parser::new(&mut input);
+                    let translate = pi_style::style_parse::parse_mult(
+                        &mut parse,
+                        [LengthUnit::default(), LengthUnit::default()],
+                        pi_style::style_parse::parse_len_or_percent,
+                    );
+                    if let Ok(translate) = translate {
+                        translate
+                    } else {
+                        Default::default()
+                    }
+                }),
+            );
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
@@ -5083,8 +5344,10 @@
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
+        }
+            .index();
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
             None => return,
@@ -5100,9 +5363,10 @@
         json: &Vec<json::JsonValue>,
     ) {
         let mut i = 0;
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
-                .index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))
+        }
+            .index();
         i += 1;
         let s = pi_export_play::as_value::<str>(json, i).unwrap();
         i += 1;
@@ -5117,46 +5381,40 @@
     #[allow(unused_attributes)]
     pub fn set_scale(gui: &mut Gui, node_id: f64, s: &str) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands.set_style(
-            node_id,
-            ScaleType({
-                let mut input = cssparser::ParserInput::new(s);
-                let mut parse = cssparser::Parser::new(&mut input);
-                let scale = pi_style::style_parse::parse_mult(
-                    &mut parse,
-                    [1.0f32, 1.0f32],
-                    pi_style::style_parse::parse_number,
-                );
-                if let Ok(scale) = scale {
-                    scale
-                } else {
-                    Default::default()
-                }
-            }),
-        );
+        gui.commands
+            .set_style(
+                node_id,
+                ScaleType({
+                    let mut input = cssparser::ParserInput::new(s);
+                    let mut parse = cssparser::Parser::new(&mut input);
+                    let scale = pi_style::style_parse::parse_mult(
+                        &mut parse,
+                        [1.0f32, 1.0f32],
+                        pi_style::style_parse::parse_number,
+                    );
+                    if let Ok(scale) = scale { scale } else { Default::default() }
+                }),
+            );
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_scale(gui: &mut Gui, node_id: f64, s: &str) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands.set_style(
-            node_id,
-            ScaleType({
-                let mut input = cssparser::ParserInput::new(s);
-                let mut parse = cssparser::Parser::new(&mut input);
-                let scale = pi_style::style_parse::parse_mult(
-                    &mut parse,
-                    [1.0f32, 1.0f32],
-                    pi_style::style_parse::parse_number,
-                );
-                if let Ok(scale) = scale {
-                    scale
-                } else {
-                    Default::default()
-                }
-            }),
-        );
+        gui.commands
+            .set_style(
+                node_id,
+                ScaleType({
+                    let mut input = cssparser::ParserInput::new(s);
+                    let mut parse = cssparser::Parser::new(&mut input);
+                    let scale = pi_style::style_parse::parse_mult(
+                        &mut parse,
+                        [1.0f32, 1.0f32],
+                        pi_style::style_parse::parse_number,
+                    );
+                    if let Ok(scale) = scale { scale } else { Default::default() }
+                }),
+            );
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
@@ -5179,8 +5437,10 @@
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
+        }
+            .index();
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
             None => return,
@@ -5196,9 +5456,10 @@
         json: &Vec<json::JsonValue>,
     ) {
         let mut i = 0;
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
-                .index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))
+        }
+            .index();
         i += 1;
         let s = pi_export_play::as_value::<str>(json, i).unwrap();
         i += 1;
@@ -5213,38 +5474,32 @@
     #[allow(unused_attributes)]
     pub fn set_rotate(gui: &mut Gui, node_id: f64, s: &str) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands.set_style(
-            node_id,
-            RotateType({
-                let mut input = cssparser::ParserInput::new(s);
-                let mut parse = cssparser::Parser::new(&mut input);
-                let rotate = pi_style::style_parse::parse_angle(&mut parse);
-                if let Ok(rotate) = rotate {
-                    rotate
-                } else {
-                    Default::default()
-                }
-            }),
-        );
+        gui.commands
+            .set_style(
+                node_id,
+                RotateType({
+                    let mut input = cssparser::ParserInput::new(s);
+                    let mut parse = cssparser::Parser::new(&mut input);
+                    let rotate = pi_style::style_parse::parse_angle(&mut parse);
+                    if let Ok(rotate) = rotate { rotate } else { Default::default() }
+                }),
+            );
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_rotate(gui: &mut Gui, node_id: f64, s: &str) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands.set_style(
-            node_id,
-            RotateType({
-                let mut input = cssparser::ParserInput::new(s);
-                let mut parse = cssparser::Parser::new(&mut input);
-                let rotate = pi_style::style_parse::parse_angle(&mut parse);
-                if let Ok(rotate) = rotate {
-                    rotate
-                } else {
-                    Default::default()
-                }
-            }),
-        );
+        gui.commands
+            .set_style(
+                node_id,
+                RotateType({
+                    let mut input = cssparser::ParserInput::new(s);
+                    let mut parse = cssparser::Parser::new(&mut input);
+                    let rotate = pi_style::style_parse::parse_angle(&mut parse);
+                    if let Ok(rotate) = rotate { rotate } else { Default::default() }
+                }),
+            );
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
@@ -5267,8 +5522,10 @@
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
+        }
+            .index();
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
             None => return,
@@ -5284,9 +5541,10 @@
         json: &Vec<json::JsonValue>,
     ) {
         let mut i = 0;
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
-                .index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))
+        }
+            .index();
         i += 1;
         let s = pi_export_play::as_value::<str>(json, i).unwrap();
         i += 1;
@@ -5301,38 +5559,40 @@
     #[allow(unused_attributes)]
     pub fn set_transform(gui: &mut Gui, node_id: f64, s: &str) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands.set_style(
-            node_id,
-            TransformType({
-                let mut input = cssparser::ParserInput::new(s);
-                let mut parse = cssparser::Parser::new(&mut input);
-                let transform = pi_style::style_parse::parse_transform(&mut parse);
-                if let Ok(transform) = transform {
-                    transform
-                } else {
-                    Default::default()
-                }
-            }),
-        );
+        gui.commands
+            .set_style(
+                node_id,
+                TransformType({
+                    let mut input = cssparser::ParserInput::new(s);
+                    let mut parse = cssparser::Parser::new(&mut input);
+                    let transform = pi_style::style_parse::parse_transform(&mut parse);
+                    if let Ok(transform) = transform {
+                        transform
+                    } else {
+                        Default::default()
+                    }
+                }),
+            );
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_transform(gui: &mut Gui, node_id: f64, s: &str) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands.set_style(
-            node_id,
-            TransformType({
-                let mut input = cssparser::ParserInput::new(s);
-                let mut parse = cssparser::Parser::new(&mut input);
-                let transform = pi_style::style_parse::parse_transform(&mut parse);
-                if let Ok(transform) = transform {
-                    transform
-                } else {
-                    Default::default()
-                }
-            }),
-        );
+        gui.commands
+            .set_style(
+                node_id,
+                TransformType({
+                    let mut input = cssparser::ParserInput::new(s);
+                    let mut parse = cssparser::Parser::new(&mut input);
+                    let transform = pi_style::style_parse::parse_transform(&mut parse);
+                    if let Ok(transform) = transform {
+                        transform
+                    } else {
+                        Default::default()
+                    }
+                }),
+            );
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
@@ -5355,8 +5615,10 @@
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
+        }
+            .index();
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
             None => return,
@@ -5372,9 +5634,10 @@
         json: &Vec<json::JsonValue>,
     ) {
         let mut i = 0;
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
-                .index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))
+        }
+            .index();
         i += 1;
         let s = pi_export_play::as_value::<str>(json, i).unwrap();
         i += 1;
@@ -5387,46 +5650,62 @@
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
-    pub fn set_transform_origin(gui: &mut Gui, node_id: f64, x_ty: f64, x: f32, y_ty: f64, y: f32) {
+    pub fn set_transform_origin(
+        gui: &mut Gui,
+        node_id: f64,
+        x_ty: f64,
+        x: f32,
+        y_ty: f64,
+        y: f32,
+    ) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands.set_style(
-            node_id,
-            TransformOriginType({
-                let x_ty = unsafe { transmute(x_ty as u8) };
-                let y_ty = unsafe { transmute(y_ty as u8) };
-                let x_value = match x_ty {
-                    LengthUnitType::Pixel => LengthUnit::Pixel(x),
-                    LengthUnitType::Percent => LengthUnit::Percent(x),
-                };
-                let y_value = match y_ty {
-                    LengthUnitType::Pixel => LengthUnit::Pixel(y),
-                    LengthUnitType::Percent => LengthUnit::Percent(y),
-                };
-                TransformOrigin::XY(x_value, y_value)
-            }),
-        );
+        gui.commands
+            .set_style(
+                node_id,
+                TransformOriginType({
+                    let x_ty = unsafe { transmute(x_ty as u8) };
+                    let y_ty = unsafe { transmute(y_ty as u8) };
+                    let x_value = match x_ty {
+                        LengthUnitType::Pixel => LengthUnit::Pixel(x),
+                        LengthUnitType::Percent => LengthUnit::Percent(x),
+                    };
+                    let y_value = match y_ty {
+                        LengthUnitType::Pixel => LengthUnit::Pixel(y),
+                        LengthUnitType::Percent => LengthUnit::Percent(y),
+                    };
+                    TransformOrigin::XY(x_value, y_value)
+                }),
+            );
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
-    pub fn set_transform_origin(gui: &mut Gui, node_id: f64, x_ty: f64, x: f32, y_ty: f64, y: f32) {
+    pub fn set_transform_origin(
+        gui: &mut Gui,
+        node_id: f64,
+        x_ty: f64,
+        x: f32,
+        y_ty: f64,
+        y: f32,
+    ) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands.set_style(
-            node_id,
-            TransformOriginType({
-                let x_ty = unsafe { transmute(x_ty as u8) };
-                let y_ty = unsafe { transmute(y_ty as u8) };
-                let x_value = match x_ty {
-                    LengthUnitType::Pixel => LengthUnit::Pixel(x),
-                    LengthUnitType::Percent => LengthUnit::Percent(x),
-                };
-                let y_value = match y_ty {
-                    LengthUnitType::Pixel => LengthUnit::Pixel(y),
-                    LengthUnitType::Percent => LengthUnit::Percent(y),
-                };
-                TransformOrigin::XY(x_value, y_value)
-            }),
-        );
+        gui.commands
+            .set_style(
+                node_id,
+                TransformOriginType({
+                    let x_ty = unsafe { transmute(x_ty as u8) };
+                    let y_ty = unsafe { transmute(y_ty as u8) };
+                    let x_value = match x_ty {
+                        LengthUnitType::Pixel => LengthUnit::Pixel(x),
+                        LengthUnitType::Percent => LengthUnit::Percent(x),
+                    };
+                    let y_value = match y_ty {
+                        LengthUnitType::Pixel => LengthUnit::Pixel(y),
+                        LengthUnitType::Percent => LengthUnit::Percent(y),
+                    };
+                    TransformOrigin::XY(x_value, y_value)
+                }),
+            );
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
@@ -5449,8 +5728,10 @@
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
+        }
+            .index();
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
             None => return,
@@ -5466,9 +5747,10 @@
         json: &Vec<json::JsonValue>,
     ) {
         let mut i = 0;
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
-                .index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))
+        }
+            .index();
         i += 1;
         let x_ty = pi_export_play::as_value::<f64>(json, i).unwrap();
         i += 1;
@@ -5518,8 +5800,10 @@
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
+        }
+            .index();
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
             None => return,
@@ -5535,9 +5819,10 @@
         json: &Vec<json::JsonValue>,
     ) {
         let mut i = 0;
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
-                .index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))
+        }
+            .index();
         i += 1;
         let v = pi_export_play::as_value::<f32>(json, i).unwrap();
         i += 1;
@@ -5581,8 +5866,10 @@
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
+        }
+            .index();
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
             None => return,
@@ -5598,9 +5885,10 @@
         json: &Vec<json::JsonValue>,
     ) {
         let mut i = 0;
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
-                .index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))
+        }
+            .index();
         i += 1;
         let v = pi_export_play::as_value::<f32>(json, i).unwrap();
         i += 1;
@@ -5612,7 +5900,14 @@
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
-    pub fn set_text_rgba_color(gui: &mut Gui, node_id: f64, r: f32, g: f32, b: f32, a: f32) {
+    pub fn set_text_rgba_color(
+        gui: &mut Gui,
+        node_id: f64,
+        r: f32,
+        g: f32,
+        b: f32,
+        a: f32,
+    ) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
         gui.commands
             .set_style(node_id, ColorType(Color::RGBA(CgColor::new(r, g, b, a))));
@@ -5620,7 +5915,14 @@
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
-    pub fn set_text_rgba_color(gui: &mut Gui, node_id: f64, r: f32, g: f32, b: f32, a: f32) {
+    pub fn set_text_rgba_color(
+        gui: &mut Gui,
+        node_id: f64,
+        r: f32,
+        g: f32,
+        b: f32,
+        a: f32,
+    ) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
         gui.commands
             .set_style(node_id, ColorType(Color::RGBA(CgColor::new(r, g, b, a))));
@@ -5646,8 +5948,10 @@
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
+        }
+            .index();
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
             None => return,
@@ -5663,9 +5967,10 @@
         json: &Vec<json::JsonValue>,
     ) {
         let mut i = 0;
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
-                .index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))
+        }
+            .index();
         i += 1;
         let r = pi_export_play::as_value::<f32>(json, i).unwrap();
         i += 1;
@@ -5690,13 +5995,18 @@
         color_and_positions: Vec<f32>,
     ) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands.set_style(
-            node_id,
-            ColorType(Color::LinearGradient(to_linear_gradient_color(
-                color_and_positions.as_slice(),
-                direction,
-            ))),
-        );
+        gui.commands
+            .set_style(
+                node_id,
+                ColorType(
+                    Color::LinearGradient(
+                        to_linear_gradient_color(
+                            color_and_positions.as_slice(),
+                            direction,
+                        ),
+                    ),
+                ),
+            );
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
@@ -5708,13 +6018,18 @@
         color_and_positions: Vec<f32>,
     ) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands.set_style(
-            node_id,
-            ColorType(Color::LinearGradient(to_linear_gradient_color(
-                color_and_positions.as_slice(),
-                direction,
-            ))),
-        );
+        gui.commands
+            .set_style(
+                node_id,
+                ColorType(
+                    Color::LinearGradient(
+                        to_linear_gradient_color(
+                            color_and_positions.as_slice(),
+                            direction,
+                        ),
+                    ),
+                ),
+            );
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
@@ -5737,8 +6052,10 @@
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
+        }
+            .index();
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
             None => return,
@@ -5754,9 +6071,10 @@
         json: &Vec<json::JsonValue>,
     ) {
         let mut i = 0;
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
-                .index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))
+        }
+            .index();
         i += 1;
         let direction = pi_export_play::as_value::<f32>(json, i).unwrap();
         i += 1;
@@ -5772,16 +6090,14 @@
     #[allow(unused_attributes)]
     pub fn set_line_height_normal(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands
-            .set_style(node_id, LineHeightType(LineHeight::Normal));
+        gui.commands.set_style(node_id, LineHeightType(LineHeight::Normal));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_line_height_normal(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands
-            .set_style(node_id, LineHeightType(LineHeight::Normal));
+        gui.commands.set_style(node_id, LineHeightType(LineHeight::Normal));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
@@ -5804,8 +6120,10 @@
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
+        }
+            .index();
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
             None => return,
@@ -5821,9 +6139,10 @@
         json: &Vec<json::JsonValue>,
     ) {
         let mut i = 0;
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
-                .index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))
+        }
+            .index();
         i += 1;
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
@@ -5835,16 +6154,14 @@
     #[allow(unused_attributes)]
     pub fn set_line_height(gui: &mut Gui, node_id: f64, value: f32) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands
-            .set_style(node_id, LineHeightType(LineHeight::Length(value)));
+        gui.commands.set_style(node_id, LineHeightType(LineHeight::Length(value)));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_line_height(gui: &mut Gui, node_id: f64, value: f32) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands
-            .set_style(node_id, LineHeightType(LineHeight::Length(value)));
+        gui.commands.set_style(node_id, LineHeightType(LineHeight::Length(value)));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
@@ -5867,8 +6184,10 @@
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
+        }
+            .index();
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
             None => return,
@@ -5884,9 +6203,10 @@
         json: &Vec<json::JsonValue>,
     ) {
         let mut i = 0;
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
-                .index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))
+        }
+            .index();
         i += 1;
         let value = pi_export_play::as_value::<f32>(json, i).unwrap();
         i += 1;
@@ -5900,16 +6220,14 @@
     #[allow(unused_attributes)]
     pub fn set_line_height_percent(gui: &mut Gui, node_id: f64, value: f32) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands
-            .set_style(node_id, LineHeightType(LineHeight::Percent(value)));
+        gui.commands.set_style(node_id, LineHeightType(LineHeight::Percent(value)));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_line_height_percent(gui: &mut Gui, node_id: f64, value: f32) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands
-            .set_style(node_id, LineHeightType(LineHeight::Percent(value)));
+        gui.commands.set_style(node_id, LineHeightType(LineHeight::Percent(value)));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
@@ -5932,8 +6250,10 @@
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
+        }
+            .index();
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
             None => return,
@@ -5949,9 +6269,10 @@
         json: &Vec<json::JsonValue>,
     ) {
         let mut i = 0;
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
-                .index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))
+        }
+            .index();
         i += 1;
         let value = pi_export_play::as_value::<f32>(json, i).unwrap();
         i += 1;
@@ -5995,8 +6316,10 @@
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
+        }
+            .index();
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
             None => return,
@@ -6012,9 +6335,10 @@
         json: &Vec<json::JsonValue>,
     ) {
         let mut i = 0;
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
-                .index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))
+        }
+            .index();
         i += 1;
         let v = pi_export_play::as_value::<f32>(json, i).unwrap();
         i += 1;
@@ -6031,15 +6355,18 @@
         {
             let v: TextAlign = unsafe { transmute(v as u8) };
             gui.commands.set_style(node_id, TextAlignType(v));
-            gui.commands.set_style(
-                node_id,
-                JustifyContentType(match v {
-                    TextAlign::Left => JustifyContent::FlexStart,
-                    TextAlign::Right => JustifyContent::FlexEnd,
-                    TextAlign::Center => JustifyContent::Center,
-                    TextAlign::Justify => JustifyContent::SpaceBetween,
-                }),
-            );
+            gui.commands
+                .set_style(
+                    node_id,
+                    JustifyContentType(
+                        match v {
+                            TextAlign::Left => JustifyContent::FlexStart,
+                            TextAlign::Right => JustifyContent::FlexEnd,
+                            TextAlign::Center => JustifyContent::Center,
+                            TextAlign::Justify => JustifyContent::SpaceBetween,
+                        },
+                    ),
+                );
         };
     }
     #[cfg(target_arch = "wasm32")]
@@ -6050,15 +6377,18 @@
         {
             let v: TextAlign = unsafe { transmute(v as u8) };
             gui.commands.set_style(node_id, TextAlignType(v));
-            gui.commands.set_style(
-                node_id,
-                JustifyContentType(match v {
-                    TextAlign::Left => JustifyContent::FlexStart,
-                    TextAlign::Right => JustifyContent::FlexEnd,
-                    TextAlign::Center => JustifyContent::Center,
-                    TextAlign::Justify => JustifyContent::SpaceBetween,
-                }),
-            );
+            gui.commands
+                .set_style(
+                    node_id,
+                    JustifyContentType(
+                        match v {
+                            TextAlign::Left => JustifyContent::FlexStart,
+                            TextAlign::Right => JustifyContent::FlexEnd,
+                            TextAlign::Center => JustifyContent::Center,
+                            TextAlign::Justify => JustifyContent::SpaceBetween,
+                        },
+                    ),
+                );
         };
     }
     #[cfg(feature = "pi_js_export")]
@@ -6088,8 +6418,10 @@
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
+        }
+            .index();
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
             None => return,
@@ -6105,9 +6437,10 @@
         json: &Vec<json::JsonValue>,
     ) {
         let mut i = 0;
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
-                .index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))
+        }
+            .index();
         i += 1;
         let v = pi_export_play::as_value::<f64>(json, i).unwrap();
         i += 1;
@@ -6124,14 +6457,17 @@
         {
             let v: VerticalAlign = unsafe { transmute(v as u8) };
             gui.commands.set_style(node_id, VerticalAlignType(v));
-            gui.commands.set_style(
-                node_id,
-                AlignSelfType(match v {
-                    VerticalAlign::Top => AlignSelf::FlexStart,
-                    VerticalAlign::Bottom => AlignSelf::FlexEnd,
-                    VerticalAlign::Middle => AlignSelf::Center,
-                }),
-            );
+            gui.commands
+                .set_style(
+                    node_id,
+                    AlignSelfType(
+                        match v {
+                            VerticalAlign::Top => AlignSelf::FlexStart,
+                            VerticalAlign::Bottom => AlignSelf::FlexEnd,
+                            VerticalAlign::Middle => AlignSelf::Center,
+                        },
+                    ),
+                );
         };
     }
     #[cfg(target_arch = "wasm32")]
@@ -6142,14 +6478,17 @@
         {
             let v: VerticalAlign = unsafe { transmute(v as u8) };
             gui.commands.set_style(node_id, VerticalAlignType(v));
-            gui.commands.set_style(
-                node_id,
-                AlignSelfType(match v {
-                    VerticalAlign::Top => AlignSelf::FlexStart,
-                    VerticalAlign::Bottom => AlignSelf::FlexEnd,
-                    VerticalAlign::Middle => AlignSelf::Center,
-                }),
-            );
+            gui.commands
+                .set_style(
+                    node_id,
+                    AlignSelfType(
+                        match v {
+                            VerticalAlign::Top => AlignSelf::FlexStart,
+                            VerticalAlign::Bottom => AlignSelf::FlexEnd,
+                            VerticalAlign::Middle => AlignSelf::Center,
+                        },
+                    ),
+                );
         };
     }
     #[cfg(feature = "pi_js_export")]
@@ -6179,8 +6518,10 @@
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
+        }
+            .index();
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
             None => return,
@@ -6196,9 +6537,10 @@
         json: &Vec<json::JsonValue>,
     ) {
         let mut i = 0;
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
-                .index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))
+        }
+            .index();
         i += 1;
         let v = pi_export_play::as_value::<f64>(json, i).unwrap();
         i += 1;
@@ -6220,13 +6562,14 @@
         a: f32,
     ) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands.set_style(
-            node_id,
-            TextStrokeType(Stroke {
-                width: NotNan::new(width).expect("stroke width is nan"),
-                color: CgColor::new(r, g, b, a),
-            }),
-        );
+        gui.commands
+            .set_style(
+                node_id,
+                TextStrokeType(Stroke {
+                    width: NotNan::new(width).expect("stroke width is nan"),
+                    color: CgColor::new(r, g, b, a),
+                }),
+            );
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
@@ -6241,13 +6584,14 @@
         a: f32,
     ) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands.set_style(
-            node_id,
-            TextStrokeType(Stroke {
-                width: NotNan::new(width).expect("stroke width is nan"),
-                color: CgColor::new(r, g, b, a),
-            }),
-        );
+        gui.commands
+            .set_style(
+                node_id,
+                TextStrokeType(Stroke {
+                    width: NotNan::new(width).expect("stroke width is nan"),
+                    color: CgColor::new(r, g, b, a),
+                }),
+            );
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
@@ -6270,8 +6614,10 @@
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
+        }
+            .index();
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
             None => return,
@@ -6287,9 +6633,10 @@
         json: &Vec<json::JsonValue>,
     ) {
         let mut i = 0;
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
-                .index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))
+        }
+            .index();
         i += 1;
         let width = pi_export_play::as_value::<f32>(json, i).unwrap();
         i += 1;
@@ -6311,16 +6658,14 @@
     #[allow(unused_attributes)]
     pub fn set_white_space(gui: &mut Gui, node_id: f64, v: f64) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands
-            .set_style(node_id, WhiteSpaceType(unsafe { transmute(v as u8) }));
+        gui.commands.set_style(node_id, WhiteSpaceType(unsafe { transmute(v as u8) }));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_white_space(gui: &mut Gui, node_id: f64, v: f64) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands
-            .set_style(node_id, WhiteSpaceType(unsafe { transmute(v as u8) }));
+        gui.commands.set_style(node_id, WhiteSpaceType(unsafe { transmute(v as u8) }));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
@@ -6343,8 +6688,10 @@
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
+        }
+            .index();
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
             None => return,
@@ -6360,9 +6707,10 @@
         json: &Vec<json::JsonValue>,
     ) {
         let mut i = 0;
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
-                .index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))
+        }
+            .index();
         i += 1;
         let v = pi_export_play::as_value::<f64>(json, i).unwrap();
         i += 1;
@@ -6376,16 +6724,14 @@
     #[allow(unused_attributes)]
     pub fn set_font_style(gui: &mut Gui, node_id: f64, v: f64) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands
-            .set_style(node_id, FontStyleType(unsafe { transmute(v as u8) }));
+        gui.commands.set_style(node_id, FontStyleType(unsafe { transmute(v as u8) }));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_font_style(gui: &mut Gui, node_id: f64, v: f64) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands
-            .set_style(node_id, FontStyleType(unsafe { transmute(v as u8) }));
+        gui.commands.set_style(node_id, FontStyleType(unsafe { transmute(v as u8) }));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
@@ -6408,8 +6754,10 @@
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
+        }
+            .index();
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
             None => return,
@@ -6425,9 +6773,10 @@
         json: &Vec<json::JsonValue>,
     ) {
         let mut i = 0;
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
-                .index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))
+        }
+            .index();
         i += 1;
         let v = pi_export_play::as_value::<f64>(json, i).unwrap();
         i += 1;
@@ -6471,8 +6820,10 @@
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
+        }
+            .index();
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
             None => return,
@@ -6488,9 +6839,10 @@
         json: &Vec<json::JsonValue>,
     ) {
         let mut i = 0;
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
-                .index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))
+        }
+            .index();
         i += 1;
         let v = pi_export_play::as_value::<f64>(json, i).unwrap();
         i += 1;
@@ -6504,16 +6856,14 @@
     #[allow(unused_attributes)]
     pub fn set_font_size_none(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands
-            .set_style(node_id, FontSizeType(FontSize::None));
+        gui.commands.set_style(node_id, FontSizeType(FontSize::None));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_font_size_none(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands
-            .set_style(node_id, FontSizeType(FontSize::None));
+        gui.commands.set_style(node_id, FontSizeType(FontSize::None));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
@@ -6536,8 +6886,10 @@
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
+        }
+            .index();
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
             None => return,
@@ -6553,9 +6905,10 @@
         json: &Vec<json::JsonValue>,
     ) {
         let mut i = 0;
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
-                .index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))
+        }
+            .index();
         i += 1;
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
@@ -6567,16 +6920,14 @@
     #[allow(unused_attributes)]
     pub fn set_font_size(gui: &mut Gui, node_id: f64, value: f64) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands
-            .set_style(node_id, FontSizeType(FontSize::Length(value as usize)));
+        gui.commands.set_style(node_id, FontSizeType(FontSize::Length(value as usize)));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_font_size(gui: &mut Gui, node_id: f64, value: f64) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands
-            .set_style(node_id, FontSizeType(FontSize::Length(value as usize)));
+        gui.commands.set_style(node_id, FontSizeType(FontSize::Length(value as usize)));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
@@ -6599,8 +6950,10 @@
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
+        }
+            .index();
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
             None => return,
@@ -6616,9 +6969,10 @@
         json: &Vec<json::JsonValue>,
     ) {
         let mut i = 0;
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
-                .index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))
+        }
+            .index();
         i += 1;
         let value = pi_export_play::as_value::<f64>(json, i).unwrap();
         i += 1;
@@ -6632,16 +6986,14 @@
     #[allow(unused_attributes)]
     pub fn set_font_size_percent(gui: &mut Gui, node_id: f64, value: f32) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands
-            .set_style(node_id, FontSizeType(FontSize::Percent(value)));
+        gui.commands.set_style(node_id, FontSizeType(FontSize::Percent(value)));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_font_size_percent(gui: &mut Gui, node_id: f64, value: f32) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands
-            .set_style(node_id, FontSizeType(FontSize::Percent(value)));
+        gui.commands.set_style(node_id, FontSizeType(FontSize::Percent(value)));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
@@ -6664,8 +7016,10 @@
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
+        }
+            .index();
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
             None => return,
@@ -6681,9 +7035,10 @@
         json: &Vec<json::JsonValue>,
     ) {
         let mut i = 0;
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
-                .index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))
+        }
+            .index();
         i += 1;
         let value = pi_export_play::as_value::<f32>(json, i).unwrap();
         i += 1;
@@ -6697,26 +7052,28 @@
     #[allow(unused_attributes)]
     pub fn set_text_content_utf8(gui: &mut Gui, node_id: f64, content: Vec<u8>) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands.set_style(
-            node_id,
-            TextContentType({
-                let content = unsafe { String::from_utf8_unchecked(content) };
-                TextContent(content, pi_atom::Atom::from(""))
-            }),
-        );
+        gui.commands
+            .set_style(
+                node_id,
+                TextContentType({
+                    let content = unsafe { String::from_utf8_unchecked(content) };
+                    TextContent(content, pi_atom::Atom::from(""))
+                }),
+            );
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_text_content_utf8(gui: &mut Gui, node_id: f64, content: Vec<u8>) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands.set_style(
-            node_id,
-            TextContentType({
-                let content = unsafe { String::from_utf8_unchecked(content) };
-                TextContent(content, pi_atom::Atom::from(""))
-            }),
-        );
+        gui.commands
+            .set_style(
+                node_id,
+                TextContentType({
+                    let content = unsafe { String::from_utf8_unchecked(content) };
+                    TextContent(content, pi_atom::Atom::from(""))
+                }),
+            );
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
@@ -6739,8 +7096,10 @@
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
+        }
+            .index();
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
             None => return,
@@ -6756,9 +7115,10 @@
         json: &Vec<json::JsonValue>,
     ) {
         let mut i = 0;
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
-                .index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))
+        }
+            .index();
         i += 1;
         let content = pi_export_play::as_value::<Vec<u8>>(json, i).unwrap();
         i += 1;
@@ -6772,40 +7132,42 @@
     #[allow(unused_attributes)]
     pub fn set_clip_path_str(gui: &mut Gui, node_id: f64, value: &str) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands.set_style(
-            node_id,
-            ClipPathType({
-                let mut input = cssparser::ParserInput::new(value);
-                let mut parse = cssparser::Parser::new(&mut input);
-                match BaseShape::parse(&mut parse) {
-                    Ok(r) => r,
-                    Err(e) => {
-                        ();
-                        return;
+        gui.commands
+            .set_style(
+                node_id,
+                ClipPathType({
+                    let mut input = cssparser::ParserInput::new(value);
+                    let mut parse = cssparser::Parser::new(&mut input);
+                    match BaseShape::parse(&mut parse) {
+                        Ok(r) => r,
+                        Err(e) => {
+                            ();
+                            return;
+                        }
                     }
-                }
-            }),
-        );
+                }),
+            );
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_clip_path_str(gui: &mut Gui, node_id: f64, value: &str) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands.set_style(
-            node_id,
-            ClipPathType({
-                let mut input = cssparser::ParserInput::new(value);
-                let mut parse = cssparser::Parser::new(&mut input);
-                match BaseShape::parse(&mut parse) {
-                    Ok(r) => r,
-                    Err(e) => {
-                        ();
-                        return;
+        gui.commands
+            .set_style(
+                node_id,
+                ClipPathType({
+                    let mut input = cssparser::ParserInput::new(value);
+                    let mut parse = cssparser::Parser::new(&mut input);
+                    match BaseShape::parse(&mut parse) {
+                        Ok(r) => r,
+                        Err(e) => {
+                            ();
+                            return;
+                        }
                     }
-                }
-            }),
-        );
+                }),
+            );
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
@@ -6828,8 +7190,10 @@
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
+        }
+            .index();
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
             None => return,
@@ -6845,9 +7209,10 @@
         json: &Vec<json::JsonValue>,
     ) {
         let mut i = 0;
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
-                .index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))
+        }
+            .index();
         i += 1;
         let value = pi_export_play::as_value::<str>(json, i).unwrap();
         i += 1;
@@ -6862,24 +7227,26 @@
     #[allow(unused_attributes)]
     pub fn set_animation_duration(gui: &mut Gui, node_id: f64, name: Vec<usize>) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands.set_style(
-            node_id,
-            AnimationDurationType(unsafe {
-                transmute(name.into_iter().collect::<SmallVec<[usize; 1]>>())
-            }),
-        );
+        gui.commands
+            .set_style(
+                node_id,
+                AnimationDurationType(unsafe {
+                    transmute(name.into_iter().collect::<SmallVec<[usize; 1]>>())
+                }),
+            );
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_animation_duration(gui: &mut Gui, node_id: f64, name: Vec<usize>) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands.set_style(
-            node_id,
-            AnimationDurationType(unsafe {
-                transmute(name.into_iter().collect::<SmallVec<[usize; 1]>>())
-            }),
-        );
+        gui.commands
+            .set_style(
+                node_id,
+                AnimationDurationType(unsafe {
+                    transmute(name.into_iter().collect::<SmallVec<[usize; 1]>>())
+                }),
+            );
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
@@ -6902,8 +7269,10 @@
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
+        }
+            .index();
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
             None => return,
@@ -6919,9 +7288,10 @@
         json: &Vec<json::JsonValue>,
     ) {
         let mut i = 0;
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
-                .index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))
+        }
+            .index();
         i += 1;
         let name = pi_export_play::as_value::<Vec<usize>>(json, i).unwrap();
         i += 1;
@@ -6935,24 +7305,26 @@
     #[allow(unused_attributes)]
     pub fn set_animation_delay(gui: &mut Gui, node_id: f64, name: Vec<usize>) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands.set_style(
-            node_id,
-            AnimationDelayType(unsafe {
-                transmute(name.into_iter().collect::<SmallVec<[usize; 1]>>())
-            }),
-        );
+        gui.commands
+            .set_style(
+                node_id,
+                AnimationDelayType(unsafe {
+                    transmute(name.into_iter().collect::<SmallVec<[usize; 1]>>())
+                }),
+            );
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_animation_delay(gui: &mut Gui, node_id: f64, name: Vec<usize>) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands.set_style(
-            node_id,
-            AnimationDelayType(unsafe {
-                transmute(name.into_iter().collect::<SmallVec<[usize; 1]>>())
-            }),
-        );
+        gui.commands
+            .set_style(
+                node_id,
+                AnimationDelayType(unsafe {
+                    transmute(name.into_iter().collect::<SmallVec<[usize; 1]>>())
+                }),
+            );
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
@@ -6975,8 +7347,10 @@
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
+        }
+            .index();
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
             None => return,
@@ -6992,9 +7366,10 @@
         json: &Vec<json::JsonValue>,
     ) {
         let mut i = 0;
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
-                .index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))
+        }
+            .index();
         i += 1;
         let name = pi_export_play::as_value::<Vec<usize>>(json, i).unwrap();
         i += 1;
@@ -7008,39 +7383,39 @@
     #[allow(unused_attributes)]
     pub fn set_animation_iteration_count(gui: &mut Gui, node_id: f64, name: Vec<f32>) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands.set_style(
-            node_id,
-            AnimationIterationCountType(unsafe {
-                transmute(name.into_iter().collect::<SmallVec<[f32; 1]>>())
-            }),
-        );
+        gui.commands
+            .set_style(
+                node_id,
+                AnimationIterationCountType(unsafe {
+                    transmute(name.into_iter().collect::<SmallVec<[f32; 1]>>())
+                }),
+            );
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_animation_iteration_count(gui: &mut Gui, node_id: f64, name: Vec<f32>) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands.set_style(
-            node_id,
-            AnimationIterationCountType(unsafe {
-                transmute(name.into_iter().collect::<SmallVec<[f32; 1]>>())
-            }),
-        );
+        gui.commands
+            .set_style(
+                node_id,
+                AnimationIterationCountType(unsafe {
+                    transmute(name.into_iter().collect::<SmallVec<[f32; 1]>>())
+                }),
+            );
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn reset_animation_iteration_count(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands
-            .set_style(node_id, ResetAnimationIterationCountType);
+        gui.commands.set_style(node_id, ResetAnimationIterationCountType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_animation_iteration_count(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands
-            .set_style(node_id, ResetAnimationIterationCountType);
+        gui.commands.set_style(node_id, ResetAnimationIterationCountType);
     }
     #[allow(unused_variables)]
     #[allow(unused_assignments)]
@@ -7050,8 +7425,10 @@
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
+        }
+            .index();
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
             None => return,
@@ -7067,9 +7444,10 @@
         json: &Vec<json::JsonValue>,
     ) {
         let mut i = 0;
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
-                .index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))
+        }
+            .index();
         i += 1;
         let name = pi_export_play::as_value::<Vec<f32>>(json, i).unwrap();
         i += 1;
@@ -7083,24 +7461,26 @@
     #[allow(unused_attributes)]
     pub fn set_animation_direction(gui: &mut Gui, node_id: f64, name: Vec<u8>) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands.set_style(
-            node_id,
-            AnimationDirectionType(unsafe {
-                transmute(name.into_iter().collect::<SmallVec<[u8; 1]>>())
-            }),
-        );
+        gui.commands
+            .set_style(
+                node_id,
+                AnimationDirectionType(unsafe {
+                    transmute(name.into_iter().collect::<SmallVec<[u8; 1]>>())
+                }),
+            );
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_animation_direction(gui: &mut Gui, node_id: f64, name: Vec<u8>) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands.set_style(
-            node_id,
-            AnimationDirectionType(unsafe {
-                transmute(name.into_iter().collect::<SmallVec<[u8; 1]>>())
-            }),
-        );
+        gui.commands
+            .set_style(
+                node_id,
+                AnimationDirectionType(unsafe {
+                    transmute(name.into_iter().collect::<SmallVec<[u8; 1]>>())
+                }),
+            );
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
@@ -7123,8 +7503,10 @@
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
+        }
+            .index();
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
             None => return,
@@ -7140,9 +7522,10 @@
         json: &Vec<json::JsonValue>,
     ) {
         let mut i = 0;
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
-                .index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))
+        }
+            .index();
         i += 1;
         let name = pi_export_play::as_value::<Vec<u8>>(json, i).unwrap();
         i += 1;
@@ -7156,24 +7539,26 @@
     #[allow(unused_attributes)]
     pub fn set_animation_fill_mode(gui: &mut Gui, node_id: f64, name: Vec<u8>) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands.set_style(
-            node_id,
-            AnimationFillModeType(unsafe {
-                transmute(name.into_iter().collect::<SmallVec<[u8; 1]>>())
-            }),
-        );
+        gui.commands
+            .set_style(
+                node_id,
+                AnimationFillModeType(unsafe {
+                    transmute(name.into_iter().collect::<SmallVec<[u8; 1]>>())
+                }),
+            );
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_animation_fill_mode(gui: &mut Gui, node_id: f64, name: Vec<u8>) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands.set_style(
-            node_id,
-            AnimationFillModeType(unsafe {
-                transmute(name.into_iter().collect::<SmallVec<[u8; 1]>>())
-            }),
-        );
+        gui.commands
+            .set_style(
+                node_id,
+                AnimationFillModeType(unsafe {
+                    transmute(name.into_iter().collect::<SmallVec<[u8; 1]>>())
+                }),
+            );
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
@@ -7196,8 +7581,10 @@
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
+        }
+            .index();
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
             None => return,
@@ -7213,9 +7600,10 @@
         json: &Vec<json::JsonValue>,
     ) {
         let mut i = 0;
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
-                .index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))
+        }
+            .index();
         i += 1;
         let name = pi_export_play::as_value::<Vec<u8>>(json, i).unwrap();
         i += 1;
@@ -7229,24 +7617,26 @@
     #[allow(unused_attributes)]
     pub fn set_animation_play_state(gui: &mut Gui, node_id: f64, name: Vec<u8>) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands.set_style(
-            node_id,
-            AnimationPlayStateType(unsafe {
-                transmute(name.into_iter().collect::<SmallVec<[u8; 1]>>())
-            }),
-        );
+        gui.commands
+            .set_style(
+                node_id,
+                AnimationPlayStateType(unsafe {
+                    transmute(name.into_iter().collect::<SmallVec<[u8; 1]>>())
+                }),
+            );
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_animation_play_state(gui: &mut Gui, node_id: f64, name: Vec<u8>) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands.set_style(
-            node_id,
-            AnimationPlayStateType(unsafe {
-                transmute(name.into_iter().collect::<SmallVec<[u8; 1]>>())
-            }),
-        );
+        gui.commands
+            .set_style(
+                node_id,
+                AnimationPlayStateType(unsafe {
+                    transmute(name.into_iter().collect::<SmallVec<[u8; 1]>>())
+                }),
+            );
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
@@ -7269,8 +7659,10 @@
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
+        }
+            .index();
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
             None => return,
@@ -7286,9 +7678,10 @@
         json: &Vec<json::JsonValue>,
     ) {
         let mut i = 0;
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
-                .index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))
+        }
+            .index();
         i += 1;
         let name = pi_export_play::as_value::<Vec<u8>>(json, i).unwrap();
         i += 1;
@@ -7300,58 +7693,78 @@
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
-    pub fn set_animation_name_str(gui: &mut Gui, node_id: f64, value: &str, scope_hash: u32) {
+    pub fn set_animation_name_str(
+        gui: &mut Gui,
+        node_id: f64,
+        value: &str,
+        scope_hash: u32,
+    ) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands.set_style(
-            node_id,
-            AnimationNameType({
-                let mut input = cssparser::ParserInput::new(value);
-                let mut parse = cssparser::Parser::new(&mut input);
-                let value = if let Ok(value) = parse_comma_separated::<
-                    _,
-                    _,
-                    cssparser::ParseError<pi_style::style_parse::TokenParseError>,
-                >(&mut parse, |input| {
-                    Ok(pi_atom::Atom::from(input.expect_ident()?.as_ref()))
-                }) {
-                    value
-                } else {
-                    Default::default()
-                };
-                AnimationName {
-                    scope_hash: scope_hash as usize,
-                    value,
-                }
-            }),
-        );
+        gui.commands
+            .set_style(
+                node_id,
+                AnimationNameType({
+                    let mut input = cssparser::ParserInput::new(value);
+                    let mut parse = cssparser::Parser::new(&mut input);
+                    let value = if let Ok(value)
+                        = parse_comma_separated::<
+                            _,
+                            _,
+                            cssparser::ParseError<pi_style::style_parse::TokenParseError>,
+                        >(
+                            &mut parse,
+                            |input| Ok(
+                                pi_atom::Atom::from(input.expect_ident()?.as_ref()),
+                            ),
+                        ) {
+                        value
+                    } else {
+                        Default::default()
+                    };
+                    AnimationName {
+                        scope_hash: scope_hash as usize,
+                        value,
+                    }
+                }),
+            );
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
-    pub fn set_animation_name_str(gui: &mut Gui, node_id: f64, value: &str, scope_hash: u32) {
+    pub fn set_animation_name_str(
+        gui: &mut Gui,
+        node_id: f64,
+        value: &str,
+        scope_hash: u32,
+    ) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands.set_style(
-            node_id,
-            AnimationNameType({
-                let mut input = cssparser::ParserInput::new(value);
-                let mut parse = cssparser::Parser::new(&mut input);
-                let value = if let Ok(value) = parse_comma_separated::<
-                    _,
-                    _,
-                    cssparser::ParseError<pi_style::style_parse::TokenParseError>,
-                >(&mut parse, |input| {
-                    Ok(pi_atom::Atom::from(input.expect_ident()?.as_ref()))
-                }) {
-                    value
-                } else {
-                    Default::default()
-                };
-                AnimationName {
-                    scope_hash: scope_hash as usize,
-                    value,
-                }
-            }),
-        );
+        gui.commands
+            .set_style(
+                node_id,
+                AnimationNameType({
+                    let mut input = cssparser::ParserInput::new(value);
+                    let mut parse = cssparser::Parser::new(&mut input);
+                    let value = if let Ok(value)
+                        = parse_comma_separated::<
+                            _,
+                            _,
+                            cssparser::ParseError<pi_style::style_parse::TokenParseError>,
+                        >(
+                            &mut parse,
+                            |input| Ok(
+                                pi_atom::Atom::from(input.expect_ident()?.as_ref()),
+                            ),
+                        ) {
+                        value
+                    } else {
+                        Default::default()
+                    };
+                    AnimationName {
+                        scope_hash: scope_hash as usize,
+                        value,
+                    }
+                }),
+            );
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
@@ -7374,8 +7787,10 @@
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
+        }
+            .index();
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
             None => return,
@@ -7391,9 +7806,10 @@
         json: &Vec<json::JsonValue>,
     ) {
         let mut i = 0;
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
-                .index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))
+        }
+            .index();
         i += 1;
         let value = pi_export_play::as_value::<str>(json, i).unwrap();
         i += 1;
@@ -7454,8 +7870,10 @@
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
+        }
+            .index();
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
             None => return,
@@ -7471,9 +7889,10 @@
         json: &Vec<json::JsonValue>,
     ) {
         let mut i = 0;
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
-                .index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))
+        }
+            .index();
         i += 1;
         let animation = pi_export_play::as_value::<&str>(json, i).unwrap();
         i += 1;
@@ -7512,8 +7931,10 @@
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
+        }
+            .index();
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
             None => return,
@@ -7527,8 +7948,10 @@
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
+        }
+            .index();
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
             None => return,
@@ -7541,20 +7964,16 @@
     #[allow(unused_attributes)]
     pub fn set_mask_image(gui: &mut Gui, node_id: f64, image_hash: &Atom) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands.set_style(
-            node_id,
-            MaskImageType(MaskImage::Path((**image_hash).clone())),
-        );
+        gui.commands
+            .set_style(node_id, MaskImageType(MaskImage::Path((**image_hash).clone())));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_mask_image(gui: &mut Gui, node_id: f64, image_hash: &Atom) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands.set_style(
-            node_id,
-            MaskImageType(MaskImage::Path((**image_hash).clone())),
-        );
+        gui.commands
+            .set_style(node_id, MaskImageType(MaskImage::Path((**image_hash).clone())));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
@@ -7577,8 +7996,10 @@
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
+        }
+            .index();
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
             None => return,
@@ -7593,8 +8014,10 @@
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
+        }
+            .index();
         let hash = pi_export_play::as_value::<usize>(json, 1).unwrap();
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
@@ -7603,7 +8026,9 @@
         let atom_hash = match context.atoms.get(&hash) {
             Some(r) => r.get_hash(),
             None => {
-                ::core::panicking::panic_fmt(format_args!("can not find atom, hash: {0}", hash))
+                ::core::panicking::panic_fmt(
+                    format_args!("can not find atom, hash: {0}", hash),
+                )
             }
         };
         set_mask_image(
@@ -7616,16 +8041,14 @@
     #[allow(unused_attributes)]
     pub fn set_background_image(gui: &mut Gui, node_id: f64, image_hash: &Atom) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands
-            .set_style(node_id, BackgroundImageType((**image_hash).clone()));
+        gui.commands.set_style(node_id, BackgroundImageType((**image_hash).clone()));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_background_image(gui: &mut Gui, node_id: f64, image_hash: &Atom) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands
-            .set_style(node_id, BackgroundImageType((**image_hash).clone()));
+        gui.commands.set_style(node_id, BackgroundImageType((**image_hash).clone()));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
@@ -7648,8 +8071,10 @@
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
+        }
+            .index();
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
             None => return,
@@ -7664,8 +8089,10 @@
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
+        }
+            .index();
         let hash = pi_export_play::as_value::<usize>(json, 1).unwrap();
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
@@ -7674,7 +8101,9 @@
         let atom_hash = match context.atoms.get(&hash) {
             Some(r) => r.get_hash(),
             None => {
-                ::core::panicking::panic_fmt(format_args!("can not find atom, hash: {0}", hash))
+                ::core::panicking::panic_fmt(
+                    format_args!("can not find atom, hash: {0}", hash),
+                )
             }
         };
         set_background_image(
@@ -7687,16 +8116,14 @@
     #[allow(unused_attributes)]
     pub fn set_border_image(gui: &mut Gui, node_id: f64, image_hash: &Atom) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands
-            .set_style(node_id, BorderImageType((**image_hash).clone()));
+        gui.commands.set_style(node_id, BorderImageType((**image_hash).clone()));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_border_image(gui: &mut Gui, node_id: f64, image_hash: &Atom) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands
-            .set_style(node_id, BorderImageType((**image_hash).clone()));
+        gui.commands.set_style(node_id, BorderImageType((**image_hash).clone()));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
@@ -7719,8 +8146,10 @@
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
+        }
+            .index();
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
             None => return,
@@ -7735,8 +8164,10 @@
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
+        }
+            .index();
         let hash = pi_export_play::as_value::<usize>(json, 1).unwrap();
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
@@ -7745,7 +8176,9 @@
         let atom_hash = match context.atoms.get(&hash) {
             Some(r) => r.get_hash(),
             None => {
-                ::core::panicking::panic_fmt(format_args!("can not find atom, hash: {0}", hash))
+                ::core::panicking::panic_fmt(
+                    format_args!("can not find atom, hash: {0}", hash),
+                )
             }
         };
         set_border_image(
@@ -7758,38 +8191,32 @@
     #[allow(unused_attributes)]
     pub fn set_text_shadow(gui: &mut Gui, node_id: f64, s: &str) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands.set_style(
-            node_id,
-            TextShadowType({
-                let mut input = cssparser::ParserInput::new(s);
-                let mut parse = cssparser::Parser::new(&mut input);
-                let shadows = parse_text_shadow(&mut parse);
-                if let Ok(value) = shadows {
-                    value
-                } else {
-                    Default::default()
-                }
-            }),
-        );
+        gui.commands
+            .set_style(
+                node_id,
+                TextShadowType({
+                    let mut input = cssparser::ParserInput::new(s);
+                    let mut parse = cssparser::Parser::new(&mut input);
+                    let shadows = parse_text_shadow(&mut parse);
+                    if let Ok(value) = shadows { value } else { Default::default() }
+                }),
+            );
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_text_shadow(gui: &mut Gui, node_id: f64, s: &str) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands.set_style(
-            node_id,
-            TextShadowType({
-                let mut input = cssparser::ParserInput::new(s);
-                let mut parse = cssparser::Parser::new(&mut input);
-                let shadows = parse_text_shadow(&mut parse);
-                if let Ok(value) = shadows {
-                    value
-                } else {
-                    Default::default()
-                }
-            }),
-        );
+        gui.commands
+            .set_style(
+                node_id,
+                TextShadowType({
+                    let mut input = cssparser::ParserInput::new(s);
+                    let mut parse = cssparser::Parser::new(&mut input);
+                    let shadows = parse_text_shadow(&mut parse);
+                    if let Ok(value) = shadows { value } else { Default::default() }
+                }),
+            );
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
@@ -7812,8 +8239,10 @@
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
+        }
+            .index();
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
             None => return,
@@ -7829,9 +8258,10 @@
         json: &Vec<json::JsonValue>,
     ) {
         let mut i = 0;
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
-                .index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))
+        }
+            .index();
         i += 1;
         let s = pi_export_play::as_value::<str>(json, i).unwrap();
         i += 1;
@@ -7846,16 +8276,14 @@
     #[allow(unused_attributes)]
     pub fn set_font_family(gui: &mut Gui, node_id: f64, name: &Atom) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands
-            .set_style(node_id, FontFamilyType((**name).clone()));
+        gui.commands.set_style(node_id, FontFamilyType((**name).clone()));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_font_family(gui: &mut Gui, node_id: f64, name: &Atom) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands
-            .set_style(node_id, FontFamilyType((**name).clone()));
+        gui.commands.set_style(node_id, FontFamilyType((**name).clone()));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
@@ -7878,8 +8306,10 @@
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
+        }
+            .index();
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
             None => return,
@@ -7894,8 +8324,10 @@
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
+        }
+            .index();
         let hash = pi_export_play::as_value::<usize>(json, 1).unwrap();
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
@@ -7904,7 +8336,9 @@
         let atom_hash = match context.atoms.get(&hash) {
             Some(r) => r.get_hash(),
             None => {
-                ::core::panicking::panic_fmt(format_args!("can not find atom, hash: {0}", hash))
+                ::core::panicking::panic_fmt(
+                    format_args!("can not find atom, hash: {0}", hash),
+                )
             }
         };
         set_font_family(
@@ -7917,20 +8351,22 @@
     #[allow(unused_attributes)]
     pub fn set_text_content(gui: &mut Gui, node_id: f64, content: String) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands.set_style(
-            node_id,
-            TextContentType(TextContent(content, pi_atom::Atom::from(""))),
-        );
+        gui.commands
+            .set_style(
+                node_id,
+                TextContentType(TextContent(content, pi_atom::Atom::from(""))),
+            );
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_text_content(gui: &mut Gui, node_id: f64, content: String) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands.set_style(
-            node_id,
-            TextContentType(TextContent(content, pi_atom::Atom::from(""))),
-        );
+        gui.commands
+            .set_style(
+                node_id,
+                TextContentType(TextContent(content, pi_atom::Atom::from(""))),
+            );
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
@@ -7953,8 +8389,10 @@
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
+        }
+            .index();
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
             None => return,
@@ -7970,9 +8408,10 @@
         json: &Vec<json::JsonValue>,
     ) {
         let mut i = 0;
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
-                .index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))
+        }
+            .index();
         i += 1;
         let content = pi_export_play::as_value::<String>(json, i).unwrap();
         i += 1;
@@ -7986,57 +8425,59 @@
     #[allow(unused_attributes)]
     pub fn set_animation_timing_function_str(gui: &mut Gui, node_id: f64, value: &str) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands.set_style(
-            node_id,
-            AnimationTimingFunctionType({
-                let mut input = cssparser::ParserInput::new(value);
-                let mut parse = cssparser::Parser::new(&mut input);
-                if let Ok(value) = parse_comma_separated(
-                    &mut parse,
-                    <AnimationTimingFunction as StyleParse>::parse,
-                ) {
-                    value
-                } else {
-                    Default::default()
-                }
-            }),
-        );
+        gui.commands
+            .set_style(
+                node_id,
+                AnimationTimingFunctionType({
+                    let mut input = cssparser::ParserInput::new(value);
+                    let mut parse = cssparser::Parser::new(&mut input);
+                    if let Ok(value)
+                        = parse_comma_separated(
+                            &mut parse,
+                            <AnimationTimingFunction as StyleParse>::parse,
+                        ) {
+                        value
+                    } else {
+                        Default::default()
+                    }
+                }),
+            );
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_animation_timing_function_str(gui: &mut Gui, node_id: f64, value: &str) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands.set_style(
-            node_id,
-            AnimationTimingFunctionType({
-                let mut input = cssparser::ParserInput::new(value);
-                let mut parse = cssparser::Parser::new(&mut input);
-                if let Ok(value) = parse_comma_separated(
-                    &mut parse,
-                    <AnimationTimingFunction as StyleParse>::parse,
-                ) {
-                    value
-                } else {
-                    Default::default()
-                }
-            }),
-        );
+        gui.commands
+            .set_style(
+                node_id,
+                AnimationTimingFunctionType({
+                    let mut input = cssparser::ParserInput::new(value);
+                    let mut parse = cssparser::Parser::new(&mut input);
+                    if let Ok(value)
+                        = parse_comma_separated(
+                            &mut parse,
+                            <AnimationTimingFunction as StyleParse>::parse,
+                        ) {
+                        value
+                    } else {
+                        Default::default()
+                    }
+                }),
+            );
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn reset_animation_timing_function_str(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands
-            .set_style(node_id, ResetAnimationTimingFunctionType);
+        gui.commands.set_style(node_id, ResetAnimationTimingFunctionType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_animation_timing_function_str(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
-        gui.commands
-            .set_style(node_id, ResetAnimationTimingFunctionType);
+        gui.commands.set_style(node_id, ResetAnimationTimingFunctionType);
     }
     #[allow(unused_variables)]
     #[allow(unused_assignments)]
@@ -8046,8 +8487,10 @@
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
+        }
+            .index();
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
             None => return,
@@ -8063,9 +8506,10 @@
         json: &Vec<json::JsonValue>,
     ) {
         let mut i = 0;
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
-                .index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))
+        }
+            .index();
         i += 1;
         let value = pi_export_play::as_value::<str>(json, i).unwrap();
         i += 1;
@@ -8157,9 +8601,10 @@
     ) {
         let mut i = -1;
         i += 1;
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
-                .index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))
+        }
+            .index();
         i += 1;
         let class_name = pi_export_play::as_value::<Vec<u32>>(json, i as usize).unwrap();
         let node = match context.nodes.get(node as usize) {
@@ -8172,8 +8617,7 @@
     pub fn create_node(gui: &mut Gui) -> f64 {
         {
             let entity = gui.entitys.reserve_entity();
-            gui.commands
-                .push_cmd(NodeCmd(NodeBundle::default(), entity));
+            gui.commands.push_cmd(NodeCmd(NodeBundle::default(), entity));
             unsafe { transmute(entity.to_bits()) }
         }
     }
@@ -8182,8 +8626,7 @@
     pub fn create_node(gui: &mut Gui) -> f64 {
         {
             let entity = gui.entitys.reserve_entity();
-            gui.commands
-                .push_cmd(NodeCmd(NodeBundle::default(), entity));
+            gui.commands.push_cmd(NodeCmd(NodeBundle::default(), entity));
             unsafe { transmute(entity.to_bits()) }
         }
     }
@@ -8258,9 +8701,10 @@
     ) {
         let mut i = -1;
         i += 1;
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
-                .index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))
+        }
+            .index();
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
             None => return,
@@ -8271,8 +8715,7 @@
     pub fn insert_as_root(gui: &mut Gui, node: f64) {
         let node = unsafe { Entity::from_bits(transmute::<f64, u64>(node)) };
         {
-            gui.commands
-                .append(node, unsafe { transmute(EntityKey::null().to_bits()) });
+            gui.commands.append(node, unsafe { transmute(EntityKey::null().to_bits()) });
         }
     }
     #[cfg(target_arch = "wasm32")]
@@ -8280,8 +8723,7 @@
     pub fn insert_as_root(gui: &mut Gui, node: f64) {
         let node = unsafe { Entity::from_bits(transmute::<f64, u64>(node)) };
         {
-            gui.commands
-                .append(node, unsafe { transmute(EntityKey::null().to_bits()) });
+            gui.commands.append(node, unsafe { transmute(EntityKey::null().to_bits()) });
         }
     }
     pub fn play_insert_as_root(
@@ -8292,9 +8734,10 @@
     ) {
         let mut i = -1;
         i += 1;
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
-                .index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))
+        }
+            .index();
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
             None => return,
@@ -8326,9 +8769,10 @@
     ) {
         let mut i = -1;
         i += 1;
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
-                .index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))
+        }
+            .index();
         i += 1;
         let parent = pi_export_play::as_value::<f64>(json, i as usize).unwrap();
         let node = match context.nodes.get(node as usize) {
@@ -8362,9 +8806,10 @@
     ) {
         let mut i = -1;
         i += 1;
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
-                .index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))
+        }
+            .index();
         i += 1;
         let borther = pi_export_play::as_value::<f64>(json, i as usize).unwrap();
         let node = match context.nodes.get(node as usize) {
@@ -8396,9 +8841,10 @@
     ) {
         let mut i = -1;
         i += 1;
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
-                .index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))
+        }
+            .index();
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
             None => return,
@@ -8406,30 +8852,54 @@
         remove_node(gui, node);
     }
     #[cfg(feature = "pi_js_export")]
-    pub fn set_view_port(gui: &mut Gui, x: i32, y: i32, width: i32, height: i32, root: f64) {
+    pub fn set_view_port(
+        gui: &mut Gui,
+        x: i32,
+        y: i32,
+        width: i32,
+        height: i32,
+        root: f64,
+    ) {
         {
             let root = unsafe { Entity::from_bits(transmute::<f64, u64>(root)) };
-            gui.commands.push_cmd(NodeCmd(
-                pi_ui_render::components::user::Viewport(Aabb2::new(
-                    Point2::new(x as f32, y as f32),
-                    Point2::new(width as f32, height as f32),
-                )),
-                root,
-            ));
+            gui.commands
+                .push_cmd(
+                    NodeCmd(
+                        pi_ui_render::components::user::Viewport(
+                            Aabb2::new(
+                                Point2::new(x as f32, y as f32),
+                                Point2::new(width as f32, height as f32),
+                            ),
+                        ),
+                        root,
+                    ),
+                );
         }
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
-    pub fn set_view_port(gui: &mut Gui, x: i32, y: i32, width: i32, height: i32, root: f64) {
+    pub fn set_view_port(
+        gui: &mut Gui,
+        x: i32,
+        y: i32,
+        width: i32,
+        height: i32,
+        root: f64,
+    ) {
         {
             let root = unsafe { Entity::from_bits(transmute::<f64, u64>(root)) };
-            gui.commands.push_cmd(NodeCmd(
-                pi_ui_render::components::user::Viewport(Aabb2::new(
-                    Point2::new(x as f32, y as f32),
-                    Point2::new(width as f32, height as f32),
-                )),
-                root,
-            ));
+            gui.commands
+                .push_cmd(
+                    NodeCmd(
+                        pi_ui_render::components::user::Viewport(
+                            Aabb2::new(
+                                Point2::new(x as f32, y as f32),
+                                Point2::new(width as f32, height as f32),
+                            ),
+                        ),
+                        root,
+                    ),
+                );
         }
     }
     #[allow(unused_variables)]
@@ -8457,10 +8927,10 @@
         {
             let node = unsafe { Entity::from_bits(transmute::<f64, u64>(node)) };
             let brush = unsafe { Entity::from_bits(transmute::<f64, u64>(brush)) };
-            gui.commands.push_cmd(ComponentCmd(
-                pi_ui_render::components::user::Canvas(brush),
-                node,
-            ));
+            gui.commands
+                .push_cmd(
+                    ComponentCmd(pi_ui_render::components::user::Canvas(brush), node),
+                );
         }
     }
     #[cfg(target_arch = "wasm32")]
@@ -8469,10 +8939,10 @@
         {
             let node = unsafe { Entity::from_bits(transmute::<f64, u64>(node)) };
             let brush = unsafe { Entity::from_bits(transmute::<f64, u64>(brush)) };
-            gui.commands.push_cmd(ComponentCmd(
-                pi_ui_render::components::user::Canvas(brush),
-                node,
-            ));
+            gui.commands
+                .push_cmd(
+                    ComponentCmd(pi_ui_render::components::user::Canvas(brush), node),
+                );
         }
     }
     #[allow(unused_variables)]
@@ -8493,12 +8963,18 @@
     pub fn set_rendertarget_type(gui: &mut Gui, node: f64, target_ty: u8) {
         {
             let node = unsafe { Entity::from_bits(transmute::<f64, u64>(node)) };
-            gui.commands.push_cmd(NodeCmd(
-                unsafe {
-                    transmute::<_, pi_ui_render::components::user::RenderTargetType>(target_ty)
-                },
-                node,
-            ));
+            gui.commands
+                .push_cmd(
+                    NodeCmd(
+                        unsafe {
+                            transmute::<
+                                _,
+                                pi_ui_render::components::user::RenderTargetType,
+                            >(target_ty)
+                        },
+                        node,
+                    ),
+                );
         }
     }
     #[cfg(target_arch = "wasm32")]
@@ -8506,12 +8982,18 @@
     pub fn set_rendertarget_type(gui: &mut Gui, node: f64, target_ty: u8) {
         {
             let node = unsafe { Entity::from_bits(transmute::<f64, u64>(node)) };
-            gui.commands.push_cmd(NodeCmd(
-                unsafe {
-                    transmute::<_, pi_ui_render::components::user::RenderTargetType>(target_ty)
-                },
-                node,
-            ));
+            gui.commands
+                .push_cmd(
+                    NodeCmd(
+                        unsafe {
+                            transmute::<
+                                _,
+                                pi_ui_render::components::user::RenderTargetType,
+                            >(target_ty)
+                        },
+                        node,
+                    ),
+                );
         }
     }
     #[allow(unused_variables)]
@@ -8540,13 +9022,16 @@
     ) {
         {
             let root = unsafe { Entity::from_bits(transmute::<f64, u64>(root)) };
-            gui.commands.push_cmd(NodeCmd(
-                pi_ui_render::components::user::ClearColor(
-                    CgColor::new(r, g, b, a),
-                    is_clear_window,
-                ),
-                root,
-            ));
+            gui.commands
+                .push_cmd(
+                    NodeCmd(
+                        pi_ui_render::components::user::ClearColor(
+                            CgColor::new(r, g, b, a),
+                            is_clear_window,
+                        ),
+                        root,
+                    ),
+                );
         }
     }
     #[cfg(target_arch = "wasm32")]
@@ -8562,13 +9047,16 @@
     ) {
         {
             let root = unsafe { Entity::from_bits(transmute::<f64, u64>(root)) };
-            gui.commands.push_cmd(NodeCmd(
-                pi_ui_render::components::user::ClearColor(
-                    CgColor::new(r, g, b, a),
-                    is_clear_window,
-                ),
-                root,
-            ));
+            gui.commands
+                .push_cmd(
+                    NodeCmd(
+                        pi_ui_render::components::user::ClearColor(
+                            CgColor::new(r, g, b, a),
+                            is_clear_window,
+                        ),
+                        root,
+                    ),
+                );
         }
     }
     #[allow(unused_variables)]
@@ -8590,15 +9078,53 @@
         let i = i + 1;
         let root = pi_export_play::as_value::<f64>(json, i as usize).unwrap();
         let i = i + 1;
-        let is_clear_window = pi_export_play::as_value::<bool>(json, i as usize).unwrap();
+        let is_clear_window = pi_export_play::as_value::<bool>(json, i as usize)
+            .unwrap();
         set_clear_color(gui, r, g, b, a, root, is_clear_window);
     }
     #[cfg(feature = "pi_js_export")]
-    pub fn create_class_by_bin(gui: &mut Gui, bin: &[u8]) {
-        match bincode::deserialize::<Vec<pi_style::style_parse::ClassMap>>(bin) {
+    pub fn create_fragment_by_bin(gui: &mut Gui, bin: &[u8]) {
+        match postcard::from_bytes::<pi_ui_render::resource::fragment::Fragments>(bin) {
             Ok(r) => {
-                gui.commands
-                    .push_cmd(pi_ui_render::resource::ExtendCssCmd(r));
+                gui.commands.push_cmd(pi_ui_render::resource::ExtendFragmentCmd(r));
+            }
+            Err(e) => {
+                ();
+                return;
+            }
+        }
+    }
+    #[cfg(target_arch = "wasm32")]
+    #[wasm_bindgen]
+    pub fn create_fragment_by_bin(gui: &mut Gui, bin: &[u8]) {
+        match postcard::from_bytes::<pi_ui_render::resource::fragment::Fragments>(bin) {
+            Ok(r) => {
+                gui.commands.push_cmd(pi_ui_render::resource::ExtendFragmentCmd(r));
+            }
+            Err(e) => {
+                ();
+                return;
+            }
+        }
+    }
+    #[allow(unused_variables)]
+    pub fn play_create_fragment_by_bin(
+        gui: &mut Gui,
+        engine: &mut Engine,
+        context: &mut PlayContext,
+        json: &Vec<json::JsonValue>,
+    ) {
+        let i = -1;
+        let i = i + 1;
+        let bin = pi_export_play::as_value::<[u8]>(json, i as usize).unwrap();
+        let bin = &bin;
+        create_fragment_by_bin(gui, bin);
+    }
+    #[cfg(feature = "pi_js_export")]
+    pub fn create_class_by_bin(gui: &mut Gui, bin: &[u8]) {
+        match postcard::from_bytes::<Vec<pi_style::style_parse::ClassMap>>(bin) {
+            Ok(r) => {
+                gui.commands.push_cmd(pi_ui_render::resource::ExtendCssCmd(r));
             }
             Err(e) => {
                 ();
@@ -8609,10 +9135,9 @@
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     pub fn create_class_by_bin(gui: &mut Gui, bin: &[u8]) {
-        match bincode::deserialize::<Vec<pi_style::style_parse::ClassMap>>(bin) {
+        match postcard::from_bytes::<Vec<pi_style::style_parse::ClassMap>>(bin) {
             Ok(r) => {
-                gui.commands
-                    .push_cmd(pi_ui_render::resource::ExtendCssCmd(r));
+                gui.commands.push_cmd(pi_ui_render::resource::ExtendCssCmd(r));
             }
             Err(e) => {
                 ();
@@ -8637,10 +9162,10 @@
     pub fn set_render_dirty(gui: &mut Gui, root: f64) {
         {
             let node: Entity = Entity::from_bits(unsafe { transmute(root) });
-            gui.commands.push_cmd(NodeCmd(
-                pi_ui_render::components::user::RenderDirty(true),
-                node,
-            ));
+            gui.commands
+                .push_cmd(
+                    NodeCmd(pi_ui_render::components::user::RenderDirty(true), node),
+                );
         }
     }
     #[cfg(target_arch = "wasm32")]
@@ -8648,10 +9173,10 @@
     pub fn set_render_dirty(gui: &mut Gui, root: f64) {
         {
             let node: Entity = Entity::from_bits(unsafe { transmute(root) });
-            gui.commands.push_cmd(NodeCmd(
-                pi_ui_render::components::user::RenderDirty(true),
-                node,
-            ));
+            gui.commands
+                .push_cmd(
+                    NodeCmd(pi_ui_render::components::user::RenderDirty(true), node),
+                );
         }
     }
     #[allow(unused_variables)]
@@ -8679,7 +9204,7 @@
                             "pi_export_gui::style_macro",
                             ::tracing::Level::WARN,
                             Some("src\\style_macro.rs"),
-                            Some(1265u32),
+                            Some(1337u32),
                             Some("pi_export_gui::style_macro"),
                             ::tracing_core::field::FieldSet::new(
                                 &[],
@@ -8692,22 +9217,28 @@
                 };
                 let mut interest = ::tracing::subscriber::Interest::never();
                 if ::tracing::Level::WARN <= ::tracing::level_filters::STATIC_MAX_LEVEL
-                    && ::tracing::Level::WARN <= ::tracing::level_filters::LevelFilter::current()
+                    && ::tracing::Level::WARN
+                        <= ::tracing::level_filters::LevelFilter::current()
                     && {
                         interest = CALLSITE.interest();
                         !interest.is_never()
                     }
-                    && ::tracing::__macro_support::__is_enabled(CALLSITE.metadata(), interest)
+                    && ::tracing::__macro_support::__is_enabled(
+                        CALLSITE.metadata(),
+                        interest,
+                    )
                 {
                     let meta = CALLSITE.metadata();
                     ::tracing::Span::new(meta, &{ meta.fields().value_set(&[]) })
                 } else {
-                    let span = ::tracing::__macro_support::__disabled_span(CALLSITE.metadata());
+                    let span = ::tracing::__macro_support::__disabled_span(
+                        CALLSITE.metadata(),
+                    );
                     {};
                     span
                 }
             }
-            .entered();
+                .entered();
             *engine.world.get_resource_mut::<RunState>().unwrap() = RunState::RENDER;
             *engine.world.get_resource_mut::<FrameState>().unwrap() = FrameState::Active;
             engine.update();
@@ -8727,7 +9258,7 @@
                             "pi_export_gui::style_macro",
                             ::tracing::Level::WARN,
                             Some("src\\style_macro.rs"),
-                            Some(1265u32),
+                            Some(1337u32),
                             Some("pi_export_gui::style_macro"),
                             ::tracing_core::field::FieldSet::new(
                                 &[],
@@ -8740,22 +9271,28 @@
                 };
                 let mut interest = ::tracing::subscriber::Interest::never();
                 if ::tracing::Level::WARN <= ::tracing::level_filters::STATIC_MAX_LEVEL
-                    && ::tracing::Level::WARN <= ::tracing::level_filters::LevelFilter::current()
+                    && ::tracing::Level::WARN
+                        <= ::tracing::level_filters::LevelFilter::current()
                     && {
                         interest = CALLSITE.interest();
                         !interest.is_never()
                     }
-                    && ::tracing::__macro_support::__is_enabled(CALLSITE.metadata(), interest)
+                    && ::tracing::__macro_support::__is_enabled(
+                        CALLSITE.metadata(),
+                        interest,
+                    )
                 {
                     let meta = CALLSITE.metadata();
                     ::tracing::Span::new(meta, &{ meta.fields().value_set(&[]) })
                 } else {
-                    let span = ::tracing::__macro_support::__disabled_span(CALLSITE.metadata());
+                    let span = ::tracing::__macro_support::__disabled_span(
+                        CALLSITE.metadata(),
+                    );
                     {};
                     span
                 }
             }
-            .entered();
+                .entered();
             *engine.world.get_resource_mut::<RunState>().unwrap() = RunState::RENDER;
             *engine.world.get_resource_mut::<FrameState>().unwrap() = FrameState::Active;
             engine.update();
@@ -8785,7 +9322,7 @@
                             "pi_export_gui::style_macro",
                             ::tracing::Level::WARN,
                             Some("src\\style_macro.rs"),
-                            Some(1280u32),
+                            Some(1352u32),
                             Some("pi_export_gui::style_macro"),
                             ::tracing_core::field::FieldSet::new(
                                 &[],
@@ -8798,22 +9335,28 @@
                 };
                 let mut interest = ::tracing::subscriber::Interest::never();
                 if ::tracing::Level::WARN <= ::tracing::level_filters::STATIC_MAX_LEVEL
-                    && ::tracing::Level::WARN <= ::tracing::level_filters::LevelFilter::current()
+                    && ::tracing::Level::WARN
+                        <= ::tracing::level_filters::LevelFilter::current()
                     && {
                         interest = CALLSITE.interest();
                         !interest.is_never()
                     }
-                    && ::tracing::__macro_support::__is_enabled(CALLSITE.metadata(), interest)
+                    && ::tracing::__macro_support::__is_enabled(
+                        CALLSITE.metadata(),
+                        interest,
+                    )
                 {
                     let meta = CALLSITE.metadata();
                     ::tracing::Span::new(meta, &{ meta.fields().value_set(&[]) })
                 } else {
-                    let span = ::tracing::__macro_support::__disabled_span(CALLSITE.metadata());
+                    let span = ::tracing::__macro_support::__disabled_span(
+                        CALLSITE.metadata(),
+                    );
                     {};
                     span
                 }
             }
-            .entered();
+                .entered();
             bevy::ecs::system::CommandQueue::default().apply(&mut engine.world);
             let mut com = engine
                 .world
@@ -8821,7 +9364,10 @@
                 .unwrap();
             std::mem::swap(&mut gui.commands, &mut *com);
             *engine.world.get_resource_mut::<RunState>().unwrap() = RunState::SETTING;
-            *engine.world.get_resource_mut::<FrameState>().unwrap() = FrameState::UnActive;
+            *engine
+                .world
+                .get_resource_mut::<FrameState>()
+                .unwrap() = FrameState::UnActive;
             engine.update();
         }
     }
@@ -8839,7 +9385,7 @@
                             "pi_export_gui::style_macro",
                             ::tracing::Level::WARN,
                             Some("src\\style_macro.rs"),
-                            Some(1280u32),
+                            Some(1352u32),
                             Some("pi_export_gui::style_macro"),
                             ::tracing_core::field::FieldSet::new(
                                 &[],
@@ -8852,22 +9398,28 @@
                 };
                 let mut interest = ::tracing::subscriber::Interest::never();
                 if ::tracing::Level::WARN <= ::tracing::level_filters::STATIC_MAX_LEVEL
-                    && ::tracing::Level::WARN <= ::tracing::level_filters::LevelFilter::current()
+                    && ::tracing::Level::WARN
+                        <= ::tracing::level_filters::LevelFilter::current()
                     && {
                         interest = CALLSITE.interest();
                         !interest.is_never()
                     }
-                    && ::tracing::__macro_support::__is_enabled(CALLSITE.metadata(), interest)
+                    && ::tracing::__macro_support::__is_enabled(
+                        CALLSITE.metadata(),
+                        interest,
+                    )
                 {
                     let meta = CALLSITE.metadata();
                     ::tracing::Span::new(meta, &{ meta.fields().value_set(&[]) })
                 } else {
-                    let span = ::tracing::__macro_support::__disabled_span(CALLSITE.metadata());
+                    let span = ::tracing::__macro_support::__disabled_span(
+                        CALLSITE.metadata(),
+                    );
                     {};
                     span
                 }
             }
-            .entered();
+                .entered();
             bevy::ecs::system::CommandQueue::default().apply(&mut engine.world);
             let mut com = engine
                 .world
@@ -8875,7 +9427,10 @@
                 .unwrap();
             std::mem::swap(&mut gui.commands, &mut *com);
             *engine.world.get_resource_mut::<RunState>().unwrap() = RunState::SETTING;
-            *engine.world.get_resource_mut::<FrameState>().unwrap() = FrameState::UnActive;
+            *engine
+                .world
+                .get_resource_mut::<FrameState>()
+                .unwrap() = FrameState::UnActive;
             engine.update();
         }
     }
@@ -8901,7 +9456,7 @@
                             "pi_export_gui::style_macro",
                             ::tracing::Level::WARN,
                             Some("src\\style_macro.rs"),
-                            Some(1297u32),
+                            Some(1367u32),
                             Some("pi_export_gui::style_macro"),
                             ::tracing_core::field::FieldSet::new(
                                 &[],
@@ -8914,22 +9469,28 @@
                 };
                 let mut interest = ::tracing::subscriber::Interest::never();
                 if ::tracing::Level::WARN <= ::tracing::level_filters::STATIC_MAX_LEVEL
-                    && ::tracing::Level::WARN <= ::tracing::level_filters::LevelFilter::current()
+                    && ::tracing::Level::WARN
+                        <= ::tracing::level_filters::LevelFilter::current()
                     && {
                         interest = CALLSITE.interest();
                         !interest.is_never()
                     }
-                    && ::tracing::__macro_support::__is_enabled(CALLSITE.metadata(), interest)
+                    && ::tracing::__macro_support::__is_enabled(
+                        CALLSITE.metadata(),
+                        interest,
+                    )
                 {
                     let meta = CALLSITE.metadata();
                     ::tracing::Span::new(meta, &{ meta.fields().value_set(&[]) })
                 } else {
-                    let span = ::tracing::__macro_support::__disabled_span(CALLSITE.metadata());
+                    let span = ::tracing::__macro_support::__disabled_span(
+                        CALLSITE.metadata(),
+                    );
                     {};
                     span
                 }
             }
-            .entered();
+                .entered();
             bevy::ecs::system::CommandQueue::default().apply(&mut engine.world);
             let mut com = engine
                 .world
@@ -8955,7 +9516,7 @@
                             "pi_export_gui::style_macro",
                             ::tracing::Level::WARN,
                             Some("src\\style_macro.rs"),
-                            Some(1297u32),
+                            Some(1367u32),
                             Some("pi_export_gui::style_macro"),
                             ::tracing_core::field::FieldSet::new(
                                 &[],
@@ -8968,22 +9529,28 @@
                 };
                 let mut interest = ::tracing::subscriber::Interest::never();
                 if ::tracing::Level::WARN <= ::tracing::level_filters::STATIC_MAX_LEVEL
-                    && ::tracing::Level::WARN <= ::tracing::level_filters::LevelFilter::current()
+                    && ::tracing::Level::WARN
+                        <= ::tracing::level_filters::LevelFilter::current()
                     && {
                         interest = CALLSITE.interest();
                         !interest.is_never()
                     }
-                    && ::tracing::__macro_support::__is_enabled(CALLSITE.metadata(), interest)
+                    && ::tracing::__macro_support::__is_enabled(
+                        CALLSITE.metadata(),
+                        interest,
+                    )
                 {
                     let meta = CALLSITE.metadata();
                     ::tracing::Span::new(meta, &{ meta.fields().value_set(&[]) })
                 } else {
-                    let span = ::tracing::__macro_support::__disabled_span(CALLSITE.metadata());
+                    let span = ::tracing::__macro_support::__disabled_span(
+                        CALLSITE.metadata(),
+                    );
                     {};
                     span
                 }
             }
-            .entered();
+                .entered();
             bevy::ecs::system::CommandQueue::default().apply(&mut engine.world);
             let mut com = engine
                 .world
@@ -9017,7 +9584,7 @@
                             "pi_export_gui::style_macro",
                             ::tracing::Level::WARN,
                             Some("src\\style_macro.rs"),
-                            Some(1314u32),
+                            Some(1382u32),
                             Some("pi_export_gui::style_macro"),
                             ::tracing_core::field::FieldSet::new(
                                 &[],
@@ -9030,22 +9597,28 @@
                 };
                 let mut interest = ::tracing::subscriber::Interest::never();
                 if ::tracing::Level::WARN <= ::tracing::level_filters::STATIC_MAX_LEVEL
-                    && ::tracing::Level::WARN <= ::tracing::level_filters::LevelFilter::current()
+                    && ::tracing::Level::WARN
+                        <= ::tracing::level_filters::LevelFilter::current()
                     && {
                         interest = CALLSITE.interest();
                         !interest.is_never()
                     }
-                    && ::tracing::__macro_support::__is_enabled(CALLSITE.metadata(), interest)
+                    && ::tracing::__macro_support::__is_enabled(
+                        CALLSITE.metadata(),
+                        interest,
+                    )
                 {
                     let meta = CALLSITE.metadata();
                     ::tracing::Span::new(meta, &{ meta.fields().value_set(&[]) })
                 } else {
-                    let span = ::tracing::__macro_support::__disabled_span(CALLSITE.metadata());
+                    let span = ::tracing::__macro_support::__disabled_span(
+                        CALLSITE.metadata(),
+                    );
                     {};
                     span
                 }
             }
-            .entered();
+                .entered();
             bevy::ecs::system::CommandQueue::default().apply(&mut engine.world);
             let mut com = engine
                 .world
@@ -9053,7 +9626,10 @@
                 .unwrap();
             std::mem::swap(&mut gui.commands, &mut *com);
             *engine.world.get_resource_mut::<RunState>().unwrap() = RunState::LAYOUT;
-            *engine.world.get_resource_mut::<FrameState>().unwrap() = FrameState::UnActive;
+            *engine
+                .world
+                .get_resource_mut::<FrameState>()
+                .unwrap() = FrameState::UnActive;
             engine.update();
         }
     }
@@ -9071,7 +9647,7 @@
                             "pi_export_gui::style_macro",
                             ::tracing::Level::WARN,
                             Some("src\\style_macro.rs"),
-                            Some(1314u32),
+                            Some(1382u32),
                             Some("pi_export_gui::style_macro"),
                             ::tracing_core::field::FieldSet::new(
                                 &[],
@@ -9084,22 +9660,28 @@
                 };
                 let mut interest = ::tracing::subscriber::Interest::never();
                 if ::tracing::Level::WARN <= ::tracing::level_filters::STATIC_MAX_LEVEL
-                    && ::tracing::Level::WARN <= ::tracing::level_filters::LevelFilter::current()
+                    && ::tracing::Level::WARN
+                        <= ::tracing::level_filters::LevelFilter::current()
                     && {
                         interest = CALLSITE.interest();
                         !interest.is_never()
                     }
-                    && ::tracing::__macro_support::__is_enabled(CALLSITE.metadata(), interest)
+                    && ::tracing::__macro_support::__is_enabled(
+                        CALLSITE.metadata(),
+                        interest,
+                    )
                 {
                     let meta = CALLSITE.metadata();
                     ::tracing::Span::new(meta, &{ meta.fields().value_set(&[]) })
                 } else {
-                    let span = ::tracing::__macro_support::__disabled_span(CALLSITE.metadata());
+                    let span = ::tracing::__macro_support::__disabled_span(
+                        CALLSITE.metadata(),
+                    );
                     {};
                     span
                 }
             }
-            .entered();
+                .entered();
             bevy::ecs::system::CommandQueue::default().apply(&mut engine.world);
             let mut com = engine
                 .world
@@ -9107,7 +9689,10 @@
                 .unwrap();
             std::mem::swap(&mut gui.commands, &mut *com);
             *engine.world.get_resource_mut::<RunState>().unwrap() = RunState::LAYOUT;
-            *engine.world.get_resource_mut::<FrameState>().unwrap() = FrameState::UnActive;
+            *engine
+                .world
+                .get_resource_mut::<FrameState>()
+                .unwrap() = FrameState::UnActive;
             engine.update();
         }
     }
@@ -9133,7 +9718,7 @@
                             "pi_export_gui::style_macro",
                             ::tracing::Level::WARN,
                             Some("src\\style_macro.rs"),
-                            Some(1331u32),
+                            Some(1397u32),
                             Some("pi_export_gui::style_macro"),
                             ::tracing_core::field::FieldSet::new(
                                 &[],
@@ -9146,22 +9731,28 @@
                 };
                 let mut interest = ::tracing::subscriber::Interest::never();
                 if ::tracing::Level::WARN <= ::tracing::level_filters::STATIC_MAX_LEVEL
-                    && ::tracing::Level::WARN <= ::tracing::level_filters::LevelFilter::current()
+                    && ::tracing::Level::WARN
+                        <= ::tracing::level_filters::LevelFilter::current()
                     && {
                         interest = CALLSITE.interest();
                         !interest.is_never()
                     }
-                    && ::tracing::__macro_support::__is_enabled(CALLSITE.metadata(), interest)
+                    && ::tracing::__macro_support::__is_enabled(
+                        CALLSITE.metadata(),
+                        interest,
+                    )
                 {
                     let meta = CALLSITE.metadata();
                     ::tracing::Span::new(meta, &{ meta.fields().value_set(&[]) })
                 } else {
-                    let span = ::tracing::__macro_support::__disabled_span(CALLSITE.metadata());
+                    let span = ::tracing::__macro_support::__disabled_span(
+                        CALLSITE.metadata(),
+                    );
                     {};
                     span
                 }
             }
-            .entered();
+                .entered();
             bevy::ecs::system::CommandQueue::default().apply(&mut engine.world);
             let mut com = engine
                 .world
@@ -9169,7 +9760,10 @@
                 .unwrap();
             std::mem::swap(&mut gui.commands, &mut *com);
             *engine.world.get_resource_mut::<RunState>().unwrap() = RunState::MATRIX;
-            *engine.world.get_resource_mut::<FrameState>().unwrap() = FrameState::UnActive;
+            *engine
+                .world
+                .get_resource_mut::<FrameState>()
+                .unwrap() = FrameState::UnActive;
             engine.update();
         }
     }
@@ -9187,7 +9781,7 @@
                             "pi_export_gui::style_macro",
                             ::tracing::Level::WARN,
                             Some("src\\style_macro.rs"),
-                            Some(1331u32),
+                            Some(1397u32),
                             Some("pi_export_gui::style_macro"),
                             ::tracing_core::field::FieldSet::new(
                                 &[],
@@ -9200,22 +9794,28 @@
                 };
                 let mut interest = ::tracing::subscriber::Interest::never();
                 if ::tracing::Level::WARN <= ::tracing::level_filters::STATIC_MAX_LEVEL
-                    && ::tracing::Level::WARN <= ::tracing::level_filters::LevelFilter::current()
+                    && ::tracing::Level::WARN
+                        <= ::tracing::level_filters::LevelFilter::current()
                     && {
                         interest = CALLSITE.interest();
                         !interest.is_never()
                     }
-                    && ::tracing::__macro_support::__is_enabled(CALLSITE.metadata(), interest)
+                    && ::tracing::__macro_support::__is_enabled(
+                        CALLSITE.metadata(),
+                        interest,
+                    )
                 {
                     let meta = CALLSITE.metadata();
                     ::tracing::Span::new(meta, &{ meta.fields().value_set(&[]) })
                 } else {
-                    let span = ::tracing::__macro_support::__disabled_span(CALLSITE.metadata());
+                    let span = ::tracing::__macro_support::__disabled_span(
+                        CALLSITE.metadata(),
+                    );
                     {};
                     span
                 }
             }
-            .entered();
+                .entered();
             bevy::ecs::system::CommandQueue::default().apply(&mut engine.world);
             let mut com = engine
                 .world
@@ -9223,7 +9823,10 @@
                 .unwrap();
             std::mem::swap(&mut gui.commands, &mut *com);
             *engine.world.get_resource_mut::<RunState>().unwrap() = RunState::MATRIX;
-            *engine.world.get_resource_mut::<FrameState>().unwrap() = FrameState::UnActive;
+            *engine
+                .world
+                .get_resource_mut::<FrameState>()
+                .unwrap() = FrameState::UnActive;
             engine.update();
         }
     }
@@ -9401,9 +10004,10 @@
     ) {
         let mut i = -1;
         i += 1;
-        let node =
-            unsafe { Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap())) }
-                .index();
+        let node = unsafe {
+            Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))
+        }
+            .index();
         let node = match context.nodes.get(node as usize) {
             Some(r) => r.clone(),
             None => return,
@@ -9573,66 +10177,188 @@
         0
     }
     #[cfg(feature = "pi_js_export")]
-    pub fn offset_top(_gui: &Gui, _node: f64) -> u32 {
-        let _node = unsafe { Entity::from_bits(transmute::<f64, u64>(_node)) };
-        0
+    pub fn get_enable(gui: &mut Gui, engine: &Engine, node: f64) -> bool {
+        let node = unsafe { Entity::from_bits(transmute::<f64, u64>(node)) };
+        if let Ok(is_show) = gui.enable_query.get(&engine.world, node) {
+            is_show.get_enable()
+        } else {
+            false
+        }
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
-    pub fn offset_top(_gui: &Gui, _node: f64) -> u32 {
-        let _node = unsafe { Entity::from_bits(transmute::<f64, u64>(_node)) };
-        0
+    pub fn get_enable(gui: &mut Gui, engine: &Engine, node: f64) -> bool {
+        let node = unsafe { Entity::from_bits(transmute::<f64, u64>(node)) };
+        if let Ok(is_show) = gui.enable_query.get(&engine.world, node) {
+            is_show.get_enable()
+        } else {
+            false
+        }
     }
     #[cfg(feature = "pi_js_export")]
-    pub fn offset_left(_gui: &Gui, _node: f64) -> u32 {
-        let _node = unsafe { Entity::from_bits(transmute::<f64, u64>(_node)) };
-        0
+    pub fn offset_top(gui: &mut Gui, engine: &Engine, node: f64) -> u32 {
+        let node = unsafe { Entity::from_bits(transmute::<f64, u64>(node)) };
+        {
+            let mut r = 0.0;
+            if let Ok(parent) = gui.up_query.get(&engine.world, node) {
+                if let Ok(parent_layout) = gui.layout_query.get(&engine.world, node) {
+                    r += parent_layout.padding.top + parent_layout.border.top;
+                }
+            }
+            if let Ok(layout) = gui.layout_query.get(&engine.world, node) {
+                r += layout.rect.top;
+            }
+            r.round() as u32
+        }
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
-    pub fn offset_left(_gui: &Gui, _node: f64) -> u32 {
-        let _node = unsafe { Entity::from_bits(transmute::<f64, u64>(_node)) };
-        0
+    pub fn offset_top(gui: &mut Gui, engine: &Engine, node: f64) -> u32 {
+        let node = unsafe { Entity::from_bits(transmute::<f64, u64>(node)) };
+        {
+            let mut r = 0.0;
+            if let Ok(parent) = gui.up_query.get(&engine.world, node) {
+                if let Ok(parent_layout) = gui.layout_query.get(&engine.world, node) {
+                    r += parent_layout.padding.top + parent_layout.border.top;
+                }
+            }
+            if let Ok(layout) = gui.layout_query.get(&engine.world, node) {
+                r += layout.rect.top;
+            }
+            r.round() as u32
+        }
     }
     #[cfg(feature = "pi_js_export")]
-    pub fn offset_width(_gui: &Gui, _node: f64) -> u32 {
-        let _node = unsafe { Entity::from_bits(transmute::<f64, u64>(_node)) };
-        0
+    pub fn offset_left(gui: &mut Gui, engine: &Engine, node: f64) -> u32 {
+        let node = unsafe { Entity::from_bits(transmute::<f64, u64>(node)) };
+        {
+            let mut r = 0.0;
+            if let Ok(parent) = gui.up_query.get(&engine.world, node) {
+                if let Ok(parent_layout) = gui.layout_query.get(&engine.world, node) {
+                    r += parent_layout.padding.left + parent_layout.border.left;
+                }
+            }
+            if let Ok(layout) = gui.layout_query.get(&engine.world, node) {
+                r += layout.rect.left;
+            }
+            r.round() as u32
+        }
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
-    pub fn offset_width(_gui: &Gui, _node: f64) -> u32 {
-        let _node = unsafe { Entity::from_bits(transmute::<f64, u64>(_node)) };
-        0
+    pub fn offset_left(gui: &mut Gui, engine: &Engine, node: f64) -> u32 {
+        let node = unsafe { Entity::from_bits(transmute::<f64, u64>(node)) };
+        {
+            let mut r = 0.0;
+            if let Ok(parent) = gui.up_query.get(&engine.world, node) {
+                if let Ok(parent_layout) = gui.layout_query.get(&engine.world, node) {
+                    r += parent_layout.padding.left + parent_layout.border.left;
+                }
+            }
+            if let Ok(layout) = gui.layout_query.get(&engine.world, node) {
+                r += layout.rect.left;
+            }
+            r.round() as u32
+        }
     }
     #[cfg(feature = "pi_js_export")]
-    pub fn offset_height(_gui: &Gui, _node: f64) -> u32 {
-        let _node = unsafe { Entity::from_bits(transmute::<f64, u64>(_node)) };
-        0
+    pub fn offset_width(gui: &mut Gui, engine: &Engine, node: f64) -> u32 {
+        let node = unsafe { Entity::from_bits(transmute::<f64, u64>(node)) };
+        {
+            let r = if let Ok(layout) = gui.layout_query.get(&engine.world, node) {
+                layout.rect.right - layout.rect.left
+            } else {
+                0.0
+            };
+            r.round() as u32
+        }
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
-    pub fn offset_height(_gui: &Gui, _node: f64) -> u32 {
-        let _node = unsafe { Entity::from_bits(transmute::<f64, u64>(_node)) };
-        0
+    pub fn offset_width(gui: &mut Gui, engine: &Engine, node: f64) -> u32 {
+        let node = unsafe { Entity::from_bits(transmute::<f64, u64>(node)) };
+        {
+            let r = if let Ok(layout) = gui.layout_query.get(&engine.world, node) {
+                layout.rect.right - layout.rect.left
+            } else {
+                0.0
+            };
+            r.round() as u32
+        }
+    }
+    #[cfg(feature = "pi_js_export")]
+    pub fn offset_height(gui: &mut Gui, engine: &Engine, node: f64) -> u32 {
+        let node = unsafe { Entity::from_bits(transmute::<f64, u64>(node)) };
+        {
+            let r = if let Ok(layout) = gui.layout_query.get(&engine.world, node) {
+                layout.rect.bottom - layout.rect.top
+            } else {
+                0.0
+            };
+            r.round() as u32
+        }
+    }
+    #[cfg(target_arch = "wasm32")]
+    #[wasm_bindgen]
+    pub fn offset_height(gui: &mut Gui, engine: &Engine, node: f64) -> u32 {
+        let node = unsafe { Entity::from_bits(transmute::<f64, u64>(node)) };
+        {
+            let r = if let Ok(layout) = gui.layout_query.get(&engine.world, node) {
+                layout.rect.bottom - layout.rect.top
+            } else {
+                0.0
+            };
+            r.round() as u32
+        }
+    }
+    #[cfg(feature = "pi_js_export")]
+    pub fn get_class_name(gui: &mut Gui, engine: &mut Engine, node: f64) -> String {
+        let node = unsafe { Entity::from_bits(transmute::<f64, u64>(node)) };
+        {
+            let node = Entity::from_bits(unsafe { transmute(node) });
+            let value = match engine.world.query::<&ClassName>().get(&engine.world, node)
+            {
+                Ok(r) => Some(&r.0),
+                _ => None,
+            };
+            serde_json::to_string(&value).unwrap()
+        }
+    }
+    #[cfg(target_arch = "wasm32")]
+    #[wasm_bindgen]
+    pub fn get_class_name(gui: &mut Gui, engine: &mut Engine, node: f64) -> String {
+        let node = unsafe { Entity::from_bits(transmute::<f64, u64>(node)) };
+        {
+            let node = Entity::from_bits(unsafe { transmute(node) });
+            let value = match engine.world.query::<&ClassName>().get(&engine.world, node)
+            {
+                Ok(r) => Some(&r.0),
+                _ => None,
+            };
+            serde_json::to_string(&value).unwrap()
+        }
     }
     #[cfg(feature = "pi_js_export")]
     pub fn offset_document(gui: &mut Gui, engine: &Engine, node: f64) -> String {
         let node = unsafe { Entity::from_bits(transmute::<f64, u64>(node)) };
         {
             let value = match gui.quad_query.get(&engine.world, node) {
-                Ok(quad) => OffsetDocument {
-                    left: quad.mins.x,
-                    top: quad.mins.y,
-                    width: quad.maxs.x - quad.mins.x,
-                    height: quad.maxs.y - quad.mins.y,
-                },
-                _ => OffsetDocument {
-                    left: 0.0,
-                    top: 0.0,
-                    width: 0.0,
-                    height: 0.0,
-                },
+                Ok(quad) => {
+                    OffsetDocument {
+                        left: quad.mins.x,
+                        top: quad.mins.y,
+                        width: quad.maxs.x - quad.mins.x,
+                        height: quad.maxs.y - quad.mins.y,
+                    }
+                }
+                _ => {
+                    OffsetDocument {
+                        left: 0.0,
+                        top: 0.0,
+                        width: 0.0,
+                        height: 0.0,
+                    }
+                }
             };
             serde_json::to_string(&value).unwrap()
         }
@@ -9643,18 +10369,22 @@
         let node = unsafe { Entity::from_bits(transmute::<f64, u64>(node)) };
         {
             let value = match gui.quad_query.get(&engine.world, node) {
-                Ok(quad) => OffsetDocument {
-                    left: quad.mins.x,
-                    top: quad.mins.y,
-                    width: quad.maxs.x - quad.mins.x,
-                    height: quad.maxs.y - quad.mins.y,
-                },
-                _ => OffsetDocument {
-                    left: 0.0,
-                    top: 0.0,
-                    width: 0.0,
-                    height: 0.0,
-                },
+                Ok(quad) => {
+                    OffsetDocument {
+                        left: quad.mins.x,
+                        top: quad.mins.y,
+                        width: quad.maxs.x - quad.mins.x,
+                        height: quad.maxs.y - quad.mins.y,
+                    }
+                }
+                _ => {
+                    OffsetDocument {
+                        left: 0.0,
+                        top: 0.0,
+                        width: 0.0,
+                        height: 0.0,
+                    }
+                }
             };
             serde_json::to_string(&value).unwrap()
         }
@@ -9666,15 +10396,16 @@
             let mut cur_child = match gui.down_query.get(&engine.world, node) {
                 Ok(down) => down.head(),
                 _ => {
-                    return serde_json::to_string(&Size {
-                        width: 0.0,
-                        height: 0.0,
-                    })
-                    .unwrap()
+                    return serde_json::to_string(&Size { width: 0.0, height: 0.0 })
+                        .unwrap();
                 }
             };
-            let (mut left, mut right, mut top, mut bottom) =
-                (std::f32::MAX, 0.0, std::f32::MAX, 0.0);
+            let (mut left, mut right, mut top, mut bottom) = (
+                std::f32::MAX,
+                0.0,
+                std::f32::MAX,
+                0.0,
+            );
             while !EntityKey(cur_child).is_null() {
                 let l = match gui.layout_query.get(&engine.world, cur_child) {
                     Ok(r) => r,
@@ -9699,11 +10430,13 @@
                     _ => break,
                 };
             }
-            serde_json::to_string(&Size {
-                width: right - left,
-                height: bottom - top,
-            })
-            .unwrap()
+            serde_json::to_string(
+                    &Size {
+                        width: right - left,
+                        height: bottom - top,
+                    },
+                )
+                .unwrap()
         }
     }
     #[cfg(target_arch = "wasm32")]
@@ -9714,15 +10447,16 @@
             let mut cur_child = match gui.down_query.get(&engine.world, node) {
                 Ok(down) => down.head(),
                 _ => {
-                    return serde_json::to_string(&Size {
-                        width: 0.0,
-                        height: 0.0,
-                    })
-                    .unwrap()
+                    return serde_json::to_string(&Size { width: 0.0, height: 0.0 })
+                        .unwrap();
                 }
             };
-            let (mut left, mut right, mut top, mut bottom) =
-                (std::f32::MAX, 0.0, std::f32::MAX, 0.0);
+            let (mut left, mut right, mut top, mut bottom) = (
+                std::f32::MAX,
+                0.0,
+                std::f32::MAX,
+                0.0,
+            );
             while !EntityKey(cur_child).is_null() {
                 let l = match gui.layout_query.get(&engine.world, cur_child) {
                     Ok(r) => r,
@@ -9747,11 +10481,13 @@
                     _ => break,
                 };
             }
-            serde_json::to_string(&Size {
-                width: right - left,
-                height: bottom - top,
-            })
-            .unwrap()
+            serde_json::to_string(
+                    &Size {
+                        width: right - left,
+                        height: bottom - top,
+                    },
+                )
+                .unwrap()
         }
     }
     #[cfg(feature = "pi_js_export")]
@@ -9783,7 +10519,7 @@
                     Some(r) => {
                         arr[i] = r.0.index();
                         arr[i + 1] = r.0.generation();
-                        arr[i + 2] = r.1 .1.get_hash() as u32;
+                        arr[i + 2] = r.1.1.get_hash() as u32;
                     }
                     None => continue,
                 };
@@ -9807,7 +10543,7 @@
                     Some(r) => {
                         arr[i] = r.0.index();
                         arr[i + 1] = r.0.generation();
-                        arr[i + 2] = r.1 .1.get_hash() as u32;
+                        arr[i + 2] = r.1.1.get_hash() as u32;
                     }
                     None => continue,
                 };
@@ -9881,7 +10617,12 @@
         for i in 0..count {
             let start = i * 5;
             let color_pos = ColorAndPosition {
-                rgba: CgColor::new(arr[start], arr[start + 1], arr[start + 2], arr[start + 3]),
+                rgba: CgColor::new(
+                    arr[start],
+                    arr[start + 1],
+                    arr[start + 2],
+                    arr[start + 3],
+                ),
                 position: arr[start + 4],
             };
             list.push(color_pos);
@@ -9896,7 +10637,12 @@
         Percent,
     }
     #[inline]
-    fn set_animation_str_inner(gui: &mut Gui, node_id: f64, value: &str, scope_hash: u32) {
+    fn set_animation_str_inner(
+        gui: &mut Gui,
+        node_id: f64,
+        value: &str,
+        scope_hash: u32,
+    ) {
         use pi_style::style_parse::parse_animation;
         let node_id = Entity::from_bits(unsafe { transmute(node_id) });
         let mut input = cssparser::ParserInput::new(value);
@@ -9911,24 +10657,22 @@
         animations.name.scope_hash = scope_hash as usize;
         ();
         if animations.name.value.len() > 0 {
+            gui.commands.set_style(node_id, AnimationNameType(animations.name));
+            gui.commands.set_style(node_id, AnimationDurationType(animations.duration));
             gui.commands
-                .set_style(node_id, AnimationNameType(animations.name));
+                .set_style(
+                    node_id,
+                    AnimationTimingFunctionType(animations.timing_function),
+                );
             gui.commands
-                .set_style(node_id, AnimationDurationType(animations.duration));
-            gui.commands.set_style(
-                node_id,
-                AnimationTimingFunctionType(animations.timing_function),
-            );
-            gui.commands.set_style(
-                node_id,
-                AnimationIterationCountType(animations.iteration_count),
-            );
-            gui.commands
-                .set_style(node_id, AnimationDelayType(animations.delay));
+                .set_style(
+                    node_id,
+                    AnimationIterationCountType(animations.iteration_count),
+                );
+            gui.commands.set_style(node_id, AnimationDelayType(animations.delay));
             gui.commands
                 .set_style(node_id, AnimationDirectionType(animations.direction));
-            gui.commands
-                .set_style(node_id, AnimationFillModeType(animations.fill_mode));
+            gui.commands.set_style(node_id, AnimationFillModeType(animations.fill_mode));
             gui.commands
                 .set_style(node_id, AnimationPlayStateType(animations.play_state));
         }
@@ -9938,8 +10682,7 @@
         let node_id = Entity::from_bits(unsafe { transmute(node_id) });
         gui.commands.set_style(node_id, ResetAnimationNameType);
         gui.commands.set_style(node_id, ResetAnimationDurationType);
-        gui.commands
-            .set_style(node_id, ResetAnimationIterationCountType);
+        gui.commands.set_style(node_id, ResetAnimationIterationCountType);
         gui.commands.set_style(node_id, ResetAnimationDelayType);
         gui.commands.set_style(node_id, ResetAnimationDirectionType);
         gui.commands.set_style(node_id, ResetAnimationFillModeType);

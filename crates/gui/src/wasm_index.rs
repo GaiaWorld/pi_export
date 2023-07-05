@@ -24,6 +24,8 @@ use pi_async::prelude::AsyncRuntime;
 use pi_bevy_ecs_extend::prelude::{Layer, OrDefault};
 use pi_bevy_post_process::PiPostProcessPlugin;
 use pi_bevy_render_plugin::{PiRenderPlugin, FrameState};
+use pi_window_renderer::PluginWindowRender;
+use pi_bevy_asset::PiAssetPlugin;
 use pi_hash::XHashMap;
 use pi_idtree::InsertType;
 use pi_slotmap::SecondaryMap;
@@ -44,7 +46,7 @@ pub use pi_export_base::export::{Engine, Atom};
 use bevy::app::App;
 use cssparser::ParseError;
 use js_proxy_gen_macro::pi_js_export;
-use js_sys::{Array, Function};
+use js_sys::{Array, Function, Float64Array};
 use pi_async::prelude::SingleTaskRunner;
 use pi_bevy_winit_window::WinitPlugin;
 use pi_hal::runtime::{RENDER_RUNTIME, RUNNER_MULTI, RUNNER_RENDER};
@@ -64,15 +66,17 @@ use winit::dpi::PhysicalSize;
 use winit::event_loop::EventLoop;
 pub use winit::platform::web::WindowBuilderExtWebSys;
 pub use winit::window::{Window, WindowBuilder};
-use pi_ui_render::resource::animation_sheet::KeyFramesSheet;
+use pi_ui_render::resource::{animation_sheet::KeyFramesSheet, FragmentCommand};
 
 
 
 /// width、height为physical_size
 #[wasm_bindgen]
-pub fn create_engine(canvas: HtmlCanvasElement, r: f64, width: u32, height: u32) -> Engine {
+pub fn create_engine(canvas: HtmlCanvasElement, width: u32, height: u32, asset_total_capacity: u32, asset_config: &str) -> Engine {
 	use bevy::prelude::{CoreSet, IntoSystemSetConfig};
 	use pi_bevy_render_plugin::should_run;
+	use crate::parse_asset_config;
+
     let mut app = App::default();
 
     let mut window_plugin = bevy::window::WindowPlugin::default();
@@ -81,6 +85,7 @@ pub fn create_engine(canvas: HtmlCanvasElement, r: f64, width: u32, height: u32)
 	let mut log = bevy::log::LogPlugin::default();
 	// log.filter="pi_flex_layout=trace".to_string();
 	// log.filter="pi_ui_render::resource::animation_sheet=debug".to_string();
+	// log.filter="pi_ui_render::system::node::user_setting=debug".to_string();
 	// log.filter="bevy=debug".to_string();
 	// log.filter="wgpu=debug".to_string();
 	log.level=bevy::log::Level::WARN;
@@ -88,8 +93,10 @@ pub fn create_engine(canvas: HtmlCanvasElement, r: f64, width: u32, height: u32)
         .add_plugin(log)
 		.add_plugin(bevy::a11y::AccessibilityPlugin)
         .add_plugin(window_plugin)
+		.add_plugin(PiAssetPlugin {total_capacity: asset_total_capacity as usize, asset_config: parse_asset_config(asset_config)})
         .add_plugin(pi_bevy_winit_window::WinitPlugin::new(canvas).with_size(width, height))
         .add_plugin(PiRenderPlugin {frame_init_state: FrameState::UnActive})
+		.add_plugin(PluginWindowRender)
         .add_plugin(PiPostProcessPlugin)
 		.add_plugin(RuntimePlugin); // 推动运行时
 	app.configure_set(CoreSet::First.run_if(should_run));
@@ -148,6 +155,21 @@ pub fn create_gui(
     // gui.commands.set_event_listener(a_callback);
 
     gui
+}
+
+#[wasm_bindgen]
+pub fn create_fragment(gui: &mut Gui, mut arr: Float64Array, count: u32, key: u32) {
+	let mut index = 0;
+	let mut entitys = Vec::with_capacity(count as usize);
+	while index < count {
+		let entity = gui.entitys.reserve_entity();
+		arr.set_index(index, unsafe { transmute(entity.to_bits()) });
+		entitys.push(entity);
+		index = index + 1;
+	}
+	gui.commands
+		.fragment_commands
+		.push(FragmentCommand { key, entitys });
 }
 
 
