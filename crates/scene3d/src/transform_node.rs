@@ -37,6 +37,17 @@ pub fn p3d_transform_node_parent(app: &mut Engine, param: &mut ActionSetScene3D,
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
+pub fn p3d_node_enable(app: &mut Engine, param: &mut ActionSetScene3D, node: f64, val: bool) {
+    let node: Entity = as_entity(node);
+
+    let mut cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
+
+    cmds.transformcmds.enable.push(OpsNodeEnable::ops(node, val));
+}
+
+
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
 pub fn p3d_local_position(app: &mut Engine, param: &mut ActionSetScene3D, node: f64, x: f64, y: f64, z: f64) {
     let node: Entity = as_entity(node);
 

@@ -47,6 +47,26 @@ pub fn p3d_scene(app: &mut Engine, param: &mut ActionSetScene3D, pass01: &PassCf
     as_f64(&scene)
 }
 
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
+pub fn p3d_scene_animation_enable(app: &mut Engine, param: &mut ActionSetScene3D, scene: f64, val: bool) {
+    let scene: Entity = as_entity(scene);
+
+    let mut scenecmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
+
+    scenecmds.scene.animeenable.push(OpsSceneAnimationEnable::ops(scene, val));
+}
+
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
+pub fn p3d_scene_time(app: &mut Engine, param: &mut ActionSetScene3D, scene: f64, val: f64) {
+    let scene: Entity = as_entity(scene);
+
+    let mut scenecmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
+
+    scenecmds.scene.time.push(OpsSceneTime::ops(scene, val as u64));
+}
+
 ///
 /// 相机渲染像素宽高
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
