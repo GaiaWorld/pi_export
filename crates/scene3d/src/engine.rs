@@ -18,8 +18,8 @@ use js_proxy_gen_macro::pi_js_export;
 pub fn p3d_init_engine(app: &mut Engine) {
     use pi_engine_shell::frame_time::PluginFrameTime;
 
-    app.
-        add_plugin(PluginWindowRender)
+    app
+        // add_plugin(PluginWindowRender)
         .add_plugins(PluginBundleDefault)
         // .add_plugin(PluginFrameTime)
         .add_plugin(PluginNodeMaterial)

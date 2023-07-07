@@ -67,6 +67,58 @@ pub fn p3d_scene_time(app: &mut Engine, param: &mut ActionSetScene3D, scene: f64
     scenecmds.scene.time.push(OpsSceneTime::ops(scene, val as u64));
 }
 
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
+pub fn p3d_scene_fogcolor(app: &mut Engine, param: &mut ActionSetScene3D, scene: f64, r: f64, g: f64, b: f64) {
+    let scene: Entity = as_entity(scene);
+
+    let mut scenecmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
+
+    scenecmds.scene.fogcolor.push(OpsSceneFogColor::ops(scene, r as f32, g as f32, b as f32));
+}
+
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
+pub fn p3d_scene_fogparam(app: &mut Engine, param: &mut ActionSetScene3D, scene: f64, mode: f64, param0: f64, param1: f64, param2: f64) {
+    let scene: Entity = as_entity(scene);
+
+    let mut scenecmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
+
+    let mode = mode as u8;
+    let param = if mode == FogParam::EXP {
+        FogParam::Exp(FogExpParam { density_fallof: param0 as f32 })
+    } else if mode == FogParam::EXP2 {
+        FogParam::Exp2(FogExp2Param { density_fallof: param0 as f32 })
+    } else if mode == FogParam::LINEAR {
+        FogParam::Linear(FogLinearParam { start: param0 as f32, end: param1 as f32 })
+    } else if mode == FogParam::ALTITUDE_BASE {
+        FogParam::AltitudeBase(FogAltitudeBaseParam { h_while_max_density: param0 as f32, density: param1 as f32, density_fallof: param2 as f32 })
+    } else {
+        FogParam::None
+    };
+    scenecmds.scene.fogparam.push(OpsSceneFogParam::ops(scene, param));
+}
+
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
+pub fn p3d_scene_ambientcolor(app: &mut Engine, param: &mut ActionSetScene3D, scene: f64, r: f64, g: f64, b: f64) {
+    let scene: Entity = as_entity(scene);
+
+    let mut scenecmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
+
+    scenecmds.scene.ambientcolor.push(OpsSceneAmbientColor::ops(scene, r as f32, g as f32, b as f32));
+}
+
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
+pub fn p3d_scene_ambientintensity(app: &mut Engine, param: &mut ActionSetScene3D, scene: f64, val: f64) {
+    let scene: Entity = as_entity(scene);
+
+    let mut scenecmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
+
+    scenecmds.scene.ambientintensity.push(OpsSceneAmbientIntensity::ops(scene, val as f32));
+}
+
 ///
 /// 相机渲染像素宽高
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
