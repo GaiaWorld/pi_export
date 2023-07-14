@@ -18,6 +18,10 @@ use js_proxy_gen_macro::pi_js_export;
 pub fn p3d_init_engine(app: &mut Engine) {
     use pi_engine_shell::frame_time::PluginFrameTime;
 
+    if app.world.get_resource::<AssetMgrConfigs>().is_none() {
+        app.insert_resource(AssetMgrConfigs::default());
+    }
+
     app
         // add_plugin(PluginWindowRender)
         .add_plugins(PluginBundleDefault)
@@ -129,6 +133,14 @@ pub struct ActionSets<'w> {
     pub anime_lightdiffuse: (
         ResMut<'w, TypeAnimeContext<LightDiffuse>>,
         Res<'w, ShareAssetMgr<TypeFrameCurve<LightDiffuse>>>
+    ),
+    pub anime_boneoffset: (
+        ResMut<'w, TypeAnimeContext<InstanceBoneoffset>>,
+        Res<'w, ShareAssetMgr<TypeFrameCurve<InstanceBoneoffset>>>
+    ),
+    pub anime_indices_range: (
+        ResMut<'w, TypeAnimeContext<IndiceRenderRange>>,
+        Res<'w, ShareAssetMgr<TypeFrameCurve<IndiceRenderRange>>>
     ),
 }
 

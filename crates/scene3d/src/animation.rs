@@ -1,5 +1,5 @@
 
-use std::{mem::replace, fmt::Debug};
+use std::{mem::replace, fmt::Debug, ops::Range};
 use js_proxy_gen_macro::pi_js_export;
 use derive_deref::{Deref, DerefMut};
 use pi_node_materials::prelude::*;
@@ -34,30 +34,33 @@ pub enum EAnimeCurve {
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub enum EAnimePropertyType {
-    LocalPosition,
-    LocalScaling,
-    LocalRotation,
-    LocalEulerAngles,
-    Alpha,
-    MainColor,
-    MainTexUScale,
-    MainTexVScale,
-    MainTexUOffset,
-    MainTexVOffset,
-    OpacityTexUScale,
-    OpacityTexVScale,
-    OpacityTexUOffset,
-    OpacityTexVOffset,
-    AlphaCutoff,
-    Fov,
-    OrthSize,
-    LightDiffuse,
-    MaskTexUScale,
-    MaskTexVScale,
-    MaskTexUOffset,
-    MaskTexVOffset,
-    MaskCutoff,
-    IsActive,
+    LocalPosition       = 00,
+    LocalScaling        = 01,
+    LocalRotation       = 02,
+    LocalEulerAngles    = 03,
+    Alpha               = 04,
+    MainColor           = 05,
+    MainTexUScale       = 06,
+    MainTexVScale       = 07,
+    MainTexUOffset      = 08,
+    MainTexVOffset      = 09,
+    OpacityTexUScale    = 10,
+    OpacityTexVScale    = 11,
+    OpacityTexUOffset   = 12,
+    OpacityTexVOffset   = 13,
+    AlphaCutoff         = 14,
+    Fov                 = 15,
+    OrthSize            = 16,
+    LightDiffuse        = 17,
+    MaskTexUScale       = 18,
+    MaskTexVScale       = 19,
+    MaskTexUOffset      = 20,
+    MaskTexVOffset      = 21,
+    MaskCutoff          = 22,
+    IsActive            = 23,
+    
+    BoneOffset          = 100,
+    IndicesRange        = 101,
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
@@ -262,6 +265,7 @@ impl EAnimationGroupListen {
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
+/// 创建动画组
 pub fn p3d_animation_group(
     app: &mut Engine,
     param: &mut ActionSetScene3D,
@@ -280,6 +284,42 @@ pub fn p3d_animation_group(
     } else {
         None
     }
+}
+
+
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
+/// 设置 动画组 混合权重
+pub fn p3d_animation_group_weight(
+    app: &mut Engine,
+    param: &mut ActionSetScene3D,
+    scene: f64,
+    group_key: f64,
+    weight: f64,
+) {
+    let scene: Entity = as_entity(scene);
+    let group_key = as_dk(&group_key);
+
+    let mut cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
+
+    cmds.animegroupcmd.scene_ctxs.group_weight(scene, group_key, weight as f32);
+}
+
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
+/// 重置动画组各动画作用目标到非动画操作状态
+pub fn p3d_animation_group_target_reset(
+    app: &mut Engine,
+    param: &mut ActionSetScene3D,
+    scene: f64,
+    group_key: f64,
+) {
+    let scene: Entity = as_entity(scene);
+    let group_key = as_dk(&group_key);
+
+    let mut cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
+
+    cmds.animegroupcmd.reset_while_start.push(OpsAnimationGroupStartReset::ops(scene, group_key));
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
@@ -625,6 +665,20 @@ impl TValue<3> for LightDiffuse {
     }
 }
 
+impl TValue<1> for InstanceBoneoffset {
+    fn newn(data: &[f32], offset: usize) -> Self {
+        let x = data[offset + 0] as u32;
+        Self(x)
+    }
+}
+
+impl TValue<2> for IndiceRenderRange {
+    fn newn(data: &[f32], offset: usize) -> Self {
+        let x = data[offset + 0] as u32; let y = data[offset + 1] as u32;
+        Self(Some(Range { start: x, end: y, }))
+    }
+}
+
 fn curve<const N: usize, T: TValue<N> + FrameDataValue + Debug>(
     data: &[f32],
     mode: EAnimeCurve,
@@ -640,7 +694,7 @@ fn curve<const N: usize, T: TValue<N> + FrameDataValue + Debug>(
             for i in 0..frames {
                 let index = head + i * step;
                 let frame = data[index + 0] as u16;
-                log::warn!("Frame {:?}, data: {:?}", frame, T::newn(data, index + 1));
+                // log::warn!("Frame {:?}, data: {:?}", frame, T::newn(data, index + 1));
                 curve.curve_frame_values_frame(frame, T::newn(data, index + 1));
             }
             curve
@@ -684,8 +738,8 @@ fn curve<const N: usize, T: TValue<N> + FrameDataValue + Debug>(
             for i in 0..frames {
                 let index = head + i * step;
                 let frame = data[index + 0] as u16;
-                let value = data[index + 1] as f32;
-                let intangent = data[index + 2] as f32;
+                let intangent  = data[index + 1] as f32;
+                let value = data[index + 2] as f32;
                 let outtangent = data[index + 3] as f32;
                 curve.curve_minmax_curve_frame(frame, value, intangent, outtangent);
             }
@@ -717,8 +771,8 @@ fn curve<const N: usize, T: TValue<N> + FrameDataValue + Debug>(
             for i in 0..frames {
                 let index = head + i * step;
                 let frame = data[index + 0] as u16;
-                let value = T::newn(data, index + 1);
-                let intangent = T::newn(data, index + 1 + vs);
+                let intangent = T::newn(data, index + 1);
+                let value = T::newn(data, index + 1 + vs);
                 let outtangent = T::newn(data, index + 1 + vs2);
                 curve.curve_cubic_splice_frame(frame, value, intangent, outtangent);
             }
@@ -737,9 +791,9 @@ fn curve<const N: usize, T: TValue<N> + FrameDataValue + Debug>(
 /// * `MinMaxCurve` data: [design_frame_per_second, (x, y, ..), (x, y, ..), (frame, f32, it, ot), (frame, f32, it, ot) ...]
 /// * `CubicBezierCurve` data: [design_frame_per_second, total_frame, (x, y, ..), (x, y, ..), (x1, y1, x2, y2)]
 /// * `GLTFCubicSpline` data: [design_frame_per_second, (frame, (x, y, ..), (x, y, ..), (x, y, ..)), ...]
-pub fn p3d_anime_curve_query(app: &mut Engine, param: &mut ActionSetScene3D, key: String, property: EAnimePropertyType) -> bool {
+pub fn p3d_anime_curve_query(app: &mut Engine, param: &mut ActionSetScene3D, key: f64, property: EAnimePropertyType) -> bool {
     let mut cmds = param.acts.get_mut(&mut app.world);
-    let key = pi_atom::Atom::from(key);
+    let key = key as IDAssetTypeFrameCurve;
     match property {
         EAnimePropertyType::LocalPosition       => cmds.transformanime.position.curves.get(&key).is_some(),
         EAnimePropertyType::LocalScaling        => cmds.transformanime.scaling.curves.get(&key).is_some(),
@@ -765,14 +819,16 @@ pub fn p3d_anime_curve_query(app: &mut Engine, param: &mut ActionSetScene3D, key
         EAnimePropertyType::MaskTexVOffset      => cmds.anime_masktex_voffset.1.get(&key).is_some(),
         EAnimePropertyType::MaskCutoff          => cmds.anime_maskcutoff.1.get(&key).is_some(),
         EAnimePropertyType::IsActive            => cmds.anime_isactive.1.get(&key).is_some(),
+        EAnimePropertyType::BoneOffset          => cmds.anime_boneoffset.1.get(&key).is_some(),
+        EAnimePropertyType::IndicesRange        => cmds.anime_indices_range.1.get(&key).is_some(),
     }
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
-pub fn p3d_anime_curve_create(app: &mut Engine, param: &mut ActionSetScene3D, key: String, property: EAnimePropertyType, data: &[f32], mode: EAnimeCurve) {
+pub fn p3d_anime_curve_create(app: &mut Engine, param: &mut ActionSetScene3D, key: f64, property: EAnimePropertyType, data: &[f32], mode: EAnimeCurve) {
     let mut cmds = param.acts.get_mut(&mut app.world);
-    let key = pi_atom::Atom::from(key);
+    let key = key as IDAssetTypeFrameCurve;
     match property {
         EAnimePropertyType::LocalPosition       => {
             let v = curve::<3, LocalPosition>(data, mode);
@@ -870,6 +926,14 @@ pub fn p3d_anime_curve_create(app: &mut Engine, param: &mut ActionSetScene3D, ke
             let v = curve::<1, Enable>(data, mode);
             cmds.anime_isactive.1.insert(key, TypeFrameCurve(v));
         },
+        EAnimePropertyType::BoneOffset          => {
+            let v = curve::<1, InstanceBoneoffset>(data, mode);
+            cmds.anime_boneoffset.1.insert(key, TypeFrameCurve(v));
+        },
+        EAnimePropertyType::IndicesRange        => {
+            let v = curve::<2, IndiceRenderRange>(data, mode);
+            cmds.anime_indices_range.1.insert(key, TypeFrameCurve(v));
+        },
     }
 }
 
@@ -878,7 +942,7 @@ pub fn p3d_anime_curve_create(app: &mut Engine, param: &mut ActionSetScene3D, ke
 pub fn p3d_target_animation(
     app: &mut Engine,
     param: &mut ActionSetScene3D,
-    curve_key: String,
+    curve_key: f64,
     property: EAnimePropertyType,
     id_scene: f64,
     group: f64,
@@ -889,7 +953,7 @@ pub fn p3d_target_animation(
     let anime_target = as_entity(curve_target);
 
     let mut cmds = param.acts.get_mut(&mut app.world);
-    let key = pi_atom::Atom::from(curve_key);
+    let key = curve_key as IDAssetTypeFrameCurve;
 
     let info = match property {
         EAnimePropertyType::LocalPosition => {
@@ -1011,6 +1075,16 @@ pub fn p3d_target_animation(
         EAnimePropertyType::IsActive =>  {
             if let Some(curve) = cmds.anime_isactive.1.get(&key) {
                 cmds.anime_isactive.0.create_animation(0, AssetTypeFrameCurve::from(curve))
+            } else { return; }
+        },
+        EAnimePropertyType::BoneOffset =>  {
+            if let Some(curve) = cmds.anime_boneoffset.1.get(&key) {
+                cmds.anime_boneoffset.0.create_animation(0, AssetTypeFrameCurve::from(curve))
+            } else { return; }
+        },
+        EAnimePropertyType::IndicesRange =>  {
+            if let Some(curve) = cmds.anime_indices_range.1.get(&key) {
+                cmds.anime_indices_range.0.create_animation(0, AssetTypeFrameCurve::from(curve))
             } else { return; }
         },
     };

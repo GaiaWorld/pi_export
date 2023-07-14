@@ -50,6 +50,8 @@ pub enum BuiltinNodeMaterialBlock {
     BlockFresnel,
     BlockEmissiveFresnel,
     BlockOpacityFresnel,
+    
+    BlockPremultiplyResult,
 }
 impl BuiltinNodeMaterialBlock {
     pub fn key(&self) -> &'static str {
@@ -79,6 +81,7 @@ impl BuiltinNodeMaterialBlock {
             BuiltinNodeMaterialBlock::BlockFresnel                      => BlockFresnel                      ::KEY,
             BuiltinNodeMaterialBlock::BlockEmissiveFresnel              => BlockEmissiveFresnel              ::KEY,
             BuiltinNodeMaterialBlock::BlockOpacityFresnel               => BlockOpacityFresnel               ::KEY,
+            BuiltinNodeMaterialBlock::BlockPremultiplyResult            => BlockPremultiplyResult            ::KEY,
         }
     }
 }

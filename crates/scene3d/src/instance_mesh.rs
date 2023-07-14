@@ -25,12 +25,32 @@ pub fn p3d_instance_mesh(app: &mut Engine, param: &mut ActionSetScene3D, source:
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
-pub fn p3d_instance_mesh_color(app: &mut Engine, param: &mut ActionSetScene3D, instance: f64, r: f64, g: f64, b: f64, a: f64) {
+pub fn p3d_instance_mesh_color(app: &mut Engine, param: &mut ActionSetScene3D, instance: f64, r: f64, g: f64, b: f64) {
     let instance: Entity = as_entity(instance);
 
     let mut cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
 
-    cmds.instancemeshcmds.color.push(OpsInstanceColor::ops(instance, r as f32, g as f32, b as f32, a as f32));
+    cmds.instancemeshcmds.color.push(OpsInstanceColor::ops(instance, r as f32, g as f32, b as f32));
+}
+
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
+pub fn p3d_instance_mesh_alpha(app: &mut Engine, param: &mut ActionSetScene3D, instance: f64, val: f64) {
+    let instance: Entity = as_entity(instance);
+
+    let mut cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
+
+    cmds.instancemeshcmds.alpha.push(OpsInstanceAlpha::ops(instance, val as f32));
+}
+
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
+pub fn p3d_mesh_bone_offset(app: &mut Engine, param: &mut ActionSetScene3D, instance: f64, val: f64) {
+    let instance: Entity = as_entity(instance);
+
+    let mut cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
+
+    cmds.abstructmeshcmds.boneoffset.push(OpsBoneOffset::ops(instance, val as u32));
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
