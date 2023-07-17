@@ -120,6 +120,7 @@ pub fn create_fragment(gui: &mut Gui, arr: &mut [f64], count: u32, key: u32) {
 		entitys.push(entity);
 		index = index + 1;
 	}
+	log::warn!("entitys=============={:?}", entitys);
 	gui.commands
 		.fragment_commands
 		.push(FragmentCommand { key, entitys });
@@ -129,21 +130,21 @@ pub fn play_destroy_node(gui: &mut Gui, _engine: &mut Engine, context: &mut Play
     let id = unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index() as usize;
     let node_id = context.nodes.remove(id).unwrap();
 
-    if let Some(r) = context.idtree.get(id) {
-        let head = r.children().head;
-        // 移除所有节点
+    // if let Some(r) = context.idtree.get(id) {
+    //     let head = r.children().head;
+    //     // 移除所有节点
 
-        for (id, _n) in context.idtree.recursive_iter(head) {
-            context.nodes.remove(id);
-        }
+    //     for (id, _n) in context.idtree.recursive_iter(head) {
+    //         context.nodes.remove(id);
+    //     }
 
-        // 递归删除idtree
-        let r = match context.idtree.get(id) {
-            Some(n) => (n.parent(), n.layer(), n.count(), n.prev(), n.next(), n.children().head),
-            _ => return,
-        };
-        context.idtree.destroy(id, r, true);
-    }
+    //     // 递归删除idtree
+    //     let r = match context.idtree.get(id) {
+    //         Some(n) => (n.parent(), n.layer(), n.count(), n.prev(), n.next(), n.children().head),
+    //         _ => return,
+    //     };
+    //     context.idtree.destroy(id, r, true);
+    // }
 
 
     // 销毁节点
@@ -152,30 +153,30 @@ pub fn play_destroy_node(gui: &mut Gui, _engine: &mut Engine, context: &mut Play
 
 pub fn play_append_child(gui: &mut Gui, _engine: &mut Engine, context: &mut PlayContext, json: &Vec<json::JsonValue>) {
 
-    // log::warn!("play_append_child================{:?}, {:?}, version0: {:?}, version1: {:?}, index0: {}, index1:{:?}, v1:{}, v2:{}, entity:{:?}", r0, r1, r0 >> 32 as u32, r1 >> 32 as u32, r0 as u32, r1 as u32, as_value::<f64>(json, 0).unwrap(), as_value::<f64>(json, 1).unwrap(), unsafe {Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))} );
-
     let node_id = unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index() as usize;
     let parent_id = unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 1).unwrap())) }.index() as usize;
-    let node_id1 = context.nodes.get(node_id).unwrap().clone();
-    let parent_id1 = match context.nodes.get(parent_id) {
+    let node_id1 = context.get_node(node_id).unwrap().clone();
+    let parent_id1 = match context.get_node(parent_id) {
         Some(r) => r.clone(),
         None => unsafe { transmute(EntityKey::null().to_bits()) },
     };
 
+	log::warn!("play_append_child================ node_json: {:?}, parent_json: {:?}, node: {:?}, parent: {:?},", node_id, parent_id, unsafe { Entity::from_bits(transmute(node_id1)) }, unsafe { Entity::from_bits(transmute(parent_id1)) } );
+
     append_child(gui, node_id1, parent_id1);
 
-    if context.idtree.get(node_id).is_none() {
-        context.idtree.create(node_id);
-    }
+    // if context.idtree.get(node_id).is_none() {
+    //     context.idtree.create(node_id);
+    // }
 
-    if EntityKey(Entity::from_bits(unsafe { transmute(parent_id1) })).is_null() {
-        context.idtree.insert_child(node_id, usize::null(), 0);
-    } else {
-        if context.idtree.get(parent_id).is_none() {
-            context.idtree.create(parent_id);
-        }
-        context.idtree.insert_child(node_id, parent_id, 0);
-    }
+    // if EntityKey(Entity::from_bits(unsafe { transmute(parent_id1) })).is_null() {
+    //     context.idtree.insert_child(node_id, usize::null(), 0);
+    // } else {
+    //     if context.idtree.get(parent_id).is_none() {
+    //         context.idtree.create(parent_id);
+    //     }
+    //     context.idtree.insert_child(node_id, parent_id, 0);
+    // }
 }
 
 pub fn play_insert_as_root(gui: &mut Gui, _engine: &mut Engine, context: &mut PlayContext, json: &Vec<json::JsonValue>) {
@@ -183,29 +184,32 @@ pub fn play_insert_as_root(gui: &mut Gui, _engine: &mut Engine, context: &mut Pl
     // log::warn!("play_append_child================{:?}, {:?}, version0: {:?}, version1: {:?}, index0: {}, index1:{:?}, v1:{}, v2:{}, entity:{:?}", r0, r1, r0 >> 32 as u32, r1 >> 32 as u32, r0 as u32, r1 as u32, as_value::<f64>(json, 0).unwrap(), as_value::<f64>(json, 1).unwrap(), unsafe {Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))} );
 
     let node_id = unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index() as usize;
-    let node_id1 = context.nodes.get(node_id).unwrap().clone();
+    let node_id1 = context.get_node(node_id).unwrap().clone();
 
     insert_as_root(gui, node_id1);
 
-    if context.idtree.get(node_id).is_none() {
-        context.idtree.create(node_id);
-    }
+    // if context.idtree.get(node_id).is_none() {
+    //     context.idtree.create(node_id);
+    // }
 
-	context.idtree.insert_child(node_id, usize::null(), 0);
+	// context.idtree.insert_child(node_id, usize::null(), 0);
 }
 
 pub fn play_insert_before(gui: &mut Gui, _engine: &mut Engine, context: &mut PlayContext, json: &Vec<json::JsonValue>) {
     let node_id = unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index() as usize;
     let borther = unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 1).unwrap())) }.index() as usize;
-    let node_id1 = context.nodes.get(node_id).unwrap().clone();
-    let borther1 = context.nodes.get(borther).unwrap().clone();
+    let node_id1 = context.get_node(node_id).unwrap().clone();
+    let borther1 = context.get_node(borther).unwrap().clone();
     insert_before(gui, node_id1, borther1);
 
-    if context.idtree.get(node_id).is_none() {
-        context.idtree.create(node_id);
-    }
+    // if context.idtree.get(node_id).is_none() {
+    //     context.idtree.create(node_id);
+    // }
+	// if context.idtree.get(borther).is_none() {
+    //     context.idtree.create(borther);
+    // }
 
-    context.idtree.insert_brother(node_id, borther, InsertType::Front);
+    // context.idtree.insert_brother(node_id, borther, InsertType::Front);
 }
 
 pub fn play_create_node(gui: &mut Gui, _engine: &mut Engine, context: &mut PlayContext, json: &Vec<json::JsonValue>) {
@@ -213,6 +217,7 @@ pub fn play_create_node(gui: &mut Gui, _engine: &mut Engine, context: &mut PlayC
     let ret = &json["ret"];
     let ret = unsafe { Entity::from_bits(transmute(ret.as_f64().unwrap())) }.index() as usize;
     let r = create_node(gui);
+	log::warn!("play_create_node================old_node {:?}, node: {:?},", ret, r);
     context.nodes.insert(ret, r);
 }
 
@@ -247,6 +252,29 @@ pub fn play_create_canvas_node(gui: &mut Gui, _engine: &mut Engine, context: &mu
 
 pub fn play_remove_node(gui: &mut Gui, _engine: &mut Engine, context: &mut PlayContext, json: &Vec<json::JsonValue>) {
     let node_id = unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index() as usize;
-    let node_id = context.nodes.get(node_id).unwrap().clone();
+    let node_id = context.get_node(node_id).unwrap().clone();
     remove_node(gui, node_id);
+}
+
+
+pub fn play_create_fragment(gui: &mut Gui, _engine: &mut Engine,  context: &mut PlayContext, json: &Vec<json::JsonValue>) {
+	// mut arr: Float64Array, count: u32, key: u32
+	log::warn!("json========{:?}", json);
+	let mut arr = pi_export_play::as_value::<Vec<f64>>(json, 0).unwrap();
+	let arr_old = arr.clone();
+	let count = pi_export_play::as_value::<u32>(json, 1).unwrap();
+	let key = pi_export_play::as_value::<u32>(json, 2).unwrap();
+
+	if arr.len() != count as usize {
+		panic!("ret is invalid");
+	}
+
+	create_fragment(gui, &mut arr, count, key);
+
+	for i in 0..count as usize {
+		let ret = arr_old[i];
+		let ret = unsafe { Entity::from_bits(transmute(ret) ) }.index() as usize;
+		log::warn!("play_create_fragment========{:?}, {:?}, {:?}", ret, arr[i], unsafe { Entity::from_bits(transmute(arr[i]) ) }.index() as usize);
+		context.nodes.insert(ret, arr[i]);
+	}
 }

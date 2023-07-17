@@ -251,14 +251,14 @@ pub fn get_layout(engine: &mut Engine, node_id: f64) -> String {
 // }
 
 
-#[pi_js_export]
-pub fn get_class_name(engine: &mut Engine, node_id: f64) -> String {
-    let node_id = Entity::from_bits(unsafe { transmute(node_id) });
-	serde_json::to_string(&&match engine.world.query::<&ClassName>().get(&engine.world, node_id) {
-        Ok(r) => Some(r),
-        _ => None,
-    }).unwrap()
-}
+// #[pi_js_export]
+// pub fn get_class_name(engine: &mut Engine, node_id: f64) -> String {
+//     let node_id = Entity::from_bits(unsafe { transmute(node_id) });
+// 	serde_json::to_string(&&match engine.world.query::<&ClassName>().get(&engine.world, node_id) {
+//         Ok(r) => Some(r),
+//         _ => None,
+//     }).unwrap()
+// }
 
 #[pi_js_export]
 pub fn dump_graphviz(engine: &Engine) -> String {

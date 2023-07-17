@@ -72,7 +72,7 @@ use pi_ui_render::resource::{animation_sheet::KeyFramesSheet, FragmentCommand};
 
 /// width、height为physical_size
 #[wasm_bindgen]
-pub fn create_engine(canvas: HtmlCanvasElement, width: u32, height: u32, asset_total_capacity: u32, asset_config: &str) -> Engine {
+pub fn create_engine(canvas: HtmlCanvasElement, width: u32, height: u32, asset_total_capacity: u32, asset_config: &str, log_filter: Option<String>) -> Engine {
 	use bevy::prelude::{CoreSet, IntoSystemSetConfig};
 	use pi_bevy_render_plugin::should_run;
 	use crate::parse_asset_config;
@@ -83,9 +83,14 @@ pub fn create_engine(canvas: HtmlCanvasElement, width: u32, height: u32, asset_t
 	window_plugin.primary_window = None;
 
 	let mut log = bevy::log::LogPlugin::default();
-	// log.filter="pi_flex_layout=trace".to_string();
+	web_sys::console::log_1(&wasm_bindgen::JsValue::from(&format!("log_filter========={:?}", log_filter)));
+	if let Some(log_filter) = log_filter {
+		log.filter = log_filter;
+	}
+	
+
 	// log.filter="pi_ui_render::resource::animation_sheet=debug".to_string();
-	// log.filter="pi_ui_render::system::node::user_setting=debug".to_string();
+	// log.filter="pi_ui_render::system::node::user_setting=debug,pi_ui_render::system::components::user=debug".to_string();
 	// log.filter="bevy=debug".to_string();
 	// log.filter="wgpu=debug".to_string();
 	log.level=bevy::log::Level::WARN;

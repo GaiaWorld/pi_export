@@ -59,10 +59,10 @@ codegen-units = 1
 # pi_style = { path = "../pi_style" }
 
 # [patch."https://github.com/GaiaWorld/pi_render"]
-# pi_render = { path = "../pi_render_bevy_shader" }
-# render_derive = {path = "../pi_render_bevy_shader/crates/render_derive"}
-# render_utils = { path = "../pi_render_bevy_shader/crates/render_utils" }
-# render_compile = { path = "../pi_render_bevy_shader/crates/render_compile" }
+# pi_render = { path = "../pi_render" }
+# render_derive = {path = "../pi_render/crates/render_derive"}
+# render_utils = { path = "../pi_render/crates/render_utils" }
+# render_compile = { path = "../pi_render/crates/render_compile" }
 
 # [patch."https://github.com/GaiaWorld/pi_render_bevy"]
 # pi_bevy_post_process= { path = "../pi_render_bevy/crates/post_process" }
@@ -78,8 +78,8 @@ codegen-units = 1
 # [patch."https://github.com/GaiaWorld/pi_post_process"]
 # pi_postprocess ={path="../pi_post_process"}
 
-# [patch."https://github.com/GaiaWorld/pi_animation"]
-# pi_animation ={path="../pi_animation"}
+[patch."https://github.com/GaiaWorld/pi_animation"]
+pi_animation ={path="../pi_animation"}
 
 # [patch."https://github.com/GaiaWorld/pi_3d"]
 # pi_3d               = { path="../pi_3d" }

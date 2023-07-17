@@ -38,6 +38,25 @@
         pub nodes: VecMap<f64>,
         pub atoms: XHashMap<usize, Atom>,
         pub idtree: pi_idtree::IdTree<()>,
+        pub root: EntityKey,
+        pub root_index: usize,
+    }
+    impl PlayContext {
+        pub fn get_node(&mut self, index: usize) -> Option<f64> {
+            match self.nodes.get(index) {
+                Some(r) => Some(*r),
+                None => {
+                    if (index as u32) < std::u32::MAX && self.root_index == 0 {
+                        let r: f64 = unsafe { transmute(self.root.0.to_bits()) };
+                        self.nodes.insert(index, r);
+                        self.root_index = index;
+                        Some(r)
+                    } else {
+                        None
+                    }
+                }
+            }
+        }
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
@@ -77,7 +96,7 @@
             Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
         }
             .index();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -99,7 +118,7 @@
         i += 1;
         let v = pi_export_play::as_value::<f64>(json, i).unwrap();
         i += 1;
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -143,7 +162,7 @@
             Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
         }
             .index();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -165,7 +184,7 @@
         i += 1;
         let v = pi_export_play::as_value::<f64>(json, i).unwrap();
         i += 1;
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -211,7 +230,7 @@
             Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
         }
             .index();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -233,7 +252,7 @@
         i += 1;
         let v = pi_export_play::as_value::<f64>(json, i).unwrap();
         i += 1;
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -279,7 +298,7 @@
             Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
         }
             .index();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -301,7 +320,7 @@
         i += 1;
         let v = pi_export_play::as_value::<f64>(json, i).unwrap();
         i += 1;
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -345,7 +364,7 @@
             Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
         }
             .index();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -367,7 +386,7 @@
         i += 1;
         let v = pi_export_play::as_value::<f64>(json, i).unwrap();
         i += 1;
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -411,7 +430,7 @@
             Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
         }
             .index();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -433,7 +452,7 @@
         i += 1;
         let v = pi_export_play::as_value::<f64>(json, i).unwrap();
         i += 1;
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -477,7 +496,7 @@
             Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
         }
             .index();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -499,7 +518,7 @@
         i += 1;
         let v = pi_export_play::as_value::<f64>(json, i).unwrap();
         i += 1;
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -543,7 +562,7 @@
             Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
         }
             .index();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -565,7 +584,7 @@
         i += 1;
         let v = pi_export_play::as_value::<f32>(json, i).unwrap();
         i += 1;
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -609,7 +628,7 @@
             Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
         }
             .index();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -631,7 +650,7 @@
         i += 1;
         let v = pi_export_play::as_value::<f32>(json, i).unwrap();
         i += 1;
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -675,7 +694,7 @@
             Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
         }
             .index();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -697,7 +716,7 @@
         i += 1;
         let v = pi_export_play::as_value::<f32>(json, i).unwrap();
         i += 1;
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -741,7 +760,7 @@
             Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
         }
             .index();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -763,7 +782,7 @@
         i += 1;
         let v = pi_export_play::as_value::<f32>(json, i).unwrap();
         i += 1;
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -807,7 +826,7 @@
             Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
         }
             .index();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -827,7 +846,7 @@
         }
             .index();
         i += 1;
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -871,7 +890,7 @@
             Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
         }
             .index();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -893,7 +912,7 @@
         i += 1;
         let v = pi_export_play::as_value::<f32>(json, i).unwrap();
         i += 1;
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -937,7 +956,7 @@
             Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
         }
             .index();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -959,7 +978,7 @@
         i += 1;
         let v = pi_export_play::as_value::<f32>(json, i).unwrap();
         i += 1;
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -1003,7 +1022,7 @@
             Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
         }
             .index();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -1023,7 +1042,7 @@
         }
             .index();
         i += 1;
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -1067,7 +1086,7 @@
             Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
         }
             .index();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -1089,7 +1108,7 @@
         i += 1;
         let v = pi_export_play::as_value::<f32>(json, i).unwrap();
         i += 1;
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -1133,7 +1152,7 @@
             Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
         }
             .index();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -1155,7 +1174,7 @@
         i += 1;
         let v = pi_export_play::as_value::<f32>(json, i).unwrap();
         i += 1;
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -1199,7 +1218,7 @@
             Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
         }
             .index();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -1219,7 +1238,7 @@
         }
             .index();
         i += 1;
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -1263,7 +1282,7 @@
             Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
         }
             .index();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -1285,7 +1304,7 @@
         i += 1;
         let v = pi_export_play::as_value::<f32>(json, i).unwrap();
         i += 1;
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -1329,7 +1348,7 @@
             Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
         }
             .index();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -1351,7 +1370,7 @@
         i += 1;
         let v = pi_export_play::as_value::<f32>(json, i).unwrap();
         i += 1;
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -1395,7 +1414,7 @@
             Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
         }
             .index();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -1415,7 +1434,7 @@
         }
             .index();
         i += 1;
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -1459,7 +1478,7 @@
             Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
         }
             .index();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -1481,7 +1500,7 @@
         i += 1;
         let v = pi_export_play::as_value::<f32>(json, i).unwrap();
         i += 1;
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -1525,7 +1544,7 @@
             Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
         }
             .index();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -1547,7 +1566,7 @@
         i += 1;
         let v = pi_export_play::as_value::<f32>(json, i).unwrap();
         i += 1;
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -1591,7 +1610,7 @@
             Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
         }
             .index();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -1611,7 +1630,7 @@
         }
             .index();
         i += 1;
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -1655,7 +1674,7 @@
             Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
         }
             .index();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -1677,7 +1696,7 @@
         i += 1;
         let v = pi_export_play::as_value::<f32>(json, i).unwrap();
         i += 1;
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -1721,7 +1740,7 @@
             Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
         }
             .index();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -1743,7 +1762,7 @@
         i += 1;
         let v = pi_export_play::as_value::<f32>(json, i).unwrap();
         i += 1;
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -1787,7 +1806,7 @@
             Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
         }
             .index();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -1807,7 +1826,7 @@
         }
             .index();
         i += 1;
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -1851,7 +1870,7 @@
             Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
         }
             .index();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -1873,7 +1892,7 @@
         i += 1;
         let v = pi_export_play::as_value::<f32>(json, i).unwrap();
         i += 1;
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -1917,7 +1936,7 @@
             Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
         }
             .index();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -1939,7 +1958,7 @@
         i += 1;
         let v = pi_export_play::as_value::<f32>(json, i).unwrap();
         i += 1;
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -1983,7 +2002,7 @@
             Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
         }
             .index();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -2003,7 +2022,7 @@
         }
             .index();
         i += 1;
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -2088,7 +2107,7 @@
         }
             .index();
         let edge = pi_export_play::as_value::<f64>(json, 1).unwrap();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -2111,7 +2130,7 @@
         let edge = pi_export_play::as_value::<f64>(json, i as usize).unwrap();
         i += 1;
         let v = pi_export_play::as_value::<f32>(json, i as usize).unwrap();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -2196,7 +2215,7 @@
         }
             .index();
         let edge = pi_export_play::as_value::<f64>(json, 1).unwrap();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -2219,7 +2238,7 @@
         let edge = pi_export_play::as_value::<f64>(json, i as usize).unwrap();
         i += 1;
         let v = pi_export_play::as_value::<f32>(json, i as usize).unwrap();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -2300,7 +2319,7 @@
         }
             .index();
         let edge = pi_export_play::as_value::<f64>(json, 1).unwrap();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -2321,7 +2340,7 @@
             .index();
         i += 1;
         let edge = pi_export_play::as_value::<f64>(json, i as usize).unwrap();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -2406,7 +2425,7 @@
         }
             .index();
         let edge = pi_export_play::as_value::<f64>(json, 1).unwrap();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -2429,7 +2448,7 @@
         let edge = pi_export_play::as_value::<f64>(json, i as usize).unwrap();
         i += 1;
         let v = pi_export_play::as_value::<f32>(json, i as usize).unwrap();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -2514,7 +2533,7 @@
         }
             .index();
         let edge = pi_export_play::as_value::<f64>(json, 1).unwrap();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -2537,7 +2556,7 @@
         let edge = pi_export_play::as_value::<f64>(json, i as usize).unwrap();
         i += 1;
         let v = pi_export_play::as_value::<f32>(json, i as usize).unwrap();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -2618,7 +2637,7 @@
         }
             .index();
         let edge = pi_export_play::as_value::<f64>(json, 1).unwrap();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -2639,7 +2658,7 @@
             .index();
         i += 1;
         let edge = pi_export_play::as_value::<f64>(json, i as usize).unwrap();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -2724,7 +2743,7 @@
         }
             .index();
         let edge = pi_export_play::as_value::<f64>(json, 1).unwrap();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -2747,7 +2766,7 @@
         let edge = pi_export_play::as_value::<f64>(json, i as usize).unwrap();
         i += 1;
         let v = pi_export_play::as_value::<f32>(json, i as usize).unwrap();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -2832,7 +2851,7 @@
         }
             .index();
         let edge = pi_export_play::as_value::<f64>(json, 1).unwrap();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -2855,7 +2874,7 @@
         let edge = pi_export_play::as_value::<f64>(json, i as usize).unwrap();
         i += 1;
         let v = pi_export_play::as_value::<f32>(json, i as usize).unwrap();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -2936,7 +2955,7 @@
         }
             .index();
         let edge = pi_export_play::as_value::<f64>(json, 1).unwrap();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -2957,7 +2976,7 @@
             .index();
         i += 1;
         let edge = pi_export_play::as_value::<f64>(json, i as usize).unwrap();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -3044,7 +3063,7 @@
         }
             .index();
         let edge = pi_export_play::as_value::<f64>(json, 1).unwrap();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -3067,7 +3086,7 @@
         let edge = pi_export_play::as_value::<f64>(json, i as usize).unwrap();
         i += 1;
         let v = pi_export_play::as_value::<f32>(json, i as usize).unwrap();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -3152,7 +3171,7 @@
         }
             .index();
         let edge = pi_export_play::as_value::<f64>(json, 1).unwrap();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -3175,7 +3194,7 @@
         let edge = pi_export_play::as_value::<f64>(json, i as usize).unwrap();
         i += 1;
         let v = pi_export_play::as_value::<f32>(json, i as usize).unwrap();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -3260,7 +3279,7 @@
         }
             .index();
         let edge = pi_export_play::as_value::<f64>(json, 1).unwrap();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -3281,7 +3300,7 @@
             .index();
         i += 1;
         let edge = pi_export_play::as_value::<f64>(json, i as usize).unwrap();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -3347,7 +3366,7 @@
             Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
         }
             .index();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -3375,7 +3394,7 @@
         i += 1;
         let a = pi_export_play::as_value::<f32>(json, i).unwrap();
         i += 1;
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -3451,7 +3470,7 @@
             Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
         }
             .index();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -3475,7 +3494,7 @@
         i += 1;
         let color_and_positions = pi_export_play::as_value::<Vec<f32>>(json, i).unwrap();
         i += 1;
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -3533,7 +3552,7 @@
             Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
         }
             .index();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -3561,7 +3580,7 @@
         i += 1;
         let a = pi_export_play::as_value::<f32>(json, i).unwrap();
         i += 1;
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -3635,7 +3654,7 @@
             Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
         }
             .index();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -3658,7 +3677,7 @@
         let s = pi_export_play::as_value::<str>(json, i).unwrap();
         i += 1;
         let s = &s;
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -3744,7 +3763,7 @@
             Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
         }
             .index();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -3780,7 +3799,7 @@
         i += 1;
         let a = pi_export_play::as_value::<f32>(json, i).unwrap();
         i += 1;
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -3824,7 +3843,7 @@
             Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
         }
             .index();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -3846,7 +3865,7 @@
         i += 1;
         let v = pi_export_play::as_value::<f64>(json, i).unwrap();
         i += 1;
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -3904,7 +3923,7 @@
             Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
         }
             .index();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -3928,7 +3947,7 @@
         i += 1;
         let y = pi_export_play::as_value::<u8>(json, i).unwrap();
         i += 1;
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -4004,7 +4023,7 @@
             Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
         }
             .index();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -4028,7 +4047,7 @@
         i += 1;
         let color_and_positions = pi_export_play::as_value::<Vec<f32>>(json, i).unwrap();
         i += 1;
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -4108,7 +4127,7 @@
             Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
         }
             .index();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -4136,7 +4155,7 @@
         i += 1;
         let v2 = pi_export_play::as_value::<f32>(json, i).unwrap();
         i += 1;
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -4216,7 +4235,7 @@
             Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
         }
             .index();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -4244,7 +4263,7 @@
         i += 1;
         let v2 = pi_export_play::as_value::<f32>(json, i).unwrap();
         i += 1;
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -4324,7 +4343,7 @@
             Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
         }
             .index();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -4352,7 +4371,7 @@
         i += 1;
         let v2 = pi_export_play::as_value::<f32>(json, i).unwrap();
         i += 1;
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -4432,7 +4451,7 @@
             Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
         }
             .index();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -4462,7 +4481,7 @@
         i += 1;
         let fill = pi_export_play::as_value::<bool>(json, i).unwrap();
         i += 1;
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -4530,7 +4549,7 @@
             Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
         }
             .index();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -4554,7 +4573,7 @@
         i += 1;
         let horizontal = pi_export_play::as_value::<u8>(json, i).unwrap();
         i += 1;
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -4598,7 +4617,7 @@
             Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
         }
             .index();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -4620,7 +4639,7 @@
         i += 1;
         let v = pi_export_play::as_value::<bool>(json, i).unwrap();
         i += 1;
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -4664,7 +4683,7 @@
             Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
         }
             .index();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -4686,7 +4705,7 @@
         i += 1;
         let v = pi_export_play::as_value::<f32>(json, i).unwrap();
         i += 1;
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -4730,7 +4749,7 @@
             Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
         }
             .index();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -4752,7 +4771,7 @@
         i += 1;
         let v = pi_export_play::as_value::<f64>(json, i).unwrap();
         i += 1;
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -4796,7 +4815,7 @@
             Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
         }
             .index();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -4818,7 +4837,7 @@
         i += 1;
         let v = pi_export_play::as_value::<bool>(json, i).unwrap();
         i += 1;
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -4862,7 +4881,7 @@
             Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
         }
             .index();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -4884,7 +4903,7 @@
         i += 1;
         let v = pi_export_play::as_value::<f64>(json, i).unwrap();
         i += 1;
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -4928,7 +4947,7 @@
             Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
         }
             .index();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -4950,7 +4969,7 @@
         i += 1;
         let v = pi_export_play::as_value::<f64>(json, i).unwrap();
         i += 1;
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -4994,7 +5013,7 @@
             Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
         }
             .index();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -5016,7 +5035,7 @@
         i += 1;
         let v = pi_export_play::as_value::<i32>(json, i).unwrap();
         i += 1;
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -5060,7 +5079,7 @@
             Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
         }
             .index();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -5082,7 +5101,7 @@
         i += 1;
         let v = pi_export_play::as_value::<f32>(json, i).unwrap();
         i += 1;
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -5126,7 +5145,7 @@
             Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
         }
             .index();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -5148,7 +5167,7 @@
         i += 1;
         let v = pi_export_play::as_value::<bool>(json, i).unwrap();
         i += 1;
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -5244,7 +5263,7 @@
             Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
         }
             .index();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -5270,7 +5289,7 @@
         i += 1;
         let _i = pi_export_play::as_value::<f32>(json, i).unwrap();
         i += 1;
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -5348,7 +5367,7 @@
             Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
         }
             .index();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -5371,7 +5390,7 @@
         let s = pi_export_play::as_value::<str>(json, i).unwrap();
         i += 1;
         let s = &s;
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -5441,7 +5460,7 @@
             Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
         }
             .index();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -5464,7 +5483,7 @@
         let s = pi_export_play::as_value::<str>(json, i).unwrap();
         i += 1;
         let s = &s;
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -5526,7 +5545,7 @@
             Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
         }
             .index();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -5549,7 +5568,7 @@
         let s = pi_export_play::as_value::<str>(json, i).unwrap();
         i += 1;
         let s = &s;
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -5619,7 +5638,7 @@
             Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
         }
             .index();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -5642,7 +5661,7 @@
         let s = pi_export_play::as_value::<str>(json, i).unwrap();
         i += 1;
         let s = &s;
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -5732,7 +5751,7 @@
             Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
         }
             .index();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -5760,7 +5779,7 @@
         i += 1;
         let y = pi_export_play::as_value::<f32>(json, i).unwrap();
         i += 1;
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -5804,7 +5823,7 @@
             Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
         }
             .index();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -5826,7 +5845,7 @@
         i += 1;
         let v = pi_export_play::as_value::<f32>(json, i).unwrap();
         i += 1;
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -5870,7 +5889,7 @@
             Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
         }
             .index();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -5892,7 +5911,7 @@
         i += 1;
         let v = pi_export_play::as_value::<f32>(json, i).unwrap();
         i += 1;
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -5952,7 +5971,7 @@
             Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
         }
             .index();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -5980,7 +5999,7 @@
         i += 1;
         let a = pi_export_play::as_value::<f32>(json, i).unwrap();
         i += 1;
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -6056,7 +6075,7 @@
             Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
         }
             .index();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -6080,7 +6099,7 @@
         i += 1;
         let color_and_positions = pi_export_play::as_value::<Vec<f32>>(json, i).unwrap();
         i += 1;
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -6124,7 +6143,7 @@
             Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
         }
             .index();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -6144,7 +6163,7 @@
         }
             .index();
         i += 1;
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -6188,7 +6207,7 @@
             Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
         }
             .index();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -6210,7 +6229,7 @@
         i += 1;
         let value = pi_export_play::as_value::<f32>(json, i).unwrap();
         i += 1;
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -6254,7 +6273,7 @@
             Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
         }
             .index();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -6276,7 +6295,7 @@
         i += 1;
         let value = pi_export_play::as_value::<f32>(json, i).unwrap();
         i += 1;
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -6320,7 +6339,7 @@
             Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
         }
             .index();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -6342,7 +6361,7 @@
         i += 1;
         let v = pi_export_play::as_value::<f32>(json, i).unwrap();
         i += 1;
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -6422,7 +6441,7 @@
             Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
         }
             .index();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -6444,7 +6463,7 @@
         i += 1;
         let v = pi_export_play::as_value::<f64>(json, i).unwrap();
         i += 1;
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -6522,7 +6541,7 @@
             Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
         }
             .index();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -6544,7 +6563,7 @@
         i += 1;
         let v = pi_export_play::as_value::<f64>(json, i).unwrap();
         i += 1;
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -6618,7 +6637,7 @@
             Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
         }
             .index();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -6648,7 +6667,7 @@
         i += 1;
         let a = pi_export_play::as_value::<f32>(json, i).unwrap();
         i += 1;
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -6692,7 +6711,7 @@
             Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
         }
             .index();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -6714,7 +6733,7 @@
         i += 1;
         let v = pi_export_play::as_value::<f64>(json, i).unwrap();
         i += 1;
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -6758,7 +6777,7 @@
             Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
         }
             .index();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -6780,7 +6799,7 @@
         i += 1;
         let v = pi_export_play::as_value::<f64>(json, i).unwrap();
         i += 1;
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -6824,7 +6843,7 @@
             Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
         }
             .index();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -6846,7 +6865,7 @@
         i += 1;
         let v = pi_export_play::as_value::<f64>(json, i).unwrap();
         i += 1;
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -6890,7 +6909,7 @@
             Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
         }
             .index();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -6910,7 +6929,7 @@
         }
             .index();
         i += 1;
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -6954,7 +6973,7 @@
             Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
         }
             .index();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -6976,7 +6995,7 @@
         i += 1;
         let value = pi_export_play::as_value::<f64>(json, i).unwrap();
         i += 1;
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -7020,7 +7039,7 @@
             Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
         }
             .index();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -7042,7 +7061,7 @@
         i += 1;
         let value = pi_export_play::as_value::<f32>(json, i).unwrap();
         i += 1;
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -7100,7 +7119,7 @@
             Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
         }
             .index();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -7122,7 +7141,7 @@
         i += 1;
         let content = pi_export_play::as_value::<Vec<u8>>(json, i).unwrap();
         i += 1;
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -7194,7 +7213,7 @@
             Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
         }
             .index();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -7217,7 +7236,7 @@
         let value = pi_export_play::as_value::<str>(json, i).unwrap();
         i += 1;
         let value = &value;
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -7273,7 +7292,7 @@
             Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
         }
             .index();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -7295,7 +7314,7 @@
         i += 1;
         let name = pi_export_play::as_value::<Vec<usize>>(json, i).unwrap();
         i += 1;
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -7351,7 +7370,7 @@
             Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
         }
             .index();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -7373,7 +7392,7 @@
         i += 1;
         let name = pi_export_play::as_value::<Vec<usize>>(json, i).unwrap();
         i += 1;
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -7429,7 +7448,7 @@
             Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
         }
             .index();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -7451,7 +7470,7 @@
         i += 1;
         let name = pi_export_play::as_value::<Vec<f32>>(json, i).unwrap();
         i += 1;
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -7507,7 +7526,7 @@
             Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
         }
             .index();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -7529,7 +7548,7 @@
         i += 1;
         let name = pi_export_play::as_value::<Vec<u8>>(json, i).unwrap();
         i += 1;
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -7585,7 +7604,7 @@
             Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
         }
             .index();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -7607,7 +7626,7 @@
         i += 1;
         let name = pi_export_play::as_value::<Vec<u8>>(json, i).unwrap();
         i += 1;
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -7663,7 +7682,7 @@
             Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
         }
             .index();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -7685,7 +7704,7 @@
         i += 1;
         let name = pi_export_play::as_value::<Vec<u8>>(json, i).unwrap();
         i += 1;
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -7791,7 +7810,7 @@
             Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
         }
             .index();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -7816,7 +7835,7 @@
         let value = &value;
         let scope_hash = pi_export_play::as_value::<u32>(json, i).unwrap();
         i += 1;
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -7874,7 +7893,7 @@
             Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
         }
             .index();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -7900,7 +7919,7 @@
         i += 1;
         let scope_hash = pi_export_play::as_value::<u32>(json, i).unwrap();
         i += 1;
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -7928,6 +7947,7 @@
     #[allow(unused_assignments)]
     pub fn play_reset_animation_str(
         gui: &mut Gui,
+        _engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -7935,7 +7955,7 @@
             Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
         }
             .index();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -7945,6 +7965,7 @@
     #[allow(unused_assignments)]
     pub fn play_animation_str(
         gui: &mut Gui,
+        _engine: &mut Engine,
         context: &mut PlayContext,
         json: &Vec<json::JsonValue>,
     ) {
@@ -7952,7 +7973,7 @@
             Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
         }
             .index();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -8000,7 +8021,7 @@
             Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
         }
             .index();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -8019,7 +8040,7 @@
         }
             .index();
         let hash = pi_export_play::as_value::<usize>(json, 1).unwrap();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -8075,7 +8096,7 @@
             Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
         }
             .index();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -8094,7 +8115,7 @@
         }
             .index();
         let hash = pi_export_play::as_value::<usize>(json, 1).unwrap();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -8150,7 +8171,7 @@
             Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
         }
             .index();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -8169,7 +8190,7 @@
         }
             .index();
         let hash = pi_export_play::as_value::<usize>(json, 1).unwrap();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -8243,7 +8264,7 @@
             Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
         }
             .index();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -8266,7 +8287,7 @@
         let s = pi_export_play::as_value::<str>(json, i).unwrap();
         i += 1;
         let s = &s;
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -8310,7 +8331,7 @@
             Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
         }
             .index();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -8329,7 +8350,7 @@
         }
             .index();
         let hash = pi_export_play::as_value::<usize>(json, 1).unwrap();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -8393,7 +8414,7 @@
             Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
         }
             .index();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -8415,7 +8436,7 @@
         i += 1;
         let content = pi_export_play::as_value::<String>(json, i).unwrap();
         i += 1;
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -8491,7 +8512,7 @@
             Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))
         }
             .index();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -8514,7 +8535,7 @@
         let value = pi_export_play::as_value::<str>(json, i).unwrap();
         i += 1;
         let value = &value;
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -8607,7 +8628,7 @@
             .index();
         i += 1;
         let class_name = pi_export_play::as_value::<Vec<u32>>(json, i as usize).unwrap();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -8705,7 +8726,7 @@
             Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))
         }
             .index();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -8738,7 +8759,7 @@
             Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))
         }
             .index();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -8775,7 +8796,7 @@
             .index();
         i += 1;
         let parent = pi_export_play::as_value::<f64>(json, i as usize).unwrap();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -8812,7 +8833,7 @@
             .index();
         i += 1;
         let borther = pi_export_play::as_value::<f64>(json, i as usize).unwrap();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -8845,7 +8866,7 @@
             Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))
         }
             .index();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -9204,7 +9225,7 @@
                             "pi_export_gui::style_macro",
                             ::tracing::Level::WARN,
                             Some("src\\style_macro.rs"),
-                            Some(1337u32),
+                            Some(1356u32),
                             Some("pi_export_gui::style_macro"),
                             ::tracing_core::field::FieldSet::new(
                                 &[],
@@ -9242,6 +9263,10 @@
             *engine.world.get_resource_mut::<RunState>().unwrap() = RunState::RENDER;
             *engine.world.get_resource_mut::<FrameState>().unwrap() = FrameState::Active;
             engine.update();
+            *engine
+                .world
+                .get_resource_mut::<FrameState>()
+                .unwrap() = FrameState::UnActive;
         }
     }
     #[cfg(target_arch = "wasm32")]
@@ -9258,7 +9283,7 @@
                             "pi_export_gui::style_macro",
                             ::tracing::Level::WARN,
                             Some("src\\style_macro.rs"),
-                            Some(1337u32),
+                            Some(1356u32),
                             Some("pi_export_gui::style_macro"),
                             ::tracing_core::field::FieldSet::new(
                                 &[],
@@ -9296,6 +9321,10 @@
             *engine.world.get_resource_mut::<RunState>().unwrap() = RunState::RENDER;
             *engine.world.get_resource_mut::<FrameState>().unwrap() = FrameState::Active;
             engine.update();
+            *engine
+                .world
+                .get_resource_mut::<FrameState>()
+                .unwrap() = FrameState::UnActive;
         }
     }
     pub fn play_fram_call(
@@ -9322,7 +9351,7 @@
                             "pi_export_gui::style_macro",
                             ::tracing::Level::WARN,
                             Some("src\\style_macro.rs"),
-                            Some(1352u32),
+                            Some(1372u32),
                             Some("pi_export_gui::style_macro"),
                             ::tracing_core::field::FieldSet::new(
                                 &[],
@@ -9385,7 +9414,7 @@
                             "pi_export_gui::style_macro",
                             ::tracing::Level::WARN,
                             Some("src\\style_macro.rs"),
-                            Some(1352u32),
+                            Some(1372u32),
                             Some("pi_export_gui::style_macro"),
                             ::tracing_core::field::FieldSet::new(
                                 &[],
@@ -9456,7 +9485,7 @@
                             "pi_export_gui::style_macro",
                             ::tracing::Level::WARN,
                             Some("src\\style_macro.rs"),
-                            Some(1367u32),
+                            Some(1387u32),
                             Some("pi_export_gui::style_macro"),
                             ::tracing_core::field::FieldSet::new(
                                 &[],
@@ -9498,7 +9527,10 @@
                 .unwrap();
             std::mem::swap(&mut gui.commands, &mut *com);
             *engine.world.get_resource_mut::<RunState>().unwrap() = RunState::MATRIX;
-            *engine.world.get_resource_mut::<FrameState>().unwrap() = FrameState::Active;
+            *engine
+                .world
+                .get_resource_mut::<FrameState>()
+                .unwrap() = FrameState::UnActive;
             engine.update();
         }
     }
@@ -9516,7 +9548,7 @@
                             "pi_export_gui::style_macro",
                             ::tracing::Level::WARN,
                             Some("src\\style_macro.rs"),
-                            Some(1367u32),
+                            Some(1387u32),
                             Some("pi_export_gui::style_macro"),
                             ::tracing_core::field::FieldSet::new(
                                 &[],
@@ -9558,7 +9590,10 @@
                 .unwrap();
             std::mem::swap(&mut gui.commands, &mut *com);
             *engine.world.get_resource_mut::<RunState>().unwrap() = RunState::MATRIX;
-            *engine.world.get_resource_mut::<FrameState>().unwrap() = FrameState::Active;
+            *engine
+                .world
+                .get_resource_mut::<FrameState>()
+                .unwrap() = FrameState::UnActive;
             engine.update();
         }
     }
@@ -9584,7 +9619,7 @@
                             "pi_export_gui::style_macro",
                             ::tracing::Level::WARN,
                             Some("src\\style_macro.rs"),
-                            Some(1382u32),
+                            Some(1402u32),
                             Some("pi_export_gui::style_macro"),
                             ::tracing_core::field::FieldSet::new(
                                 &[],
@@ -9647,7 +9682,7 @@
                             "pi_export_gui::style_macro",
                             ::tracing::Level::WARN,
                             Some("src\\style_macro.rs"),
-                            Some(1382u32),
+                            Some(1402u32),
                             Some("pi_export_gui::style_macro"),
                             ::tracing_core::field::FieldSet::new(
                                 &[],
@@ -9718,7 +9753,7 @@
                             "pi_export_gui::style_macro",
                             ::tracing::Level::WARN,
                             Some("src\\style_macro.rs"),
-                            Some(1397u32),
+                            Some(1417u32),
                             Some("pi_export_gui::style_macro"),
                             ::tracing_core::field::FieldSet::new(
                                 &[],
@@ -9781,7 +9816,7 @@
                             "pi_export_gui::style_macro",
                             ::tracing::Level::WARN,
                             Some("src\\style_macro.rs"),
-                            Some(1397u32),
+                            Some(1417u32),
                             Some("pi_export_gui::style_macro"),
                             ::tracing_core::field::FieldSet::new(
                                 &[],
@@ -10008,7 +10043,7 @@
             Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))
         }
             .index();
-        let node = match context.nodes.get(node as usize) {
+        let node = match context.get_node(node as usize) {
             Some(r) => r.clone(),
             None => return,
         };
@@ -10312,13 +10347,11 @@
         }
     }
     #[cfg(feature = "pi_js_export")]
-    pub fn get_class_name(gui: &mut Gui, engine: &mut Engine, node: f64) -> String {
+    pub fn get_class_name(_gui: &mut Gui, engine: &mut Engine, node: f64) -> String {
         let node = unsafe { Entity::from_bits(transmute::<f64, u64>(node)) };
         {
-            let node = Entity::from_bits(unsafe { transmute(node) });
-            let value = match engine.world.query::<&ClassName>().get(&engine.world, node)
-            {
-                Ok(r) => Some(&r.0),
+            let value = match engine.world.get::<ClassName>(node) {
+                Some(r) => Some(&r.0),
                 _ => None,
             };
             serde_json::to_string(&value).unwrap()
@@ -10326,13 +10359,11 @@
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
-    pub fn get_class_name(gui: &mut Gui, engine: &mut Engine, node: f64) -> String {
+    pub fn get_class_name(_gui: &mut Gui, engine: &mut Engine, node: f64) -> String {
         let node = unsafe { Entity::from_bits(transmute::<f64, u64>(node)) };
         {
-            let node = Entity::from_bits(unsafe { transmute(node) });
-            let value = match engine.world.query::<&ClassName>().get(&engine.world, node)
-            {
-                Ok(r) => Some(&r.0),
+            let value = match engine.world.get::<ClassName>(node) {
+                Some(r) => Some(&r.0),
                 _ => None,
             };
             serde_json::to_string(&value).unwrap()

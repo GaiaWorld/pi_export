@@ -105,10 +105,12 @@ struct Info {
     pub quad: Option<pi_ui_render::components::calc::Quad>,
 
     text: Option<TextStyle>,
+	text_shadow: Option<TextShadow>,
     text_content: Option<TextContent>,
     // style_mark: StyleMark,
     children: Vec<f64>,
     pub render_obj: Vec<RenderObject>,
+	pub animation: String,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -943,6 +945,10 @@ pub fn node_info(engine: &mut Engine, node_id: f64) -> JsValue {
 			Option<&ParentPassId>,
 			Option<&GraphId>,
         ),
+		(
+			Option<&Animation>,
+			Option<&TextShadow>,
+		)
     )>();
     let (
         (
@@ -979,6 +985,10 @@ pub fn node_info(engine: &mut Engine, node_id: f64) -> JsValue {
 			parentpass,
 			graph_id,
         ),
+		(
+			animation,
+			text_shadow,
+		)
     ) = query.get(&engine.world, node_id).unwrap();
 
     let info = Info {
@@ -1009,6 +1019,7 @@ pub fn node_info(engine: &mut Engine, node_id: f64) -> JsValue {
         quad: quad.map(|r| r.clone()),
         // culling: gui.gui.culling.lend()[node_id].0,
         text: text_style.map(|r| r.clone()),
+		text_shadow: text_shadow.map(|r| r.clone()),
         text_content: text_content.map(|r| r.clone()),
         render_obj: draw_objs,
         class_name: class_name.map(|r| r.clone()),
@@ -1033,6 +1044,7 @@ pub fn node_info(engine: &mut Engine, node_id: f64) -> JsValue {
 		parentpass: format!("{:?}", parentpass),
 		graph_id: format!("{:?}", graph_id),
         children: children,
+		animation: format!("{:?}", animation),
     };
 
     return JsValue::from_serde(&info).unwrap();

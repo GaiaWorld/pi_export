@@ -52,19 +52,23 @@ impl Default for ExampleCommonPlay {
                 nodes: VecMap::new(),
                 idtree: IdTree::default(),
                 atoms: XHashMap::default(),
+				root: EntityKey::null(),
+				root_index: 0,
             },
             list_index: 0,
             file_index: 0,
             // play_version: "performance",
 			play_version: "test",
-			play_path: "D://0_js/pi_demo_gui_exe/dst",
+			play_path: "D://0_js/cdqxz_new_mult_gui_exe/dst",
             // play_path: "D://0_js/cdqxz_new_gui_exe/dst",
             cmd_path: Some("D://0_rust/pi_export/crates/gui/examples/cmd_play/source/cmds"),
             json_arr: JsonValue::Array(Vec::default()),
             // width: 400,
             // height: 750,
             // scale: 1.0
-            width: 1024,
+            // width: 1024,
+            // height: 1920,
+			width: 1024,
             height: 1920,
             scale: 0.5,
 			end: false,
@@ -95,7 +99,7 @@ impl Example for ExampleCommonPlay {
         println!("view_port:{:?}", size);
         // 设置class
         // let mut class_sheet = ClassSheet::default();
-        let mut cb = |dwcss: &DirEntry| {
+        let mut setcss = |dwcss: &DirEntry| {
             if let Some(r) = dwcss.path().extension() {
                 if r != "dcss" {
                     return;
@@ -112,8 +116,23 @@ impl Example for ExampleCommonPlay {
                 // r.to_class_sheet(&mut class_sheet);
             }
         };
-        visit_dirs(&Path::new(self.play_path), &mut cb).unwrap();
+        visit_dirs(&Path::new(self.play_path), &mut setcss).unwrap();
 
+		let mut setfgm = |fgm: &DirEntry| {
+            if let Some(r) = fgm.path().extension() {
+                if r != "fgm" {
+                    return;
+                }
+            } else {
+                return;
+            }
+            let file = read(fgm.path());
+            if let Ok(r) = file {
+				log::warn!("fgm===================={:?}", fgm.path());
+                create_fragment_by_bin(gui, r.as_slice());;
+            }
+        };
+		visit_dirs(&Path::new(self.play_path), &mut setfgm).unwrap();
 
         let full_screen_class = format!(
             ".c3165071837 {{position : absolute ;left : 0px ;top : 0px ;width : {:?}px ;height : {:?}px ;}}",
@@ -130,7 +149,9 @@ impl Example for ExampleCommonPlay {
         let mut json = Object::new();
 		let root_entity = Entity::from_raw(1);
 		self.root = EntityKey(root_entity);
+		context.root = self.root;
 		let root_entity_f64 = unsafe {transmute::<u64, f64>(root_entity.to_bits())};
+		log::warn!("root============{:?}", root_entity);
 
         json.insert("ret", JsonValue::Number(root_entity_f64.into()));
         play_create_node(gui, engine, context, &vec![JsonValue::Object(json.clone())]);
@@ -158,7 +179,7 @@ impl Example for ExampleCommonPlay {
             context,
             &vec![
                 JsonValue::Number(Number::from(root_entity_f64)),
-                JsonValue::String(self.scale.to_string()),
+                JsonValue::String(format!("scale({})", self.scale.to_string())),
             ],
         );
         play_transform_origin(
@@ -650,6 +671,9 @@ lazy_static! {
         set_atom, //"__$set_atom",
 		play_fram_call, //"__$set_atom",
 		play_query,
+		play_create_fragment,
+		play_animation_str,
+		play_reset_animation_str,
     ];
 }
 

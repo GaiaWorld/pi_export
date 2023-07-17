@@ -15,6 +15,7 @@ use pi_share::{Share, ShareMutex};
 use pi_export_gui::{Engine, Gui, fram_call};
 use pi_ui_render::system::RunState;
 use pi_ui_render::{prelude::UiPlugin, resource::UserCommands};
+use pi_bevy_asset::{PiAssetPlugin, AssetConfig};
 
 #[async_trait]
 pub trait Example: 'static + Sized {
@@ -120,14 +121,15 @@ pub fn create_engine(width: u32, height: u32, engine: &mut Engine) {
     engine
 		.add_plugin(bevy::log::LogPlugin {
 			// filter: "pi_ui_render=debug".to_string(),
-			filter: "wgpu=warn,pi_ui_render::system::node::user_setting=debug,pi_ui_render::components::use=debug".to_string(),
-			// filter: "wgpu=warn".to_string(),
+			// filter: "wgpu=warn,pi_ui_render::system::node::user_setting=debug,pi_ui_render::components::use=debug".to_string(),
+			filter: "wgpu=warn".to_string(),
 			// filter: "wgpu=info".to_string(),
 			level: bevy::log::Level::INFO,
 		})
 		// .add_plugin(bevy::input::InputPlugin::default())
 		.add_plugin(window_plugin)
 		.add_plugin(pi_bevy_winit_window::WinitPlugin::new(window.clone()).with_size(width, height))
+		.add_plugin(PiAssetPlugin {total_capacity: 500 * 1024 * 1024, asset_config: AssetConfig::default()})
 		// .add_plugin(WorldInspectorPlugin::new())
 		.add_plugin(PiRenderPlugin {frame_init_state: FrameState::UnActive})
 		.add_plugin(PiPostProcessPlugin);
