@@ -72,21 +72,21 @@ pub fn p3d_material_apply(app: &mut Engine, param: &mut ActionSetScene3D, mat: f
     cmds.matcmd.usemat.push(OpsMaterialUse::ops(mesh, mat));
 }
 
-#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
-#[pi_js_export]
-pub fn p3d_material_uniform_mat4(app: &mut Engine, param: &mut ActionSetScene3D, mat: f64,  key: &Atom, m11: f64, m12: f64, m13: f64, m14: f64, m21: f64, m22: f64, m23: f64, m24: f64, m31: f64, m32: f64, m33: f64, m34: f64, m41: f64, m42: f64, m43: f64, m44: f64) {
-    let mat: Entity = as_entity(mat);
-    let mut cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
-    let val = [m11 as f32, m12 as f32, m13 as f32, m14 as f32, m21 as f32, m22 as f32, m23 as f32, m24 as f32, m31 as f32, m32 as f32, m33 as f32, m34 as f32, m41 as f32, m42 as f32, m43 as f32, m44 as f32];
-    cmds.matcmd.mat4.push( OpsUniformMat4::ops(mat, key.deref().clone(), val) );
-}
-#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
-#[pi_js_export]
-pub fn p3d_material_uniform_mat2(app: &mut Engine, param: &mut ActionSetScene3D, mat: f64,  key: &Atom, m11: f64, m12: f64, m21: f64, m22: f64) {
-    let mat: Entity = as_entity(mat);
-    let mut cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
-    cmds.matcmd.mat2.push( OpsUniformMat2::ops(mat, key.deref().clone(), [m11 as f32, m12 as f32, m21 as f32, m22 as f32]) );
-}
+// #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+// #[pi_js_export]
+// pub fn p3d_material_uniform_mat4(app: &mut Engine, param: &mut ActionSetScene3D, mat: f64,  key: &Atom, m11: f64, m12: f64, m13: f64, m14: f64, m21: f64, m22: f64, m23: f64, m24: f64, m31: f64, m32: f64, m33: f64, m34: f64, m41: f64, m42: f64, m43: f64, m44: f64) {
+//     let mat: Entity = as_entity(mat);
+//     let mut cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
+//     let val = [m11 as f32, m12 as f32, m13 as f32, m14 as f32, m21 as f32, m22 as f32, m23 as f32, m24 as f32, m31 as f32, m32 as f32, m33 as f32, m34 as f32, m41 as f32, m42 as f32, m43 as f32, m44 as f32];
+//     cmds.matcmd.mat4.push( OpsUniformMat4::ops(mat, key.deref().clone(), val) );
+// }
+// #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+// #[pi_js_export]
+// pub fn p3d_material_uniform_mat2(app: &mut Engine, param: &mut ActionSetScene3D, mat: f64,  key: &Atom, m11: f64, m12: f64, m21: f64, m22: f64) {
+//     let mat: Entity = as_entity(mat);
+//     let mut cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
+//     cmds.matcmd.mat2.push( OpsUniformMat2::ops(mat, key.deref().clone(), [m11 as f32, m12 as f32, m21 as f32, m22 as f32]) );
+// }
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_material_uniform_vec2(app: &mut Engine, param: &mut ActionSetScene3D, mat: f64,  key: &Atom, x: f64, y: f64) {
@@ -108,13 +108,13 @@ pub fn p3d_material_uniform_float(app: &mut Engine, param: &mut ActionSetScene3D
     let mut cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
     cmds.matcmd.float.push( OpsUniformFloat::ops(mat, key.deref().clone(), val as f32) );
 }
-#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
-#[pi_js_export]
-pub fn p3d_material_uniform_int(app: &mut Engine, param: &mut ActionSetScene3D, mat: f64,  key: &Atom, val: f64) {
-    let mat: Entity = as_entity(mat);
-    let mut cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
-    cmds.matcmd.int.push( OpsUniformInt::ops(mat, key.deref().clone(), val as i32) );
-}
+// #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+// #[pi_js_export]
+// pub fn p3d_material_uniform_int(app: &mut Engine, param: &mut ActionSetScene3D, mat: f64,  key: &Atom, val: f64) {
+//     let mat: Entity = as_entity(mat);
+//     let mut cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
+//     cmds.matcmd.int.push( OpsUniformInt::ops(mat, key.deref().clone(), val as i32) );
+// }
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_material_uniform_uint(app: &mut Engine, param: &mut ActionSetScene3D, mat: f64,  key: &Atom, val: f64) {

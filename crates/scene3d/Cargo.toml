@@ -18,6 +18,7 @@ bevy 					= { version = "0.10", default-features = false}
 pi_bevy_asset 			= { git = "https://github.com/GaiaWorld/pi_render_bevy.git" }
 pi_bevy_render_plugin 	= { git = "https://github.com/GaiaWorld/pi_render_bevy.git" }
 pi_bevy_ecs_extend 		= { git = "https://github.com/GaiaWorld/pi_render_bevy.git" }
+pi_bevy_winit_window    = { git = "https://github.com/GaiaWorld/pi_render_bevy.git" }
 pi_window_renderer 		= { git = "https://github.com/GaiaWorld/pi_render_bevy.git" }
 derive_deref            = "1.1"
 

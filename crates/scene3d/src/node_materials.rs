@@ -50,6 +50,8 @@ pub enum BuiltinNodeMaterialBlock {
     BlockFresnel,
     BlockEmissiveFresnel,
     BlockOpacityFresnel,
+    
+    BlockPremultiplyResult,
 }
 impl BuiltinNodeMaterialBlock {
     pub fn key(&self) -> &'static str {
@@ -79,6 +81,7 @@ impl BuiltinNodeMaterialBlock {
             BuiltinNodeMaterialBlock::BlockFresnel                      => BlockFresnel                      ::KEY,
             BuiltinNodeMaterialBlock::BlockEmissiveFresnel              => BlockEmissiveFresnel              ::KEY,
             BuiltinNodeMaterialBlock::BlockOpacityFresnel               => BlockOpacityFresnel               ::KEY,
+            BuiltinNodeMaterialBlock::BlockPremultiplyResult            => BlockPremultiplyResult            ::KEY,
         }
     }
 }
@@ -259,16 +262,16 @@ impl MaterialUniformDefines {
         Self(MaterialValueBindDesc::none(EShaderStage::VERTEXFRAGMENT.mode()), vec![])
     }
 }
-#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
-#[pi_js_export]
-pub fn p3d_shader_uniform_mat4(uniforms: &mut MaterialUniformDefines, key: &str, m11: f64, m12: f64, m13: f64, m14: f64, m21: f64, m22: f64, m23: f64, m24: f64, m31: f64, m32: f64, m33: f64, m34: f64, m41: f64, m42: f64, m43: f64, m44: f64) {
-    uniforms.0.mat4_list.push(UniformPropertyMat4(Atom::from(key), [m11 as f32, m12 as f32, m13 as f32, m14 as f32, m21 as f32, m22 as f32, m23 as f32, m24 as f32, m31 as f32, m32 as f32, m33 as f32, m34 as f32, m41 as f32, m42 as f32, m43 as f32, m44 as f32]));
-}
-#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
-#[pi_js_export]
-pub fn p3d_shader_uniform_mat2(uniforms: &mut MaterialUniformDefines, key: &str, m11: f64, m12: f64, m21: f64, m22: f64) {
-    uniforms.0.mat2_list.push(UniformPropertyMat2(Atom::from(key), [m11 as f32, m12 as f32, m21 as f32, m22 as f32]));
-}
+// #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+// #[pi_js_export]
+// pub fn p3d_shader_uniform_mat4(uniforms: &mut MaterialUniformDefines, key: &str, m11: f64, m12: f64, m13: f64, m14: f64, m21: f64, m22: f64, m23: f64, m24: f64, m31: f64, m32: f64, m33: f64, m34: f64, m41: f64, m42: f64, m43: f64, m44: f64) {
+//     uniforms.0.mat4_list.push(UniformPropertyMat4(Atom::from(key), [m11 as f32, m12 as f32, m13 as f32, m14 as f32, m21 as f32, m22 as f32, m23 as f32, m24 as f32, m31 as f32, m32 as f32, m33 as f32, m34 as f32, m41 as f32, m42 as f32, m43 as f32, m44 as f32]));
+// }
+// #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+// #[pi_js_export]
+// pub fn p3d_shader_uniform_mat2(uniforms: &mut MaterialUniformDefines, key: &str, m11: f64, m12: f64, m21: f64, m22: f64) {
+//     uniforms.0.mat2_list.push(UniformPropertyMat2(Atom::from(key), [m11 as f32, m12 as f32, m21 as f32, m22 as f32]));
+// }
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_shader_uniform_float(uniforms: &mut MaterialUniformDefines, key: &str, val: f64) {
@@ -289,11 +292,11 @@ pub fn p3d_shader_uniform_vec4(uniforms: &mut MaterialUniformDefines, key: &str,
 pub fn p3d_shader_uniform_uint(uniforms: &mut MaterialUniformDefines, key: &str, val: f64) {
     uniforms.0.uint_list.push(UniformPropertyUint(Atom::from(key), val as u32));
 }
-#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
-#[pi_js_export]
-pub fn p3d_shader_uniform_int(uniforms: &mut MaterialUniformDefines, key: &str, val: f64) {
-    uniforms.0.int_list.push(UniformPropertyInt(Atom::from(key), val as i32));
-}
+// #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+// #[pi_js_export]
+// pub fn p3d_shader_uniform_int(uniforms: &mut MaterialUniformDefines, key: &str, val: f64) {
+//     uniforms.0.int_list.push(UniformPropertyInt(Atom::from(key), val as i32));
+// }
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_shader_uniform_tex(uniforms: &mut MaterialUniformDefines, key: &str, filterable: bool, stage: pi_export_base::constants::EShaderStage, default: pi_export_base::constants::EDefaultTexture) {

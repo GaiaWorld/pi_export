@@ -51,6 +51,20 @@ pub fn p3d_mesh_geometry(app: &mut Engine, param: &mut ActionSetScene3D, mesh: f
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
+pub fn p3d_mesh_indexrange(app: &mut Engine, param: &mut ActionSetScene3D, mesh: f64, index_start: Option<f64>, index_count: Option<f64>) {
+    let mesh: Entity = as_entity(mesh);
+
+    let mut cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
+
+    if let (Some(index_start), Some(index_count)) = (index_start, index_count) {
+        cmds.meshcmds.indexrange.push(OpsMeshRenderIndiceRange::ops(mesh, Some(index_start as u32), Some(index_count as u32)));
+    } else {
+        cmds.meshcmds.indexrange.push(OpsMeshRenderIndiceRange::ops(mesh, None, None));
+    }
+}
+
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
 pub fn p3d_mesh_instance_world_matrixs(
     app: &mut Engine, param: &mut ActionSetScene3D, geo: f64,
     data: &[f32], offset: f64, length: f64
@@ -59,11 +73,11 @@ pub fn p3d_mesh_instance_world_matrixs(
     let start = offset as usize;
     let length = length as usize;
     let end = length + start;
-    let mut values: Vec<f32> = Vec::with_capacity(length);
-    data[start..end].iter().for_each(|val| {
-        values.push(*val);
-    });
-    let values = bytemuck::cast_slice(&data).to_vec();
+    // let mut values: Vec<f32> = Vec::with_capacity(length);
+    // data[start..end].iter().for_each(|val| {
+    //     values.push(*val);
+    // });
+    let values = bytemuck::cast_slice(&data[start..end]).to_vec();
 
     let mut cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
 
@@ -80,11 +94,11 @@ pub fn p3d_mesh_instance_colors(
     let start = offset as usize;
     let length = length as usize;
     let end = length + start;
-    let mut values: Vec<f32> = Vec::with_capacity(length);
-    data[start..end].iter().for_each(|val| {
-        values.push(*val);
-    });
-    let values = bytemuck::cast_slice(&data).to_vec();
+    // let mut values: Vec<f32> = Vec::with_capacity(length);
+    // data[start..end].iter().for_each(|val| {
+    //     values.push(*val);
+    // });
+    let values = bytemuck::cast_slice(&data[start..end]).to_vec();
 
     let mut cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
 
@@ -101,11 +115,11 @@ pub fn p3d_mesh_instance_tilloffs(
     let start = offset as usize;
     let length = length as usize;
     let end = length + start;
-    let mut values: Vec<f32> = Vec::with_capacity(length);
-    data[start..end].iter().for_each(|val| {
-        values.push(*val);
-    });
-    let values = bytemuck::cast_slice(&data).to_vec();
+    // let mut values: Vec<f32> = Vec::with_capacity(length);
+    // data[start..end].iter().for_each(|val| {
+    //     values.push(*val);
+    // });
+    let values = bytemuck::cast_slice(&data[start..end]).to_vec();
 
     let mut cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
 
