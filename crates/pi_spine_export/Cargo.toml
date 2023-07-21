@@ -23,7 +23,7 @@ js_proxy_gen_macro = { git = "https://github.com/GaiaWorld/pi_lib.git" }
 
 pi_hash = "0.1"
 pi_atom = "0.2"
-pi_assets = "0.12"
+pi_assets = "0.13"
 # pi_export_gui = { path = "../gui" }
 pi_export_base = { path = "../base" }
 pi_spine_rs = { git = "https://github.com/GaiaWorld/pi_spine_rs.git" }
@@ -42,7 +42,7 @@ wasm-bindgen-futures = { version = "0.4" }
 [target.'cfg(target_arch = "wasm32")'.dependencies]
 wgpu = { version = "0.15", default-features = false, features = ["glsl", "webgl"] }
 pi_render = { git = "https://github.com/GaiaWorld/pi_render.git", branch="bevy_shader", features=["webgl"] }
-pi_async = {version = "0.5", features = ["serial"]}
+pi-async-rt = {version = "0.1", features = ["serial"]}
 
 [target.'cfg(not(target_arch = "wasm32"))'.dependencies]
 pi_render = { git = "https://github.com/GaiaWorld/pi_render.git", branch="bevy_shader" }

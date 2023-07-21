@@ -1,19 +1,18 @@
-use pi_ui_render::{prelude::{UserCommands, UiPlugin}};
+use pi_ui_render::{prelude::UiPlugin};
 use pi_bevy_post_process::PiPostProcessPlugin;
 use pi_bevy_render_plugin::{PiRenderPlugin, FrameState};
 use pi_window_renderer::PluginWindowRender;
 use pi_bevy_asset::PiAssetPlugin;
-use pi_idtree::InsertType;
 
-use crate::insert_as_root;
+use crate::index::insert_as_root;
 
-pub use super::Gui;
+pub use super::index::Gui;
 pub use pi_export_base::export::{Engine, Atom};
 use pi_export_play::as_value;
-use super::{style::PlayContext, remove_node, append_child, destroy_node, insert_before, create_node, create_text_node, create_image_node, create_canvas_node, create_vnode};
+use super::{index::{remove_node, append_child, destroy_node, insert_before, create_node, create_text_node, create_image_node, create_canvas_node, create_vnode}};
 use pi_ui_render::components::calc::EntityKey;
 use bevy::{app::prelude::App};
-use bevy::ecs::{prelude::Entity, system::SystemState};
+use bevy::ecs::{prelude::Entity};
 // pub use pi_ui_render::gui::Gui;
 use pi_null::Null;
 use std::{intrinsics::transmute, sync::Arc};
@@ -23,7 +22,7 @@ pub use winit::window::Window;
 pub fn create_engine(window: &Arc<Window>, width: u32, height: u32, asset_total_capacity: u32, asset_config: &str) -> Engine {
     use bevy::prelude::{CoreSet, IntoSystemSetConfig};
     use pi_bevy_render_plugin::should_run;
-    use crate::parse_asset_config;
+    use crate::index::parse_asset_config;
 
 
     let mut app = App::default();
@@ -53,6 +52,14 @@ pub fn create_engine(window: &Arc<Window>, width: u32, height: u32, asset_total_
     Engine(app)
 }
 
+#[derive(Debug, Clone, Copy)]
+#[cfg(feature="pi_js_export")]
+pub enum TraceOption {
+	None,
+	Record,
+	Play,
+}
+
 #[allow(unused_variables)]
 #[cfg(feature="pi_js_export")]
 pub fn create_gui(
@@ -65,27 +72,20 @@ pub fn create_gui(
     font_sheet: u32,
     cur_time: u32,
     animation_event_fun: u32,
+	debug: TraceOption,
 ) -> Gui {
 	println!("width====================!!!!!, {:?}", width);
-    let gui = Gui {
-        down_query: engine.world.query(),
-        up_query: engine.world.query(),
-        layer_query: engine.world.query(),
-        enable_query: engine.world.query(),
-        depth_query: engine.world.query(),
-        layout_query: engine.world.query(),
-        quad_query: engine.world.query(),
-        matrix_query: engine.world.query(),
-        overflow_query: engine.world.query(),
-        in_pass2d_query: engine.world.query(),
-        graph_id: engine.world.query(),
-        query_state: SystemState::new(&mut engine.world),
-        // 这里使用非安全的方法，将entities转为静态声明周期，外部需要保证entities使用期间， app的指针不能更改（如将App放入堆中就不可行）
-        entitys: unsafe { transmute(engine.world.entities()) },
-        commands: UserCommands::default(),
-    };
+    let mut gui = Gui::new(engine);
 
-    engine.add_plugin(UiPlugin);
+	#[cfg(feature="record")]
+	{
+		let debug: pi_ui_render::system::cmd_play::TraceOption = unsafe { transmute(debug) };
+		engine.add_plugin(UiPlugin {cmd_trace: debug.clone()});
+		gui.record_option = debug;
+	}
+
+	#[cfg(not(feature="record"))]
+    engine.add_plugin(UiPlugin::default());
 
 	// // 设置动画的监听器
     // let a_callback = Share::new(move |list: &Vec<(AnimationGroupID, EAnimationEvent, u32)>, map: &SecondaryMap<AnimationGroupID, (ObjKey, pi_atom::Atom)>| {
@@ -124,157 +124,4 @@ pub fn create_fragment(gui: &mut Gui, arr: &mut [f64], count: u32, key: u32) {
 	gui.commands
 		.fragment_commands
 		.push(FragmentCommand { key, entitys });
-}
-
-pub fn play_destroy_node(gui: &mut Gui, _engine: &mut Engine, context: &mut PlayContext, json: &Vec<json::JsonValue>) {
-    let id = unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index() as usize;
-    let node_id = context.nodes.remove(id).unwrap();
-
-    // if let Some(r) = context.idtree.get(id) {
-    //     let head = r.children().head;
-    //     // 移除所有节点
-
-    //     for (id, _n) in context.idtree.recursive_iter(head) {
-    //         context.nodes.remove(id);
-    //     }
-
-    //     // 递归删除idtree
-    //     let r = match context.idtree.get(id) {
-    //         Some(n) => (n.parent(), n.layer(), n.count(), n.prev(), n.next(), n.children().head),
-    //         _ => return,
-    //     };
-    //     context.idtree.destroy(id, r, true);
-    // }
-
-
-    // 销毁节点
-    destroy_node(gui, node_id);
-}
-
-pub fn play_append_child(gui: &mut Gui, _engine: &mut Engine, context: &mut PlayContext, json: &Vec<json::JsonValue>) {
-
-    let node_id = unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index() as usize;
-    let parent_id = unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 1).unwrap())) }.index() as usize;
-    let node_id1 = context.get_node(node_id).unwrap().clone();
-    let parent_id1 = match context.get_node(parent_id) {
-        Some(r) => r.clone(),
-        None => unsafe { transmute(EntityKey::null().to_bits()) },
-    };
-
-	log::warn!("play_append_child================ node_json: {:?}, parent_json: {:?}, node: {:?}, parent: {:?},", node_id, parent_id, unsafe { Entity::from_bits(transmute(node_id1)) }, unsafe { Entity::from_bits(transmute(parent_id1)) } );
-
-    append_child(gui, node_id1, parent_id1);
-
-    // if context.idtree.get(node_id).is_none() {
-    //     context.idtree.create(node_id);
-    // }
-
-    // if EntityKey(Entity::from_bits(unsafe { transmute(parent_id1) })).is_null() {
-    //     context.idtree.insert_child(node_id, usize::null(), 0);
-    // } else {
-    //     if context.idtree.get(parent_id).is_none() {
-    //         context.idtree.create(parent_id);
-    //     }
-    //     context.idtree.insert_child(node_id, parent_id, 0);
-    // }
-}
-
-pub fn play_insert_as_root(gui: &mut Gui, _engine: &mut Engine, context: &mut PlayContext, json: &Vec<json::JsonValue>) {
-
-    // log::warn!("play_append_child================{:?}, {:?}, version0: {:?}, version1: {:?}, index0: {}, index1:{:?}, v1:{}, v2:{}, entity:{:?}", r0, r1, r0 >> 32 as u32, r1 >> 32 as u32, r0 as u32, r1 as u32, as_value::<f64>(json, 0).unwrap(), as_value::<f64>(json, 1).unwrap(), unsafe {Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))} );
-
-    let node_id = unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index() as usize;
-    let node_id1 = context.get_node(node_id).unwrap().clone();
-
-    insert_as_root(gui, node_id1);
-
-    // if context.idtree.get(node_id).is_none() {
-    //     context.idtree.create(node_id);
-    // }
-
-	// context.idtree.insert_child(node_id, usize::null(), 0);
-}
-
-pub fn play_insert_before(gui: &mut Gui, _engine: &mut Engine, context: &mut PlayContext, json: &Vec<json::JsonValue>) {
-    let node_id = unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index() as usize;
-    let borther = unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 1).unwrap())) }.index() as usize;
-    let node_id1 = context.get_node(node_id).unwrap().clone();
-    let borther1 = context.get_node(borther).unwrap().clone();
-    insert_before(gui, node_id1, borther1);
-
-    // if context.idtree.get(node_id).is_none() {
-    //     context.idtree.create(node_id);
-    // }
-	// if context.idtree.get(borther).is_none() {
-    //     context.idtree.create(borther);
-    // }
-
-    // context.idtree.insert_brother(node_id, borther, InsertType::Front);
-}
-
-pub fn play_create_node(gui: &mut Gui, _engine: &mut Engine, context: &mut PlayContext, json: &Vec<json::JsonValue>) {
-    let json = &json[0];
-    let ret = &json["ret"];
-    let ret = unsafe { Entity::from_bits(transmute(ret.as_f64().unwrap())) }.index() as usize;
-    let r = create_node(gui);
-	log::warn!("play_create_node================old_node {:?}, node: {:?},", ret, r);
-    context.nodes.insert(ret, r);
-}
-
-pub fn play_create_vnode(gui: &mut Gui, _engine: &mut Engine, context: &mut PlayContext, json: &Vec<json::JsonValue>) {
-    let json = &json[0];
-    let ret = &json["ret"];
-    let ret = unsafe { Entity::from_bits(transmute(ret.as_f64().unwrap())) }.index() as usize;
-    context.nodes.insert(ret, create_vnode(gui));
-}
-
-pub fn play_create_text_node(gui: &mut Gui, _engine: &mut Engine, context: &mut PlayContext, json: &Vec<json::JsonValue>) {
-    let json = &json[0];
-    let ret = &json["ret"];
-    let ret = unsafe { Entity::from_bits(transmute(ret.as_f64().unwrap())) }.index() as usize;
-    context.nodes.insert(ret, create_text_node(gui));
-}
-
-pub fn play_create_image_node(app: &mut Gui, _engine: &mut Engine, context: &mut PlayContext, json: &Vec<json::JsonValue>) {
-    let json = &json[0];
-    let ret = &json["ret"];
-    let ret = unsafe { Entity::from_bits(transmute(ret.as_f64().unwrap())) }.index() as usize;
-    context.nodes.insert(ret, create_image_node(app));
-}
-
-pub fn play_create_canvas_node(gui: &mut Gui, _engine: &mut Engine, context: &mut PlayContext, json: &Vec<json::JsonValue>) {
-    let json = &json[0];
-    let ret = &json["ret"];
-    let ret = unsafe { Entity::from_bits(transmute(ret.as_f64().unwrap())) }.index() as usize;
-    context.nodes.insert(ret, create_canvas_node(gui));
-}
-
-
-pub fn play_remove_node(gui: &mut Gui, _engine: &mut Engine, context: &mut PlayContext, json: &Vec<json::JsonValue>) {
-    let node_id = unsafe { Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap())) }.index() as usize;
-    let node_id = context.get_node(node_id).unwrap().clone();
-    remove_node(gui, node_id);
-}
-
-
-pub fn play_create_fragment(gui: &mut Gui, _engine: &mut Engine,  context: &mut PlayContext, json: &Vec<json::JsonValue>) {
-	// mut arr: Float64Array, count: u32, key: u32
-	log::warn!("json========{:?}", json);
-	let mut arr = pi_export_play::as_value::<Vec<f64>>(json, 0).unwrap();
-	let arr_old = arr.clone();
-	let count = pi_export_play::as_value::<u32>(json, 1).unwrap();
-	let key = pi_export_play::as_value::<u32>(json, 2).unwrap();
-
-	if arr.len() != count as usize {
-		panic!("ret is invalid");
-	}
-
-	create_fragment(gui, &mut arr, count, key);
-
-	for i in 0..count as usize {
-		let ret = arr_old[i];
-		let ret = unsafe { Entity::from_bits(transmute(ret) ) }.index() as usize;
-		log::warn!("play_create_fragment========{:?}, {:?}, {:?}", ret, arr[i], unsafe { Entity::from_bits(transmute(arr[i]) ) }.index() as usize);
-		context.nodes.insert(ret, arr[i]);
-	}
 }

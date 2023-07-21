@@ -275,10 +275,12 @@ pub fn get_class(engine: &mut Engine, class_name: u32) -> String {
             // println!("set class1==========={}", i);
             let mut style_reader = StyleTypeReader::new(&class_sheet.style_buffer, class.start, class.end);
             while let Some(r) = style_reader.to_attr() {
-                let s = to_css_str(r);
-                if s.as_str() != "" {
-                    ret += (s + ";").as_str();
-                }
+				if let StyleAttribute::Set(r) = r {
+					let s = to_css_str(r);
+					if s.as_str() != "" {
+						ret += (s + ";").as_str();
+					}
+				}
             }
             Some(ret)
 		},

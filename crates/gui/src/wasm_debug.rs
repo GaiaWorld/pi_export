@@ -3,8 +3,8 @@ use std::sync::Arc;
 
 use pi_bevy_render_plugin::PiRenderGraph;
 use pi_ui_render::components::pass_2d::GraphId;
-use pi_async::prelude::SingleTaskRunner;
-use pi_async::prelude::SingleTaskRuntime;
+use pi_async_rt::prelude::LocalTaskRunner;
+use pi_async_rt::prelude::LocalTaskRuntime;
 use pi_bevy_ecs_extend::prelude::Down;
 use pi_bevy_ecs_extend::prelude::Up;
 use pi_flex_layout::prelude::*;
@@ -31,7 +31,7 @@ use pi_ui_render::components::user::*;
 use pi_ui_render::components::user::{Overflow, Size};
 use pi_ui_render::components::calc::InPassId;
 use pi_ui_render::components::pass_2d::ParentPassId;
-use super::Gui;
+use super::index::Gui;
 pub use pi_export_base::export::Engine;
 use pi_ui_render::resource::ClassSheet;
 use bevy::ecs::prelude::Entity;
@@ -298,10 +298,12 @@ pub fn get_class(engine: &mut Engine, class_name: u32) -> JsValue {
             // println!("set class1==========={}", i);
             let mut style_reader = StyleTypeReader::new(&class_sheet.style_buffer, class.start, class.end);
             while let Some(r) = style_reader.to_attr() {
-                let s = to_css_str(r);
-                if s.as_str() != "" {
-                    ret += (s + ";").as_str();
-                }
+				if let StyleAttribute::Set(r) = r {
+					let s = to_css_str(r);
+					if s.as_str() != "" {
+						ret += (s + ";").as_str();
+					}
+				}
             }
             Some(ret)
 		},

@@ -9,8 +9,8 @@ use std::{
 //     BorderImageSlice, BorderRadius, CgColor, ClassName, Color, ColorAndPosition, FontSize, Hsi, ImageRepeat, LengthUnit, LineHeight,
 //     LinearGradientColor, MaskImage, Stroke, TextContent, TransformFunc, TransformOrigin,
 // };
-use pi_ui_render::components::{calc::EntityKey, NodeBundle};
-use pi_ui_render::resource::{NodeCmd, ComponentCmd};
+use pi_ui_render::components::calc::EntityKey;
+use pi_ui_render::resource::ComponentCmd;
 use pi_null::Null;
 use pi_ui_render::components::user::ClassName;
 use pi_export_play::as_value;
@@ -26,10 +26,8 @@ use pi_style::{
 use pi_style::style_parse::{parse_comma_separated, parse_text_shadow, StyleParse};
 use smallvec::SmallVec;
 pub use pi_export_base::export::{Atom, Engine};
-pub use super::Gui;
-use pi_ui_render::system::RunState;
-use pi_bevy_render_plugin::FrameState;
-use crate::{OffsetDocument, Size};
+pub use super::index::Gui;
+use crate::index::{OffsetDocument, Size};
 use pi_ui_render::resource::animation_sheet::KeyFramesSheet;
 
 #[cfg(target_arch="wasm32")]
@@ -44,31 +42,6 @@ pub enum Edge {
     Horizontal = 6,
     Vertical = 7,
     All = 8,
-}
-
-pub struct PlayContext {
-	pub nodes: VecMap<f64>,
-	pub atoms: XHashMap<usize, Atom>,
-	pub idtree: pi_idtree::IdTree<()>,
-	pub root: EntityKey,
-	pub root_index: usize,
-}
-
-impl PlayContext {
-	pub fn get_node(&mut self, index: usize) -> Option<f64> {
-		match self.nodes.get(index) {
-			Some(r) => Some(*r),
-			None => if (index as u32) < std::u32::MAX && self.root_index == 0{
-					let r: f64 = unsafe { transmute(self.root.0.to_bits())};
-					self.nodes.insert(index, r);
-					self.root_index = index;
-					Some(r)
-				} else {
-					None
-				}
-				
-			}
-		}
 }
 
 #[macro_export]
@@ -87,23 +60,6 @@ macro_rules! other_out_export {
 			let $node = unsafe {Entity::from_bits(transmute::<f64, u64>($node))};
 			$expr
 		}
-
-		$crate::paste::item! {
-			pub fn [<play_ $func_name>](gui: &mut Gui, engine: &mut Engine, context: &mut PlayContext, json: &Vec<json::JsonValue>) {
-				let mut i = -1;
-				i += 1;
-				let node = unsafe {Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))}.index();
-				$(i += 1; let $mut_name_ref = pi_export_play::as_value::<$mut_ty_ref>(json, i as usize).unwrap(); let $mut_name_ref = &mut $mut_name_ref;)*
-				$(i += 1; let $name_ref = pi_export_play::as_value::<$ty_ref>(json, i as usize).unwrap(); let $name_ref = &$name_ref;)*
-				$(i += 1; let $name = pi_export_play::as_value::<$ty>(json, i as usize).unwrap();)*
-				// let node = context.get_node(node).unwrap().clone();
-				let node = match context.get_node(node as usize) {
-					Some(r) => r.clone(),
-					None => return,
-				};
-				$func_name(gui, node, $($mut_name_ref,)* $($name_ref,)* $($name,)*);
-			}
-		}
 	};
 
 	($func_name:ident, [$($context: ident: $context_ty: ty,)*], $expr:expr, $($mut_name_ref: ident: &mut $mut_ty_ref: ty,)*; $($name_ref: ident: &$ty_ref: ty,)*; $($name: ident: $ty: ty,)*) => {
@@ -117,16 +73,6 @@ macro_rules! other_out_export {
 		#[wasm_bindgen]
 		pub fn $func_name($($context: $context_ty,)* $($mut_name_ref: &mut $mut_ty_ref,)* $($name_ref: &$ty_ref,)* $($name: $ty,)*) {
 			$expr
-		}
-
-		$crate::paste::item! {
-			pub fn [<play_ $func_name>](gui: &mut Gui, engine: &mut Engine, _context: &mut PlayContext, _json: &Vec<json::JsonValue>) {
-				let mut _i = -1;
-				$(_i += 1; let $mut_name_ref = pi_export_play::as_value::<$mut_ty_ref>(_json, _i as usize).unwrap(); let $mut_name_ref = &mut $mut_name_ref;)*
-				$(_i += 1; let $name_ref = pi_export_play::as_value::<$ty_ref>(_json, _i as usize).unwrap(); let $name_ref = &$name_ref;)*
-				$(_i += 1; let $name = pi_export_play::as_value::<$ty>(_json, _i as usize).unwrap();)*
-				$func_name($($context,)* $($mut_name_ref,)* $($name_ref,)* $($name,)*);
-			}
 		}
 	};
 
@@ -143,16 +89,6 @@ macro_rules! other_out_export {
 			$expr
 		}
 
-		$crate::paste::item! {
-			#[allow(unused_variables)]
-			pub fn [<play_ $func_name>](gui: &mut Gui, engine: &mut Engine,  context: &mut PlayContext, json: &Vec<json::JsonValue>) {
-				let i = -1;
-				$(let i = i + 1; let $mut_name_ref = pi_export_play::as_value::<$mut_ty_ref>(json, i as usize).unwrap(); let $mut_name_ref = &mut $mut_name_ref;)*
-				$(let i = i + 1; let $name_ref = pi_export_play::as_value::<$ty_ref>(json, i as usize).unwrap();let $name_ref = &$name_ref;)*
-				$(let i = i + 1; let $name = pi_export_play::as_value::<$ty>(json, i as usize).unwrap();)*
-				$func_name(gui, $($mut_name_ref,)* $($name_ref,)* $($name,)*);
-			}
-		}
 	};
 
 	// ($func_name:ident, $context: ident, $expr:expr, $($name_ref: ident: &$ty_ref: ty,)*; $($name: ident: $ty: ty,)*) => {
@@ -166,16 +102,6 @@ macro_rules! other_out_export {
 	// 	#[wasm_bindgen]
 	// 	pub fn $func_name($context: &mut Gui, $($name_ref: &$ty_ref,)* $($name: $ty,)*) {
 	// 		$expr
-	// 	}
-
-	// 	$crate::paste::item! {
-	// 		#[allow(unused_variables)]
-	// 		pub fn [<play_ $func_name>](gui: &mut Gui, engine: &mut Engine,  context: &mut PlayContext, json: &Vec<json::JsonValue>) {
-	// 			let i = -1;
-	// 			$(let i = i + 1; let $name_ref = pi_export_play::as_value::<$ty_ref>(json, i as usize).unwrap();let $name_ref = &$name_ref;)*
-	// 			$(let i = i + 1; let $name = pi_export_play::as_value::<$ty>(json, i as usize).unwrap();)*
-	// 			$func_name(gui, $($mut_name_ref,)* $($name_ref,)* $($name,)*);
-	// 		}
 	// 	}
 	// };
 
@@ -221,21 +147,6 @@ macro_rules! other_out_export {
 		#[wasm_bindgen]
 		pub fn $func_name($($context: $context_ty,)* $($node: &$ident: f64,)* $($other_param: $other_ty,)*) -> $return_ty {
 			$expr
-		}
-
-		$crate::paste::item! {
-			pub fn [<play_ $func_name>](gui: &mut Gui, engine: &mut Engine, context: &mut PlayContext, json: &Vec<json::JsonValue>) {
-				let mut i = -1;
-				$(i += 1; let $node = pi_export_play::as_value::<f64>(json, i as usize).unwrap(); let $node = &$node;)*
-				$(let $node = match context.get_node($node as usize) {
-					Some(r) => r.clone(),
-					None => return,
-				};)*
-
-				$(i += 1; let $other_param = pi_export_play::as_value::<$other_ty>(json, i as usize).unwrap();)*
-
-				$func_name($($context,)*  $($node,)* $($other_param,)*);
-			}
 		}
 	};
 }
@@ -296,32 +207,6 @@ macro_rules! style_out_export {
 				gui.commands.set_style(node_id, [<Reset $last_ty>]);
 			}
 
-			#[allow(unused_variables)]
-			#[allow(unused_assignments)]
-			pub fn [<play_reset_ $attr_name>](gui: &mut Gui, engine: &mut Engine,  context: &mut PlayContext, json: &Vec<json::JsonValue>) {
-				let node = unsafe {Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))}.index();
-				let node = match context.get_node(node as usize) {
-					Some(r) => r.clone(),
-					None => return,
-				};
-				[<reset_ $attr_name>](gui, node);
-			}
-
-			#[allow(unused_variables)]
-			#[allow(unused_assignments)]
-			pub fn [<play_ $attr_name>](gui: &mut Gui, engine: &mut Engine,  context: &mut PlayContext, json: &Vec<json::JsonValue>) {
-				let mut i = 0;
-				let node = unsafe {Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))}.index();
-				i += 1;
-				$(let $name_ref = pi_export_play::as_value::<$ty_ref>(json, i).unwrap(); i += 1;let $name_ref = &$name_ref;)*
-				$(let $name = pi_export_play::as_value::<$ty>(json, i).unwrap(); i += 1;)*
-				// let node = context.get_node(node).unwrap().clone();
-				let node = match context.get_node(node as usize) {
-					Some(r) => r.clone(),
-					None => return,
-				};
-				[<set_ $attr_name>](gui, node, $($name_ref,)* $($name,)*);
-			}
 		}
     };
 
@@ -357,33 +242,6 @@ macro_rules! style_out_export {
 			pub fn [<reset_ $attr_name>](gui: &mut Gui, node_id: f64) {
 				let node_id = unsafe {Entity::from_bits(transmute::<f64, u64>(node_id))};
 				$resetexpr;
-			}
-
-			#[allow(unused_variables)]
-			#[allow(unused_assignments)]
-			pub fn [<play_reset_ $attr_name>](gui: &mut Gui, engine: &mut Engine,  context: &mut PlayContext, json: &Vec<json::JsonValue>) {
-				let node = unsafe {Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))}.index();
-				let node = match context.get_node(node as usize) {
-					Some(r) => r.clone(),
-					None => return,
-				};
-				[<reset_ $attr_name>](gui, node);
-			}
-
-			#[allow(unused_variables)]
-			#[allow(unused_assignments)]
-			pub fn [<play_ $attr_name>](gui: &mut Gui, engine: &mut Engine,  context: &mut PlayContext, json: &Vec<json::JsonValue>) {
-				let mut i = 0;
-				let node = unsafe {Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))}.index();
-				i += 1;
-				$(let $name_ref = pi_export_play::as_value::<$ty_ref>(json, i).unwrap(); i += 1;let $name_ref = &$name_ref;)*
-				$(let $name = pi_export_play::as_value::<$ty>(json, i).unwrap(); i += 1;)*
-				// let node = context.get_node(node).unwrap().clone();
-				let node = match context.get_node(node as usize) {
-					Some(r) => r.clone(),
-					None => return,
-				};
-				[<set_ $attr_name>](gui, node, $($name_ref,)* $($name,)*);
 			}
 		}
 	};
@@ -460,34 +318,6 @@ macro_rules! style_out_export {
 				};
 			}
 
-			#[allow(unused_variables)]
-			#[allow(unused_assignments)]
-			pub fn [<play_reset_ $attr_name>](gui: &mut Gui, engine: &mut Engine,  context: &mut PlayContext, json: &Vec<json::JsonValue>) {
-				let node = unsafe {Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))}.index();
-				let edge = pi_export_play::as_value::<f64>(json, 1).unwrap();
-				let node = match context.get_node(node as usize) {
-					Some(r) => r.clone(),
-					None => return,
-				};
-				[<reset_ $attr_name>](gui, node, edge);
-			}
-
-			#[allow(unused_variables)]
-			pub fn [<play_ $attr_name>](gui: &mut Gui, engine: &mut Engine,  context: &mut PlayContext, json: &Vec<json::JsonValue>) {
-				let mut i = -1;
-				i += 1;
-				let node = unsafe {Entity::from_bits(transmute(as_value::<f64>(json, i as usize).unwrap()))}.index();
-				i += 1;
-				let edge = pi_export_play::as_value::<f64>(json, i as usize).unwrap();
-				$(i += 1;let $name_ref = pi_export_play::as_value::<$ty_ref>(json, i as usize).unwrap();let $name_ref = &$name_ref;)*
-				$(i += 1;let $name = pi_export_play::as_value::<$ty>(json, i as usize).unwrap();)*
-				// let node = context.get_node(node).unwrap().clone();
-				let node = match context.get_node(node as usize) {
-					Some(r) => r.clone(),
-					None => return,
-				};
-				[<set_ $attr_name>](gui, node, edge, $($name_ref,)* $($name,)*);
-			}
 		}
 	};
 
@@ -523,34 +353,6 @@ macro_rules! style_out_export {
 			pub fn [<reset_ $attr_name>](gui: &mut Gui, node_id: f64) {
 				let node_id = unsafe {Entity::from_bits(transmute::<f64, u64>(node_id))};
 				gui.commands.set_style(node_id, [<Reset $last_ty>]);
-			}
-
-			#[allow(unused_variables)]
-			#[allow(unused_assignments)]
-			pub fn [<play_reset_ $attr_name>](gui: &mut Gui, engine: &mut Engine, context: &mut PlayContext, json: &Vec<json::JsonValue>) {
-				let node = unsafe {Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))}.index();
-				let node = match context.get_node(node as usize) {
-					Some(r) => r.clone(),
-					None => return,
-				};
-				[<reset_ $attr_name>](gui, node);
-			}
-
-			#[allow(unused_variables)]
-			#[allow(unused_assignments)]
-			pub fn [<play_ $attr_name>](gui: &mut Gui, engine: &mut Engine, context: &mut PlayContext, json: &Vec<json::JsonValue>) {
-				let node = unsafe {Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))}.index();
-				let hash = pi_export_play::as_value::<usize>(json, 1).unwrap();
-				// let node = context.get_node(node).unwrap().clone();
-				let node = match context.get_node(node as usize) {
-					Some(r) => r.clone(),
-					None => return,
-				};
-				let atom_hash = match context.atoms.get(&hash) {
-					Some(r) => r.get_hash(),
-					None => panic!("can not find atom, hash: {}", hash),
-				};
-				[<set_ $attr_name>](gui, node, &Atom::new(pi_atom::Atom::get(atom_hash as usize).unwrap()) );
 			}
 		}
     };
@@ -958,30 +760,6 @@ pub fn reset_animation_str(gui: &mut Gui, node_id: f64) {
     reset_animation_str_inner(gui, node_id);
 }
 
-#[allow(unused_variables)]
-#[allow(unused_assignments)]
-pub fn play_reset_animation_str(gui: &mut Gui, _engine: &mut Engine, context: &mut PlayContext, json: &Vec<json::JsonValue>) {
-	let node = unsafe {Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))}.index();
-	let node = match context.get_node(node as usize) {
-		Some(r) => r.clone(),
-		None => return,
-	};
-	reset_animation_str(gui, node);
-}
-
-#[allow(unused_variables)]
-#[allow(unused_assignments)]
-pub fn play_animation_str(gui: &mut Gui, _engine: &mut Engine, context: &mut PlayContext, json: &Vec<json::JsonValue>) {
-	let node = unsafe {Entity::from_bits(transmute(as_value::<f64>(json, 0).unwrap()))}.index();
-	// let node = context.get_node(node).unwrap().clone();
-	let node = match context.get_node(node as usize) {
-		Some(r) => r.clone(),
-		None => return,
-	};
-	let value = pi_export_play::as_value::<String>(json, 1).unwrap();
-	let scope_hash = pi_export_play::as_value::<u32>(json, 2).unwrap();
-	set_animation_str(gui, node, &value, scope_hash);
-}
 
 
 // #[cfg(feature="pi_js_export")]
@@ -1144,122 +922,12 @@ other_out_export!(
 // 	key: u32,
 // );
 
-// 创建节点
-other_out_export!(
-	@with_return,
-    create_node,
-	f64,
-	{
-		let entity = gui.entitys.reserve_entity();
-		gui.commands.push_cmd(NodeCmd(NodeBundle::default(), entity));
-		// log::warn!("entity :{:?}", entity);
-		unsafe { transmute(entity.to_bits()) }
-	},
-	gui: &mut Gui,;
-	;
-);
-
-other_out_export!(
-	@with_return,
-    create_vnode,
-	f64,
-	{
-		let entity = gui.entitys.reserve_entity();
-		let mut node_bundle = NodeBundle::default();
-		node_bundle.node_state.set_vnode(true);
-		gui.commands
-			.push_cmd(NodeCmd(node_bundle, entity));
-		unsafe { transmute(entity.to_bits()) }
-	},
-	gui: &mut Gui,;
-	;
-);
-
-other_out_export!(
-	@with_return,
-    create_text_node,
-	f64,
-	create_node(gui),
-	gui: &mut Gui,;
-	;
-);
-
-other_out_export!(
-	@with_return,
-    create_image_node,
-	f64,
-	create_node(gui),
-	gui: &mut Gui,;
-	;
-);
-
-other_out_export!(
-	@with_return,
-    create_canvas_node,
-	f64,
-	create_node(gui),
-	gui: &mut Gui,;
-	;
-);
-
-other_out_export!(
-    destroy_node,
-    gui,
-    node,
-    {gui.commands.destroy_node(node);},;;
-);
-
-other_out_export!(
-    insert_as_root,
-    gui,
-    node,
-    {
-		gui.commands.append(node, unsafe { transmute(EntityKey::null().to_bits())});
-	},;;
-);
-
-other_out_export!(
-    append_child,
-    gui,
-    node,
-    {	
-		let parent = Entity::from_bits(unsafe { transmute(parent) });
-		gui.commands.append(node, parent);
-	},;;
-	parent: f64,
-);
-
-other_out_export!(
-    insert_before,
-    gui,
-    node,
-    {
-		gui.commands.insert_before(
-			node,
-			Entity::from_bits(unsafe { transmute(borther) }),
-		);
-	},;;
-	borther: f64,
-);
-
-other_out_export!(
-    remove_node,
-    gui,
-    node,
-    {
-		gui.commands.remove_node(node);
-	},;;
-);
-
 other_out_export!(
     set_view_port,
     gui,
     {
 		let root = unsafe { Entity::from_bits(transmute::<f64, u64>(root)) };
-		gui.commands.push_cmd(NodeCmd(
-			pi_ui_render::components::user::Viewport(Aabb2::new(Point2::new(x as f32, y as f32), Point2::new(width as f32, height as f32))),
-			root,
-		));
+		gui.commands.set_view_port(root, pi_ui_render::components::user::Viewport(Aabb2::new(Point2::new(x as f32, y as f32), Point2::new(width as f32, height as f32))));
 	},;;
 	x: i32, y: i32, width: i32, height: i32, root: f64,
 );
@@ -1285,10 +953,7 @@ other_out_export!(
     gui,
     {
 		let node = unsafe { Entity::from_bits(transmute::<f64, u64>(node)) };
-		gui.commands.push_cmd(NodeCmd(
-			unsafe { transmute::<_, pi_ui_render::components::user::RenderTargetType>(target_ty) };
-			node,
-		));
+		gui.commands.set_target_type(node, unsafe { transmute::<_, pi_ui_render::components::user::RenderTargetType>(target_ty) });
 	},;;
 	node: f64, target_ty: u8,
 );
@@ -1299,33 +964,18 @@ other_out_export!(
     {
 		let root = unsafe { Entity::from_bits(transmute::<f64, u64>(root)) };
 		gui.commands
-			.push_cmd(NodeCmd(pi_ui_render::components::user::ClearColor(CgColor::new(r, g, b, a), is_clear_window), root));
+			.set_clear_color(root, pi_ui_render::components::user::ClearColor(CgColor::new(r, g, b, a), is_clear_window));
 	},;;
 	r: f32, g: f32, b: f32, a: f32, root: f64, is_clear_window: bool,
 );
 
-other_out_export!(
-    create_fragment_by_bin,
-    gui,
-    match postcard::from_bytes::<pi_ui_render::resource::fragment::Fragments>(bin) {
-		Ok(r) => {
-			gui.commands.push_cmd(pi_ui_render::resource::ExtendFragmentCmd(r));
-		}
-		Err(e) => {
-			log::warn!("deserialize_fragment error: {:?}, {:?}", e, bin);
-			return;
-		}
-	},;
-	bin: &[u8],;
-	
-);
 
 other_out_export!(
     create_class_by_bin,
     gui,
     match postcard::from_bytes::<Vec<pi_style::style_parse::ClassMap>>(bin) {
 		Ok(r) => {
-			gui.commands.push_cmd(pi_ui_render::resource::ExtendCssCmd(r));
+			gui.commands.add_css_bin(pi_ui_render::resource::ExtendCssCmd(r));
 		}
 		Err(e) => {
 			log::warn!("deserialize_class_map error: {:?}, {:?}", e, bin);
@@ -1343,85 +993,9 @@ other_out_export!(
     gui,
     {
 		let node: Entity = Entity::from_bits(unsafe { transmute(root) });
-    	gui.commands.push_cmd(NodeCmd(pi_ui_render::components::user::RenderDirty(true), node));
+    	gui.commands.set_render_dirty(node, pi_ui_render::components::user::RenderDirty(true));
 	},;;
 	root: f64,
-);
-
-other_out_export!(
-    fram_call,
-    [engine: &mut Engine,],
-    {
-		#[cfg(feature = "trace")]
-    	let _span = tracing::warn_span!("frame_call").entered();
-		*engine.world.get_resource_mut::<RunState>().unwrap() = RunState::RENDER;
-		*engine.world.get_resource_mut::<FrameState>().unwrap() = FrameState::Active;
-		engine.update();
-		*engine.world.get_resource_mut::<FrameState>().unwrap() = FrameState::UnActive;
-	},
-	;;
-	_cur_time: u32,
-);
-
-// 
-other_out_export!(
-    flush,
-    [gui: &mut Gui, engine: &mut Engine,],
-    {
-		#[cfg(feature = "trace")]
-    	let _span = tracing::warn_span!("flush").entered();
-		bevy::ecs::system::CommandQueue::default().apply(&mut engine.world);
-		let mut com = engine.world.get_resource_mut::<pi_ui_render::prelude::UserCommands>().unwrap();
-		std::mem::swap(&mut gui.commands, &mut *com);
-		*engine.world.get_resource_mut::<RunState>().unwrap() = RunState::SETTING;
-		*engine.world.get_resource_mut::<FrameState>().unwrap() = FrameState::UnActive;
-		engine.update();
-	},;;
-);
-
-other_out_export!(
-    calc,
-    [gui: &mut Gui, engine: &mut Engine,],
-    {	
-		#[cfg(feature = "trace")]
-    	let _span = tracing::warn_span!("calc").entered();
-		bevy::ecs::system::CommandQueue::default().apply(&mut engine.world);
-		let mut com = engine.world.get_resource_mut::<pi_ui_render::prelude::UserCommands>().unwrap();
-		std::mem::swap(&mut gui.commands, &mut *com);
-		*engine.world.get_resource_mut::<RunState>().unwrap() = RunState::MATRIX;
-		*engine.world.get_resource_mut::<FrameState>().unwrap() = FrameState::UnActive;
-		engine.update();
-	},;;
-);
-
-other_out_export!(
-    calc_layout,
-    [gui: &mut Gui, engine: &mut Engine,],
-    {	
-		#[cfg(feature = "trace")]
-    	let _span = tracing::warn_span!("calc_layout").entered();
-		bevy::ecs::system::CommandQueue::default().apply(&mut engine.world);
-		let mut com = engine.world.get_resource_mut::<pi_ui_render::prelude::UserCommands>().unwrap();
-		std::mem::swap(&mut gui.commands, &mut *com);
-		*engine.world.get_resource_mut::<RunState>().unwrap() = RunState::LAYOUT;
-		*engine.world.get_resource_mut::<FrameState>().unwrap() = FrameState::UnActive;
-		engine.update();
-	},;;
-);
-
-other_out_export!(
-    calc_geo,
-    [gui: &mut Gui, engine: &mut Engine,],
-    {
-		#[cfg(feature = "trace")]
-    	let _span = tracing::warn_span!("calc_geo").entered();
-		bevy::ecs::system::CommandQueue::default().apply(&mut engine.world);
-		let mut com = engine.world.get_resource_mut::<pi_ui_render::prelude::UserCommands>().unwrap();
-		std::mem::swap(&mut gui.commands, &mut *com);
-		*engine.world.get_resource_mut::<RunState>().unwrap() = RunState::MATRIX;
-		*engine.world.get_resource_mut::<FrameState>().unwrap() = FrameState::UnActive;
-		engine.update();
-	},;;
 );
 
 // TODO
@@ -1900,7 +1474,7 @@ other_out_export!(
 other_out_export!(
 	@with_return1,
     query(engine: &mut Engine, gui: &mut Gui,)()(x: f32, y: f32,)-> Option<f64> {
-		super::query(engine, gui, x, y)
+		super::index::query(engine, gui, x, y)
 	}
 );
 

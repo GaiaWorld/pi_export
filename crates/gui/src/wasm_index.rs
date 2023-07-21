@@ -20,7 +20,7 @@ use bevy::ecs::{
     world::WorldCell,
 };
 use pi_animation::{animation_group::AnimationGroupID, animation_listener::EAnimationEvent};
-use pi_async::prelude::AsyncRuntime;
+use pi_async_rt::prelude::AsyncRuntime;
 use pi_bevy_ecs_extend::prelude::{Layer, OrDefault};
 use pi_bevy_post_process::PiPostProcessPlugin;
 use pi_bevy_render_plugin::{PiRenderPlugin, FrameState};
@@ -38,8 +38,7 @@ use pi_style::{
 };
 use smallvec::SmallVec;
 
-pub use super::Gui;
-use super::{style::PlayContext};
+pub use super::index::Gui;
 use pi_export_play::as_value;
 // pub use pi_ui_render::gui::Gui;
 pub use pi_export_base::export::{Engine, Atom};
@@ -47,9 +46,9 @@ use bevy::app::App;
 use cssparser::ParseError;
 use js_proxy_gen_macro::pi_js_export;
 use js_sys::{Array, Function, Float64Array};
-use pi_async::prelude::SingleTaskRunner;
+use pi_async_rt::rt::serial_local_compatible_wasm_runtime::LocalTaskRunner;
 use pi_bevy_winit_window::WinitPlugin;
-use pi_hal::runtime::{RENDER_RUNTIME, RUNNER_MULTI, RUNNER_RENDER};
+use pi_hal::runtime::{RENDER_RUNTIME, MULTI_MEDIA_RUNTIME};
 use pi_null::Null;
 use pi_spatial::quad_helper::intersects;
 use std::{
@@ -59,6 +58,7 @@ use std::{
         atomic::{AtomicBool, Ordering},
         Arc,
     },
+	cell::OnceCell,
 };
 use wasm_bindgen::prelude::{wasm_bindgen, JsValue};
 use web_sys::HtmlCanvasElement;
@@ -68,14 +68,28 @@ pub use winit::platform::web::WindowBuilderExtWebSys;
 pub use winit::window::{Window, WindowBuilder};
 use pi_ui_render::resource::{animation_sheet::KeyFramesSheet, FragmentCommand};
 
-
+pub static mut RUNNER: OnceCell<LocalTaskRunner<()>> = OnceCell::new();
 
 /// width、height为physical_size
 #[wasm_bindgen]
 pub fn create_engine(canvas: HtmlCanvasElement, width: u32, height: u32, asset_total_capacity: u32, asset_config: &str, log_filter: Option<String>) -> Engine {
 	use bevy::prelude::{CoreSet, IntoSystemSetConfig};
 	use pi_bevy_render_plugin::should_run;
-	use crate::parse_asset_config;
+	use crate::index::parse_asset_config;
+
+	// 初始化运行时（全局localRuntime需要初始化）
+	let runner = LocalTaskRunner::new();
+    let rt = runner.get_runtime();
+    //非线程安全，外部保证同一时间只有一个线程在多读或单写变量
+    unsafe {
+        RUNNER.set(runner);
+        MULTI_MEDIA_RUNTIME.0.set(rt.clone());
+		RENDER_RUNTIME.0.set(rt);
+    }
+
+	// static mut RUNNER_MULTI: OnceCell<LocalTaskRunner<()>> = OnceCell::new();
+	// static mut RUNNER_RENDER: OnceCell<LocalTaskRunner<()>> = OnceCell::new();
+
 
     let mut app = App::default();
 
@@ -87,6 +101,12 @@ pub fn create_engine(canvas: HtmlCanvasElement, width: u32, height: u32, asset_t
 	if let Some(log_filter) = log_filter {
 		log.filter = log_filter;
 	}
+
+	
+// static mut MULTI_MEDIA_RUNTIME: OnceCell<LocalTaskRuntime<()>> = OnceCell::new();
+
+// static mut RUNNER_RENDER: OnceCell<LocalTaskRunner<()>> = OnceCell::new();
+// static mut RENDER_RUNTIME: OnceCell<LocalTaskRuntime<()>> = OnceCell::new();
 	
 
 	// log.filter="pi_ui_render::resource::animation_sheet=debug".to_string();
@@ -108,6 +128,14 @@ pub fn create_engine(canvas: HtmlCanvasElement, width: u32, height: u32, asset_t
     Engine::new(app)
 }
 
+#[derive(Debug, Clone, Copy)]
+#[wasm_bindgen]
+pub enum TraceOption {
+	None,
+	Record,
+	Play,
+}
+
 #[wasm_bindgen]
 pub fn create_gui(
     context: JsValue,
@@ -119,45 +147,19 @@ pub fn create_gui(
     font_sheet: u32,
     cur_time: u32,
     animation_event_fun: Function,
+	debug: TraceOption,
 ) -> Gui {
-    let gui = Gui {
-        down_query: engine.world.query(),
-        up_query: engine.world.query(),
-        layer_query: engine.world.query(),
-        enable_query: engine.world.query(),
-        depth_query: engine.world.query(),
-        layout_query: engine.world.query(),
-        quad_query: engine.world.query(),
-        matrix_query: engine.world.query(),
-        overflow_query: engine.world.query(),
-        in_pass2d_query: engine.world.query(),
-        graph_id: engine.world.query(),
-        query_state: SystemState::new(&mut engine.world),
-        // 这里使用非安全的方法，将entities转为静态声明周期，外部需要保证entities使用期间， app的指针不能更改（如将App放入堆中就不可行）
-        entitys: unsafe { transmute(engine.world.entities()) },
-        commands: UserCommands::default(),
-    };
+    let mut gui = Gui::new(engine);
 
+    #[cfg(feature="record")]
+	{
+		let debug: pi_ui_render::system::cmd_play::TraceOption = unsafe { transmute(debug) };
+		engine.add_plugin(UiPlugin {cmd_trace: debug.clone()});
+		gui.record_option = debug;
+	}
+
+	#[cfg(not(feature="record"))]
     engine.add_plugin(UiPlugin);
-
-    // /// 设置动画的监听器
-    // let a_callback = Box::new(move |list: &Vec<(AnimationGroupID, EAnimationEvent, u32)>, map: &SecondaryMap<AnimationGroupID, (Entity, pi_atom::Atom)>| {
-    // 	let mut arr = Array::new();
-    // 	for (group_id, ty, count) in list.iter() {
-    // 		match map.get(*group_id) {
-    // 			Some(r) => {
-    // 				arr.push(&JsValue::from_f64(unsafe { transmute(r.0) }));
-    // 				arr.push(&JsValue::from_f64(r.1.get_hash() as f64));
-    // 			},
-    // 			None => continue,
-    // 		};
-    // 		arr.push(&JsValue::from_f64(unsafe {transmute::<_, u8>(*ty)}  as f64));
-    // 		arr.push(&JsValue::from_f64(*count as f64));
-    // 	}
-    // 	animation_event_fun.call1(&context, &JsValue::from(arr))
-    //                     .expect("call animation event fail!!!");
-    // });
-    // gui.commands.set_event_listener(a_callback);
 
     gui
 }
@@ -168,6 +170,9 @@ pub fn create_fragment(gui: &mut Gui, mut arr: Float64Array, count: u32, key: u3
 	let mut entitys = Vec::with_capacity(count as usize);
 	while index < count {
 		let entity = gui.entitys.reserve_entity();
+		#[cfg(feature="record")]
+		gui.node_cmd.0.push(entity);
+
 		arr.set_index(index, unsafe { transmute(entity.to_bits()) });
 		entitys.push(entity);
 		index = index + 1;
@@ -246,20 +251,24 @@ pub fn log_animation(
 // pub struct CanvasRect(u32, u32, u32, u32);
 
 #[inline]
-fn run_all(rt: &SingleTaskRunner<()>) {
-    while let Ok(r) = rt.run() {
-        if r == 0 {
-            break;
-        }
-    }
+fn run_all(rt: &LocalTaskRunner<()>) {
+	while RENDER_RUNTIME.len() > 0 {
+		rt.poll();
+		rt.run_once();
+	}
+    // while let Ok(r) = rt.run() {
+    //     if r == 0 {
+    //         break;
+    //     }
+    // }
 }
 
 // wasm 使用单线程运行时，需要手动推
 pub struct RuntimePlugin;
 
 fn runtime_run() {
-	run_all(&pi_hal::runtime::RUNNER_MULTI.lock());
-	run_all(&pi_hal::runtime::RUNNER_RENDER.lock());
+	run_all(unsafe{RUNNER.get().unwrap()});
+	// run_all(&pi_hal::runtime::RUNNER_RENDER.lock());
 }
 
 impl bevy::app::Plugin for RuntimePlugin {

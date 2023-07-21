@@ -21,6 +21,7 @@ probabilistic-collections = { git = "https://github.com/GaiaWorld/pi_probabilist
 # smallvec = {path = "../smallvec"}
 # pi_cache = {path = "../pi_cache"}
 # pi_assets = {path = "../pi_assets"}
+# pi_async_graph = {path = "../pi_async_graph"}
 # [profile.release]
 # debug= true
 

@@ -9,13 +9,14 @@ edition = "2021"
 default = ["pi_js_export"]
 pi_js_export = []
 trace = ["pi_ui_render/trace"]
+record = ["pi_ui_render/debug"]
 
 [dependencies]
 
 pi_export_base = {path="../base"}
 pi_export_play ={path="../play"}
 pi_idtree={ git = "https://github.com/GaiaWorld/pi_idtree.git" }
-pi_ui_render = {git = "https://github.com/GaiaWorld/pi_ui_render.git", branch="bevy"}
+pi_ui_render = {git = "https://github.com/GaiaWorld/pi_ui_render.git", branch="bevy", features=["debug"]}
 bitflags="1.2"
 tracing="0.1"
 tracing-core = "0.1"
@@ -27,7 +28,7 @@ fnv = "1.0.6"
 lazy_static = "1.4"
 derive_deref = "1.1"
 paste = "1.0"
-postcard = "1.0"
+postcard = {version = "1.0", features = ["use-std"]}
 serde = { version = "1.0", features = ["derive"] }
 ordered-float = { version = "3.0", default-features = false, features = ["serde"] }
 fxhash = "0.2.1"
@@ -54,7 +55,7 @@ pi_graph = "0.1"
 fixedbitset = {version="0.4", features = ["serde"]}
 bytemuck = { version = "1.4", features = ["derive"] }
 naga = { version = "0.11"}
-pi_assets = "0.12"
+pi_assets = "0.13"
 image = "0.24"
 polygon2 = "0.3"
 json ="0.12"
@@ -92,7 +93,7 @@ bevy = {version="0.10", default-features = false}
 uuid = { version = "1", features = ["js"] }
 # pi_share = {version="0.4", features=["serial", "rc"]}
 pi_share = {version="0.4"}
-pi_async = {version = "0.5", features = ["serial"]}
+pi-async-rt = {version = "0.1", features = ["serial"]}
 web-sys = {version="0.3", features = [
 	"HtmlCanvasElement"
 ]}
@@ -103,7 +104,7 @@ pi_render = { git = "https://github.com/GaiaWorld/pi_render.git", branch="bevy_s
 
 [target.'cfg(not(target_arch = "wasm32"))'.dependencies]
 pi_share = {version="0.4"}
-pi_async = "0.5"
+pi-async-rt = "0.1"
 wgpu = { version = "0.15", default-features = false, features = ["glsl"] }
 pi_render = { git = "https://github.com/GaiaWorld/pi_render.git", branch="bevy_shader" }
 

@@ -15,7 +15,7 @@ pi_atom = "0.2"
 derive_deref = "1.1"
 pi_export_macro = {path="../macro"}
 pi_share = {version="0.4"}
-pi_assets = "0.12"
+pi_assets = "0.13"
 pi_hal={git="https://github.com/GaiaWorld/pi_hal.git"}
 bevy = { version="0.10", default-features = false }
 wgpu = { version = "0.15", default-features = false, feature = ["glsl"] }
@@ -26,7 +26,7 @@ pi_bevy_winit_window = { git = "https://github.com/GaiaWorld/pi_render_bevy.git"
 pi_bevy_post_process= { git = "https://github.com/GaiaWorld/pi_render_bevy.git"}
 pi_window_renderer = { git = "https://github.com/GaiaWorld/pi_render_bevy.git" }
 pi_render = { git = "https://github.com/GaiaWorld/pi_render.git", branch="bevy_shader" }
-pi_async = {version = "0.5"}
+pi-async-rt = {version = "0.1"}
 js_proxy_gen_macro = { git = "https://github.com/GaiaWorld/pi_lib.git" }
 
 js-sys = "0.3"
@@ -37,7 +37,7 @@ wasm-bindgen = { version = "0.2", features = ["serde-serialize"] }
 wasm-bindgen-futures = { version = "0.4" }
 
 [target.'cfg(target_arch = "wasm32")'.dependencies]
-pi_async = {version = "0.5", features = ["serial"]}
+pi-async-rt = {version = "0.1", features = ["serial"]}
 wasm-bindgen = { version = "0.2", features = ["serde-serialize"]}
 js-sys = "0.3"
 

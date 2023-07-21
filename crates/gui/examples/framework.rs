@@ -6,7 +6,7 @@ use bevy::ecs::{
     system::{SystemState},
 };
 use bevy::prelude::App;
-use pi_async::prelude::AsyncRuntime;
+use pi_async_rt::prelude::AsyncRuntime;
 use pi_bevy_post_process::PiPostProcessPlugin;
 use pi_bevy_render_plugin::{PiRenderPlugin, FrameState};
 use pi_flex_layout::prelude::Size;
@@ -30,7 +30,7 @@ pub trait Example: 'static + Sized {
 pub fn start<T: Example + Sync + Send + 'static>(example: T) {
     init_load_cb(Arc::new(|path: String| {
         MULTI_MEDIA_RUNTIME
-            .spawn(MULTI_MEDIA_RUNTIME.alloc(), async move {
+            .spawn(async move {
                 if let Ok(dynamic_image) = std::fs::read(path.clone()) {
                     on_load(path.as_str(), dynamic_image);
                 } else {
