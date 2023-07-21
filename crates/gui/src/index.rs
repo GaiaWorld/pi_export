@@ -1,7 +1,7 @@
 use std::mem::transmute;
 
 use bevy::prelude::Entity;
-use pi_export_base::export::Engine;
+pub use pi_export_base::export::Engine;
 use pi_null::Null;
 use pi_ui_render::{
     components::{
@@ -298,64 +298,76 @@ pub fn calc_geo(gui: &mut Gui, engine: &mut Engine) {
 // 每帧取record
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
-#[cfg(feature="record")]
 pub fn get_record(engine: &mut Engine) -> Vec<u8> {
-	let mut records = engine.world.get_resource_mut::<Records>().unwrap();
+	#[cfg(feature="record")]
+	{
+		let mut records = engine.world.get_resource_mut::<Records>().unwrap();
 
-	let r = &*records;
-	let r = match postcard::to_stdvec::<Records>(r) {
-		Ok(bin) => bin,
-		Err(r) =>{
-			log::error!("serialize fail!!, {:?}", r);
-			Vec::<u8>::default()
-		},
-	};
-	records.clear();
-	r
+		let r = &*records;
+		let r = match postcard::to_stdvec::<Records>(r) {
+			Ok(bin) => bin,
+			Err(r) =>{
+				log::error!("serialize fail!!, {:?}", r);
+				Vec::<u8>::default()
+			},
+		};
+		records.clear();
+		r
+	}
+	#[cfg(not(feature="record"))]
+	Vec::<u8>::default()
 }
 
 // 取record长度, 单位：字节， 高层可根据长度来决定是否将record全部取出
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
-#[cfg(feature="record")]
 pub fn get_record_len(engine: &mut Engine) -> u32 {
-	let records = engine.world.get_resource_mut::<Records>().unwrap();
-	records.len() as u32
+	#[cfg(feature="record")]
+	{
+		let records = engine.world.get_resource_mut::<Records>().unwrap();
+		records.len() as u32
+	}
+	#[cfg(not(feature="record"))]
+	0
 }
 
 // 设置下一帧的指令记录
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
-#[cfg(feature="record")]
 pub fn set_next_record(engine: &mut Engine, bin: &[u8]) {
     // use pi_ui_render::system::cmd_play::PlayState;
-
-	match postcard::from_bytes::<Records>(bin) {
-		Ok(r) => {
-			engine.insert_resource(r);
-			// 重设播放状态
-			let mut play_state = engine.world.get_resource_mut::<PlayState>().unwrap();
-			play_state.is_running = true;
-			play_state.next_reord_index = 0;
-			play_state.next_state_index = 0;
-			play_state.cur_frame_count = 0;
-			
-		}
-		Err(e) => {
-			();
-			return;
+	#[cfg(feature="record")]
+	{
+		match postcard::from_bytes::<Records>(bin) {
+			Ok(r) => {
+				engine.insert_resource(r);
+				// 重设播放状态
+				let mut play_state = engine.world.get_resource_mut::<PlayState>().unwrap();
+				play_state.is_running = true;
+				play_state.next_reord_index = 0;
+				play_state.next_state_index = 0;
+				play_state.cur_frame_count = 0;
+				
+			}
+			Err(e) => {
+				();
+				return;
+			}
 		}
 	}
+	
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
-#[cfg(feature="record")]
 pub fn is_play_end(engine: &mut Engine) -> bool {
+	#[cfg(feature="record")]
 	match engine.world.get_resource_mut::<PlayState>() {
 		Some(r) => !r.is_running,
 		None => false,
 	}
+	#[cfg(not(feature="record"))]
+	false
 }
 
 #[derive(Debug, Serialize, Deserialize)]

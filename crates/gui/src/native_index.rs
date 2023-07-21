@@ -52,13 +52,13 @@ pub fn create_engine(window: &Arc<Window>, width: u32, height: u32, asset_total_
     Engine(app)
 }
 
-#[derive(Debug, Clone, Copy)]
-#[cfg(feature="pi_js_export")]
-pub enum TraceOption {
-	None,
-	Record,
-	Play,
-}
+// #[derive(Debug, Clone)]
+// #[cfg(feature="pi_js_export")]
+// pub enum TraceOption {
+// 	None = 0,
+// 	Record = 1,
+// 	Play = 2,
+// }
 
 #[allow(unused_variables)]
 #[cfg(feature="pi_js_export")]
@@ -72,7 +72,7 @@ pub fn create_gui(
     font_sheet: u32,
     cur_time: u32,
     animation_event_fun: u32,
-	debug: TraceOption,
+	debug: u32,
 ) -> Gui {
 	println!("width====================!!!!!, {:?}", width);
     let mut gui = Gui::new(engine);
