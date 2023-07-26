@@ -30,6 +30,11 @@ bevy = { version = "0.10", default-features=false}
 log = {version = "0.4", features=["release_max_level_warn"]}
 # features = ["release_max_level_warn", "max_level_warn"] 
 
+# 添加webgl feature
+wgpu = { version = "0.15", default-features = false, features = ["glsl", "webgl"] }
+# wgpu = { version = "0.15", default-features = false, features = ["glsl", "wgc"] }
+pi_render = { git = "https://github.com/GaiaWorld/pi_render.git", branch="bevy_shader", features=["webgl"] }
+
 getrandom = { version = "0.2", features = ["js"] }
 
 [profile.release]

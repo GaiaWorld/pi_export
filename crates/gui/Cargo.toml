@@ -98,6 +98,8 @@ web-sys = {version="0.3", features = [
 	"HtmlCanvasElement"
 ]}
 js-sys = "0.3"
+# wgpu = { version = "0.15", default-features = false, features = ["glsl", "wgc"] }
+# pi_render = { git = "https://github.com/GaiaWorld/pi_render.git", branch="bevy_shader"}
 wgpu = { version = "0.15", default-features = false, features = ["glsl", "webgl"] }
 pi_render = { git = "https://github.com/GaiaWorld/pi_render.git", branch="bevy_shader", features=["webgl"] }
 

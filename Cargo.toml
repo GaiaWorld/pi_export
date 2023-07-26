@@ -42,8 +42,8 @@ codegen-units = 1
 # [patch."https://github.com/GaiaWorld/pi_path_finding"]
 # pi_path_finding = { path = "../pi_path_finding" }
 
-# [patch."https://github.com/GaiaWorld/pi_ui_render"]
-# pi_ui_render = { path = "../pi_ui_render_new" }
+[patch."https://github.com/GaiaWorld/pi_ui_render"]
+pi_ui_render = { path = "../pi_ui_render_new" }
 
 # [patch."https://github.com/GaiaWorld/pi_spine_rs"]
 # pi_spine_rs = { path = "../pi_spine_rs" }
@@ -58,6 +58,7 @@ codegen-units = 1
 
 # [patch."https://github.com/GaiaWorld/pi_style"]
 # pi_style = { path = "../pi_style" }
+
 
 # [patch."https://github.com/GaiaWorld/pi_render"]
 # pi_render = { path = "../pi_render" }

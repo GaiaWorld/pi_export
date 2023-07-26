@@ -52,8 +52,8 @@ wasm-bindgen-futures 	= { version = "0.4" }
 js_proxy_gen_macro      = { git = "https://github.com/GaiaWorld/pi_lib.git" }
 
 [target.'cfg(target_arch = "wasm32")'.dependencies]
-wgpu 					= { version = "0.15", default-features = false, features = ["glsl", "webgl"] }
-pi_render 				= { git = "https://github.com/GaiaWorld/pi_render.git", branch="bevy_shader", features=["webgl"] }
+wgpu 					= { version = "0.15", default-features = false, features = ["glsl"] }
+pi_render 				= { git = "https://github.com/GaiaWorld/pi_render.git", branch="bevy_shader"}
 pi-async-rt 				= { version = "0.1", features = ["serial"] }
 
 [target.'cfg(not(target_arch = "wasm32"))'.dependencies]
