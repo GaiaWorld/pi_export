@@ -1,13 +1,14 @@
 
-use std::{mem::replace, fmt::Debug, ops::Range};
+use std::{mem::{replace, transmute}, fmt::Debug, ops::Range};
 use js_proxy_gen_macro::pi_js_export;
 use derive_deref::{Deref, DerefMut};
+use pi_gltf2_load::TValue;
 use pi_node_materials::prelude::*;
 use pi_scene_math::{Vector3, Quaternion};
 use std::ops::Deref;
 
 use pi_animation::amount::AnimationAmountCalc;
-use pi_curves::{easing::EEasingMode, steps::EStepMode, curve::{frame_curve::{FrameCurve, frames::interplate_frame_values_step}, frame::FrameDataValue}};
+use pi_curves::{easing::EEasingMode, steps::EStepMode, curve::{frame_curve::{FrameCurve, frames::interplate_frame_values_step}, frame::{FrameDataValue, KeyFrameCurveValue}, FramePerSecond, FrameIndex}};
 use pi_engine_shell::prelude::*;
 use pi_export_base::{export::{Engine, Atom}, constants::{RenderFormat, DepthStencilFormat}};
 use pi_scene_context::prelude::*;
@@ -33,32 +34,34 @@ pub enum EAnimeCurve {
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
-pub enum EAnimePropertyType {
-    LocalPosition       = 00,
-    LocalScaling        = 01,
-    LocalRotation       = 02,
-    LocalEulerAngles    = 03,
-    Alpha               = 04,
-    MainColor           = 05,
-    MainTexUScale       = 06,
-    MainTexVScale       = 07,
-    MainTexUOffset      = 08,
-    MainTexVOffset      = 09,
-    OpacityTexUScale    = 10,
-    OpacityTexVScale    = 11,
-    OpacityTexUOffset   = 12,
-    OpacityTexVOffset   = 13,
-    AlphaCutoff         = 14,
-    Fov                 = 15,
-    OrthSize            = 16,
-    LightDiffuse        = 17,
-    MaskTexUScale       = 18,
-    MaskTexVScale       = 19,
-    MaskTexUOffset      = 20,
-    MaskTexVOffset      = 21,
-    MaskCutoff          = 22,
-    IsActive            = 23,
-    
+pub enum EAnimePropertyID {
+    LocalPosition       =  0,
+    LocalRotation       =  1,
+    LocalScaling        =  2, 
+    MainTexUScale       =  3, 
+    MainTexVScale       =  4,
+    MainTexUOffset      =  5, 
+    MainTexVOffset      =  6,
+    Alpha               =  7, 
+    MainColor           =  8, 
+    CameraOrthSize      =  9, 
+    CameraFov           = 10,
+    Enable              = 11,
+    LocalEulerAngles    = 12,
+    Intensity           = 13,
+    LightDiffuse        = 14,
+    AlphaCutoff         = 15,
+    CellId              = 16,
+    OpacityTexUScale    = 17,
+    OpacityTexVScale    = 18,
+    OpacityTexUOffset   = 19,
+    OpacityTexVOffset   = 20,
+    MaskCutoff          = 21,
+    MaskTexUScale       = 22,
+    MaskTexVScale       = 23,
+    MaskTexUOffset      = 24,
+    MaskTexVOffset      = 25,
+
     BoneOffset          = 100,
     IndicesRange        = 101,
 }
@@ -265,6 +268,15 @@ impl EAnimationGroupListen {
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
+pub enum EFillMode {
+    None = 0,
+    Forwards = 1,
+    Backwards = 2,
+    Both = 3,
+}
+
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
 /// 创建动画组
 pub fn p3d_animation_group(
     app: &mut Engine,
@@ -336,6 +348,8 @@ pub fn p3d_anime_group_start(
     to: f64,
     fps: f64,
     amount_mode: EAmountMode,
+    delay_ms: f64,
+    fillmode: EFillMode,
     amount_param0: f64,
     amount_param1: f64,
     amount_param2: f64,
@@ -378,10 +392,10 @@ pub fn p3d_anime_group_start(
         EAmountMode::BounceIn       => AnimationAmountCalc::from_easing(EEasingMode::BounceIn)    ,
         EAmountMode::BounceOut      => AnimationAmountCalc::from_easing(EEasingMode::BounceOut)    ,
         EAmountMode::BounceInOut    => AnimationAmountCalc::from_easing(EEasingMode::BounceInOut)    ,
-        EAmountMode::JumpStart      => AnimationAmountCalc::from_steps(amount_param0 as u16, EStepMode::JumpStart    ),
-        EAmountMode::JumpEnd        => AnimationAmountCalc::from_steps(amount_param0 as u16, EStepMode::JumpEnd    ),
-        EAmountMode::JumpNone       => AnimationAmountCalc::from_steps(amount_param0 as u16, EStepMode::JumpNone    ),
-        EAmountMode::JumpBoth       => AnimationAmountCalc::from_steps(amount_param0 as u16, EStepMode::JumpBoth    ),
+        EAmountMode::JumpStart      => AnimationAmountCalc::from_steps(amount_param0 as FrameIndex, EStepMode::JumpStart    ),
+        EAmountMode::JumpEnd        => AnimationAmountCalc::from_steps(amount_param0 as FrameIndex, EStepMode::JumpEnd    ),
+        EAmountMode::JumpNone       => AnimationAmountCalc::from_steps(amount_param0 as FrameIndex, EStepMode::JumpNone    ),
+        EAmountMode::JumpBoth       => AnimationAmountCalc::from_steps(amount_param0 as FrameIndex, EStepMode::JumpBoth    ),
         EAmountMode::CubicBezier    => AnimationAmountCalc::from_cubic_bezier(amount_param0 as f32, amount_param1 as f32, amount_param2 as f32, amount_param3 as f32),
     };
 
@@ -393,7 +407,9 @@ pub fn p3d_anime_group_start(
 
     let loop_mode = loop_mode.val(loop_count);
 
-    cmds.animegroupcmd.scene_ctxs.start_with_progress(scene, group_key, AnimationGroupParam::new(speed as f32, loop_mode, from as f32, to as f32, fps as u16, amountcalc));
+    let fillmode = unsafe { transmute(fillmode) };
+
+    cmds.animegroupcmd.scene_ctxs.start_with_progress(scene, group_key, AnimationGroupParam::new(speed as f32, loop_mode, from as f32, to as f32, fps as FramePerSecond, amountcalc), delay_ms as KeyFrameCurveValue, fillmode);
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
@@ -528,163 +544,12 @@ pub fn p3d_query_anime_events(
 }
 
 
-pub trait TValue<const N: usize> {
-    fn newn(data: &[f32], offset: usize) -> Self;
-}
-impl TValue<3> for LocalScaling {
-    fn newn(data: &[f32], offset: usize) -> Self {
-        let x = data[offset + 0] as f32; let y = data[offset + 1] as f32; let z = data[offset + 2] as f32;
-        Self(Vector3::new(x, y, z))
-    }
-}
-impl TValue<3> for LocalEulerAngles {
-    fn newn(data: &[f32], offset: usize) -> Self {
-        let x = data[offset + 0] as f32; let y = data[offset + 1] as f32; let z = data[offset + 2] as f32;
-        Self(Vector3::new(x, y, z))
-    }
-}
-impl TValue<3> for LocalPosition {
-    fn newn(data: &[f32], offset: usize) -> Self {
-        let x = data[offset + 0] as f32; let y = data[offset + 1] as f32; let z = data[offset + 2] as f32;
-        Self(Vector3::new(x, y, z))
-    }
-}
-impl TValue<4> for LocalRotationQuaternion {
-    fn newn(data: &[f32], offset: usize) -> Self {
-        let x = data[offset + 0] as f32; let y = data[offset + 1] as f32; let z = data[offset + 2] as f32; let w = data[offset + 3] as f32;
-        Self::create(x, y, z, w)
-    }
-}
-impl TValue<1> for Alpha {
-    fn newn(data: &[f32], offset: usize) -> Self {
-        Self(data[offset])
-    }
-}
-impl TValue<1> for Cutoff {
-    fn newn(data: &[f32], offset: usize) -> Self {
-        Self(data[offset])
-    }
-}
-impl TValue<3> for MainColor {
-    fn newn(data: &[f32], offset: usize) -> Self {
-        let x = data[offset + 0] as f32; let y = data[offset + 1] as f32; let z = data[offset + 2] as f32;
-        Self(Vector3::new(x, y, z))
-    }
-}
-impl TValue<1> for MainTexUScale {
-    fn newn(data: &[f32], offset: usize) -> Self {
-        Self(data[offset])
-    }
-}
-impl TValue<1> for MainTexVScale {
-    fn newn(data: &[f32], offset: usize) -> Self {
-        Self(data[offset])
-    }
-}
-impl TValue<1> for MainTexUOffset {
-    fn newn(data: &[f32], offset: usize) -> Self {
-        Self(data[offset])
-    }
-}
-impl TValue<1> for MainTexVOffset {
-    fn newn(data: &[f32], offset: usize) -> Self {
-        Self(data[offset])
-    }
-}
-
-impl TValue<1> for MaskTexUScale {
-    fn newn(data: &[f32], offset: usize) -> Self {
-        Self(data[offset])
-    }
-}
-impl TValue<1> for MaskTexVScale {
-    fn newn(data: &[f32], offset: usize) -> Self {
-        Self(data[offset])
-    }
-}
-impl TValue<1> for MaskTexUOffset {
-    fn newn(data: &[f32], offset: usize) -> Self {
-        Self(data[offset])
-    }
-}
-impl TValue<1> for MaskTexVOffset {
-    fn newn(data: &[f32], offset: usize) -> Self {
-        Self(data[offset])
-    }
-}
-
-impl TValue<1> for OpacityTexUScale {
-    fn newn(data: &[f32], offset: usize) -> Self {
-        Self(data[offset])
-    }
-}
-impl TValue<1> for OpacityTexVScale {
-    fn newn(data: &[f32], offset: usize) -> Self {
-        Self(data[offset])
-    }
-}
-impl TValue<1> for OpacityTexUOffset {
-    fn newn(data: &[f32], offset: usize) -> Self {
-        Self(data[offset])
-    }
-}
-impl TValue<1> for OpacityTexVOffset {
-    fn newn(data: &[f32], offset: usize) -> Self {
-        Self(data[offset])
-    }
-}
-
-impl TValue<1> for Enable {
-    fn newn(data: &[f32], offset: usize) -> Self {
-        Self(data[offset])
-    }
-}
-
-impl TValue<1> for CameraFov {
-    fn newn(data: &[f32], offset: usize) -> Self {
-        Self(data[offset])
-    }
-}
-
-impl TValue<1> for CameraOrthSize {
-    fn newn(data: &[f32], offset: usize) -> Self {
-        Self(data[offset])
-    }
-}
-
-impl TValue<1> for MaskCutoff {
-    fn newn(data: &[f32], offset: usize) -> Self {
-        Self(data[offset])
-    }
-}
-
-impl TValue<3> for LightDiffuse {
-    fn newn(data: &[f32], offset: usize) -> Self {
-        let x = data[offset + 0] as f32; let y = data[offset + 1] as f32; let z = data[offset + 2] as f32;
-        Self(Vector3::new(x, y, z))
-    }
-}
-
-impl TValue<1> for InstanceBoneoffset {
-    fn newn(data: &[f32], offset: usize) -> Self {
-        let x = data[offset + 0] as u32;
-        Self(x)
-    }
-}
-
-impl TValue<2> for IndiceRenderRange {
-    fn newn(data: &[f32], offset: usize) -> Self {
-        let x = data[offset + 0] as u32; let y = data[offset + 1] as u32;
-        Self(Some(Range { start: x, end: y, }))
-    }
-}
-
 fn curve<const N: usize, T: TValue<N> + FrameDataValue + Debug>(
     data: &[f32],
     mode: EAnimeCurve,
 ) -> FrameCurve<T> {
     let vs = N; let vs2 = N * 2; let vs3 = N * 3;
-    let design_frame_per_second = data[0] as u16;
+    let design_frame_per_second = data[0] as FrameIndex;
     let curve = match mode {
         EAnimeCurve::FrameValues => {
             let mut curve = FrameCurve::<T>::curve_frame_values(design_frame_per_second);
@@ -693,7 +558,7 @@ fn curve<const N: usize, T: TValue<N> + FrameDataValue + Debug>(
             let frames = (data.len() - head) / step;
             for i in 0..frames {
                 let index = head + i * step;
-                let frame = data[index + 0] as u16;
+                let frame = data[index + 0] as FrameIndex;
                 // log::warn!("Frame {:?}, data: {:?}", frame, T::newn(data, index + 1));
                 curve.curve_frame_values_frame(frame, T::newn(data, index + 1));
             }
@@ -706,15 +571,15 @@ fn curve<const N: usize, T: TValue<N> + FrameDataValue + Debug>(
             let frames = (data.len() - head) / step;
             for i in 0..frames {
                 let index = head + i * step;
-                let frame = data[index + 0] as u16;
+                let frame = data[index + 0] as FrameIndex;
                 curve.curve_frame_values_frame(frame, T::newn(data, index + 1));
             }
             curve.call = interplate_frame_values_step;
             curve
         },
         EAnimeCurve::EasingCurve => {
-            let design_frame_per_second = data[0] as u16;
-            let frame_count = data[1] as u16;
+            let design_frame_per_second = data[0] as FramePerSecond;
+            let frame_count = data[1] as FrameIndex;
             let mode = number_to_easingmode(data[2] as u8);
             let head = 3;
             let from = T::newn(data, head + 0);
@@ -728,7 +593,7 @@ fn curve<const N: usize, T: TValue<N> + FrameDataValue + Debug>(
             curve
         },
         EAnimeCurve::MinMaxCurve => {
-            let design_frame_per_second = data[0] as u16;
+            let design_frame_per_second = data[0] as FramePerSecond;
             let from = T::newn(data, 1);
             let to = T::newn(data, 1 + vs);
             let head = 1 + vs2;
@@ -737,7 +602,7 @@ fn curve<const N: usize, T: TValue<N> + FrameDataValue + Debug>(
             let frames = (data.len() - head) / step;
             for i in 0..frames {
                 let index = head + i * step;
-                let frame = data[index + 0] as u16;
+                let frame = data[index + 0] as FrameIndex;
                 let intangent  = data[index + 1] as f32;
                 let value = data[index + 2] as f32;
                 let outtangent = data[index + 3] as f32;
@@ -746,8 +611,8 @@ fn curve<const N: usize, T: TValue<N> + FrameDataValue + Debug>(
             curve
         },
         EAnimeCurve::CubicBezierCurve => {
-            let design_frame_per_second = data[0] as u16;
-            let frame_count = data[1] as u16;
+            let design_frame_per_second = data[0] as FramePerSecond;
+            let frame_count = data[1] as FrameIndex;
             let mut head = 2;
             let from = T::newn(data, head);
             let scalar = T::newn(data, head + vs);
@@ -763,14 +628,14 @@ fn curve<const N: usize, T: TValue<N> + FrameDataValue + Debug>(
             curve
         },
         EAnimeCurve::GLTFCubicSpline => {
-            let design_frame_per_second = data[0] as u16;
+            let design_frame_per_second = data[0] as FramePerSecond;
             let mut curve = FrameCurve::<T>::curve_cubic_spline(design_frame_per_second);
             let head = 1;
             let step = 1 + vs3;
             let frames = (data.len() - head) / step;
             for i in 0..frames {
                 let index = head + i * step;
-                let frame = data[index + 0] as u16;
+                let frame = data[index + 0] as FrameIndex;
                 let intangent = T::newn(data, index + 1);
                 let value = T::newn(data, index + 1 + vs);
                 let outtangent = T::newn(data, index + 1 + vs2);
@@ -791,148 +656,134 @@ fn curve<const N: usize, T: TValue<N> + FrameDataValue + Debug>(
 /// * `MinMaxCurve` data: [design_frame_per_second, (x, y, ..), (x, y, ..), (frame, f32, it, ot), (frame, f32, it, ot) ...]
 /// * `CubicBezierCurve` data: [design_frame_per_second, total_frame, (x, y, ..), (x, y, ..), (x1, y1, x2, y2)]
 /// * `GLTFCubicSpline` data: [design_frame_per_second, (frame, (x, y, ..), (x, y, ..), (x, y, ..)), ...]
-pub fn p3d_anime_curve_query(app: &mut Engine, param: &mut ActionSetScene3D, key: f64, property: EAnimePropertyType) -> bool {
+pub fn p3d_anime_curve_query(app: &mut Engine, param: &mut ActionSetScene3D, key: String, property: EAnimePropertyID) -> bool {
     let mut cmds = param.acts.get_mut(&mut app.world);
-    let key = key as IDAssetTypeFrameCurve;
-    match property {
-        EAnimePropertyType::LocalPosition       => cmds.transformanime.position.curves.get(&key).is_some(),
-        EAnimePropertyType::LocalScaling        => cmds.transformanime.scaling.curves.get(&key).is_some(),
-        EAnimePropertyType::LocalRotation       => cmds.transformanime.quaternion.curves.get(&key).is_some(),
-        EAnimePropertyType::LocalEulerAngles    => cmds.transformanime.euler.curves.get(&key).is_some(),
-        EAnimePropertyType::Alpha               => cmds.anime_alpha.1.get(&key).is_some(),
-        EAnimePropertyType::MainColor           => cmds.anime_maincolor.1.get(&key).is_some(),
-        EAnimePropertyType::MainTexUScale       => cmds.anime_maintex_uscale.1.get(&key).is_some(),
-        EAnimePropertyType::MainTexVScale       => cmds.anime_maintex_vscale.1.get(&key).is_some(),
-        EAnimePropertyType::MainTexUOffset      => cmds.anime_maintex_uoffset.1.get(&key).is_some(),
-        EAnimePropertyType::MainTexVOffset      => cmds.anime_maintex_voffset.1.get(&key).is_some(),
-        EAnimePropertyType::OpacityTexUScale    => cmds.anime_opacitytex_uscale.1.get(&key).is_some(),
-        EAnimePropertyType::OpacityTexVScale    => cmds.anime_opacitytex_vscale.1.get(&key).is_some(),
-        EAnimePropertyType::OpacityTexUOffset   => cmds.anime_opacitytex_uoffset.1.get(&key).is_some(),
-        EAnimePropertyType::OpacityTexVOffset   => cmds.anime_opacitytex_voffset.1.get(&key).is_some(),
-        EAnimePropertyType::AlphaCutoff         => cmds.anime_alphacutoff.1.get(&key).is_some(),
-        EAnimePropertyType::Fov                 => cmds.anime_camerafov.1.get(&key).is_some(),
-        EAnimePropertyType::OrthSize            => cmds.anime_camerasize.1.get(&key).is_some(),
-        EAnimePropertyType::LightDiffuse        => cmds.anime_lightdiffuse.1.get(&key).is_some(),
-        EAnimePropertyType::MaskTexUScale       => cmds.anime_masktex_uscale.1.get(&key).is_some(),
-        EAnimePropertyType::MaskTexVScale       => cmds.anime_masktex_vscale.1.get(&key).is_some(),
-        EAnimePropertyType::MaskTexUOffset      => cmds.anime_masktex_uoffset.1.get(&key).is_some(),
-        EAnimePropertyType::MaskTexVOffset      => cmds.anime_masktex_voffset.1.get(&key).is_some(),
-        EAnimePropertyType::MaskCutoff          => cmds.anime_maskcutoff.1.get(&key).is_some(),
-        EAnimePropertyType::IsActive            => cmds.anime_isactive.1.get(&key).is_some(),
-        EAnimePropertyType::BoneOffset          => cmds.anime_boneoffset.1.get(&key).is_some(),
-        EAnimePropertyType::IndicesRange        => cmds.anime_indices_range.1.get(&key).is_some(),
-    }
+
+    let key = key.asset_u64();
+    let property = unsafe { transmute(property) };
+
+    pi_gltf2_load::p3d_anime_curve_query(&cmds.anime_assets, key, property)
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
-pub fn p3d_anime_curve_create(app: &mut Engine, param: &mut ActionSetScene3D, key: f64, property: EAnimePropertyType, data: &[f32], mode: EAnimeCurve) {
+pub fn p3d_anime_curve_create(app: &mut Engine, param: &mut ActionSetScene3D, key: String, property: EAnimePropertyID, data: &[f32], mode: EAnimeCurve) {
+    
     let mut cmds = param.acts.get_mut(&mut app.world);
-    let key = key as IDAssetTypeFrameCurve;
+    let key = key.asset_u64();
+
+    let mut cmds = cmds.anime_assets;
+
     match property {
-        EAnimePropertyType::LocalPosition       => {
-            let v = curve::<3, LocalPosition>(data, mode);
-            cmds.transformanime.position.curves.insert(key, TypeFrameCurve(v));
+        EAnimePropertyID::LocalPosition       => {
+            let v = curve::<3, LocalPosition>(data,  mode);
+            cmds.position.insert(key, TypeFrameCurve(v));
         },
-        EAnimePropertyType::LocalScaling        => {
-            let v = curve::<3, LocalScaling>(data, mode);
-            cmds.transformanime.scaling.curves.insert(key, TypeFrameCurve(v));
+        EAnimePropertyID::LocalScaling        => {
+            let v = curve::<3, LocalScaling>(data,  mode);
+            cmds.scaling.insert(key, TypeFrameCurve(v));
         },
-        EAnimePropertyType::LocalRotation    => {
-            let v = curve::<4, LocalRotationQuaternion>(data, mode);
-            cmds.transformanime.quaternion.curves.insert(key, TypeFrameCurve(v));
+        EAnimePropertyID::LocalRotation    => {
+            let v = curve::<4, LocalRotationQuaternion>(data,  mode);
+            cmds.quaternion.insert(key, TypeFrameCurve(v));
         },
-        EAnimePropertyType::LocalEulerAngles    => {
-            let v = curve::<3, LocalEulerAngles>(data, mode);
-            cmds.transformanime.euler.curves.insert(key, TypeFrameCurve(v));
+        EAnimePropertyID::LocalEulerAngles    => {
+            let v = curve::<3, LocalEulerAngles>(data,  mode);
+            cmds.euler.insert(key, TypeFrameCurve(v));
         },
-        EAnimePropertyType::Alpha               => {
-            let v = curve::<1, Alpha>(data, mode);
-            cmds.anime_alpha.1.insert(key, TypeFrameCurve(v));
+        EAnimePropertyID::Alpha               => {
+            let v = curve::<1, Alpha>(data,  mode);
+            cmds.alpha.insert(key, TypeFrameCurve(v));
         },
-        EAnimePropertyType::MainColor           => {
-            let v = curve::<3, MainColor>(data, mode);
-            cmds.anime_maincolor.1.insert(key, TypeFrameCurve(v));
+        EAnimePropertyID::MainColor           => {
+            let v = curve::<3, MainColor>(data,  mode);
+            cmds.maincolor_curves.insert(key, TypeFrameCurve(v));
         },
-        EAnimePropertyType::MainTexUScale       => {
-            let v = curve::<1, MainTexUScale>(data, mode);
-            cmds.anime_maintex_uscale.1.insert(key, TypeFrameCurve(v));
+        EAnimePropertyID::MainTexUScale       => {
+            let v = curve::<1, MainTexUScale>(data,  mode);
+            cmds.mainuscl_curves.insert(key, TypeFrameCurve(v));
         },
-        EAnimePropertyType::MainTexVScale       => {
-            let v = curve::<1, MainTexVScale>(data, mode);
-            cmds.anime_maintex_vscale.1.insert(key, TypeFrameCurve(v));
+        EAnimePropertyID::MainTexVScale       => {
+            let v = curve::<1, MainTexVScale>(data,  mode);
+            cmds.mainvscl_curves.insert(key, TypeFrameCurve(v));
         },
-        EAnimePropertyType::MainTexUOffset      => {
-            let v = curve::<1, MainTexUOffset>(data, mode);
-            cmds.anime_maintex_uoffset.1.insert(key, TypeFrameCurve(v));
+        EAnimePropertyID::MainTexUOffset      => {
+            let v = curve::<1, MainTexUOffset>(data,  mode);
+            cmds.mainuoff_curves.insert(key, TypeFrameCurve(v));
         },
-        EAnimePropertyType::MainTexVOffset      => {
-            let v = curve::<1, MainTexVOffset>(data, mode);
-            cmds.anime_maintex_voffset.1.insert(key, TypeFrameCurve(v));
+        EAnimePropertyID::MainTexVOffset      => {
+            let v = curve::<1, MainTexVOffset>(data,  mode);
+            cmds.mainvoff_curves.insert(key, TypeFrameCurve(v));
         },
-        EAnimePropertyType::OpacityTexUScale    => {
-            let v = curve::<1, OpacityTexUScale>(data, mode);
-            cmds.anime_opacitytex_uscale.1.insert(key, TypeFrameCurve(v));
+        EAnimePropertyID::OpacityTexUScale    => {
+            let v = curve::<1, OpacityTexUScale>(data,  mode);
+            cmds.opacityuscl_curves.insert(key, TypeFrameCurve(v));
         },
-        EAnimePropertyType::OpacityTexVScale    => {
-            let v = curve::<1, OpacityTexVScale>(data, mode);
-            cmds.anime_opacitytex_vscale.1.insert(key, TypeFrameCurve(v));
+        EAnimePropertyID::OpacityTexVScale    => {
+            let v = curve::<1, OpacityTexVScale>(data,  mode);
+            cmds.opacityvscl_curves.insert(key, TypeFrameCurve(v));
         },
-        EAnimePropertyType::OpacityTexUOffset   => {
-            let v = curve::<1, OpacityTexUOffset>(data, mode);
-            cmds.anime_opacitytex_uoffset.1.insert(key, TypeFrameCurve(v));
+        EAnimePropertyID::OpacityTexUOffset   => {
+            let v = curve::<1, OpacityTexUOffset>(data,  mode);
+            cmds.opacityuoff_curves.insert(key, TypeFrameCurve(v));
         },
-        EAnimePropertyType::OpacityTexVOffset   => {
-            let v = curve::<1, OpacityTexVOffset>(data, mode);
-            cmds.anime_opacitytex_voffset.1.insert(key, TypeFrameCurve(v));
+        EAnimePropertyID::OpacityTexVOffset   => {
+            let v = curve::<1, OpacityTexVOffset>(data,  mode);
+            cmds.opacityvoff_curves.insert(key, TypeFrameCurve(v));
         },
-        EAnimePropertyType::AlphaCutoff         => {
-            let v = curve::<1, Cutoff>(data, mode);
-            cmds.anime_alphacutoff.1.insert(key, TypeFrameCurve(v));
+        EAnimePropertyID::AlphaCutoff         => {
+            let v = curve::<1, Cutoff>(data,  mode);
+            cmds.alphacutoff.insert(key, TypeFrameCurve(v));
         },
-        EAnimePropertyType::Fov                 => {
-            let v = curve::<1, CameraFov>(data, mode);
-            cmds.anime_camerafov.1.insert(key, TypeFrameCurve(v));
+        EAnimePropertyID::CameraFov           => {
+            let v = curve::<1, CameraFov>(data,  mode);
+            cmds.camerafov.insert(key, TypeFrameCurve(v));
         },
-        EAnimePropertyType::OrthSize            => {
-            let v = curve::<1, CameraOrthSize>(data, mode);
-            cmds.anime_camerasize.1.insert(key, TypeFrameCurve(v));
+        EAnimePropertyID::CameraOrthSize      => {
+            let v = curve::<1, CameraOrthSize>(data,  mode);
+            cmds.camerasize.insert(key, TypeFrameCurve(v));
         },
-        EAnimePropertyType::LightDiffuse        => {
-            let v = curve::<3, LightDiffuse>(data, mode);
-            cmds.anime_lightdiffuse.1.insert(key, TypeFrameCurve(v));
+        EAnimePropertyID::LightDiffuse        => {
+            let v = curve::<3, LightDiffuse>(data,  mode);
+            cmds.lightdiffuse_curves.insert(key, TypeFrameCurve(v));
         },
-        EAnimePropertyType::MaskTexUScale       => {
-            let v = curve::<1, MaskTexUScale>(data, mode);
-            cmds.anime_masktex_uscale.1.insert(key, TypeFrameCurve(v));
+        EAnimePropertyID::MaskTexUScale       => {
+            let v = curve::<1, MaskTexUScale>(data,  mode);
+            cmds.maskuscl_curves.insert(key, TypeFrameCurve(v));
         },
-        EAnimePropertyType::MaskTexVScale       => {
-            let v = curve::<1, MaskTexVScale>(data, mode);
-            cmds.anime_masktex_vscale.1.insert(key, TypeFrameCurve(v));
+        EAnimePropertyID::MaskTexVScale       => {
+            let v = curve::<1, MaskTexVScale>(data,  mode);
+            cmds.maskvscl_curves.insert(key, TypeFrameCurve(v));
         },
-        EAnimePropertyType::MaskTexUOffset      => {
-            let v = curve::<1, MaskTexUOffset>(data, mode);
-            cmds.anime_masktex_uoffset.1.insert(key, TypeFrameCurve(v));
+        EAnimePropertyID::MaskTexUOffset      => {
+            let v = curve::<1, MaskTexUOffset>(data,  mode);
+            cmds.maskuoff_curves.insert(key, TypeFrameCurve(v));
         },
-        EAnimePropertyType::MaskTexVOffset      => {
-            let v = curve::<1, MaskTexVOffset>(data, mode);
-            cmds.anime_masktex_voffset.1.insert(key, TypeFrameCurve(v));
+        EAnimePropertyID::MaskTexVOffset      => {
+            let v = curve::<1, MaskTexVOffset>(data,  mode);
+            cmds.maskvoff_curves.insert(key, TypeFrameCurve(v));
         },
-        EAnimePropertyType::MaskCutoff          => {
-            let v = curve::<1, MaskCutoff>(data, mode);
-            cmds.anime_maskcutoff.1.insert(key, TypeFrameCurve(v));
+        EAnimePropertyID::MaskCutoff          => {
+            let v = curve::<1, MaskCutoff>(data,  mode);
+            cmds.maskcutoff_curves.insert(key, TypeFrameCurve(v));
         },
-        EAnimePropertyType::IsActive            => {
-            let v = curve::<1, Enable>(data, mode);
-            cmds.anime_isactive.1.insert(key, TypeFrameCurve(v));
+        EAnimePropertyID::Enable            => {
+            let v = curve::<1, Enable>(data,  mode);
+            cmds.enable.insert(key, TypeFrameCurve(v));
         },
-        EAnimePropertyType::BoneOffset          => {
-            let v = curve::<1, InstanceBoneoffset>(data, mode);
-            cmds.anime_boneoffset.1.insert(key, TypeFrameCurve(v));
+        EAnimePropertyID::BoneOffset          => {
+            let v = curve::<1, InstanceBoneoffset>(data,  mode);
+            cmds.boneoff_curves.insert(key, TypeFrameCurve(v));
         },
-        EAnimePropertyType::IndicesRange        => {
-            let v = curve::<2, IndiceRenderRange>(data, mode);
-            cmds.anime_indices_range.1.insert(key, TypeFrameCurve(v));
+        EAnimePropertyID::IndicesRange        => {
+            let v = curve::<2, IndiceRenderRange>(data,  mode);
+            cmds.indicerange_curves.insert(key, TypeFrameCurve(v));
+        },
+        EAnimePropertyID::Intensity => {
+            
+        },
+        EAnimePropertyID::CellId => {
+            
         },
     }
 }
@@ -943,7 +794,7 @@ pub fn p3d_target_animation(
     app: &mut Engine,
     param: &mut ActionSetScene3D,
     curve_key: f64,
-    property: EAnimePropertyType,
+    property: EAnimePropertyID,
     id_scene: f64,
     group: f64,
     curve_target: f64,
@@ -956,136 +807,142 @@ pub fn p3d_target_animation(
     let key = curve_key as IDAssetTypeFrameCurve;
 
     let info = match property {
-        EAnimePropertyType::LocalPosition => {
-            if let Some(curve) = cmds.transformanime.position.curves.get(&key) {
+        EAnimePropertyID::LocalPosition => {
+            if let Some(curve) = cmds.anime_assets.position.get(&key) {
                 // log::warn!("Curve Ok!");
-                cmds.transformanime.position.ctx.create_animation(0, AssetTypeFrameCurve::from(curve))
+                cmds.anime_contexts.position.ctx.create_animation(0, AssetTypeFrameCurve::from(curve))
             } else { return; }
         },
-        EAnimePropertyType::LocalScaling =>  {
-            if let Some(curve) = cmds.transformanime.scaling.curves.get(&key) {
-                cmds.transformanime.scaling.ctx.create_animation(0, AssetTypeFrameCurve::from(curve))
+        EAnimePropertyID::LocalScaling =>  {
+            if let Some(curve) = cmds.anime_assets.scaling.get(&key) {
+                cmds.anime_contexts.scaling.ctx.create_animation(0, AssetTypeFrameCurve::from(curve))
             } else { return; }
         },
-        EAnimePropertyType::LocalRotation =>  {
-            if let Some(curve) = cmds.transformanime.quaternion.curves.get(&key) {
-                cmds.transformanime.quaternion.ctx.create_animation(0, AssetTypeFrameCurve::from(curve))
+        EAnimePropertyID::LocalRotation =>  {
+            if let Some(curve) = cmds.anime_assets.quaternion.get(&key) {
+                cmds.anime_contexts.quaternion.ctx.create_animation(0, AssetTypeFrameCurve::from(curve))
             } else { return; }
         },
-        EAnimePropertyType::LocalEulerAngles =>  {
-            if let Some(curve) = cmds.transformanime.euler.curves.get(&key) {
-                cmds.transformanime.euler.ctx.create_animation(0, AssetTypeFrameCurve::from(curve))
+        EAnimePropertyID::LocalEulerAngles =>  {
+            if let Some(curve) = cmds.anime_assets.euler.get(&key) {
+                cmds.anime_contexts.euler.ctx.create_animation(0, AssetTypeFrameCurve::from(curve))
             } else { return; }
         },
-        EAnimePropertyType::Alpha =>  {
-            if let Some(curve) = cmds.anime_alpha.1.get(&key) {
-                cmds.anime_alpha.0.create_animation(0, AssetTypeFrameCurve::from(curve))
+        EAnimePropertyID::Alpha =>  {
+            if let Some(curve) = cmds.anime_assets.alpha.get(&key) {
+                cmds.anime_contexts.alpha.ctx.create_animation(0, AssetTypeFrameCurve::from(curve))
             } else { return; }
         },
-        EAnimePropertyType::MainColor =>  {
-            if let Some(curve) = cmds.anime_maincolor.1.get(&key) {
-                cmds.anime_maincolor.0.create_animation(0, AssetTypeFrameCurve::from(curve))
+        EAnimePropertyID::MainColor =>  {
+            if let Some(curve) = cmds.anime_assets.maincolor_curves.get(&key) {
+                cmds.anime_contexts.maincolor.ctx.create_animation(0, AssetTypeFrameCurve::from(curve))
             } else { return; }
         },
-        EAnimePropertyType::MainTexUScale =>  {
-            if let Some(curve) = cmds.anime_maintex_uscale.1.get(&key) {
-                cmds.anime_maintex_uscale.0.create_animation(0, AssetTypeFrameCurve::from(curve))
+        EAnimePropertyID::MainTexUScale =>  {
+            if let Some(curve) = cmds.anime_assets.mainuscl_curves.get(&key) {
+                cmds.anime_contexts.maintex_uscale.ctx.create_animation(0, AssetTypeFrameCurve::from(curve))
             } else { return; }
         },
-        EAnimePropertyType::MainTexVScale =>  {
-            if let Some(curve) = cmds.anime_maintex_vscale.1.get(&key) {
-                cmds.anime_maintex_vscale.0.create_animation(0, AssetTypeFrameCurve::from(curve))
+        EAnimePropertyID::MainTexVScale =>  {
+            if let Some(curve) = cmds.anime_assets.mainvscl_curves.get(&key) {
+                cmds.anime_contexts.maintex_vscale.ctx.create_animation(0, AssetTypeFrameCurve::from(curve))
             } else { return; }
         },
-        EAnimePropertyType::MainTexUOffset =>  {
-            if let Some(curve) = cmds.anime_maintex_uoffset.1.get(&key) {
-                cmds.anime_maintex_uoffset.0.create_animation(0, AssetTypeFrameCurve::from(curve))
+        EAnimePropertyID::MainTexUOffset =>  {
+            if let Some(curve) = cmds.anime_assets.mainuoff_curves.get(&key) {
+                cmds.anime_contexts.maintex_uoffset.ctx.create_animation(0, AssetTypeFrameCurve::from(curve))
             } else { return; }
         },
-        EAnimePropertyType::MainTexVOffset =>  {
-            if let Some(curve) = cmds.anime_maintex_voffset.1.get(&key) {
-                cmds.anime_maintex_voffset.0.create_animation(0, AssetTypeFrameCurve::from(curve))
+        EAnimePropertyID::MainTexVOffset =>  {
+            if let Some(curve) = cmds.anime_assets.mainvoff_curves.get(&key) {
+                cmds.anime_contexts.maintex_voffset.ctx.create_animation(0, AssetTypeFrameCurve::from(curve))
             } else { return; }
         },
-        EAnimePropertyType::OpacityTexUScale =>  {
-            if let Some(curve) = cmds.anime_opacitytex_uscale.1.get(&key) {
-                cmds.anime_opacitytex_uscale.0.create_animation(0, AssetTypeFrameCurve::from(curve))
+        EAnimePropertyID::OpacityTexUScale =>  {
+            if let Some(curve) = cmds.anime_assets.opacityuscl_curves.get(&key) {
+                cmds.anime_contexts.opacitytex_uscale.ctx.create_animation(0, AssetTypeFrameCurve::from(curve))
             } else { return; }
         },
-        EAnimePropertyType::OpacityTexVScale =>  {
-            if let Some(curve) = cmds.anime_opacitytex_vscale.1.get(&key) {
-                cmds.anime_opacitytex_vscale.0.create_animation(0, AssetTypeFrameCurve::from(curve))
+        EAnimePropertyID::OpacityTexVScale =>  {
+            if let Some(curve) = cmds.anime_assets.opacityvscl_curves.get(&key) {
+                cmds.anime_contexts.opacitytex_vscale.ctx.create_animation(0, AssetTypeFrameCurve::from(curve))
             } else { return; }
         },
-        EAnimePropertyType::OpacityTexUOffset =>  {
-            if let Some(curve) = cmds.anime_opacitytex_uoffset.1.get(&key) {
-                cmds.anime_opacitytex_uoffset.0.create_animation(0, AssetTypeFrameCurve::from(curve))
+        EAnimePropertyID::OpacityTexUOffset =>  {
+            if let Some(curve) = cmds.anime_assets.opacityuoff_curves.get(&key) {
+                cmds.anime_contexts.opacitytex_uoffset.ctx.create_animation(0, AssetTypeFrameCurve::from(curve))
             } else { return; }
         },
-        EAnimePropertyType::OpacityTexVOffset =>  {
-            if let Some(curve) = cmds.anime_opacitytex_voffset.1.get(&key) {
-                cmds.anime_opacitytex_voffset.0.create_animation(0, AssetTypeFrameCurve::from(curve))
+        EAnimePropertyID::OpacityTexVOffset =>  {
+            if let Some(curve) = cmds.anime_assets.opacityvoff_curves.get(&key) {
+                cmds.anime_contexts.opacitytex_voffset.ctx.create_animation(0, AssetTypeFrameCurve::from(curve))
             } else { return; }
         },
-        EAnimePropertyType::AlphaCutoff =>  {
-            if let Some(curve) = cmds.anime_alphacutoff.1.get(&key) {
-                cmds.anime_alphacutoff.0.create_animation(0, AssetTypeFrameCurve::from(curve))
+        EAnimePropertyID::AlphaCutoff =>  {
+            if let Some(curve) = cmds.anime_assets.alphacutoff.get(&key) {
+                cmds.anime_contexts.alphacutoff.ctx.create_animation(0, AssetTypeFrameCurve::from(curve))
             } else { return; }
         },
-        EAnimePropertyType::Fov =>  {
-            if let Some(curve) = cmds.anime_alpha.1.get(&key) {
-                cmds.anime_alpha.0.create_animation(0, AssetTypeFrameCurve::from(curve))
+        EAnimePropertyID::LightDiffuse =>  {
+            if let Some(curve) = cmds.anime_assets.lightdiffuse_curves.get(&key) {
+                cmds.anime_contexts.lightdiffuse.ctx.create_animation(0, AssetTypeFrameCurve::from(curve))
             } else { return; }
         },
-        EAnimePropertyType::OrthSize =>  {
-            if let Some(curve) = cmds.anime_alpha.1.get(&key) {
-                cmds.anime_alpha.0.create_animation(0, AssetTypeFrameCurve::from(curve))
+        EAnimePropertyID::MaskTexUScale =>  {
+            if let Some(curve) = cmds.anime_assets.maskuscl_curves.get(&key) {
+                cmds.anime_contexts.masktex_uscale.ctx.create_animation(0, AssetTypeFrameCurve::from(curve))
             } else { return; }
         },
-        EAnimePropertyType::LightDiffuse =>  {
-            if let Some(curve) = cmds.anime_lightdiffuse.1.get(&key) {
-                cmds.anime_lightdiffuse.0.create_animation(0, AssetTypeFrameCurve::from(curve))
+        EAnimePropertyID::MaskTexVScale =>  {
+            if let Some(curve) = cmds.anime_assets.maskvscl_curves.get(&key) {
+                cmds.anime_contexts.masktex_vscale.ctx.create_animation(0, AssetTypeFrameCurve::from(curve))
             } else { return; }
         },
-        EAnimePropertyType::MaskTexUScale =>  {
-            if let Some(curve) = cmds.anime_masktex_uscale.1.get(&key) {
-                cmds.anime_masktex_uscale.0.create_animation(0, AssetTypeFrameCurve::from(curve))
+        EAnimePropertyID::MaskTexUOffset =>  {
+            if let Some(curve) = cmds.anime_assets.maskuoff_curves.get(&key) {
+                cmds.anime_contexts.masktex_uoffset.ctx.create_animation(0, AssetTypeFrameCurve::from(curve))
             } else { return; }
         },
-        EAnimePropertyType::MaskTexVScale =>  {
-            if let Some(curve) = cmds.anime_masktex_vscale.1.get(&key) {
-                cmds.anime_masktex_vscale.0.create_animation(0, AssetTypeFrameCurve::from(curve))
+        EAnimePropertyID::MaskTexVOffset =>  {
+            if let Some(curve) = cmds.anime_assets.maskvoff_curves.get(&key) {
+                cmds.anime_contexts.masktex_voffset.ctx.create_animation(0, AssetTypeFrameCurve::from(curve))
             } else { return; }
         },
-        EAnimePropertyType::MaskTexUOffset =>  {
-            if let Some(curve) = cmds.anime_masktex_uoffset.1.get(&key) {
-                cmds.anime_masktex_uoffset.0.create_animation(0, AssetTypeFrameCurve::from(curve))
+        EAnimePropertyID::MaskCutoff =>  {
+            if let Some(curve) = cmds.anime_assets.maskcutoff_curves.get(&key) {
+                cmds.anime_contexts.maskcutoff.ctx.create_animation(0, AssetTypeFrameCurve::from(curve))
             } else { return; }
         },
-        EAnimePropertyType::MaskTexVOffset =>  {
-            if let Some(curve) = cmds.anime_masktex_voffset.1.get(&key) {
-                cmds.anime_masktex_voffset.0.create_animation(0, AssetTypeFrameCurve::from(curve))
+        EAnimePropertyID::Enable =>  {
+            if let Some(curve) = cmds.anime_assets.enable.get(&key) {
+                cmds.anime_contexts.isactive.ctx.create_animation(0, AssetTypeFrameCurve::from(curve))
             } else { return; }
         },
-        EAnimePropertyType::MaskCutoff =>  {
-            if let Some(curve) = cmds.anime_maskcutoff.1.get(&key) {
-                cmds.anime_maskcutoff.0.create_animation(0, AssetTypeFrameCurve::from(curve))
+        EAnimePropertyID::BoneOffset =>  {
+            if let Some(curve) = cmds.anime_assets.boneoff_curves.get(&key) {
+                cmds.anime_contexts.boneoffset.ctx.create_animation(0, AssetTypeFrameCurve::from(curve))
             } else { return; }
         },
-        EAnimePropertyType::IsActive =>  {
-            if let Some(curve) = cmds.anime_isactive.1.get(&key) {
-                cmds.anime_isactive.0.create_animation(0, AssetTypeFrameCurve::from(curve))
+        EAnimePropertyID::IndicesRange =>  {
+            if let Some(curve) = cmds.anime_assets.indicerange_curves.get(&key) {
+                cmds.anime_contexts.indices_range.ctx.create_animation(0, AssetTypeFrameCurve::from(curve))
             } else { return; }
         },
-        EAnimePropertyType::BoneOffset =>  {
-            if let Some(curve) = cmds.anime_boneoffset.1.get(&key) {
-                cmds.anime_boneoffset.0.create_animation(0, AssetTypeFrameCurve::from(curve))
+        EAnimePropertyID::CameraFov => {
+            if let Some(curve) = cmds.anime_assets.camerafov.get(&key) {
+                cmds.anime_contexts.camerafov.ctx.create_animation(0, AssetTypeFrameCurve::from(curve))
             } else { return; }
         },
-        EAnimePropertyType::IndicesRange =>  {
-            if let Some(curve) = cmds.anime_indices_range.1.get(&key) {
-                cmds.anime_indices_range.0.create_animation(0, AssetTypeFrameCurve::from(curve))
+        EAnimePropertyID::CameraOrthSize => {
+            if let Some(curve) = cmds.anime_assets.camerasize.get(&key) {
+                cmds.anime_contexts.camerasize.ctx.create_animation(0, AssetTypeFrameCurve::from(curve))
             } else { return; }
+        },
+        EAnimePropertyID::CellId => {
+            return;
+        },
+        EAnimePropertyID::Intensity => {
+            return;
         },
     };
 
