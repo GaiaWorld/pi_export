@@ -158,7 +158,7 @@ pub fn p3d_material_uniform_tex(
                     border_color,
                 ),
                 url: EKeyTexture::Image(KeyImageTextureView::new(
-                    KeyImageTexture::File(url.to_string(), srgb),
+                    KeyImageTexture::File(pi_atom::Atom::from(url.to_string()), srgb),
                     TextureViewDesc {
                         aspect: wgpu::TextureAspect::All,
                         base_mip_level: 0,

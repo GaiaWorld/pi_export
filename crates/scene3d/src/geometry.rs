@@ -24,14 +24,14 @@ pub struct VBMeta(pub(crate) VertexBufferDesc);
 impl VBMeta {
     #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
     #[pi_js_export]
-    pub fn create(name: f64, start: Option<f64>, end: Option<f64>) -> Self {
+    pub fn create(name: String, start: Option<f64>, end: Option<f64>) -> Self {
         let range = if let (Some(start), Some(end)) = (start, end) {
             Some(Range { start: start as u64, end: end as u64 })
         } else {
             None
         };
 
-        Self(VertexBufferDesc::vertices(KeyVertexBuffer::from(name as i64), range, vec![]))
+        Self(VertexBufferDesc::vertices(KeyVertexBuffer::from(name.as_str()), range, vec![]))
     }
     // #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
     // #[pi_js_export]
@@ -293,7 +293,7 @@ pub fn p3d_geo_set_vertex(geo: &mut GeometryMeta, vb: &VBMeta) {
 }
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
-pub fn p3d_geo_set_indice(geo: &mut GeometryMeta, name: f64, start: Option<f64>, end: Option<f64>, as_u16: bool) {
+pub fn p3d_geo_set_indice(geo: &mut GeometryMeta, name: String, start: Option<f64>, end: Option<f64>, as_u16: bool) {
     let range = if let (Some(start), Some(end)) = (start, end) {
         Some(Range { start: start as u64, end: end as u64 })
     } else {
@@ -303,37 +303,37 @@ pub fn p3d_geo_set_indice(geo: &mut GeometryMeta, name: f64, start: Option<f64>,
     let ib = IndicesBufferDesc {
         format: if as_u16 { wgpu::IndexFormat::Uint16 } else { wgpu::IndexFormat::Uint32 },
         buffer_range: range,
-        buffer: KeyVertexBuffer::from(name as IDAssetVertexBuffer),
+        buffer: KeyVertexBuffer::from(name.as_str()),
     };
     geo.1 = Some(ib);
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
-pub fn p3d_create_vertex_buffer(app: &mut Engine, param: &mut ActionSetScene3D, key: f64, data: &[f32], length: f64) {
+pub fn p3d_create_vertex_buffer(app: &mut Engine, param: &mut ActionSetScene3D, key: String, data: &[f32], length: f64) {
 
     let length = length as usize;
     let data = bytemuck::cast_slice::<f32, u8>(&data[0..length]).to_vec();
     
     let mut cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
 
-    if !ActionVertexBuffer::check(&cmds.geometrycmd.vb_mgr, KeyVertexBuffer::from(key as IDAssetVertexBuffer)) {
-        ActionVertexBuffer::create(&mut cmds.geometrycmd.vb_wait, KeyVertexBuffer::from(key as IDAssetVertexBuffer), data);
+    if !ActionVertexBuffer::check(&cmds.geometrycmd.vb_mgr, KeyVertexBuffer::from(key.as_str())) {
+        ActionVertexBuffer::create(&mut cmds.geometrycmd.vb_wait, KeyVertexBuffer::from(key.as_str()), data);
     }
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
-pub fn p3d_create_indices_buffer(app: &mut Engine, param: &mut ActionSetScene3D, key: f64, data: &[u16], length: f64) {
+pub fn p3d_create_indices_buffer(app: &mut Engine, param: &mut ActionSetScene3D, key: String, data: &[u16], length: f64) {
 
     let length = length as usize;
     let data = bytemuck::cast_slice::<u16, u8>(&data[0..length]).to_vec();
     
     let mut cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
 
-    if !ActionVertexBuffer::check(&cmds.geometrycmd.vb_mgr, KeyVertexBuffer::from(key as IDAssetVertexBuffer)) {
+    if !ActionVertexBuffer::check(&cmds.geometrycmd.vb_mgr, KeyVertexBuffer::from(key.as_str())) {
         // log::warn!("CubeBuilder::KEY_BUFFER_INDICES");
-        ActionVertexBuffer::create_indices(&mut cmds.geometrycmd.vb_wait, KeyVertexBuffer::from(key as IDAssetVertexBuffer), data);
+        ActionVertexBuffer::create_indices(&mut cmds.geometrycmd.vb_wait, KeyVertexBuffer::from(key.as_str()), data);
     }
 }
 
