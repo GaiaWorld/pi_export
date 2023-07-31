@@ -326,6 +326,25 @@ pub fn p3d_mesh_render_queue(
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
+pub fn p3d_mesh_render_queue_arr(
+    app: &mut Engine, param: &mut ActionSetScene3D, data: &[f64], len: f64) {
+    // let mesh: Entity = as_entity(mesh);
+    let mut cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
+    // cmds.meshcmds.render_queue.push(OpsRenderQueue::ops(mesh, group as i32,index as i32));
+
+    let len = len as usize;
+    let size = 3;
+    let count = len / size;
+    for i in 0..count {
+        let mesh: Entity = as_entity(data[i * size + 0]);
+        let group = data[i * size + 1];
+        let index = data[i * size + 2];
+        cmds.meshcmds.render_queue.push(OpsRenderQueue::ops(mesh, group as i32, index as i32));
+    }
+}
+
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
 pub fn p3d_mesh_render_alignment(
     app: &mut Engine, param: &mut ActionSetScene3D, mesh: f64, val: ERenderAlignment) {
     let mesh: Entity = as_entity(mesh);
@@ -350,4 +369,24 @@ pub fn p3d_abstruct_mesh_velocity(
 
     let mut cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
     cmds.abstructmeshcmds.velocity.push(OpsAbstructMeshVelocity::ops(mesh, x as f32, y as f32, z as f32));
+}
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
+pub fn p3d_abstruct_mesh_velocity_arr(
+    app: &mut Engine, param: &mut ActionSetScene3D, data: &[f64], len: f64) {
+        // let mesh: Entity = as_entity(mesh);
+    
+        let mut cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
+        // cmds.abstructmeshcmds.velocity.push(OpsAbstructMeshVelocity::ops(mesh, x as f32, y as f32, z as f32));
+
+    let len = len as usize;
+    let size = 4;
+    let count = len / size;
+    for i in 0..count {
+        let mesh: Entity = as_entity(data[i * size + 0]);
+        let x = data[i * size + 1];
+        let y = data[i * size + 2];
+        let z = data[i * size + 3];
+        cmds.abstructmeshcmds.velocity.push(OpsAbstructMeshVelocity::ops(mesh, x as f32, y as f32, z as f32));
+    }
 }

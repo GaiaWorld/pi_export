@@ -1,13 +1,22 @@
+use std::mem::transmute;
+
 use default_render::SingleIDBaseDefaultMaterial;
 use pi_3d::PluginBundleDefault;
+use pi_assets::asset::Handle;
 use pi_engine_shell::prelude::*;
-use pi_export_base::export::Engine;
+use pi_export_base::{export::Engine};
+use pi_gltf2_load::{GLTF, PluginGLTF2Res, GLTFResLoader, KeyGLTF, TypeAnimeAssetMgrs, TypeAnimeContexts};
 use pi_mesh_builder::{cube::PluginCubeBuilder, quad::PluginQuadBuilder};
 use pi_node_materials::{PluginNodeMaterial, NodeMaterialBlocks, prelude::*};
 use pi_scene_context::prelude::*;
 use unlit_material::PluginUnlitMaterial;
 
-use crate::as_entity;
+
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
+pub struct ImageRes(Handle<pi_render::renderer::texture::ImageTexture>);
+
+use crate::{as_entity, as_f64};
 #[cfg(target_arch = "wasm32")]
 use wasm_bindgen::prelude::wasm_bindgen;
 use js_proxy_gen_macro::pi_js_export;
@@ -31,6 +40,7 @@ pub fn p3d_init_engine(app: &mut Engine) {
         .add_plugin(PluginQuadBuilder)
         .add_plugin(PluginUnlitMaterial)
         .add_plugins(PluginGroupNodeMaterialAnime)
+        .add_plugin(PluginGLTF2Res)
         ;
 }
 
@@ -41,7 +51,6 @@ pub struct ActionSets<'w> {
     pub obj_dispose: ResMut<'w, ActionListDispose>,
     pub cameracmds: ActionSetCamera<'w>,
     pub transformcmds: ActionSetTransform<'w>,
-    pub transformanime: ActionSetTransformNodeAnime<'w>,
     pub meshcmds: ActionSetMesh<'w>,
     pub abstructmeshcmds: ActionSetAbstructMesh<'w>,
     pub instancemeshcmds: ActionSetInstanceMesh<'w>,
@@ -54,94 +63,14 @@ pub struct ActionSets<'w> {
     pub layer_mask: ResMut<'w, ActionListLayerMask>,
     pub renderer_drawcalls: Res<'w, RendererDrawCallRecord>,
     pub transform_record: Res<'w, TransformRecord>,
-    pub anime_isactive: (
-        ResMut<'w, TypeAnimeContext<Enable>>,
-        Res<'w, ShareAssetMgr<TypeFrameCurve<Enable>>>
-    ),
-    pub anime_camerafov: (
-        ResMut<'w, TypeAnimeContext<CameraFov>>,
-        Res<'w, ShareAssetMgr<TypeFrameCurve<CameraFov>>>
-    ),
-    pub anime_camerasize: (
-        ResMut<'w, TypeAnimeContext<CameraOrthSize>>,
-        Res<'w, ShareAssetMgr<TypeFrameCurve<CameraOrthSize>>>
-    ),
-    pub anime_alpha: (
-        ResMut<'w, TypeAnimeContext<Alpha>>,
-        Res<'w, ShareAssetMgr<TypeFrameCurve<Alpha>>>
-    ),
-    pub anime_alphacutoff: (
-        ResMut<'w, TypeAnimeContext<Cutoff>>,
-        Res<'w, ShareAssetMgr<TypeFrameCurve<Cutoff>>>
-    ),
-    pub anime_maintex_uscale: (
-        ResMut<'w, TypeAnimeContext<MainTexUScale>>,
-        Res<'w, ShareAssetMgr<TypeFrameCurve<MainTexUScale>>>
-    ),
-    pub anime_maintex_vscale: (
-        ResMut<'w, TypeAnimeContext<MainTexVScale>>,
-        Res<'w, ShareAssetMgr<TypeFrameCurve<MainTexVScale>>>
-    ),
-    pub anime_maintex_uoffset: (
-        ResMut<'w, TypeAnimeContext<MainTexUOffset>>,
-        Res<'w, ShareAssetMgr<TypeFrameCurve<MainTexUOffset>>>
-    ),
-    pub anime_maintex_voffset: (
-        ResMut<'w, TypeAnimeContext<MainTexVOffset>>,
-        Res<'w, ShareAssetMgr<TypeFrameCurve<MainTexVOffset>>>
-    ),
-    pub anime_opacitytex_uscale: (
-        ResMut<'w, TypeAnimeContext<OpacityTexUScale>>,
-        Res<'w, ShareAssetMgr<TypeFrameCurve<OpacityTexUScale>>>
-    ),
-    pub anime_opacitytex_vscale: (
-        ResMut<'w, TypeAnimeContext<OpacityTexVScale>>,
-        Res<'w, ShareAssetMgr<TypeFrameCurve<OpacityTexVScale>>>
-    ),
-    pub anime_opacitytex_uoffset: (
-        ResMut<'w, TypeAnimeContext<OpacityTexUOffset>>,
-        Res<'w, ShareAssetMgr<TypeFrameCurve<OpacityTexUOffset>>>
-    ),
-    pub anime_opacitytex_voffset: (
-        ResMut<'w, TypeAnimeContext<OpacityTexVOffset>>,
-        Res<'w, ShareAssetMgr<TypeFrameCurve<OpacityTexVOffset>>>
-    ),
-    pub anime_masktex_uscale: (
-        ResMut<'w, TypeAnimeContext<MaskTexUScale>>,
-        Res<'w, ShareAssetMgr<TypeFrameCurve<MaskTexUScale>>>
-    ),
-    pub anime_masktex_vscale: (
-        ResMut<'w, TypeAnimeContext<MaskTexVScale>>,
-        Res<'w, ShareAssetMgr<TypeFrameCurve<MaskTexVScale>>>
-    ),
-    pub anime_masktex_uoffset: (
-        ResMut<'w, TypeAnimeContext<MaskTexUOffset>>,
-        Res<'w, ShareAssetMgr<TypeFrameCurve<MaskTexUOffset>>>
-    ),
-    pub anime_masktex_voffset: (
-        ResMut<'w, TypeAnimeContext<MaskTexVOffset>>,
-        Res<'w, ShareAssetMgr<TypeFrameCurve<MaskTexVOffset>>>
-    ),
-    pub anime_maskcutoff: (
-        ResMut<'w, TypeAnimeContext<MaskCutoff>>,
-        Res<'w, ShareAssetMgr<TypeFrameCurve<MaskCutoff>>>
-    ),
-    pub anime_maincolor: (
-        ResMut<'w, TypeAnimeContext<MainColor>>,
-        Res<'w, ShareAssetMgr<TypeFrameCurve<MainColor>>>
-    ),
-    pub anime_lightdiffuse: (
-        ResMut<'w, TypeAnimeContext<LightDiffuse>>,
-        Res<'w, ShareAssetMgr<TypeFrameCurve<LightDiffuse>>>
-    ),
-    pub anime_boneoffset: (
-        ResMut<'w, TypeAnimeContext<InstanceBoneoffset>>,
-        Res<'w, ShareAssetMgr<TypeFrameCurve<InstanceBoneoffset>>>
-    ),
-    pub anime_indices_range: (
-        ResMut<'w, TypeAnimeContext<IndiceRenderRange>>,
-        Res<'w, ShareAssetMgr<TypeFrameCurve<IndiceRenderRange>>>
-    ),
+    pub imgtex_loader: ResMut<'w, ImageTextureLoader>,
+    pub imgtex_asset: Res<'w, ShareAssetMgr<ImageTexture>>,
+    pub gltf2_asset: Res<'w, ShareAssetMgr<GLTF>>,
+    pub gltf2_loader: ResMut<'w, GLTFResLoader>,
+    pub device: Res<'w, PiRenderDevice>,
+    pub queue: Res<'w, PiRenderQueue>,
+    pub anime_assets: TypeAnimeAssetMgrs<'w>,
+    pub anime_contexts: TypeAnimeContexts<'w>,
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
@@ -272,6 +201,148 @@ pub fn p3d_query_view_matrix(app: &mut Engine, param: &mut ActionSetScene3D, ent
     } else {
         false
     }
+}
+
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
+pub struct GLTFRes(Handle<GLTF>);
+
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
+pub fn p3d_gltf_val(item: &GLTFRes) -> String {
+    item.0.output.clone()
+}
+
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
+pub fn p3d_create_gltf_load(app: &mut Engine, param: &mut ActionSetScene3D, entity: f64, baseurl: String, dyndesc: String) {
+    let cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
+
+    let entity: Entity = as_entity(entity);
+
+    let param = KeyGLTF { base_url: Atom::from(baseurl), dyn_desc: Atom::from(dyndesc) };
+
+    cmds.gltf2_loader.create_load(entity, param);
+}
+
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
+pub fn p3d_query_gltf_load(app: &mut Engine, param: &mut ActionSetScene3D, success: &mut [f64], failed: &mut [f64]) {
+    let cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
+
+    let max = success.len();
+    let mut item = cmds.gltf2_loader.success.pop();
+    let mut idx = 0;
+    while let Some(entity) = item {
+        success[idx] = as_f64(&entity);
+
+        idx += 1;
+        if idx >= max {
+            break;
+        }
+        item = cmds.gltf2_loader.success.pop();
+    }
+    success[idx] = 0.;
+    
+    let max = success.len();
+    let mut item = cmds.gltf2_loader.fails.pop();
+    let mut idx = 0;
+    while let Some(entity) = item {
+        failed[idx] = as_f64(&entity);
+
+        idx += 1;
+        if idx >= max {
+            break;
+        }
+        item = cmds.gltf2_loader.fails.pop();
+    }
+    failed[idx] = 0.;
+}
+
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
+pub fn p3d_get_gltf(app: &mut Engine, param: &mut ActionSetScene3D, entity: f64) -> Option<GLTFRes> {
+    let mut cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
+    let entity: Entity = as_entity(entity);
+    if let Some(val) = cmds.gltf2_loader.get_success(entity) {
+        Some(GLTFRes(val))
+    } else {
+        None
+    }
+}
+
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
+pub fn p3d_get_gltf_fail_reason(app: &mut Engine, param: &mut ActionSetScene3D, entity: f64) -> Option<String> {
+    let mut cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
+    let entity: Entity = as_entity(entity);
+    cmds.gltf2_loader.get_fail_reason(entity)
+}
+
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
+pub fn p3d_create_image_load(app: &mut Engine, param: &mut ActionSetScene3D, url: String, srgb: bool) -> f64 {
+    let mut cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
+
+    let id = cmds.imgtex_loader.create_load(KeyImageTexture::File(Atom::from(url), srgb));
+
+    unsafe { transmute(id) }
+}
+
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
+pub fn p3d_query_image_load(app: &mut Engine, param: &mut ActionSetScene3D, success: &mut [f64], failed: &mut [f64]) {
+    let cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
+
+    let max = success.len();
+    let mut item = cmds.imgtex_loader.success_load.pop();
+    let mut idx = 0;
+    while let Some(entity) = item {
+        success[idx] = unsafe { transmute(entity) };
+
+        idx += 1;
+        if idx >= max {
+            break;
+        }
+
+        item = cmds.imgtex_loader.success_load.pop();
+    }
+    success[idx] = 0.;
+    
+    let max = success.len();
+    let mut item = cmds.imgtex_loader.fails.pop();
+    let mut idx = 0;
+    while let Some(entity) = item {
+        failed[idx] = unsafe { transmute(entity) };
+
+        idx += 1;
+        if idx >= max {
+            break;
+        }
+
+        item = cmds.imgtex_loader.fails.pop();
+    }
+    failed[idx] = 0.;
+}
+
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
+pub fn p3d_get_image(app: &mut Engine, param: &mut ActionSetScene3D, id: f64) -> Option<ImageRes> {
+    let mut cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
+    let id: IDImageTextureLoad = unsafe { transmute(id) };
+    if let Some(img) = cmds.imgtex_loader.query_success(id) {
+        Some(ImageRes(img))
+    } else {
+        None
+    }
+}
+
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
+pub fn p3d_get_image_fail_reason(app: &mut Engine, param: &mut ActionSetScene3D, id: f64) -> Option<String> {
+    let mut cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
+    let id: IDImageTextureLoad = unsafe { transmute(id) };
+    cmds.imgtex_loader.query_failed_reason(id)
 }
 
 // #[cfg_attr(target_arch="wasm32", wasm_bindgen)]

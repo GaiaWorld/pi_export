@@ -200,3 +200,39 @@ impl std::ops::Drop for JsRes {
     }
 }
 
+/// 设置日志过滤器
+/// 如果过滤器格式错误， 日志过滤器未初始化， 则设置将失败， 但不会panic
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen)]
+#[cfg(feature = "pi_js_export")]
+pub fn set_log_filter(engine: &mut Engine, filter: &str) {
+	if let Some(mut handle) = engine.app_mut().world.get_resource_mut::<pi_bevy_log::LogFilterHandle>() {
+		if let Ok(filter_layer) = tracing_subscriber::EnvFilter::try_new(filter) {
+			handle.0.modify(|filter| *filter = filter_layer);
+		}
+	}
+}
+
+// app.add_plugin(pi_bevy_log::LogPlugin {
+// 	filter: FILTER.to_string(),
+// 	level: LOG_LEVEL,
+// })
+// .add_plugin(bevy::a11y::AccessibilityPlugin)
+// .add_plugin(bevy::input::InputPlugin::default())
+// .add_plugin(window_plugin)
+// .add_plugin(WinitPlugin::default())
+// .add_plugin(PiAssetPlugin {total_capacity: 1024 * 1024 * 1024, asset_config: AssetConfig::default()})
+// // .add_plugin(WorldInspectorPlugin::new())
+// .add_plugin(PiRenderPlugin::default())
+// .add_plugin(PiPostProcessPlugin)
+
+// ;
+
+// let h = app.world.get_resource_mut::<pi_bevy_log::LogFilterHandle>().unwrap();
+// let default_filter = { format!("{},my_target=info", bevy::log::Level::WARN) };
+// let filter_layer = tracing_subscriber::EnvFilter::try_from_default_env()
+// 	.or_else(|_| tracing_subscriber::EnvFilter::try_new(&default_filter))
+// 	.unwrap();
+// h.0.modify(|filter| *filter = filter_layer);
+// log::info!("aaa=============");
+// log::info!(target: "my_target", "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+

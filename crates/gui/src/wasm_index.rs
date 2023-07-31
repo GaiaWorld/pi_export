@@ -96,7 +96,7 @@ pub fn create_engine(canvas: HtmlCanvasElement, width: u32, height: u32, asset_t
     let mut window_plugin = bevy::window::WindowPlugin::default();
 	window_plugin.primary_window = None;
 
-	let mut log = bevy::log::LogPlugin::default();
+	let mut log = pi_bevy_log::LogPlugin::default();
 	web_sys::console::log_1(&wasm_bindgen::JsValue::from(&format!("log_filter========={:?}", log_filter)));
 	if let Some(log_filter) = log_filter {
 		log.filter = log_filter;
