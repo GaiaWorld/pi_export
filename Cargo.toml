@@ -14,7 +14,7 @@ probabilistic-collections = { git = "https://github.com/GaiaWorld/pi_probabilist
 # pi_path_finding = { path = "../pi_path_finding" }
 # bevy = { path = "../bevy" }
 
-# pi_flex_layout = { path = "../pi_flex_layout" }
+pi_flex_layout = { path = "../pi_flex_layout" }
 # pi_slotmap = { path = "../pi_slotmap" }
 # pi_map = { path = "../pi_map" }
 # wgpu = {path = "../wgpu/wgpu"}
@@ -42,8 +42,8 @@ codegen-units = 1
 # [patch."https://github.com/GaiaWorld/pi_path_finding"]
 # pi_path_finding = { path = "../pi_path_finding" }
 
-[patch."https://github.com/GaiaWorld/pi_ui_render"]
-pi_ui_render = { path = "../pi_ui_render_new" }
+# [patch."https://github.com/GaiaWorld/pi_ui_render"]
+# pi_ui_render = { path = "../pi_ui_render_new" }
 
 # [patch."https://github.com/GaiaWorld/pi_spine_rs"]
 # pi_spine_rs = { path = "../pi_spine_rs" }
@@ -73,6 +73,7 @@ pi_ui_render = { path = "../pi_ui_render_new" }
 # pi_bevy_asset = { path = "../pi_render_bevy/crates/asset" }
 # pi_bevy_winit_window = { path = "../pi_render_bevy/crates/winit_window" } 
 # pi_window_renderer = { path = "../pi_render_bevy/crates/window_renderer" } 
+# pi_bevy_log = { path = "../pi_render_bevy/crates/log" }
 
 # [patch."https://github.com/GaiaWorld/pi_spatial"]
 # pi_spatial ={path="../pi_spatial"}
