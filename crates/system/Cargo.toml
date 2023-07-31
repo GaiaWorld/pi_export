@@ -1,0 +1,15 @@
+[package]
+name = "pi_export_system"
+version = "0.1.0"
+authors = ["suncy <suncy@gmail.com>"]
+edition = "2021"
+
+
+[features]
+default = ["pi_js_export"]
+pi_js_export = []
+
+[dependencies]
+pi_export_base = { path = "../base" }
+js_proxy_gen_macro      = { git = "https://github.com/GaiaWorld/pi_lib.git" }
+pi_bevy_render_plugin 	= { path = "../../../pi_render_bevy/crates/render" }

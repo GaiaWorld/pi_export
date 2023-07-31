@@ -21,7 +21,7 @@ pub use winit::window::Window;
 #[cfg(feature="pi_js_export")]
 pub fn create_engine(window: &Arc<Window>, width: u32, height: u32, asset_total_capacity: u32, asset_config: &str) -> Engine {
     use bevy::prelude::{CoreSet, IntoSystemSetConfig};
-    use pi_bevy_render_plugin::should_run;
+    use pi_bevy_render_plugin::{should_run, window_state::WindowStatePlugin};
     use crate::index::parse_asset_config;
 
 
@@ -44,6 +44,7 @@ pub fn create_engine(window: &Arc<Window>, width: u32, height: u32, asset_total_
 		.add_plugin(window_plugin)
 		.add_plugin(pi_bevy_winit_window::WinitPlugin::new(window.clone()).with_size(width, height))
 		// .add_plugin(WorldInspectorPlugin::new())
+        .add_plugin(WindowStatePlugin)
 		.add_plugin(PiAssetPlugin {total_capacity: asset_total_capacity as usize, asset_config: parse_asset_config(asset_config)})
 		.add_plugin(PiRenderPlugin {frame_init_state: FrameState::UnActive})
 		.add_plugin(PluginWindowRender)
