@@ -3426,9 +3426,9 @@ checksum = "11eb29c61d91c65135b354b529f2674c1b5482d4b4c745d71edf8639f68d33df"
 
 [[package]]
 name = "pi_assets"
-version = "0.13.0"
+version = "0.13.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "20f0b351b7dd05d7296726b8b151d23edf9587b5f6fdccf6d5e280eeebf3b08c"
+checksum = "a41956c3bfddb899363fc27a07b56302584ab3f40b6b322005519c4f62c717ba"
 dependencies = [
  "flume",
  "futures",
