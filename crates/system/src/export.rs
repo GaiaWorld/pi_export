@@ -1,39 +1,30 @@
-use pi_bevy_render_plugin::window_state::{WindowState, WindowStateCmd};
+// use pi_bevy_render_plugin::window_state::{WindowState, WindowStateCmd};
+use pi_bevy_render_plugin::PiRenderWindow;
+use pi_bevy_winit_window::update_window_handle;
 pub use pi_export_base::export::Engine;
+pub use winit::window::Window;
+use pi_bevy_render_plugin::PiScreenTexture;
+use std::sync::Arc;
+use pi_bevy_render_plugin::IS_RESUMED;
+use std::sync::atomic::Ordering;
 
 #[cfg(feature = "pi_js_export")]
-pub fn on_resumed(app: &mut Engine) {
+pub fn on_resumed(app: &mut Engine, window: &Arc<Window>) {
+
+
     println!("----------on_resumed222222");
+    // android 某些设备在某些情况下不会触发on_suspended再触发on_resumed
+    app.world.resource_mut::<PiScreenTexture>().0.take();
+    let w = update_window_handle(&mut app.world, &window);
     app.world
-        .resource_mut::<WindowStateCmd>()
+        .resource_mut::<PiRenderWindow>()
         .0
-        .push(WindowState::Resumed);
+        .update_handle(w);
+    IS_RESUMED.store(true, Ordering::Relaxed);
 }
 
 #[cfg(feature = "pi_js_export")]
 pub fn on_suspended(app: &mut Engine) {
-    use pi_bevy_render_plugin::{FrameState, PiScreenTexture};
-
-    println!("----------on_suspended22222222222");
-    {
-        app.world.resource_mut::<PiScreenTexture>().0.take();
-    }
-    // let mut is_active = true;
-    // {
-    //     let mut state = app.world.resource_mut::<FrameState>();
-
-    //     if let FrameState::UnActive = state.as_ref() {
-    //         is_active = false;
-    //     }
-    //     if !is_active {
-    //         *state.as_mut() = FrameState::Active;
-    //     }
-    // }
-    // for _ in 0..100 {
-    //     app.update();
-    // }
-
-    // if !is_active {
-    //     *app.world.resource_mut::<FrameState>().as_mut() = FrameState::UnActive;
-    // }
+    println!("----------on_suspended222222");
+    app.world.resource_mut::<PiScreenTexture>().0.take();
 }

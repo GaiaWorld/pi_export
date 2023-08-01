@@ -11,5 +11,7 @@ pi_js_export = []
 
 [dependencies]
 pi_export_base = { path = "../base" }
+winit = {git = "http://ser.yinengyun.com:10082/tech/winit.git"}
 js_proxy_gen_macro      = { git = "https://github.com/GaiaWorld/pi_lib.git" }
-pi_bevy_render_plugin 	= { path = "../../../pi_render_bevy/crates/render" }
+pi_bevy_render_plugin = { git = "https://github.com/GaiaWorld/pi_render_bevy.git" }
+pi_bevy_winit_window = { git = "https://github.com/GaiaWorld/pi_render_bevy.git"}

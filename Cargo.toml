@@ -14,7 +14,7 @@ probabilistic-collections = { git = "https://github.com/GaiaWorld/pi_probabilist
 # pi_path_finding = { path = "../pi_path_finding" }
 # bevy = { path = "../bevy" }
 
-pi_flex_layout = { path = "../pi_flex_layout" }
+# pi_flex_layout = { path = "../pi_flex_layout" }
 # pi_slotmap = { path = "../pi_slotmap" }
 # pi_map = { path = "../pi_map" }
 # wgpu = {path = "../wgpu/wgpu"}
