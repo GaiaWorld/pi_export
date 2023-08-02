@@ -10,12 +10,10 @@ use std::sync::atomic::Ordering;
 
 #[cfg(feature = "pi_js_export")]
 pub fn on_resumed(app: &mut Engine, window: &Arc<Window>) {
-
-
     println!("----------on_resumed222222");
     // android 某些设备在某些情况下不会触发on_suspended再触发on_resumed
     app.world.resource_mut::<PiScreenTexture>().0.take();
-    let w = update_window_handle(&mut app.world, &window);
+    let w = update_window_handle(&mut app.world, window.as_ref());
     app.world
         .resource_mut::<PiRenderWindow>()
         .0
