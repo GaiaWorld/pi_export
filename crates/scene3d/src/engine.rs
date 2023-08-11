@@ -104,7 +104,7 @@ pub fn p3d_dispose(app: &mut Engine, param: &mut ActionSetScene3D, entity: f64) 
 
     let mut cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
 
-    cmds.obj_dispose.push(OpsDispose::ops(entity));
+    cmds.obj_dispose.push(OpsDisposeReady::ops(entity));
 }
 
 

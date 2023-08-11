@@ -41,6 +41,7 @@ getrandom = { version = "0.2", features = ["js"] }
 
 [target.'cfg(target_arch = "wasm32")'.dependencies]
 pi-async-rt = {version = "0.1", features = ["serial"]}
+uuid = { version = "1", features = ["js"] }
 
 [profile.release]
 # debug= true

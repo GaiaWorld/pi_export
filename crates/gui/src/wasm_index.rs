@@ -159,7 +159,7 @@ pub fn create_gui(
 	}
 
 	#[cfg(not(feature="record"))]
-    engine.add_plugin(UiPlugin);
+    engine.add_plugin(UiPlugin::default());
 
     gui
 }
