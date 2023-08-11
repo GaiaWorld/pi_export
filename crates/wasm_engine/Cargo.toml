@@ -39,6 +39,9 @@ pi_bevy_render_plugin = { git = "https://github.com/GaiaWorld/pi_render_bevy.git
 
 getrandom = { version = "0.2", features = ["js"] }
 
+[target.'cfg(target_arch = "wasm32")'.dependencies]
+pi-async-rt = {version = "0.1", features = ["serial"]}
+
 [profile.release]
 # debug= true
 lto = true #这为LLVM提供了更多内联和修剪功能的机会。它不仅使.wasm尺寸更小，而且在运行时也更快！缺点是编译将花费更长的时间

@@ -10,7 +10,6 @@ exclude = ["crates/gui/exports_macro"]
 # [patch.crates-io]
 [patch.crates-io]
 probabilistic-collections = { git = "https://github.com/GaiaWorld/pi_probabilistic_collections.git" }
-# pi_graph = {path = "../pi_graph"}
 # pi_path_finding = { path = "../pi_path_finding" }
 # bevy = { path = "../bevy" }
 
@@ -21,7 +20,8 @@ pi_flex_layout = { path = "../pi_flex_layout" }
 # smallvec = {path = "../smallvec"}
 # pi_cache = {path = "../pi_cache"}
 # pi_assets = {path = "../pi_assets"}
-# pi_async_graph = {path = "../pi_async_graph"}
+pi_graph = { path = "../pi_graph" }
+pi_async_graph = { path = "../pi_async_graph" }
 # [profile.release]
 # debug= true
 
@@ -42,11 +42,11 @@ codegen-units = 1
 # [patch."https://github.com/GaiaWorld/pi_path_finding"]
 # pi_path_finding = { path = "../pi_path_finding" }
 
-# [patch."https://github.com/GaiaWorld/pi_ui_render"]
-# pi_ui_render = { path = "../pi_ui_render_new" }
+[patch."https://github.com/GaiaWorld/pi_ui_render"]
+pi_ui_render = { path = "../pi_ui_render_new" }
 
-# [patch."https://github.com/GaiaWorld/pi_spine_rs"]
-# pi_spine_rs = { path = "../pi_spine_rs" }
+[patch."https://github.com/GaiaWorld/pi_spine_rs"]
+pi_spine_rs = { path = "../pi_spine_rs" }
 
 
 # [patch."https://github.com/GaiaWorld/pi_scene"]
@@ -56,24 +56,24 @@ codegen-units = 1
 # [patch."https://github.com/GaiaWorld/pi_hal"]
 # pi_hal = { path = "../pi_hal" }
 
-# [patch."https://github.com/GaiaWorld/pi_style"]
-# pi_style = { path = "../pi_style" }
+[patch."https://github.com/GaiaWorld/pi_style"]
+pi_style = { path = "../pi_style" }
 
 
-# [patch."https://github.com/GaiaWorld/pi_render"]
-# pi_render = { path = "../pi_render" }
-# render_derive = {path = "../pi_render/crates/render_derive"}
-# render_utils = { path = "../pi_render/crates/render_utils" }
-# render_compile = { path = "../pi_render/crates/render_compile" }
+[patch."https://github.com/GaiaWorld/pi_render"]
+pi_render = { path = "../pi_render" }
+render_derive = {path = "../pi_render/crates/render_derive"}
+render_utils = { path = "../pi_render/crates/render_utils" }
+render_compile = { path = "../pi_render/crates/render_compile" }
 
-# [patch."https://github.com/GaiaWorld/pi_render_bevy"]
-# pi_bevy_post_process= { path = "../pi_render_bevy/crates/post_process" }
-# pi_bevy_ecs_extend = { path = "../pi_render_bevy/crates/ecs_extend" }
-# pi_bevy_render_plugin = { path = "../pi_render_bevy/crates/render" }
-# pi_bevy_asset = { path = "../pi_render_bevy/crates/asset" }
-# pi_bevy_winit_window = { path = "../pi_render_bevy/crates/winit_window" } 
-# pi_window_renderer = { path = "../pi_render_bevy/crates/window_renderer" } 
-# pi_bevy_log = { path = "../pi_render_bevy/crates/log" }
+[patch."https://github.com/GaiaWorld/pi_render_bevy"]
+pi_bevy_post_process= { path = "../pi_render_bevy/crates/post_process" }
+pi_bevy_ecs_extend = { path = "../pi_render_bevy/crates/ecs_extend" }
+pi_bevy_render_plugin = { path = "../pi_render_bevy/crates/render" }
+pi_bevy_asset = { path = "../pi_render_bevy/crates/asset" }
+pi_bevy_winit_window = { path = "../pi_render_bevy/crates/winit_window" } 
+pi_window_renderer = { path = "../pi_render_bevy/crates/window_renderer" } 
+pi_bevy_log = { path = "../pi_render_bevy/crates/log" }
 
 # [patch."https://github.com/GaiaWorld/pi_spatial"]
 # pi_spatial ={path="../pi_spatial"}
@@ -84,14 +84,14 @@ codegen-units = 1
 # [patch."https://github.com/GaiaWorld/pi_animation"]
 # pi_animation ={path="../pi_animation"}
 
-# [patch."https://github.com/GaiaWorld/pi_3d"]
-# pi_3d               = { path="../pi_3d" }
-# pi_engine_shell     = { path="../pi_3d/crates/pi_engine_shell" }
-# pi_node_materials   = { path="../pi_3d/crates/node_materials" }
-# default_render      = { path="../pi_3d/crates/default_render" }
-# pi_scene_context    = { path="../pi_3d/crates/pi_scene_context" }
-# unlit_material      = { path="../pi_3d/crates/unlit_material" }
-# pi_mesh_builder     = { path="../pi_3d/crates/pi_mesh_builder" }
+[patch."https://github.com/GaiaWorld/pi_3d"]
+pi_3d               = { path="../pi_3d" }
+pi_engine_shell     = { path="../pi_3d/crates/pi_engine_shell" }
+pi_node_materials   = { path="../pi_3d/crates/node_materials" }
+default_render      = { path="../pi_3d/crates/default_render" }
+pi_scene_context    = { path="../pi_3d/crates/pi_scene_context" }
+unlit_material      = { path="../pi_3d/crates/unlit_material" }
+pi_mesh_builder     = { path="../pi_3d/crates/pi_mesh_builder" }
 
 # [net]
 # git-fetch-with-cli = true

@@ -26,8 +26,9 @@ pi_ui_render = { git = "https://github.com/GaiaWorld/pi_ui_render.git", branch =
 wgpu = { version = "0.15", default-features = false, features = ["glsl", "webgl"] }
 pi_render = { git = "https://github.com/GaiaWorld/pi_render.git", branch = "bevy_shader", features = ["webgl"] }
 pi_bevy_render_plugin = { git = "https://github.com/GaiaWorld/pi_render_bevy.git", features=["webgl"]}
-pi-async-rt = {version = "0.1", features = ["serial"]}
 
+[target.'cfg(target_arch = "wasm32")'.dependencies]
+pi-async-rt = {version = "0.1", features = ["serial"]}
 
 [profile.release]
 # debug= true
