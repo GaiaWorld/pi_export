@@ -316,6 +316,11 @@ pub fn get_class(engine: &mut Engine, class_name: u32) -> JsValue {
 fn to_css_str(attr: Attribute) -> String {
     match attr {
         Attribute::ClipPath(_) => todo!(),
+		Attribute::AsImage(r) => match r.0 {
+			pi_style::style::AsImage::None => "as-image:none".to_string(),
+			pi_style::style::AsImage::Advise => "as-image:advise".to_string(),
+			pi_style::style::AsImage::Force => "as-image:force".to_string(),
+		},
         Attribute::PositionType(r) => match r.0 {
             PositionType::Relative => "position:relative".to_string(),
             PositionType::Absolute => "position:absolute".to_string(),

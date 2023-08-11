@@ -303,6 +303,7 @@ checksum = "d468802bab17cbc0cc575e9b053f41e72aa36bfa6b7f55e3529ffa43161b97fa"
 [[package]]
 name = "axis"
 version = "0.0.1"
+source = "git+https://github.com/GaiaWorld/pi_3d.git#cf18346e3c2a709bc621ede4b09f77d6308a1ac0"
 dependencies = [
  "bevy",
  "bytemuck",
@@ -1434,6 +1435,7 @@ dependencies = [
 [[package]]
 name = "default_render"
 version = "0.0.1"
+source = "git+https://github.com/GaiaWorld/pi_3d.git#cf18346e3c2a709bc621ede4b09f77d6308a1ac0"
 dependencies = [
  "bevy",
  "crossbeam",
@@ -2624,6 +2626,7 @@ checksum = "2532096657941c2fea9c289d370a250971c689d4f143798ff67113ec042024a5"
 [[package]]
 name = "material_textures"
 version = "0.0.1"
+source = "git+https://github.com/GaiaWorld/pi_3d.git#cf18346e3c2a709bc621ede4b09f77d6308a1ac0"
 dependencies = [
  "bevy",
  "crossbeam",
@@ -3239,6 +3242,7 @@ dependencies = [
 [[package]]
 name = "particle"
 version = "0.0.1"
+source = "git+https://github.com/GaiaWorld/pi_3d.git#cf18346e3c2a709bc621ede4b09f77d6308a1ac0"
 dependencies = [
  "bytemuck",
  "crossbeam",
@@ -3404,6 +3408,7 @@ dependencies = [
 [[package]]
 name = "pi_3d"
 version = "0.0.1"
+source = "git+https://github.com/GaiaWorld/pi_3d.git#cf18346e3c2a709bc621ede4b09f77d6308a1ac0"
 dependencies = [
  "axis",
  "bevy",
@@ -3427,15 +3432,16 @@ dependencies = [
  "pi_bevy_winit_window",
  "pi_curves",
  "pi_engine_shell",
- "pi_gltf2_load 0.0.1",
+ "pi_gltf2_load",
  "pi_hal",
  "pi_mesh_builder",
  "pi_node_materials",
- "pi_particle_system 0.0.1",
+ "pi_particle_system",
  "pi_postprocess",
  "pi_render",
  "pi_scene_context",
  "pi_scene_math",
+ "pi_trail_renderer",
  "procedural_texture",
  "render_compile",
  "render_derive",
@@ -3486,6 +3492,8 @@ dependencies = [
 [[package]]
 name = "pi_async_graph"
 version = "0.6.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "6990901053a9e5bf1ae11dcb90728703caf7afa3f6814d5f7a2ddea39340641f"
 dependencies = [
  "flume",
  "pi-async-rt",
@@ -3515,6 +3523,7 @@ dependencies = [
 [[package]]
 name = "pi_bevy_asset"
 version = "0.1.0"
+source = "git+https://github.com/GaiaWorld/pi_render_bevy.git#56d8c21a6bc8df5e10e36f55ebaecaa145b5ec92"
 dependencies = [
  "bevy",
  "crossbeam",
@@ -3531,6 +3540,7 @@ dependencies = [
 [[package]]
 name = "pi_bevy_ecs_extend"
 version = "0.1.0"
+source = "git+https://github.com/GaiaWorld/pi_render_bevy.git#56d8c21a6bc8df5e10e36f55ebaecaa145b5ec92"
 dependencies = [
  "bevy",
  "derive_deref",
@@ -3559,6 +3569,7 @@ dependencies = [
 [[package]]
 name = "pi_bevy_ecs_macro"
 version = "0.1.0"
+source = "git+https://github.com/GaiaWorld/pi_render_bevy.git#56d8c21a6bc8df5e10e36f55ebaecaa145b5ec92"
 dependencies = [
  "quote",
  "syn 1.0.109",
@@ -3568,6 +3579,7 @@ dependencies = [
 [[package]]
 name = "pi_bevy_log"
 version = "0.1.0"
+source = "git+https://github.com/GaiaWorld/pi_render_bevy.git#56d8c21a6bc8df5e10e36f55ebaecaa145b5ec92"
 dependencies = [
  "android_log-sys 0.3.1",
  "bevy_app",
@@ -3582,6 +3594,7 @@ dependencies = [
 [[package]]
 name = "pi_bevy_post_process"
 version = "0.1.0"
+source = "git+https://github.com/GaiaWorld/pi_render_bevy.git#56d8c21a6bc8df5e10e36f55ebaecaa145b5ec92"
 dependencies = [
  "bevy",
  "pi_assets",
@@ -3596,6 +3609,7 @@ dependencies = [
 [[package]]
 name = "pi_bevy_render_plugin"
 version = "0.1.0"
+source = "git+https://github.com/GaiaWorld/pi_render_bevy.git#56d8c21a6bc8df5e10e36f55ebaecaa145b5ec92"
 dependencies = [
  "bevy",
  "crossbeam",
@@ -3624,6 +3638,7 @@ dependencies = [
 [[package]]
 name = "pi_bevy_winit_window"
 version = "0.1.0"
+source = "git+https://github.com/GaiaWorld/pi_render_bevy.git#56d8c21a6bc8df5e10e36f55ebaecaa145b5ec92"
 dependencies = [
  "bevy",
  "glam",
@@ -3770,6 +3785,7 @@ dependencies = [
 [[package]]
 name = "pi_engine_shell"
 version = "0.0.1"
+source = "git+https://github.com/GaiaWorld/pi_3d.git#cf18346e3c2a709bc621ede4b09f77d6308a1ac0"
 dependencies = [
  "approx",
  "bevy",
@@ -4036,6 +4052,7 @@ dependencies = [
 [[package]]
 name = "pi_gltf2_load"
 version = "0.0.1"
+source = "git+https://github.com/GaiaWorld/pi_3d.git#cf18346e3c2a709bc621ede4b09f77d6308a1ac0"
 dependencies = [
  "base64 0.20.0",
  "bevy",
@@ -4057,43 +4074,7 @@ dependencies = [
  "pi_hal",
  "pi_hash",
  "pi_node_materials",
- "pi_particle_system 0.0.1",
- "pi_render",
- "pi_scene_context",
- "pi_scene_math",
- "pi_share",
- "render_derive",
- "render_utils",
- "smallvec",
- "wgpu",
-]
-
-[[package]]
-name = "pi_gltf2_load"
-version = "0.0.1"
-source = "git+https://github.com/GaiaWorld/pi_3d.git#21a2e9f07fdff8c375a969a9210ae29c0d987397"
-dependencies = [
- "base64 0.20.0",
- "bevy",
- "bytemuck",
- "crossbeam",
- "derive_deref",
- "env_logger",
- "futures",
- "log",
- "naga 0.10.1",
- "pi-async-rt",
- "pi_animation",
- "pi_assets",
- "pi_atom",
- "pi_curves",
- "pi_engine_shell",
- "pi_futures",
- "pi_gltf",
- "pi_hal",
- "pi_hash",
- "pi_node_materials",
- "pi_particle_system 0.0.1 (git+https://github.com/GaiaWorld/pi_3d.git)",
+ "pi_particle_system",
  "pi_render",
  "pi_scene_context",
  "pi_scene_math",
@@ -4107,6 +4088,8 @@ dependencies = [
 [[package]]
 name = "pi_graph"
 version = "0.1.5"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "8e63fd5c9b9d67c65151befc252ca09f428287e573f1c14037997e1141a90bab"
 dependencies = [
  "log",
  "pi_hash",
@@ -4199,6 +4182,7 @@ dependencies = [
 [[package]]
 name = "pi_mesh_builder"
 version = "0.0.1"
+source = "git+https://github.com/GaiaWorld/pi_3d.git#cf18346e3c2a709bc621ede4b09f77d6308a1ac0"
 dependencies = [
  "bevy",
  "bytemuck",
@@ -4248,6 +4232,7 @@ dependencies = [
 [[package]]
 name = "pi_node_materials"
 version = "0.0.1"
+source = "git+https://github.com/GaiaWorld/pi_3d.git#cf18346e3c2a709bc621ede4b09f77d6308a1ac0"
 dependencies = [
  "bevy",
  "crossbeam",
@@ -4288,38 +4273,7 @@ checksum = "cc704f4fae1ab08fc45da841fb93e977408a7d4a3e0d9843c26d976abdecbab3"
 [[package]]
 name = "pi_particle_system"
 version = "0.0.1"
-dependencies = [
- "bevy",
- "bytemuck",
- "crossbeam",
- "derive_deref",
- "env_logger",
- "futures",
- "lazy_static",
- "log",
- "pi_assets",
- "pi_atom",
- "pi_engine_shell",
- "pi_hash",
- "pi_node_materials",
- "pi_render",
- "pi_scene_context",
- "pi_scene_math",
- "pi_share",
- "pi_slotmap",
- "pi_time",
- "pi_wy_rng",
- "rand",
- "render_derive",
- "render_utils",
- "smallvec",
- "wgpu",
-]
-
-[[package]]
-name = "pi_particle_system"
-version = "0.0.1"
-source = "git+https://github.com/GaiaWorld/pi_3d.git#21a2e9f07fdff8c375a969a9210ae29c0d987397"
+source = "git+https://github.com/GaiaWorld/pi_3d.git#cf18346e3c2a709bc621ede4b09f77d6308a1ac0"
 dependencies = [
  "bevy",
  "bytemuck",
@@ -4408,6 +4362,7 @@ checksum = "8eeeddb49aca084a517b5efcd8111cd19121130201190c09d5d817e998f78a4a"
 [[package]]
 name = "pi_render"
 version = "0.1.0"
+source = "git+https://github.com/GaiaWorld/pi_render.git?branch=bevy_shader#189d5b109cf0402b3454250b71df71961631e6ce"
 dependencies = [
  "render_core",
 ]
@@ -4415,6 +4370,7 @@ dependencies = [
 [[package]]
 name = "pi_scene_context"
 version = "0.0.1"
+source = "git+https://github.com/GaiaWorld/pi_3d.git#cf18346e3c2a709bc621ede4b09f77d6308a1ac0"
 dependencies = [
  "approx",
  "bevy",
@@ -4573,6 +4529,7 @@ dependencies = [
 [[package]]
 name = "pi_spine_render"
 version = "0.0.1"
+source = "git+https://github.com/GaiaWorld/pi_spine_rs.git#34e1eb910fb16a012762e8ddb6cf105df19e33ff"
 dependencies = [
  "approx",
  "bevy",
@@ -4612,6 +4569,7 @@ dependencies = [
 [[package]]
 name = "pi_spine_rs"
 version = "0.0.1"
+source = "git+https://github.com/GaiaWorld/pi_spine_rs.git#34e1eb910fb16a012762e8ddb6cf105df19e33ff"
 dependencies = [
  "bevy",
  "crossbeam",
@@ -4644,6 +4602,7 @@ dependencies = [
 [[package]]
 name = "pi_style"
 version = "0.1.0"
+source = "git+https://github.com/GaiaWorld/pi_style.git#eb40338d856d6f42626210ebd3b58f4265f937d0"
 dependencies = [
  "bitvec",
  "cssparser",
@@ -4694,6 +4653,38 @@ dependencies = [
 ]
 
 [[package]]
+name = "pi_trail_renderer"
+version = "0.0.1"
+source = "git+https://github.com/GaiaWorld/pi_3d.git#cf18346e3c2a709bc621ede4b09f77d6308a1ac0"
+dependencies = [
+ "bevy",
+ "bytemuck",
+ "crossbeam",
+ "derive_deref",
+ "env_logger",
+ "futures",
+ "lazy_static",
+ "log",
+ "pi_assets",
+ "pi_atom",
+ "pi_engine_shell",
+ "pi_hash",
+ "pi_node_materials",
+ "pi_render",
+ "pi_scene_context",
+ "pi_scene_math",
+ "pi_share",
+ "pi_slotmap",
+ "pi_time",
+ "pi_wy_rng",
+ "rand",
+ "render_derive",
+ "render_utils",
+ "smallvec",
+ "wgpu",
+]
+
+[[package]]
 name = "pi_triangulation"
 version = "0.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -4711,6 +4702,7 @@ checksum = "dbaf7abc0904cab87ca08c61afa70581049affa856cec59fe77e0b8a83a37257"
 [[package]]
 name = "pi_ui_render"
 version = "0.2.0"
+source = "git+https://github.com/GaiaWorld/pi_ui_render.git?branch=bevy#71ad75e463aec240b824a97e5d05ed0a6a5bd759"
 dependencies = [
  "bevy",
  "bitflags 1.3.2",
@@ -4820,6 +4812,7 @@ checksum = "5628d036b61ef2f4290d84bbd8f249608b9071cc739de25fd63b828861716b10"
 [[package]]
 name = "pi_window_renderer"
 version = "0.1.0"
+source = "git+https://github.com/GaiaWorld/pi_render_bevy.git#56d8c21a6bc8df5e10e36f55ebaecaa145b5ec92"
 dependencies = [
  "bevy",
  "bytemuck",
@@ -4995,6 +4988,7 @@ dependencies = [
 [[package]]
 name = "procedural_texture"
 version = "0.0.1"
+source = "git+https://github.com/GaiaWorld/pi_3d.git#cf18346e3c2a709bc621ede4b09f77d6308a1ac0"
 dependencies = [
  "bevy",
  "crossbeam",
@@ -5240,6 +5234,7 @@ checksum = "e5ea92a5b6195c6ef2a0295ea818b312502c6fc94dde986c5553242e18fd4ce2"
 [[package]]
 name = "render_compile"
 version = "0.1.0"
+source = "git+https://github.com/GaiaWorld/pi_render.git?branch=bevy_shader#189d5b109cf0402b3454250b71df71961631e6ce"
 dependencies = [
  "Inflector",
  "log",
@@ -5255,6 +5250,7 @@ dependencies = [
 [[package]]
 name = "render_core"
 version = "0.1.0"
+source = "git+https://github.com/GaiaWorld/pi_render.git?branch=bevy_shader#189d5b109cf0402b3454250b71df71961631e6ce"
 dependencies = [
  "anyhow",
  "bitvec",
@@ -5305,6 +5301,7 @@ dependencies = [
 [[package]]
 name = "render_crevice"
 version = "0.1.0"
+source = "git+https://github.com/GaiaWorld/pi_render.git?branch=bevy_shader#189d5b109cf0402b3454250b71df71961631e6ce"
 dependencies = [
  "bytemuck",
  "mint",
@@ -5315,6 +5312,7 @@ dependencies = [
 [[package]]
 name = "render_crevice_derive"
 version = "0.1.0"
+source = "git+https://github.com/GaiaWorld/pi_render.git?branch=bevy_shader#189d5b109cf0402b3454250b71df71961631e6ce"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -5325,6 +5323,7 @@ dependencies = [
 [[package]]
 name = "render_derive"
 version = "0.1.0"
+source = "git+https://github.com/GaiaWorld/pi_render.git?branch=bevy_shader#189d5b109cf0402b3454250b71df71961631e6ce"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -5335,6 +5334,7 @@ dependencies = [
 [[package]]
 name = "render_macro_utils"
 version = "0.1.0"
+source = "git+https://github.com/GaiaWorld/pi_render.git?branch=bevy_shader#189d5b109cf0402b3454250b71df71961631e6ce"
 dependencies = [
  "cargo-manifest",
  "quote",
@@ -5344,6 +5344,7 @@ dependencies = [
 [[package]]
 name = "render_utils"
 version = "0.1.0"
+source = "git+https://github.com/GaiaWorld/pi_render.git?branch=bevy_shader#189d5b109cf0402b3454250b71df71961631e6ce"
 dependencies = [
  "ahash",
  "render_derive",
@@ -5484,7 +5485,7 @@ dependencies = [
  "pi_curves",
  "pi_engine_shell",
  "pi_export_base",
- "pi_gltf2_load 0.0.1 (git+https://github.com/GaiaWorld/pi_3d.git)",
+ "pi_gltf2_load",
  "pi_hal",
  "pi_hash",
  "pi_mesh_builder",
@@ -5646,6 +5647,7 @@ dependencies = [
 [[package]]
 name = "skeletons"
 version = "0.0.1"
+source = "git+https://github.com/GaiaWorld/pi_3d.git#cf18346e3c2a709bc621ede4b09f77d6308a1ac0"
 dependencies = [
  "bevy",
  "crossbeam",
@@ -5673,6 +5675,7 @@ dependencies = [
 [[package]]
 name = "skybox"
 version = "0.0.1"
+source = "git+https://github.com/GaiaWorld/pi_3d.git#cf18346e3c2a709bc621ede4b09f77d6308a1ac0"
 dependencies = [
  "bevy",
  "crossbeam",
@@ -6114,6 +6117,7 @@ checksum = "f962df74c8c05a667b5ee8bcf162993134c104e96440b663c8daa176dc772d8c"
 [[package]]
 name = "unlit_material"
 version = "0.0.1"
+source = "git+https://github.com/GaiaWorld/pi_3d.git#cf18346e3c2a709bc621ede4b09f77d6308a1ac0"
 dependencies = [
  "bevy",
  "crossbeam",
