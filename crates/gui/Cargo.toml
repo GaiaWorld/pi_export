@@ -69,7 +69,7 @@ pi_spatial = { git = "https://github.com/GaiaWorld/pi_spatial.git" }
 # pi_ecs_macros = { git = "https://github.com/GaiaWorld/pi_ecs.git" }
 # pi_ecs = { git = "https://github.com/GaiaWorld/pi_ecs.git" }
 pi_hal={git="https://github.com/GaiaWorld/pi_hal.git"}
-js_proxy_gen_macro={git="https://github.com/GaiaWorld/pi_lib.git"}
+js_proxy_gen_macro = { registry = "yn", version = "0.2" }
 pi_postprocess={git="https://github.com/GaiaWorld/pi_post_process.git"}
 pi_curves = { git="https://github.com/GaiaWorld/pi_curves.git"}
 pi_animation = {git="https://github.com/GaiaWorld/pi_animation.git"}
@@ -79,7 +79,7 @@ pi_futures="0.1"
 pi_time = "0.3"
 siphasher = {version="0.3", features=["serde_no_std"]}
 
-winit = {git = "http://ser.yinengyun.com:10082/tech/winit.git"}
+winit = { registry = "yn", version = "0.27"}
 pi_bevy_post_process= { git = "https://github.com/GaiaWorld/pi_render_bevy.git"}
 pi_bevy_ecs_extend = { git = "https://github.com/GaiaWorld/pi_render_bevy.git"}
 pi_bevy_render_plugin = { git = "https://github.com/GaiaWorld/pi_render_bevy.git"}
@@ -112,6 +112,6 @@ wgpu = { version = "0.15", default-features = false, features = ["glsl"] }
 pi_render = { git = "https://github.com/GaiaWorld/pi_render.git", branch="bevy_shader" }
 
 [dev-dependencies]
-font_kit = {git="http://ser.yinengyun.com:10082/tech/font_kit.git"}
+font_kit = { registry = "yn", version = "0.1" }
 async-trait="0.1"
 

@@ -28,7 +28,7 @@ pi_window_renderer = { git = "https://github.com/GaiaWorld/pi_render_bevy.git" }
 pi_bevy_log = { git = "https://github.com/GaiaWorld/pi_render_bevy.git" }
 pi_render = { git = "https://github.com/GaiaWorld/pi_render.git", branch="bevy_shader" }
 pi-async-rt = {version = "0.1"}
-js_proxy_gen_macro = { git = "https://github.com/GaiaWorld/pi_lib.git" }
+js_proxy_gen_macro = { registry = "yn", version = "0.2" }
 tracing-subscriber = "0.3"
 
 js-sys = "0.3"
