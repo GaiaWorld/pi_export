@@ -13,7 +13,9 @@
     use pi_map::vecmap::VecMap;
     use pi_style::style::*;
     use pi_style::style_type::*;
-    use pi_style::style_parse::{parse_comma_separated, parse_text_shadow, StyleParse};
+    use pi_style::style_parse::{
+        parse_comma_separated, parse_text_shadow, parse_as_image, StyleParse,
+    };
     use smallvec::SmallVec;
     pub use pi_export_base::export::{Atom, Engine};
     pub use super::index::Gui;
@@ -2471,6 +2473,60 @@
     pub fn reset_zindex(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
         gui.commands.set_style(node_id, ResetZIndexType);
+    }
+    #[cfg(feature = "pi_js_export")]
+    #[allow(unused_attributes)]
+    pub fn set_as_image(gui: &mut Gui, node_id: f64, value: &str) {
+        let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
+        gui.commands
+            .set_style(
+                node_id,
+                AsImageType({
+                    let mut input = cssparser::ParserInput::new(value);
+                    let mut parse = cssparser::Parser::new(&mut input);
+                    match parse_as_image(&mut parse) {
+                        Ok(r) => r,
+                        Err(e) => {
+                            ();
+                            return;
+                        }
+                    }
+                }),
+            );
+    }
+    #[cfg(target_arch = "wasm32")]
+    #[wasm_bindgen]
+    #[allow(unused_attributes)]
+    pub fn set_as_image(gui: &mut Gui, node_id: f64, value: &str) {
+        let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
+        gui.commands
+            .set_style(
+                node_id,
+                AsImageType({
+                    let mut input = cssparser::ParserInput::new(value);
+                    let mut parse = cssparser::Parser::new(&mut input);
+                    match parse_as_image(&mut parse) {
+                        Ok(r) => r,
+                        Err(e) => {
+                            ();
+                            return;
+                        }
+                    }
+                }),
+            );
+    }
+    #[cfg(feature = "pi_js_export")]
+    #[allow(unused_attributes)]
+    pub fn reset_as_image(gui: &mut Gui, node_id: f64) {
+        let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
+        gui.commands.set_style(node_id, ResetAsImageType);
+    }
+    #[cfg(target_arch = "wasm32")]
+    #[wasm_bindgen]
+    #[allow(unused_attributes)]
+    pub fn reset_as_image(gui: &mut Gui, node_id: f64) {
+        let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
+        gui.commands.set_style(node_id, ResetAsImageType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]

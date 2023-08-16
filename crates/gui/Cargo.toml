@@ -103,6 +103,7 @@ js-sys = "0.3"
 wgpu = { version = "0.15", default-features = false, features = ["glsl", "webgl"] }
 pi_render = { git = "https://github.com/GaiaWorld/pi_render.git", branch="bevy_shader", features=["webgl"] }
 pi_bevy_log = { git = "https://github.com/GaiaWorld/pi_render_bevy.git" }
+tracing_chrome_wasm = { path="../../../tracing-chrome", package="tracing-chrome"}
 
 
 [target.'cfg(not(target_arch = "wasm32"))'.dependencies]

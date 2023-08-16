@@ -111,6 +111,7 @@ struct Info {
     children: Vec<f64>,
     pub render_obj: Vec<RenderObject>,
 	pub animation: String,
+	pub as_image: String,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -955,6 +956,7 @@ pub fn node_info(engine: &mut Engine, node_id: f64) -> JsValue {
 		(
 			Option<&Animation>,
 			Option<&TextShadow>,
+			Option<&AsImage>,
 		)
     )>();
     let (
@@ -995,6 +997,7 @@ pub fn node_info(engine: &mut Engine, node_id: f64) -> JsValue {
 		(
 			animation,
 			text_shadow,
+			as_image,
 		)
     ) = query.get(&engine.world, node_id).unwrap();
 
@@ -1052,6 +1055,7 @@ pub fn node_info(engine: &mut Engine, node_id: f64) -> JsValue {
 		graph_id: format!("{:?}", graph_id),
         children: children,
 		animation: format!("{:?}", animation),
+		as_image: format!("{:?}", as_image),
     };
 
     return JsValue::from_serde(&info).unwrap();

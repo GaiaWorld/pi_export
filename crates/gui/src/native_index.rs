@@ -56,6 +56,7 @@ pub fn create_engine(window: &Arc<Window>, width: u32, height: u32, asset_total_
 		.add_plugin(PluginWindowRender)
 		.add_plugin(PiPostProcessPlugin);
 	app.configure_set(CoreSet::First.run_if(should_run));
+
     Engine(app)
 }
 

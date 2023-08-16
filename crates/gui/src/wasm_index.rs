@@ -38,7 +38,7 @@ use pi_style::{
 };
 use smallvec::SmallVec;
 
-pub use super::index::Gui;
+pub use super::{index::Gui, ShareChromeWrite};
 use pi_export_play::as_value;
 // pub use pi_ui_render::gui::Gui;
 pub use pi_export_base::export::{Engine, Atom};
@@ -72,7 +72,7 @@ pub static mut RUNNER: OnceCell<LocalTaskRunner<()>> = OnceCell::new();
 
 /// width、height为physical_size
 #[wasm_bindgen]
-pub fn create_engine(canvas: HtmlCanvasElement, width: u32, height: u32, asset_total_capacity: u32, asset_config: &str, log_filter: Option<String>) -> Engine {
+pub fn create_engine(canvas: HtmlCanvasElement, width: u32, height: u32, asset_total_capacity: u32, asset_config: &str, log_filter: Option<String>, log_level: u8) -> Engine {
 	use bevy::prelude::{CoreSet, IntoSystemSetConfig};
 	use pi_bevy_render_plugin::should_run;
 	use crate::index::parse_asset_config;
@@ -113,8 +113,24 @@ pub fn create_engine(canvas: HtmlCanvasElement, width: u32, height: u32, asset_t
 	// log.filter="pi_ui_render::system::node::user_setting=debug,pi_ui_render::system::components::user=debug".to_string();
 	// log.filter="bevy=debug".to_string();
 	// log.filter="wgpu=debug".to_string();
-	log.level=bevy::log::Level::WARN;
+	// bevy::log::Level::INFO
+	// Trace = 0,
+    // Debug = 1,
+    // Info = 2,
+    // Warn = 3,
+    // Error = 4,
+	log.level= match log_level{
+		0 => bevy::log::Level::TRACE,
+		1 => bevy::log::Level::DEBUG,
+		2 => bevy::log::Level::INFO,
+		3 => bevy::log::Level::WARN,
+		4 => bevy::log::Level::ERROR,
+		_ => bevy::log::Level::WARN,
+	};
+	let chrome_write = ShareChromeWrite::new();
+	log.chrome_write = Some(chrome_write.clone());
     app
+		.insert_resource(chrome_write)
         .add_plugin(log)
 		.add_plugin(bevy::a11y::AccessibilityPlugin)
         .add_plugin(window_plugin)
@@ -191,6 +207,26 @@ pub fn log_animation(
 	key_frames.log();
 }
 
+// 开始录制性能
+#[wasm_bindgen]
+pub fn start_record_performance(
+    engine: &mut Engine,
+) {
+	let mut flush_guard = engine.world.get_non_send_resource::<tracing_chrome_wasm::FlushGuard<crate::ShareChromeWrite>>().unwrap();
+	flush_guard.start();
+}
+
+// 结束录制性能
+#[wasm_bindgen]
+pub fn end_record_performance(
+    engine: &mut Engine,
+) -> Vec<u8> {
+	let mut flush_guard = engine.world.get_non_send_resource::<tracing_chrome_wasm::FlushGuard<crate::ShareChromeWrite>>().unwrap();
+	flush_guard.end();
+
+	let mut chrome_write = engine.world.get_resource_mut::<ShareChromeWrite>().unwrap();
+	chrome_write.take()
+}
 
 // /**
 //  * 获取canvas资源

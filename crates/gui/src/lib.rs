@@ -8,13 +8,14 @@
 #![feature(fmt_helpers_for_derive)]
 #![feature(print_internals)]
 #![feature(once_cell)]
+#![feature(can_vector)]
 
 
-use bevy::ecs::{
+use bevy::{ecs::{
     entity::Entities,
     query::QueryState,
     system::{Query, Res, SystemState},
-};
+}, prelude::Resource};
 use pi_bevy_asset::{AssetDesc, AssetConfig};
 use pi_bevy_ecs_extend::prelude::{Down, Layer, OrDefault, Up};
 use pi_hash::XHashMap;
@@ -23,8 +24,76 @@ use pi_render::{rhi::{asset::{RenderRes, TextureRes}, buffer::Buffer, pipeline::
 use pi_style::style::Aabb2;
 use serde::{Serialize, Deserialize};
 use wgpu::TextureView;
-use std::mem::transmute;
+use std::{mem::{transmute, replace}, io::Write};
 use js_proxy_gen_macro::pi_js_export;
+use std::io;
+use pi_share::{Share, ShareMutex};
+use std::cell::RefCell;
+
+
+pub struct ChromeWrite {
+	pub buf: Vec<u8>,
+}
+
+#[derive(Resource, Clone)]
+pub struct ShareChromeWrite {
+	value: Share<RefCell<ChromeWrite>>,
+}
+
+unsafe impl Send for ShareChromeWrite {}
+unsafe impl Sync for ShareChromeWrite {}
+
+impl ShareChromeWrite {
+	pub fn new() -> Self {
+		Self {
+			value: Share::new(RefCell::new(ChromeWrite {
+				buf: Vec::new(),
+			})),
+		}
+	}
+
+	pub fn take(&mut self) -> Vec<u8> {
+		let mut lock = self.value.borrow_mut();
+		replace(&mut lock.buf, Vec::new())
+	}
+}
+
+impl io::Write for ShareChromeWrite {
+	#[inline]
+    fn write(&mut self, buf: &[u8]) -> io::Result<usize> {
+		let mut lock = self.value.borrow_mut();
+        lock.buf.extend_from_slice(buf);
+        Ok(buf.len())
+    }
+
+    #[inline]
+    fn write_vectored(&mut self, bufs: &[io::IoSlice<'_>]) -> io::Result<usize> {
+        let len = bufs.iter().map(|b| b.len()).sum();
+		let mut lock = self.value.borrow_mut();
+        lock.buf.reserve(len);
+        for buf in bufs {
+            lock.buf.extend_from_slice(buf);
+        }
+        Ok(len)
+    }
+
+    #[inline]
+    fn is_write_vectored(&self) -> bool {
+        true
+    }
+
+    #[inline]
+    fn write_all(&mut self, buf: &[u8]) -> io::Result<()> {
+		let mut lock = self.value.borrow_mut();
+        lock.buf.extend_from_slice(buf);
+        Ok(())
+    }
+
+    #[inline]
+    fn flush(&mut self) -> io::Result<()> {
+        Ok(())
+    }
+}
 
 
 #[cfg(target_arch = "wasm32")]

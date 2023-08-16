@@ -210,7 +210,6 @@ pub fn create_fragment_by_bin(gui: &mut Gui, bin: &[u8]) {
 pub fn fram_call(engine: &mut Engine, _cur_time: u32) {
 	#[cfg(feature = "trace")]
 	let _span = tracing::warn_span!("frame_call").entered();
-	*engine.world.get_resource_mut::<RunState>().unwrap() = RunState::RENDER;
 	*engine.world.get_resource_mut::<FrameState>().unwrap() = FrameState::Active;
 	engine.update();
 	*engine.world.get_resource_mut::<FrameState>().unwrap() = FrameState::UnActive;
@@ -218,7 +217,7 @@ pub fn fram_call(engine: &mut Engine, _cur_time: u32) {
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
-pub fn flush(gui: &mut Gui, engine: &mut Engine) {
+pub fn render_gui(gui: &mut Gui, engine: &mut Engine) {
 	#[cfg(feature="record")]
 	if let TraceOption::Play = gui.record_option {
 		loop {
@@ -254,10 +253,10 @@ pub fn flush(gui: &mut Gui, engine: &mut Engine) {
 	let _span = tracing::warn_span!("flush").entered();
 	bevy::ecs::system::CommandQueue::default().apply(&mut engine.world);
 	flush_data(gui, engine);
-	*engine.world.get_resource_mut::<RunState>().unwrap() = RunState::SETTING;
-	*engine.world.get_resource_mut::<FrameState>().unwrap() = FrameState::UnActive;
-	engine.update();
+	*engine.world.get_resource_mut::<RunState>().unwrap() = RunState::RENDER;
+	
 }
+
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]

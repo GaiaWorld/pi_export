@@ -23,7 +23,7 @@ use pi_style::style::*;
 use pi_style::{
     style_type::*,
 };
-use pi_style::style_parse::{parse_comma_separated, parse_text_shadow, StyleParse};
+use pi_style::style_parse::{parse_comma_separated, parse_text_shadow, parse_as_image, StyleParse};
 use smallvec::SmallVec;
 pub use pi_export_base::export::{Atom, Engine};
 pub use super::index::Gui;
@@ -503,6 +503,20 @@ style_out_export!(@expr visibility, VisibilityType, v,; v: bool,);
 style_out_export!(@cenum enable, EnableType);
 style_out_export!(@cenum blend_mode, BlendModeType);
 style_out_export!(@expr zindex, ZIndexType, v as isize,; v: i32,);
+style_out_export!(@expr as_image, AsImageType, {
+	let mut input = cssparser::ParserInput::new(value);
+    let mut parse = cssparser::Parser::new(&mut input);
+
+    match parse_as_image(&mut parse) {
+        Ok(r) => r,
+        Err(e) => {
+            log::error!("set_as_image fail, str: {}, err: {:?}", value, e);
+            return;
+        }
+    }
+}, value: &str,;);
+
+// style_out_export!(@expr as_image, AsImageType, unsafe{transmute(v)},; v: u8,);
 style_out_export!(@expr filter_blur, BlurType, v,; v: f32,);
 style_out_export!(@expr transform_will_change, TransformWillChangeType, v,; v: bool,);
 
