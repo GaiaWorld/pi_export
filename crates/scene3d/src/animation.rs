@@ -793,7 +793,7 @@ pub fn p3d_anime_curve_create(app: &mut Engine, param: &mut ActionSetScene3D, ke
 pub fn p3d_target_animation(
     app: &mut Engine,
     param: &mut ActionSetScene3D,
-    curve_key: f64,
+    curve_key: String,
     property: EAnimePropertyID,
     id_scene: f64,
     group: f64,
@@ -804,7 +804,7 @@ pub fn p3d_target_animation(
     let anime_target = as_entity(curve_target);
 
     let mut cmds = param.acts.get_mut(&mut app.world);
-    let key = curve_key as IDAssetTypeFrameCurve;
+    let key = curve_key.asset_u64();
 
     let info = match property {
         EAnimePropertyID::LocalPosition => {

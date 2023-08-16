@@ -498,3 +498,24 @@ pub enum EScalingMode {
     Local,
     Shape,
 }
+
+
+#[derive(Debug, Clone, Copy, Hash, PartialEq, Eq)]
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
+pub enum EDataTextureFormat {
+    /// UNSIGNED_BYTE
+    RGBA8,
+    // /// UNSIGNED_BYTE
+    // RGB,
+    // /// UNSIGNED_SHORT_4_4_4_4
+    // RGBA_4_4_4_4,
+    // RGBA_5_5_5_1,
+    // RGB_5_6_5,
+    R8,
+    R8_SNORM,
+    R16F,
+    R16I,
+    R16UI,
+    R32UI,
+}
