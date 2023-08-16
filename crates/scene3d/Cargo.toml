@@ -44,17 +44,20 @@ pi_scene_context 		= { git = "https://github.com/GaiaWorld/pi_3d.git" }
 unlit_material 			= { git = "https://github.com/GaiaWorld/pi_3d.git" }
 pi_mesh_builder 		= { git = "https://github.com/GaiaWorld/pi_3d.git" }
 pi_gltf2_load           = { git = "https://github.com/GaiaWorld/pi_3d.git" }
+pi_particle_system      = { git = "https://github.com/GaiaWorld/pi_3d.git" }
+pi_trail_renderer       = { git = "https://github.com/GaiaWorld/pi_3d.git" }
 
 bytemuck                = { version = "1.4", features = [ "derive" ] }
 js-sys 					= "0.3"
 web-sys 				= { version="0.3", features = [ "HtmlCanvasElement" ] }
 wasm-bindgen 			= { version = "0.2", features = ["serde-serialize"] }
 wasm-bindgen-futures 	= { version = "0.4" }
-js_proxy_gen_macro = { registry = "yn", version = "0.2" }
+js_proxy_gen_macro      = { registry = "yn", version = "0.2" }
 
 [target.'cfg(target_arch = "wasm32")'.dependencies]
 wgpu 					= { version = "0.15", default-features = false, features = ["glsl"] }
 pi_render 				= { git = "https://github.com/GaiaWorld/pi_render.git", branch="bevy_shader"}
+pi-async-rt 		    = { version = "0.1", features = ["serial"] }
 
 [target.'cfg(not(target_arch = "wasm32"))'.dependencies]
 pi_render 				= { git = "https://github.com/GaiaWorld/pi_render.git", branch="bevy_shader" }

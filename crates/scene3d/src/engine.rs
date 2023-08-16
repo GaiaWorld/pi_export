@@ -1,15 +1,18 @@
-use std::mem::transmute;
+use std::{mem::transmute, ops::Deref};
 
-use pi_3d::PluginBundleDefault;
+// use default_render::SingleIDBaseDefaultMaterial;
+use pi_3d::{PluginBundleDefault, sys_nodeinfo};
 use pi_assets::asset::Handle;
 use pi_engine_shell::prelude::*;
-use pi_export_base::export::Engine;
+use pi_export_base::{export::Engine};
 use pi_gltf2_load::{GLTF, PluginGLTF2Res, GLTFResLoader, KeyGLTF, TypeAnimeAssetMgrs, TypeAnimeContexts};
 use pi_mesh_builder::{cube::PluginCubeBuilder, quad::PluginQuadBuilder};
 use pi_node_materials::{PluginNodeMaterial, NodeMaterialBlocks, prelude::*};
+use pi_particle_system::{PluginParticleSystem, prelude::{ParticleSystemActionSet, ParticleSystemCalculatorID}};
 use pi_scene_context::prelude::*;
+use pi_trail_renderer::{PluginTrail, ActionSetTrailRenderer};
 use unlit_material::PluginUnlitMaterial;
-
+use pi_export_base::asset::Atom;
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
@@ -31,15 +34,16 @@ pub fn p3d_init_engine(app: &mut Engine) {
     }
 
     app
-        // add_plugin(PluginWindowRender)
         .add_plugins(PluginBundleDefault)
-        // .add_plugin(PluginFrameTime)
         .add_plugin(PluginNodeMaterial)
         .add_plugin(PluginCubeBuilder)
         .add_plugin(PluginQuadBuilder)
         .add_plugin(PluginUnlitMaterial)
         .add_plugins(PluginGroupNodeMaterialAnime)
+        .add_plugin(PluginParticleSystem)
         .add_plugin(PluginGLTF2Res)
+        .add_plugin(PluginTrail)
+        .add_system(sys_nodeinfo);
         ;
 }
 
@@ -70,12 +74,14 @@ pub struct ActionSets<'w> {
     pub queue: Res<'w, PiRenderQueue>,
     pub anime_assets: TypeAnimeAssetMgrs<'w>,
     pub anime_contexts: TypeAnimeContexts<'w>,
+    pub trail: ActionSetTrailRenderer<'w>,
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub struct ActionSetScene3D {
     pub(crate) acts: SystemState<ActionSets<'static>>,
+    pub(crate) particlesys: SystemState<ParticleSystemActionSet<'static>>,
     pub(crate) world_transform: QueryState<&'static WorldMatrix>,
     pub(crate) local_transform: QueryState<&'static LocalMatrix>,
     pub(crate) view_matrix: QueryState<&'static ViewerViewMatrix>,
@@ -92,9 +98,18 @@ impl ActionSetScene3D {
             world_transform: app.world.query(),
             local_transform: app.world.query(),
             view_matrix: app.world.query(),
+            particlesys: SystemState::<ParticleSystemActionSet>::new(&mut app.world),
         }
     }
 }
+
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
+pub fn p3d_entity(app: &mut Engine, param: &mut ActionSetScene3D) -> f64 {
+    let id: Entity = app.world.spawn_empty().id();
+    as_f64(&id)
+}
+
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
@@ -103,7 +118,7 @@ pub fn p3d_dispose(app: &mut Engine, param: &mut ActionSetScene3D, entity: f64) 
 
     let mut cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
 
-    cmds.obj_dispose.push(OpsDisposeReady::ops(entity));
+    cmds.obj_dispose.push(OpsDispose::ops(entity));
 }
 
 
@@ -212,14 +227,19 @@ pub fn p3d_gltf_val(item: &GLTFRes) -> String {
     item.0.output.clone()
 }
 
+pub fn gltf_particle_calculator(item: &GLTFRes, index: f64) -> Option<&Handle<ParticleSystemCalculatorID>> {
+    let index = index as usize;
+    item.0.particlesys_calculators.get(&index)
+}
+
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
-pub fn p3d_create_gltf_load(app: &mut Engine, param: &mut ActionSetScene3D, entity: f64, baseurl: String, dyndesc: String) {
+pub fn p3d_create_gltf_load(app: &mut Engine, param: &mut ActionSetScene3D, entity: f64, baseurl: &Atom, dyndesc: String) {
     let cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
 
     let entity: Entity = as_entity(entity);
 
-    let param = KeyGLTF { base_url: Atom::from(baseurl), dyn_desc: Atom::from(dyndesc) };
+    let param = KeyGLTF { base_url: baseurl.deref().clone(), dyn_desc: pi_atom::Atom::from(dyndesc) };
 
     cmds.gltf2_loader.create_load(entity, param);
 }
@@ -280,10 +300,10 @@ pub fn p3d_get_gltf_fail_reason(app: &mut Engine, param: &mut ActionSetScene3D, 
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
-pub fn p3d_create_image_load(app: &mut Engine, param: &mut ActionSetScene3D, url: String, srgb: bool) -> f64 {
+pub fn p3d_create_image_load(app: &mut Engine, param: &mut ActionSetScene3D, url: &Atom, srgb: bool) -> f64 {
     let mut cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
 
-    let id = cmds.imgtex_loader.create_load(KeyImageTexture::File(Atom::from(url), srgb));
+    let id = cmds.imgtex_loader.create_load(KeyImageTexture::File(url.deref().clone(), srgb));
 
     unsafe { transmute(id) }
 }
