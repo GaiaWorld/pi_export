@@ -1,7 +1,7 @@
 use std::{mem::transmute, ops::Deref};
 
 // use default_render::SingleIDBaseDefaultMaterial;
-use pi_3d::{PluginBundleDefault, sys_nodeinfo};
+use pi_3d::PluginBundleDefault;
 use pi_assets::asset::Handle;
 use pi_engine_shell::prelude::*;
 use pi_export_base::{export::Engine};
@@ -35,15 +35,14 @@ pub fn p3d_init_engine(app: &mut Engine) {
 
     app
         .add_plugins(PluginBundleDefault)
-        .add_plugin(PluginNodeMaterial)
-        .add_plugin(PluginCubeBuilder)
-        .add_plugin(PluginQuadBuilder)
-        .add_plugin(PluginUnlitMaterial)
+        .add_plugins(PluginNodeMaterial)
+        .add_plugins(PluginCubeBuilder)
+        .add_plugins(PluginQuadBuilder)
+        .add_plugins(PluginUnlitMaterial)
         .add_plugins(PluginGroupNodeMaterialAnime)
-        .add_plugin(PluginParticleSystem)
-        .add_plugin(PluginGLTF2Res)
-        .add_plugin(PluginTrail)
-        .add_system(sys_nodeinfo);
+        .add_plugins(PluginParticleSystem)
+        .add_plugins(PluginGLTF2Res)
+        .add_plugins(PluginTrail)
         ;
 }
 
