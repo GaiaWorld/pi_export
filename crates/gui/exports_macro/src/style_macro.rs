@@ -26,8 +26,7 @@ use pi_style::{
 use pi_style::style_parse::{parse_comma_separated, parse_text_shadow, parse_as_image, StyleParse};
 use smallvec::SmallVec;
 pub use pi_export_base::export::{Atom, Engine};
-pub use super::index::Gui;
-use crate::index::{OffsetDocument, Size};
+use crate::index::{OffsetDocument, Size, Gui};
 use pi_ui_render::resource::animation_sheet::KeyFramesSheet;
 
 #[cfg(target_arch="wasm32")]
@@ -1488,7 +1487,7 @@ other_out_export!(
 other_out_export!(
 	@with_return1,
     query(engine: &mut Engine, gui: &mut Gui,)()(x: f32, y: f32,)-> Option<f64> {
-		super::index::query(engine, gui, x, y)
+		crate::index::query(engine, gui, x, y)
 	}
 );
 

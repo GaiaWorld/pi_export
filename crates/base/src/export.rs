@@ -205,9 +205,9 @@ impl std::ops::Drop for JsRes {
 #[cfg_attr(target_arch = "wasm32", wasm_bindgen)]
 #[cfg(feature = "pi_js_export")]
 pub fn set_log_filter(engine: &mut Engine, filter: &str) {
-	if let Some(mut handle) = engine.app_mut().world.get_resource_mut::<pi_bevy_log::LogFilterHandle>() {
+	if let Some(handle) = engine.app_mut().world.get_resource_mut::<pi_bevy_log::LogFilterHandle>() {
 		if let Ok(filter_layer) = tracing_subscriber::EnvFilter::try_new(filter) {
-			handle.0.modify(|filter| *filter = filter_layer);
+			let _ = handle.0.modify(|filter| *filter = filter_layer);
 		}
 	}
 }

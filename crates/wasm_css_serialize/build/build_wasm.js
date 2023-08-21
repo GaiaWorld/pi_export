@@ -28,32 +28,34 @@ fs.readFile(in_wasm_js_path, {encoding:"utf8"}, (err, data) => {
 		data = data.replace(/from\s+'(.+?)\.js'/g,  "from '$1'");
 		data = data.replace(/getObject\(arg0\)\sinstanceof\sWindow/g, "true");
 		data = data.replace(/getObject\(arg0\)\sinstanceof\sCanvasRenderingContext2D/g, "true");
-		data = data.replace(/getObject\(arg0\)\sinstanceof\sHTMLCanvasElement/g, "true");
+		data = data.replace(/getObject\(arg0\)\sinstanceof\sHTMLCanvasElement/g, "true");  
+
 		data = data.replace(
-`    const { instance, module } = await load(await input, imports);
+	`    const { instance, module } = await __wbg_load(await input, imports);
 
-    wasm = instance.exports;
-    init.__wbindgen_wasm_module = module;
-
-    return wasm;
+	return __wbg_finalize_init(instance, module);
 }
+	
+export { initSync }
+export default __wbg_init;`, 
 
-export default init;`,  
+`    const r = await __wbg_load(await input, imports);
 
-	`    const r = await load(await input, imports);
-
-    wasm = r.instance.exports;
-    init.__wbindgen_wasm_module = r.module;
+	__wbg_finalize_init(r.instance, r.module);
 	if(module.postRun) {
 		module.postRun();
 	}
 
-    return wasm;
+	return wasm;
 }
 
+export { initSync }
 Promise.resolve().then(() => {
-	init(module.wasmModule);
-})`);
+	__wbg_init(module.wasmModule).then((r) => {
+		window["_$wasm"] = r;
+	});
+})
+`);
 		// data = data.replace(`Module["noExitRuntime"]=true;run();`, `Module["noExitRuntime"] = true;
 		// //PI_START
 		// run();

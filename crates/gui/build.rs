@@ -18,10 +18,11 @@ fn main() -> Result<(), std::io::Error> {
             .output()
             .expect("failed cargo expand")
 			.stdout;
-	let s = String::from_utf8(out).expect("failed from_utf8");
-	let first_line = s.find("{").expect(format!("failed {{, str: {}", s).as_str());
-	let last_close = s.rfind("}").expect(format!("failed }}, str: {}", s).as_str());
-
-	std::fs::write("src/style.rs", &s[first_line + 1 ..last_close])?;
+	let mut s = String::from_utf8(out).expect("failed from_utf8");
+	s += "\npub use self::style_macro::*;";
+	// let first_line = s.find("{").expect(format!("failed {{, str: {}", s).as_str());
+	// let last_close = s.rfind("}").expect(format!("failed }}, str: {}", s).as_str());
+	
+	std::fs::write("src/style.rs", s.as_str())?;
 	Ok(())
 }

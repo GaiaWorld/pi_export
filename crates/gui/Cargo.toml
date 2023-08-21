@@ -15,7 +15,7 @@ record = ["pi_ui_render/debug"]
 
 pi_export_base = {path="../base"}
 pi_export_play ={path="../play"}
-pi_ui_render = {git = "https://github.com/GaiaWorld/pi_ui_render.git", branch="bevy", features=["debug"]}
+pi_ui_render = {version = "0.1", registry = "yn"}
 bitflags="1.2"
 tracing="0.1"
 tracing-core = "0.1"
@@ -59,28 +59,25 @@ polygon2 = "0.3"
 json ="0.12"
 pi_slotmap_tree ="0.3"
 
-# pi_flex_layout = { git = "https://github.com/GaiaWorld/pi_flex_layout.git" }
 pi_flex_layout = "0.2"
-pi_spatial = { git = "https://github.com/GaiaWorld/pi_spatial.git" }
-# pi_ecs_macros = { git = "https://github.com/GaiaWorld/pi_ecs.git" }
-# pi_ecs = { git = "https://github.com/GaiaWorld/pi_ecs.git" }
-pi_hal={git="https://github.com/GaiaWorld/pi_hal.git"}
+pi_spatial = "0.4"
+pi_hal = {version = "0.1", registry = "yn"}
 js_proxy_gen_macro = { registry = "yn", version = "0.2" }
-pi_postprocess={git="https://github.com/GaiaWorld/pi_post_process.git"}
-pi_curves = { git="https://github.com/GaiaWorld/pi_curves.git"}
-pi_animation = {git="https://github.com/GaiaWorld/pi_animation.git"}
-pi_style = { git = "https://github.com/GaiaWorld/pi_style.git"}
+pi_postprocess = {version = "0.1", registry = "yn"}
+pi_curves = {version = "0.1", registry = "yn"}
+pi_animation = {version = "0.1", registry = "yn"}
+pi_style = {version = "0.1", registry = "yn"}
 pi_futures="0.1"
 pi_time = "0.3"
 siphasher = {version="0.3", features=["serde_no_std"]}
 
 winit = { registry = "yn", version = "0.27"}
-pi_bevy_post_process= { git = "https://github.com/GaiaWorld/pi_render_bevy.git"}
-pi_bevy_ecs_extend = { git = "https://github.com/GaiaWorld/pi_render_bevy.git"}
-pi_bevy_render_plugin = { git = "https://github.com/GaiaWorld/pi_render_bevy.git"}
-pi_bevy_asset = { git = "https://github.com/GaiaWorld/pi_render_bevy.git"}
-pi_bevy_winit_window = { git = "https://github.com/GaiaWorld/pi_render_bevy.git"}
-pi_window_renderer = { git = "https://github.com/GaiaWorld/pi_render_bevy.git"}
+pi_bevy_post_process= {version = "0.1", registry = "yn"}
+pi_bevy_ecs_extend = {version = "0.1", registry = "yn"}
+pi_bevy_render_plugin = {version = "0.1", registry = "yn"}
+pi_bevy_asset = {version = "0.1", registry = "yn"}
+pi_bevy_winit_window = {version = "0.1", registry = "yn"}
+pi_window_renderer = {version = "0.1", registry = "yn"}
 wasm-bindgen = { version = "0.2", features = ["serde-serialize"] }
 bevy = {version="0.11", default-features = false}
 
@@ -96,8 +93,8 @@ js-sys = "0.3"
 # wgpu = { version = "0.16", default-features = false, features = ["glsl", "wgc"] }
 # pi_render = { git = "https://github.com/GaiaWorld/pi_render.git", branch="bevy_shader"}
 wgpu = { version = "0.16", default-features = false, features = ["glsl", "webgl"] }
-pi_render = { git = "https://github.com/GaiaWorld/pi_render.git", branch="bevy_shader", features=["webgl"] }
-pi_bevy_log = { git = "https://github.com/GaiaWorld/pi_render_bevy.git" }
+pi_render = { version = "0.1", registry = "yn", features=["webgl"] }
+pi_bevy_log = {version = "0.1", registry = "yn"}
 tracing_chrome_wasm = { path="../../../tracing-chrome", package="tracing-chrome"}
 
 
@@ -105,7 +102,7 @@ tracing_chrome_wasm = { path="../../../tracing-chrome", package="tracing-chrome"
 pi_share = {version="0.4"}
 pi-async-rt = "0.1"
 wgpu = { version = "0.16", default-features = false, features = ["glsl"] }
-pi_render = { git = "https://github.com/GaiaWorld/pi_render.git", branch="bevy_shader" }
+pi_render = { version = "0.1", registry = "yn" }
 
 [dev-dependencies]
 font_kit = { registry = "yn", version = "0.1" }

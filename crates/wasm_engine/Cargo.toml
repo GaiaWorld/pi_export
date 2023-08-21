@@ -8,7 +8,8 @@ edition = "2018"
 crate-type = ["cdylib"]
 
 [features]
-default = ["pi_js_export", "bevy/trace_chrome", "pi_bevy_render_plugin/trace", "pi_bevy_log/tracing_chrome_wasm", "pi_export_gui/trace"]
+default = ["pi_js_export", "log/release_max_level_warn"]
+# default = ["pi_js_export", "bevy/trace_chrome", "pi_bevy_render_plugin/trace", "pi_bevy_log/tracing_chrome_wasm", "pi_export_gui/trace", "tracing/release_max_level_warn"]
 pi_js_export = []
 
 [dependencies]
@@ -29,15 +30,15 @@ bevy = { version = "0.11", default-features=false}
 # log = "0.4"
 # log={version = "0.4", features=["release_max_level_warn", "max_level_warn"]}
 log = {version = "0.4", features=["release_max_level_warn"]}
-tracing = { version = "0.1", features=["release_max_level_warn"]}
+# tracing = { version = "0.1", features=["release_max_level_warn"]}
 # features = ["release_max_level_warn", "max_level_warn"] 
 
 # 添加webgl feature
 wgpu = { version = "0.16", default-features = false, features = ["glsl", "webgl"] }
 # wgpu = { version = "0.16", default-features = false, features = ["glsl", "wgc"] }
-pi_render = { git = "https://github.com/GaiaWorld/pi_render.git", branch="bevy_shader", features=["webgl"] }
-pi_bevy_render_plugin = { git = "https://github.com/GaiaWorld/pi_render_bevy.git", features=["webgl"]}
-pi_bevy_log = { git = "https://github.com/GaiaWorld/pi_render_bevy.git"}
+pi_render = { version = "0.1", registry = "yn", features=["webgl"] }
+pi_bevy_render_plugin = { version = "0.1", registry = "yn", features=["webgl"]}
+pi_bevy_log = {version = "0.1", registry = "yn"}
 
 
 getrandom = { version = "0.2", features = ["js"] }

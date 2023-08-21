@@ -27,7 +27,6 @@ use pi_bevy_render_plugin::{PiRenderPlugin, FrameState};
 use pi_window_renderer::PluginWindowRender;
 use pi_bevy_asset::PiAssetPlugin;
 use pi_hash::XHashMap;
-use pi_idtree::InsertType;
 use pi_slotmap::SecondaryMap;
 use pi_style::{
     style::*,
@@ -73,8 +72,7 @@ pub static mut RUNNER: OnceCell<LocalTaskRunner<()>> = OnceCell::new();
 /// width、height为physical_size
 #[wasm_bindgen]
 pub fn create_engine(canvas: HtmlCanvasElement, width: u32, height: u32, asset_total_capacity: u32, asset_config: &str, log_filter: Option<String>, log_level: u8) -> Engine {
-	use bevy::prelude::{CoreSet, IntoSystemSetConfig};
-	use pi_bevy_render_plugin::should_run;
+	use bevy::prelude::IntoSystemSetConfigs;
 	use crate::index::parse_asset_config;
 
 	// 初始化运行时（全局localRuntime需要初始化）
@@ -140,7 +138,7 @@ pub fn create_engine(canvas: HtmlCanvasElement, width: u32, height: u32, asset_t
 		.add_plugin(PluginWindowRender)
         .add_plugin(PiPostProcessPlugin)
 		.add_plugin(RuntimePlugin); // 推动运行时
-	app.configure_set(CoreSet::First.run_if(should_run));
+	// app.configure_set(CoreSet::First.run_if(should_run));
     Engine::new(app)
 }
 
@@ -309,9 +307,10 @@ fn runtime_run() {
 
 impl bevy::app::Plugin for RuntimePlugin {
     fn build(&self, app: &mut App) {
-		use bevy::prelude::IntoSystemConfig;
-        app.add_system(
-			runtime_run.in_base_set(bevy::prelude::CoreSet::First)
+		use bevy::prelude::{First, IntoSystemConfigs};
+		use pi_bevy_render_plugin::should_run;
+        app.add_systems(First,
+			runtime_run.run_if(should_run)
 		);
     }
 }
@@ -322,7 +321,6 @@ impl bevy::app::Plugin for RuntimePlugin {
 // impl bevy::app::Plugin for RuntimePlugin {
 //     fn build(&self, app: &mut App) {
 //         app.add_stage_before(
-// 			bevy::prelude::CoreStage::First,
 // 			RuntimeStage::Start,
 // 			bevy::prelude::SystemStage::single(|| {
 // 				run_all(&pi_hal::runtime::RUNNER_MULTI.lock());

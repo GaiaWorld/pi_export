@@ -16,17 +16,17 @@ derive_deref = "1.1"
 pi_export_macro = {path="../macro"}
 pi_share = {version="0.4"}
 pi_assets = "0.13"
-pi_hal={git="https://github.com/GaiaWorld/pi_hal.git"}
+pi_hal = {version = "0.1", registry = "yn"}
 bevy = { version="0.11", default-features = false }
 wgpu = { version = "0.16", default-features = false, feature = ["glsl"] }
-pi_bevy_asset = { git = "https://github.com/GaiaWorld/pi_render_bevy.git" }
-pi_bevy_render_plugin = { git = "https://github.com/GaiaWorld/pi_render_bevy.git" }
-pi_bevy_ecs_extend = { git = "https://github.com/GaiaWorld/pi_render_bevy.git" }
-pi_bevy_winit_window = { git = "https://github.com/GaiaWorld/pi_render_bevy.git"}
-pi_bevy_post_process= { git = "https://github.com/GaiaWorld/pi_render_bevy.git"}
-pi_window_renderer = { git = "https://github.com/GaiaWorld/pi_render_bevy.git" }
-pi_bevy_log = { git = "https://github.com/GaiaWorld/pi_render_bevy.git" }
-pi_render = { git = "https://github.com/GaiaWorld/pi_render.git", branch="bevy_shader" }
+pi_bevy_asset = {version = "0.1", registry = "yn"}
+pi_bevy_render_plugin = {version = "0.1", registry = "yn"}
+pi_bevy_ecs_extend = {version = "0.1", registry = "yn"}
+pi_bevy_winit_window = {version = "0.1", registry = "yn"}
+pi_bevy_post_process= {version = "0.1", registry = "yn"}
+pi_window_renderer = {version = "0.1", registry = "yn"}
+pi_bevy_log = {version = "0.1", registry = "yn"}
+pi_render = {version = "0.1", registry = "yn"}
 pi-async-rt = {version = "0.1"}
 js_proxy_gen_macro = { registry = "yn", version = "0.2" }
 tracing-subscriber = "0.3"

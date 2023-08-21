@@ -14,10 +14,10 @@ pi_js_export = []
 
 [dependencies]
 bevy = { version="0.11", default-features = false}
-pi_bevy_asset = { git = "https://github.com/GaiaWorld/pi_render_bevy.git" }
-pi_bevy_render_plugin = { git = "https://github.com/GaiaWorld/pi_render_bevy.git" }
-pi_bevy_ecs_extend = { git = "https://github.com/GaiaWorld/pi_render_bevy.git" }
-pi_window_renderer = { git = "https://github.com/GaiaWorld/pi_render_bevy.git" }
+pi_bevy_asset = {version = "0.1", registry = "yn"}
+pi_bevy_render_plugin = {version = "0.1", registry = "yn"}
+pi_bevy_ecs_extend = {version = "0.1", registry = "yn"}
+pi_window_renderer = {version = "0.1", registry = "yn"}
 wgpu = { version = "0.16", default-features = false }
 js_proxy_gen_macro = { registry = "yn", version = "0.2" }
 
@@ -27,8 +27,8 @@ pi_assets = "0.13"
 # pi_export_gui = { path = "../gui" }
 pi_export_base = { path = "../base" }
 pi_spine_rs = { git = "https://github.com/GaiaWorld/pi_spine_rs.git" }
-pi_hal = { git = "https://github.com/GaiaWorld/pi_hal.git" }
-pi_render = { git = "https://github.com/GaiaWorld/pi_render.git", branch="bevy_shader" }
+pi_hal = { version = "0.1", registry = "yn" }
+pi_render = { version = "0.1", registry = "yn" }
 pi_web_logger = {git = "http://ser.yinengyun.com:10082/tech/pi_web_logger.git"}
 
 log="0.4"
@@ -41,7 +41,7 @@ wasm-bindgen-futures = { version = "0.4" }
 
 [target.'cfg(target_arch = "wasm32")'.dependencies]
 wgpu = { version = "0.16", default-features = false, features = ["glsl"] }
-pi_render = { git = "https://github.com/GaiaWorld/pi_render.git", branch="bevy_shader" }
+pi_render = { version = "0.1", registry = "yn" }
 
 [target.'cfg(not(target_arch = "wasm32"))'.dependencies]
-pi_render = { git = "https://github.com/GaiaWorld/pi_render.git", branch="bevy_shader" }
+pi_render = { version = "0.1", registry = "yn" }

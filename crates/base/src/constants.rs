@@ -1,6 +1,5 @@
 
 
-use pi_bevy_render_plugin::constant::texture_sampler::*;
 use js_proxy_gen_macro::pi_js_export;
 
 #[cfg(target_arch = "wasm32")]

@@ -36,21 +36,21 @@ extern {
 
 #[allow(unused_attributes)]
 #[wasm_bindgen]
-pub fn init_logger(level: pi_web_logger::Level) {
-    pi_web_logger::init_with_level(level);
-	panic::set_hook(Box::new(|info: &panic::PanicInfo| {
-		let mut msg = info.to_string();
-		msg.push_str("\n\nStack:\n\n");
-		let e = Error::new();
-		// let stack = e.stack();
-		// msg.push_str(&stack);
+pub fn init_logger(_level: pi_web_logger::Level) {
+    // pi_web_logger::init_with_level(level);
+	// panic::set_hook(Box::new(|info: &panic::PanicInfo| {
+	// 	let mut msg = info.to_string();
+	// 	msg.push_str("\n\nStack:\n\n");
+	// 	let e = Error::new();
+	// 	// let stack = e.stack();
+	// 	// msg.push_str(&stack);
 
-		// Safari's devtools, on the other hand, _do_ mess with logged
-		// messages' contents, so we attempt to break their heuristics for
-		// doing that by appending some whitespace.
-		// https://github.com/rustwasm/console_error_panic_hook/issues/7
-		// msg.push_str("\n\n");
-		log::error!("{}\n\nStack:\n\n{:?}\n\n",info,  e.stack());
-	}));
-	info!("init_logger ok!");
+	// 	// Safari's devtools, on the other hand, _do_ mess with logged
+	// 	// messages' contents, so we attempt to break their heuristics for
+	// 	// doing that by appending some whitespace.
+	// 	// https://github.com/rustwasm/console_error_panic_hook/issues/7
+	// 	// msg.push_str("\n\n");
+	// 	log::error!("{}\n\nStack:\n\n{:?}\n\n",info,  e.stack());
+	// }));
+	// info!("init_logger ok!");
 }

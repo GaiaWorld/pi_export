@@ -20,7 +20,7 @@ pub use winit::window::Window;
 
 #[cfg(feature="pi_js_export")]
 pub fn create_engine(window: &Arc<Window>, width: u32, height: u32, asset_total_capacity: u32, asset_config: &str) -> Engine {
-    use bevy::prelude::{CoreSet, IntoSystemSetConfig};
+    use bevy::prelude::{IntoSystemSetConfig, First};
     use pi_bevy_render_plugin::{should_run, PiRenderOptions};
     use wgpu::Backend;
     use crate::index::parse_asset_config;
@@ -55,7 +55,7 @@ pub fn create_engine(window: &Arc<Window>, width: u32, height: u32, asset_total_
 		.add_plugin(PiRenderPlugin {frame_init_state: FrameState::UnActive})
 		.add_plugin(PluginWindowRender)
 		.add_plugin(PiPostProcessPlugin);
-	app.configure_set(CoreSet::First.run_if(should_run));
+	// app.configure_set(First, CoreSet::First.run_if(should_run));
 
     Engine(app)
 }

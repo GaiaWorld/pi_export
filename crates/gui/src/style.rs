@@ -1,4 +1,4 @@
-
+pub mod style_macro {
     //! 将设置布局属性的接口导出到js
     use std::mem::transmute;
     use pi_ui_render::components::calc::EntityKey;
@@ -18,8 +18,7 @@
     };
     use smallvec::SmallVec;
     pub use pi_export_base::export::{Atom, Engine};
-    pub use super::index::Gui;
-    use crate::index::{OffsetDocument, Size};
+    use crate::index::{OffsetDocument, Size, Gui};
     use pi_ui_render::resource::animation_sheet::KeyFramesSheet;
     #[cfg(target_arch = "wasm32")]
     use wasm_bindgen::prelude::wasm_bindgen;
@@ -5105,12 +5104,12 @@
     }
     #[cfg(feature = "pi_js_export")]
     pub fn query(engine: &mut Engine, gui: &mut Gui, x: f32, y: f32) -> Option<f64> {
-        super::index::query(engine, gui, x, y)
+        crate::index::query(engine, gui, x, y)
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     pub fn query(engine: &mut Engine, gui: &mut Gui, x: f32, y: f32) -> Option<f64> {
-        super::index::query(engine, gui, x, y)
+        crate::index::query(engine, gui, x, y)
     }
     pub fn to_linear_gradient_color(
         color_and_positions: &[f32],
@@ -5195,3 +5194,6 @@
         gui.commands.set_style(node_id, ResetAnimationPlayStateType);
     }
     pub mod debug {}
+}
+
+pub use self::style_macro::*;

@@ -8,7 +8,7 @@ edition = "2021"
 crate-type = ["cdylib"]
 
 [dependencies]
-# pi_ui_render= {git="https://github.com/GaiaWorld/pi_ui_render.git"}
+# pi_ui_render= {git ="https://github.com/GaiaWorld/pi_ui_render.git"}
 wasm-bindgen = { version = "=0.2.87", features = ["serde-serialize"] }
 postcard = {version = "1.0", features = ["use-std"]}
 log = "0.4"
@@ -20,12 +20,12 @@ serde_json = "1.0"
 pi_null = "0.1"
 smallvec={version = "1.8", features = ["serde"]}
 
-pi_web_logger={git="http://ser.yinengyun.com:10082/tech/pi_web_logger.git"}
-pi_style = { git = "https://github.com/GaiaWorld/pi_style.git" }
-pi_ui_render = { git = "https://github.com/GaiaWorld/pi_ui_render.git", branch = "bevy" }
+pi_web_logger={git ="http://ser.yinengyun.com:10082/tech/pi_web_logger.git"}
+pi_style = {version = "0.1", registry = "yn"}
+pi_ui_render = {version = "0.1", registry = "yn"}
 wgpu = { version = "0.16", default-features = false, features = ["glsl", "webgl"] }
-pi_render = { git = "https://github.com/GaiaWorld/pi_render.git", branch = "bevy_shader", features = ["webgl"] }
-pi_bevy_render_plugin = { git = "https://github.com/GaiaWorld/pi_render_bevy.git", features=["webgl"]}
+pi_render = { version = "0.1", registry = "yn", features = ["webgl"] }
+pi_bevy_render_plugin = { version = "0.1", registry = "yn", features=["webgl"]}
 
 [target.'cfg(target_arch = "wasm32")'.dependencies]
 pi-async-rt = {version = "0.1", features = ["serial"]}

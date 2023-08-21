@@ -14,7 +14,7 @@ pi_js_export = []
 nalgebra = "0.32.0"
 parry2d = "0.13"
 num-traits = "0.2.14"
-pi_spatial = { git = "https://github.com/GaiaWorld/pi_spatial.git" }
+pi_spatial = "0.4"
 bytemuck = { version = "1.4", features = ["derive"] }
 pi_slotmap = "0.1"
 

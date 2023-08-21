@@ -49,17 +49,17 @@ fs.readFile(in_wasm_js_path, {encoding:"utf8"}, (err, data) => {
 		)
 
 		data = data.replace(
-`    const { instance, module } = await load(await input, imports);
+`    const { instance, module } = await __wbg_load(await input, imports);
 
-    return finalizeInit(instance, module);
+    return __wbg_finalize_init(instance, module);
 }
 
 export { initSync }
-export default init;`,  
+export default __wbg_init;`,  
 
-	`    const r = await load(await input, imports);
+	`    const r = await __wbg_load(await input, imports);
 
-    finalizeInit(r.instance, r.module);
+    __wbg_finalize_init(r.instance, r.module);
 	if(module.postRun) {
 		module.postRun();
 	}
@@ -68,11 +68,15 @@ export default init;`,
 }
 
 export { initSync }
-Promise.resolve().then(() => {
-	init(module.wasmModule).then((r) => {
-		window["_$wasm"] = r;
-	});
-})`);
+// 前后端适配
+if(!globalThis._$cwd){
+	Promise.resolve().then(() => {
+		__wbg_init(module.wasmModule).then((r) => {
+			window["_$wasm"] = r;
+		});
+	})
+}
+`);
 		// data = data.replace(`Module["noExitRuntime"]=true;run();`, `Module["noExitRuntime"] = true;
 		// //PI_START
 		// run();

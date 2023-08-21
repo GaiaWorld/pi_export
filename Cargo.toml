@@ -23,6 +23,31 @@ pi_flex_layout = { path = "../pi_flex_layout" }
 # pi_assets = {path = "../pi_assets"}
 # pi_graph = { path = "../pi_graph" }
 # pi_async_graph = { path = "../pi_async_graph" }
+# pi_spatial ={path="../pi_spatial"}
+
+[patch.yn]
+# winit = { path = "../winit" }
+pi_hal = { path = "../pi_hal" }
+# pi_render
+pi_render = { path = "../pi_render" }
+render_utils = { path = "../pi_render/crates/render_utils" }
+render_derive = { path = "../pi_render/crates/render_derive" }
+render_compile = { path = "../pi_render/crates/render_compile" }
+
+# pi_bevy
+pi_bevy_render_plugin = { path="../pi_bevy/crates/render" }
+pi_bevy_winit_window = { path="../pi_bevy/crates/winit_window" }
+pi_bevy_ecs_extend = { path="../pi_bevy/crates/ecs_extend" }
+pi_bevy_ecs_macro = { path="../pi_bevy/crates/ecs_extend/macro" }
+pi_bevy_asset = { path="../pi_bevy/crates/asset" }
+pi_window_renderer = { path="../pi_bevy/crates/window_renderer" }
+pi_bevy_post_process= { path = "../pi_bevy/crates/post_process" }
+
+pi_ui_render = { path = "../pi_ui_render_new" }
+pi_style = { path = "../pi_style" }
+pi_postprocess ={path="../pi_post_process"}
+pi_animation ={path="../pi_animation"}
+
 # [profile.release]
 # debug= true
 
@@ -43,47 +68,12 @@ codegen-units = 1
 # [patch."https://github.com/GaiaWorld/pi_path_finding"]
 # pi_path_finding = { path = "../pi_path_finding" }
 
-[patch."https://github.com/GaiaWorld/pi_ui_render"]
-pi_ui_render = { path = "../pi_ui_render_new" }
-
 [patch."https://github.com/GaiaWorld/pi_spine_rs"]
 pi_spine_rs = { path = "../pi_spine_rs" }
 
 
 # [patch."https://github.com/GaiaWorld/pi_scene"]
 # pi_scene_math = { path = "../pi_scene/crates/pi_scene_math" }
-
-
-[patch."https://github.com/GaiaWorld/pi_hal"]
-pi_hal = { path = "../pi_hal" }
-
-[patch."https://github.com/GaiaWorld/pi_style"]
-pi_style = { path = "../pi_style" }
-
-
-[patch."https://github.com/GaiaWorld/pi_render"]
-pi_render = { path = "../pi_render" }
-render_derive = {path = "../pi_render/crates/render_derive"}
-render_utils = { path = "../pi_render/crates/render_utils" }
-render_compile = { path = "../pi_render/crates/render_compile" }
-
-[patch."https://github.com/GaiaWorld/pi_render_bevy"]
-pi_bevy_post_process= { path = "../pi_render_bevy/crates/post_process" }
-pi_bevy_ecs_extend = { path = "../pi_render_bevy/crates/ecs_extend" }
-pi_bevy_render_plugin = { path = "../pi_render_bevy/crates/render" }
-pi_bevy_asset = { path = "../pi_render_bevy/crates/asset" }
-pi_bevy_winit_window = { path = "../pi_render_bevy/crates/winit_window" } 
-pi_window_renderer = { path = "../pi_render_bevy/crates/window_renderer" } 
-pi_bevy_log = { path = "../pi_render_bevy/crates/log" }
-
-[patch."https://github.com/GaiaWorld/pi_spatial"]
-pi_spatial ={path="../pi_spatial"}
-
-[patch."https://github.com/GaiaWorld/pi_post_process"]
-pi_postprocess ={path="../pi_post_process"}
-
-[patch."https://github.com/GaiaWorld/pi_animation"]
-pi_animation ={path="../pi_animation"}
 
 [patch."https://github.com/GaiaWorld/pi_3d"]
 pi_3d               = { path="../pi_3d" }
@@ -93,9 +83,9 @@ default_render      = { path="../pi_3d/crates/default_render" }
 pi_scene_context    = { path="../pi_3d/crates/pi_scene_context" }
 unlit_material      = { path="../pi_3d/crates/unlit_material" }
 pi_mesh_builder     = { path="../pi_3d/crates/pi_mesh_builder" }
-pi_trail_renderer = { path="../pi_3d/crates/pi_trail_renderer" }
-pi_gltf2_load = { path="../pi_3d/crates/pi_gltf2_load" }
-pi_particle_system = { path="../pi_3d/crates/pi_particle_system" }
+pi_trail_renderer = { path="../pi_3d/crates/trail" }
+pi_gltf2_load = { path="../pi_3d/crates/gltf2" }
+pi_particle_system = { path="../pi_3d/crates/particle_system" }
 
 # [net]
 # git-fetch-with-cli = true
