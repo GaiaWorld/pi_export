@@ -4252,6 +4252,7 @@ dependencies = [
  "derive_deref",
  "js-sys",
  "js_proxy_gen_macro",
+ "log",
  "paste",
  "pi-async-rt",
  "pi_assets",
@@ -4264,14 +4265,17 @@ dependencies = [
  "pi_bevy_winit_window",
  "pi_export_macro",
  "pi_hal",
+ "pi_hash",
  "pi_render",
  "pi_share",
  "pi_window_renderer",
+ "serde_json",
  "tracing-subscriber",
  "wasm-bindgen",
  "wasm-bindgen-futures",
  "web-sys",
  "wgpu",
+ "winit 0.27.8",
 ]
 
 [[package]]
@@ -5055,7 +5059,7 @@ checksum = "dbaf7abc0904cab87ca08c61afa70581049affa856cec59fe77e0b8a83a37257"
 
 [[package]]
 name = "pi_ui_render"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "bevy",
  "bitflags 1.3.2",
@@ -5120,7 +5124,6 @@ dependencies = [
  "serde_json",
  "smallvec",
  "thiserror",
- "tracing",
  "tracing-subscriber",
  "wgpu",
  "zerovec",
@@ -6594,8 +6597,6 @@ checksum = "9c8d87e72b64a3b4db28d11ce29237c246188f4f51057d65a7eab63b7987e423"
 [[package]]
 name = "wasm-bindgen"
 version = "0.2.87"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7706a72ab36d8cb1f80ffbf0e071533974a60d0a308d01a5d0375bf60499a342"
 dependencies = [
  "cfg-if",
  "serde",
@@ -6606,8 +6607,6 @@ dependencies = [
 [[package]]
 name = "wasm-bindgen-backend"
 version = "0.2.87"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5ef2b6d3c510e9625e5fe6f509ab07d66a760f0885d858736483c32ed7809abd"
 dependencies = [
  "bumpalo",
  "log",
@@ -6633,8 +6632,6 @@ dependencies = [
 [[package]]
 name = "wasm-bindgen-macro"
 version = "0.2.87"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "dee495e55982a3bd48105a7b947fd2a9b4a8ae3010041b9e0faab3f9cd028f1d"
 dependencies = [
  "quote",
  "wasm-bindgen-macro-support",
@@ -6643,8 +6640,6 @@ dependencies = [
 [[package]]
 name = "wasm-bindgen-macro-support"
 version = "0.2.87"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "54681b18a46765f095758388f2d0cf16eb8d4169b639ab575a8f5693af210c7b"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -6656,8 +6651,6 @@ dependencies = [
 [[package]]
 name = "wasm-bindgen-shared"
 version = "0.2.87"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ca6ad05a4870b2bf5fe995117d3728437bd27d7cd5f06f13c17443ef369775a1"
 
 [[package]]
 name = "wayland-client"

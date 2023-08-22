@@ -82,7 +82,7 @@ fn parse_node(node: &NodeFragmentJson, scope_hash: u32, fragments: &mut Vec<Node
 
 #[test]
 fn test() {
-	let json = r#"{
+	let _json = r#"{
 		"6546848": [{
 			"style": "width: 10px;height: 10px;",
 			"tag": "div",

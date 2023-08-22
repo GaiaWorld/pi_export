@@ -20,13 +20,9 @@ use bevy::ecs::{
     query::QueryState,
     system::{Query, Res, SystemState},
 };
-use pi_bevy_asset::{AssetDesc, AssetConfig};
 use pi_bevy_ecs_extend::prelude::{Down, Layer, OrDefault, Up};
-use pi_hash::XHashMap;
-use pi_render::{rhi::{asset::{RenderRes, TextureRes}, buffer::Buffer, pipeline::RenderPipeline, bind_group::BindGroup}, renderer::sampler::SamplerRes};
 use pi_style::style::Aabb2;
 use serde::{Serialize, Deserialize};
-use wgpu::TextureView;
 use js_proxy_gen_macro::pi_js_export;
 #[cfg(feature="record")]
 use pi_ui_render::system::cmd_play::{Records, CmdNodeCreate, PlayState, TraceOption };
@@ -34,10 +30,6 @@ use pi_ui_render::system::cmd_play::{Records, CmdNodeCreate, PlayState, TraceOpt
 
 #[cfg(target_arch = "wasm32")]
 use pi_async_rt::prelude::{LocalTaskRunner, LocalTaskRuntime};
-// use pi_ecs::{
-//     prelude::{DispatcherMgr, IntoSystem, ResMut, SingleDispatcher, StageBuilder},
-//     world::World,
-// };
 use pi_spatial::quad_helper::intersects;
 #[cfg(target_arch = "wasm32")]
 use wasm_bindgen::prelude::wasm_bindgen;
@@ -207,16 +199,6 @@ pub fn create_fragment_by_bin(gui: &mut Gui, bin: &[u8]) {
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
-pub fn fram_call(engine: &mut Engine, _cur_time: u32) {
-	#[cfg(feature = "trace")]
-	let _span = tracing::warn_span!("frame_call").entered();
-	*engine.world.get_resource_mut::<FrameState>().unwrap() = FrameState::Active;
-	engine.update();
-	*engine.world.get_resource_mut::<FrameState>().unwrap() = FrameState::UnActive;
-}
-
-#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
-#[pi_js_export]
 pub fn render_gui(gui: &mut Gui, engine: &mut Engine) {
 	#[cfg(feature="record")]
 	if let TraceOption::Play = gui.record_option {
@@ -348,7 +330,7 @@ pub fn set_next_record(engine: &mut Engine, bin: &[u8]) {
 				play_state.cur_frame_count = 0;
 				
 			}
-			Err(e) => {
+			Err(_e) => {
 				();
 				return;
 			}
@@ -462,30 +444,6 @@ pub struct AbQueryArgs<'s, 'w> {
     aabb: Aabb2,
     result: EntityKey,
     max_z: usize,
-}
-
-pub fn parse_asset_config(asset_config: &str) -> AssetConfig {
-	let map: XHashMap<String, AssetDesc> = match serde_json::from_str(asset_config) {
-		Ok(r) => r,
-		_ => {
-			log::warn!("asset_config is invalid,  {:?}", asset_config);
-			XHashMap::default()
-		}
-	};
-	let mut asset_config = AssetConfig::default();
-	for (key, desc) in map.into_iter() {
-		match key.as_str() {
-			"texture_view" => asset_config.insert::<RenderRes<TextureView>>(desc),
-			"buffer" => asset_config.insert::<RenderRes<Buffer>>(desc),
-			"sampler" => asset_config.insert::<SamplerRes>(desc),
-			"bind_group" => asset_config.insert::<RenderRes<BindGroup>>(desc),
-			"texture" => asset_config.insert::<TextureRes>(desc),
-			"render_pipeline" => asset_config.insert::<RenderRes<RenderPipeline>>(desc),
-			
-			_ => {},
-		}
-	}
-	asset_config
 }
 
 

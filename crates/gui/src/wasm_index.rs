@@ -67,81 +67,6 @@ pub use winit::platform::web::WindowBuilderExtWebSys;
 pub use winit::window::{Window, WindowBuilder};
 use pi_ui_render::resource::{animation_sheet::KeyFramesSheet, FragmentCommand};
 
-pub static mut RUNNER: OnceCell<LocalTaskRunner<()>> = OnceCell::new();
-
-/// width、height为physical_size
-#[wasm_bindgen]
-pub fn create_engine(canvas: HtmlCanvasElement, width: u32, height: u32, asset_total_capacity: u32, asset_config: &str, log_filter: Option<String>, log_level: u8) -> Engine {
-	use bevy::prelude::IntoSystemSetConfigs;
-	use crate::index::parse_asset_config;
-
-	// 初始化运行时（全局localRuntime需要初始化）
-	let runner = LocalTaskRunner::new();
-    let rt = runner.get_runtime();
-    //非线程安全，外部保证同一时间只有一个线程在多读或单写变量
-    unsafe {
-        RUNNER.set(runner);
-        MULTI_MEDIA_RUNTIME.0.set(rt.clone());
-		RENDER_RUNTIME.0.set(rt);
-    }
-
-	// static mut RUNNER_MULTI: OnceCell<LocalTaskRunner<()>> = OnceCell::new();
-	// static mut RUNNER_RENDER: OnceCell<LocalTaskRunner<()>> = OnceCell::new();
-
-
-    let mut app = App::default();
-
-    let mut window_plugin = bevy::window::WindowPlugin::default();
-	window_plugin.primary_window = None;
-
-	let mut log = pi_bevy_log::LogPlugin::default();
-	web_sys::console::log_1(&wasm_bindgen::JsValue::from(&format!("log_filter========={:?}", log_filter)));
-	if let Some(log_filter) = log_filter {
-		log.filter = log_filter;
-	}
-
-	
-// static mut MULTI_MEDIA_RUNTIME: OnceCell<LocalTaskRuntime<()>> = OnceCell::new();
-
-// static mut RUNNER_RENDER: OnceCell<LocalTaskRunner<()>> = OnceCell::new();
-// static mut RENDER_RUNTIME: OnceCell<LocalTaskRuntime<()>> = OnceCell::new();
-	
-
-	// log.filter="pi_ui_render::resource::animation_sheet=debug".to_string();
-	// log.filter="pi_ui_render::system::node::user_setting=debug,pi_ui_render::system::components::user=debug".to_string();
-	// log.filter="bevy=debug".to_string();
-	// log.filter="wgpu=debug".to_string();
-	// bevy::log::Level::INFO
-	// Trace = 0,
-    // Debug = 1,
-    // Info = 2,
-    // Warn = 3,
-    // Error = 4,
-	log.level= match log_level{
-		0 => bevy::log::Level::TRACE,
-		1 => bevy::log::Level::DEBUG,
-		2 => bevy::log::Level::INFO,
-		3 => bevy::log::Level::WARN,
-		4 => bevy::log::Level::ERROR,
-		_ => bevy::log::Level::WARN,
-	};
-	let chrome_write = ShareChromeWrite::new();
-	log.chrome_write = Some(chrome_write.clone());
-    app
-		.insert_resource(chrome_write)
-        .add_plugin(log)
-		.add_plugin(bevy::a11y::AccessibilityPlugin)
-        .add_plugin(window_plugin)
-		.add_plugin(PiAssetPlugin {total_capacity: asset_total_capacity as usize, asset_config: parse_asset_config(asset_config)})
-        .add_plugin(pi_bevy_winit_window::WinitPlugin::new(canvas).with_size(width, height))
-        .add_plugin(PiRenderPlugin {frame_init_state: FrameState::UnActive})
-		.add_plugin(PluginWindowRender)
-        .add_plugin(PiPostProcessPlugin)
-		.add_plugin(RuntimePlugin); // 推动运行时
-	// app.configure_set(CoreSet::First.run_if(should_run));
-    Engine::new(app)
-}
-
 #[derive(Debug, Clone, Copy)]
 #[wasm_bindgen]
 pub enum TraceOption {
@@ -284,36 +209,9 @@ pub fn end_record_performance(
 // #[derive(Serialize)]
 // pub struct CanvasRect(u32, u32, u32, u32);
 
-#[inline]
-fn run_all(rt: &LocalTaskRunner<()>) {
-	while RENDER_RUNTIME.len() > 0 {
-		rt.poll();
-		rt.run_once();
-	}
-    // while let Ok(r) = rt.run() {
-    //     if r == 0 {
-    //         break;
-    //     }
-    // }
-}
 
-// wasm 使用单线程运行时，需要手动推
-pub struct RuntimePlugin;
 
-fn runtime_run() {
-	run_all(unsafe{RUNNER.get().unwrap()});
-	// run_all(&pi_hal::runtime::RUNNER_RENDER.lock());
-}
 
-impl bevy::app::Plugin for RuntimePlugin {
-    fn build(&self, app: &mut App) {
-		use bevy::prelude::{First, IntoSystemConfigs};
-		use pi_bevy_render_plugin::should_run;
-        app.add_systems(First,
-			runtime_run.run_if(should_run)
-		);
-    }
-}
 
 // // wasm 使用单线程运行时，需要手动推
 // pub struct RuntimePlugin;

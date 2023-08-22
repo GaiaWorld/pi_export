@@ -5035,6 +5035,7 @@ pub mod style_macro {
             for (group_id, ty, count) in events.iter() {
                 match map.get(*group_id) {
                     Some(r) => {
+                        ();
                         arr[i] = r.0.index();
                         arr[i + 1] = r.0.generation();
                         arr[i + 2] = r.1.1.get_hash() as u32;
@@ -5059,6 +5060,7 @@ pub mod style_macro {
             for (group_id, ty, count) in events.iter() {
                 match map.get(*group_id) {
                     Some(r) => {
+                        log::trace!(target: format!("animationevent_{}", &r.1.1.as_str()).as_str(), "ty: {:?}", ty);
                         arr[i] = r.0.index();
                         arr[i + 1] = r.0.generation();
                         arr[i + 2] = r.1.1.get_hash() as u32;

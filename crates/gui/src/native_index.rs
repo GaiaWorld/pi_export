@@ -1,64 +1,9 @@
-use pi_ui_render::{prelude::UiPlugin};
-use pi_bevy_post_process::PiPostProcessPlugin;
-use pi_bevy_render_plugin::{PiRenderPlugin, FrameState};
-use pi_window_renderer::PluginWindowRender;
-use pi_bevy_asset::PiAssetPlugin;
-
-use crate::index::insert_as_root;
-
+use pi_ui_render::prelude::UiPlugin;
 pub use super::index::Gui;
 pub use pi_export_base::export::{Engine, Atom};
-use pi_export_play::as_value;
-use super::{index::{remove_node, append_child, destroy_node, insert_before, create_node, create_text_node, create_image_node, create_canvas_node, create_vnode}};
-use pi_ui_render::components::calc::EntityKey;
-use bevy::{app::prelude::App};
-use bevy::ecs::{prelude::Entity};
 // pub use pi_ui_render::gui::Gui;
-use pi_null::Null;
-use std::{intrinsics::transmute, sync::Arc};
+use std::intrinsics::transmute;
 pub use winit::window::Window;
-
-#[cfg(feature="pi_js_export")]
-pub fn create_engine(window: &Arc<Window>, width: u32, height: u32, asset_total_capacity: u32, asset_config: &str) -> Engine {
-    use bevy::prelude::{IntoSystemSetConfig, First};
-    use pi_bevy_render_plugin::{should_run, PiRenderOptions};
-    use wgpu::Backend;
-    use crate::index::parse_asset_config;
-
-
-    let mut app = App::default();
-
-	let mut window_plugin = bevy::window::WindowPlugin::default();
-	window_plugin.primary_window = None;
-    // window_plugin.add_primary_window = false;
-	// window_plugin.window.width = width as f32;
-    // window_plugin.window.height = height as f32;
-	// window_plugin.add_primary_window = false;
-	if cfg!(target_os = "android"){
-		println!("-=============== target_os = android");
-		let mut options = PiRenderOptions::default();
-		options.0.backends = Backend::Gl.into();
-		app.insert_resource(options);
-	}
-	
-    app
-		// .add_plugin(bevy::log::LogPlugin {
-		// 	filter: "wgpu=debug".to_string(),
-		// 	level: bevy::log::Level::DEBUG,
-		// })
-		.add_plugin(bevy::a11y::AccessibilityPlugin)
-		// .add_plugin(bevy::input::InputPlugin::default())
-		.add_plugin(window_plugin)
-		.add_plugin(pi_bevy_winit_window::WinitPlugin::new(window.clone()).with_size(width, height))
-		// .add_plugin(WorldInspectorPlugin::new())
-		.add_plugin(PiAssetPlugin {total_capacity: asset_total_capacity as usize, asset_config: parse_asset_config(asset_config)})
-		.add_plugin(PiRenderPlugin {frame_init_state: FrameState::UnActive})
-		.add_plugin(PluginWindowRender)
-		.add_plugin(PiPostProcessPlugin);
-	// app.configure_set(First, CoreSet::First.run_if(should_run));
-
-    Engine(app)
-}
 
 // #[derive(Debug, Clone)]
 // #[cfg(feature="pi_js_export")]
@@ -88,12 +33,12 @@ pub fn create_gui(
 	#[cfg(feature="record")]
 	{
 		let debug: pi_ui_render::system::cmd_play::TraceOption = unsafe { transmute(debug as u8) };
-		engine.add_plugin(UiPlugin {cmd_trace: debug.clone()});
+		engine.add_plugins(UiPlugin {cmd_trace: debug.clone()});
 		gui.record_option = debug;
 	}
 
 	#[cfg(not(feature="record"))]
-    engine.add_plugin(UiPlugin::default());
+    engine.add_plugins(UiPlugin::default());
 
 	// // 设置动画的监听器
     // let a_callback = Share::new(move |list: &Vec<(AnimationGroupID, EAnimationEvent, u32)>, map: &SecondaryMap<AnimationGroupID, (ObjKey, pi_atom::Atom)>| {

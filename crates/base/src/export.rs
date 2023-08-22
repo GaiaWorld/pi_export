@@ -4,12 +4,27 @@ use std::{sync::Arc, cell::RefCell};
 
 use derive_deref::{Deref, DerefMut};
 use pi_assets::{allocator::Allocator, asset::{Asset, Handle, Size}, mgr::AssetMgr};
+use pi_bevy_asset::{PiAssetPlugin, AssetConfig, AssetDesc};
+use pi_bevy_post_process::PiPostProcessPlugin;
+use pi_hash::XHashMap;
+use pi_render::{rhi::{asset::{RenderRes, TextureRes}, bind_group::BindGroup, pipeline::RenderPipeline}, renderer::sampler::SamplerRes};
 use pi_share::Share;
 use bevy::app::App;
+use pi_bevy_render_plugin::{FrameState, PiRenderPlugin};
+use pi_window_renderer::PluginWindowRender;
 #[cfg(target_arch = "wasm32")]
 use wasm_bindgen::prelude::*;
 #[cfg(target_arch = "wasm32")]
 use js_sys::Function;
+#[cfg(target_arch = "wasm32")]
+use core::cell::OnceCell;
+#[cfg(target_arch = "wasm32")]
+use pi_async_rt::rt::serial_local_compatible_wasm_runtime::{LocalTaskRunner, LocalTaskRuntime};
+#[cfg(target_arch = "wasm32")]
+use pi_async_rt::prelude::AsyncRuntime;
+use wgpu::{TextureView, Buffer};
+#[cfg(not(target_arch = "wasm32"))]
+pub use winit::window::Window;
 
 #[cfg(all(feature="pi_js_export", not(target_arch="wasm32")))]
 #[derive(Debug, Deref, DerefMut)]
@@ -212,27 +227,179 @@ pub fn set_log_filter(engine: &mut Engine, filter: &str) {
 	}
 }
 
-// app.add_plugin(pi_bevy_log::LogPlugin {
-// 	filter: FILTER.to_string(),
-// 	level: LOG_LEVEL,
-// })
-// .add_plugin(bevy::a11y::AccessibilityPlugin)
-// .add_plugin(bevy::input::InputPlugin::default())
-// .add_plugin(window_plugin)
-// .add_plugin(WinitPlugin::default())
-// .add_plugin(PiAssetPlugin {total_capacity: 1024 * 1024 * 1024, asset_config: AssetConfig::default()})
-// // .add_plugin(WorldInspectorPlugin::new())
-// .add_plugin(PiRenderPlugin::default())
-// .add_plugin(PiPostProcessPlugin)
+#[cfg(target_arch = "wasm32")]
+pub static mut RUNNER: OnceCell<LocalTaskRunner<()>> = OnceCell::new();
 
-// ;
+/// width、height为physical_size
+#[cfg(target_arch = "wasm32")]
+#[wasm_bindgen]
+pub fn create_engine(canvas: web_sys::HtmlCanvasElement, width: u32, height: u32, asset_total_capacity: u32, asset_config: &str, log_filter: Option<String>, log_level: u8) -> Engine {
+	// 初始化运行时（全局localRuntime需要初始化）
+	let runner = LocalTaskRunner::new();
+    let rt = runner.get_runtime();
+    //非线程安全，外部保证同一时间只有一个线程在多读或单写变量
+    unsafe {
+        RUNNER.set(runner);
+        pi_hal::runtime::MULTI_MEDIA_RUNTIME.0.set(rt.clone());
+		pi_hal::runtime::RENDER_RUNTIME.0.set(rt);
+    }
 
-// let h = app.world.get_resource_mut::<pi_bevy_log::LogFilterHandle>().unwrap();
-// let default_filter = { format!("{},my_target=info", bevy::log::Level::WARN) };
-// let filter_layer = tracing_subscriber::EnvFilter::try_from_default_env()
-// 	.or_else(|_| tracing_subscriber::EnvFilter::try_new(&default_filter))
-// 	.unwrap();
-// h.0.modify(|filter| *filter = filter_layer);
-// log::info!("aaa=============");
-// log::info!(target: "my_target", "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+	// static mut RUNNER_MULTI: OnceCell<LocalTaskRunner<()>> = OnceCell::new();
+	// static mut RUNNER_RENDER: OnceCell<LocalTaskRunner<()>> = OnceCell::new();
 
+
+    let mut app = App::default();
+
+    let mut window_plugin = bevy::window::WindowPlugin::default();
+	window_plugin.primary_window = None;
+
+	let mut log = pi_bevy_log::LogPlugin::<Vec<u8>>::default();
+	if let Some(log_filter) = log_filter {
+		log.filter = log_filter;
+	}
+
+	log.level= match log_level {
+		0 => bevy::log::Level::TRACE,
+		1 => bevy::log::Level::DEBUG,
+		2 => bevy::log::Level::INFO,
+		3 => bevy::log::Level::WARN,
+		4 => bevy::log::Level::ERROR,
+		_ => bevy::log::Level::WARN,
+	};
+	// let chrome_write = ShareChromeWrite::new();
+	// log.chrome_write = None;
+	create_engine_inner(
+		&mut app, 
+		pi_bevy_winit_window::WinitPlugin::new(canvas).with_size(width, height),
+		asset_total_capacity,
+		asset_config,
+	);
+	app.add_plugins(log);
+    app.add_plugins(RuntimePlugin); // wasm需要主动推运行时
+    Engine::new(app)
+}
+
+#[cfg(feature="pi_js_export")]
+#[cfg(not(target_arch = "wasm32"))]
+pub fn create_engine(window: &Arc<Window>, width: u32, height: u32, asset_total_capacity: u32, asset_config: &str) -> Engine {
+    use pi_bevy_render_plugin::PiRenderOptions;
+    use wgpu::Backend;
+
+
+    let mut app = App::default();
+    // window_plugin.add_primary_window = false;
+	// window_plugin.window.width = width as f32;
+    // window_plugin.window.height = height as f32;
+	// window_plugin.add_primary_window = false;
+	if cfg!(target_os = "android"){
+		println!("-=============== target_os = android");
+		let mut options = PiRenderOptions::default();
+		options.0.backends = Backend::Gl.into();
+		app.insert_resource(options);
+	}
+	
+	create_engine_inner(
+		&mut app, 
+		pi_bevy_winit_window::WinitPlugin::new(window.clone()).with_size(width, height),
+		asset_total_capacity,
+		asset_config,
+	);
+
+    Engine(app)
+}
+
+fn create_engine_inner(
+	app: &mut App, 
+	winit_plugin: pi_bevy_winit_window::WinitPlugin,
+	asset_total_capacity: u32,
+	asset_config: &str,
+) {
+	let mut window_plugin = bevy::window::WindowPlugin::default();
+	window_plugin.primary_window = None;
+
+	app
+		// .add_plugins(bevy::log::LogPlugin {
+		// 	filter: "wgpu=debug".to_string(),
+		// 	level: bevy::log::Level::DEBUG,
+		// })
+		.add_plugins(bevy::a11y::AccessibilityPlugin)
+		// .add_plugins(bevy::input::InputPlugin::default())
+		.add_plugins(window_plugin)
+		.add_plugins(winit_plugin)
+		// .add_plugins(WorldInspectorPlugin::new())
+		.add_plugins(PiAssetPlugin {total_capacity: asset_total_capacity as usize, asset_config: parse_asset_config(asset_config)})
+		.add_plugins(PiRenderPlugin {frame_init_state: FrameState::UnActive})
+		.add_plugins(PluginWindowRender)
+		.add_plugins(PiPostProcessPlugin);
+}
+
+
+// 帧推
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[cfg(feature = "pi_js_export")]
+pub fn fram_call(engine: &mut Engine, _cur_time: u32) {
+	#[cfg(feature = "trace")]
+	let _span = tracing::warn_span!("frame_call").entered();
+	*engine.world.get_resource_mut::<FrameState>().unwrap() = FrameState::Active;
+	engine.update();
+	*engine.world.get_resource_mut::<FrameState>().unwrap() = FrameState::UnActive;
+}
+
+pub fn parse_asset_config(asset_config: &str) -> AssetConfig {
+	let map: XHashMap<String, AssetDesc> = match serde_json::from_str(asset_config) {
+		Ok(r) => r,
+		_ => {
+			log::warn!("asset_config is invalid,  {:?}", asset_config);
+			XHashMap::default()
+		}
+	};
+	let mut asset_config = AssetConfig::default();
+	for (key, desc) in map.into_iter() {
+		match key.as_str() {
+			"texture_view" => asset_config.insert::<RenderRes<TextureView>>(desc),
+			"buffer" => asset_config.insert::<RenderRes<Buffer>>(desc),
+			"sampler" => asset_config.insert::<SamplerRes>(desc),
+			"bind_group" => asset_config.insert::<RenderRes<BindGroup>>(desc),
+			"texture" => asset_config.insert::<TextureRes>(desc),
+			"render_pipeline" => asset_config.insert::<RenderRes<RenderPipeline>>(desc),
+			
+			_ => {},
+		}
+	}
+	asset_config
+}
+
+#[cfg(target_arch = "wasm32")]
+#[inline]
+fn run_all(rt: &LocalTaskRunner<()>) {
+	while pi_hal::runtime::RENDER_RUNTIME.len() > 0 {
+		rt.poll();
+		rt.run_once();
+	}
+    // while let Ok(r) = rt.run() {
+    //     if r == 0 {
+    //         break;
+    //     }
+    // }
+}
+
+// wasm 使用单线程运行时，需要手动推
+#[cfg(target_arch = "wasm32")]
+pub struct RuntimePlugin;
+
+#[cfg(target_arch = "wasm32")]
+fn runtime_run() {
+	run_all(unsafe{RUNNER.get().unwrap()});
+	// run_all(&pi_hal::runtime::RUNNER_RENDER.lock());
+}
+
+#[cfg(target_arch = "wasm32")]
+impl bevy::app::Plugin for RuntimePlugin {
+    fn build(&self, app: &mut App) {
+		use bevy::prelude::{First, IntoSystemConfigs};
+		use pi_bevy_render_plugin::should_run;
+        app.add_systems(First,
+			runtime_run.run_if(should_run)
+		);
+    }
+}

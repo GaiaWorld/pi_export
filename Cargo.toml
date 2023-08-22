@@ -24,6 +24,7 @@ pi_flex_layout = { path = "../pi_flex_layout" }
 # pi_graph = { path = "../pi_graph" }
 # pi_async_graph = { path = "../pi_async_graph" }
 # pi_spatial ={path="../pi_spatial"}
+wasm-bindgen = { path = "../wasm-bindgen" }
 
 [patch.yn]
 # winit = { path = "../winit" }
