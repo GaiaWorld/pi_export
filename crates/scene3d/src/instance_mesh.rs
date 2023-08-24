@@ -1,9 +1,7 @@
 
 use pi_engine_shell::prelude::*;
-use pi_export_base::{export::Engine};
-use pi_scene_context::{
-    prelude::*,
-};
+use pi_export_base::export::Engine;
+use pi_scene_context::prelude::*;
 
 use crate::{engine::ActionSetScene3D, as_entity, as_f64};
 #[cfg(target_arch = "wasm32")]
@@ -18,7 +16,7 @@ pub fn p3d_instance_mesh(app: &mut Engine, param: &mut ActionSetScene3D, source:
 
     let mut cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
 
-    cmds.instancemeshcmds.create.push(OpsInstanceMeshCreation::ops(source, id, String::from("")));
+    cmds.instancemeshcmds.create.push(OpsInstanceMeshCreation::ops(source, id));
 
     as_f64(&id)
 }

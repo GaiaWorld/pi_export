@@ -1,8 +1,7 @@
 
-use std::ops::BitAnd;
 
 use pi_engine_shell::prelude::*;
-use pi_export_base::{export::Engine, constants::{RenderFormat, DepthStencilFormat}};
+use pi_export_base::export::Engine;
 use pi_scene_context::prelude::*;
 use pi_node_materials::prelude::*;
 
@@ -335,7 +334,7 @@ pub fn p3d_regist_material(
     varying: f64,
     includes: &NodematerialIncludes,
 ) {
-    let mut cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
+    let cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
 
     let mut nodemat = NodeMaterialBuilder::new();
     nodemat.vs_define = String::from(vs_define_code);
@@ -347,7 +346,7 @@ pub fn p3d_regist_material(
     nodemat.values = uniforms.0.clone();
     nodemat.textures = uniforms.1.clone();
 
-    let mut varyings = &mut nodemat.varyings;
+    let varyings = &mut nodemat.varyings;
     let varying = varying as u32;
 
     if varying & VARYING_POSITION_WS  ==  VARYING_POSITION_WS   { varyings.0.push(Varying { format: Atom::from("vec3"), name: Atom::from("v_pos") }); }
@@ -380,5 +379,5 @@ pub fn p3d_regist_material(
 
     // log::warn!("Material {:?}", key);
 
-    ActionMaterial::regist_material_meta(&cmds.matcmd.metas, &mut cmds.matcmd.metas_wait, KeyShaderMeta::from(key), nodemat.meta());
+    ActionMaterial::regist_material_meta(&cmds.matcmd.metas, KeyShaderMeta::from(key), nodemat.meta());
 }

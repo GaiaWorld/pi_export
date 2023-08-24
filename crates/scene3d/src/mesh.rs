@@ -2,25 +2,23 @@
 use std::mem::transmute;
 
 use pi_engine_shell::prelude::*;
-use pi_export_base::{export::Engine, constants::{RenderFormat, DepthStencilFormat, BlendFactor, BlendOperation, CullMode, FrontFace, PrimitiveTopology, PolygonMode, CompareFunction, StencilOperation, ERenderAlignment, EScalingMode}};
-use pi_scene_context::{
-    prelude::*,
-};
+use pi_export_base::{export::Engine, constants::{BlendFactor, BlendOperation, CullMode, FrontFace, PrimitiveTopology, PolygonMode, CompareFunction, StencilOperation, ERenderAlignment, EScalingMode}};
+use pi_scene_context::prelude::*;
 
 use crate::{engine::ActionSetScene3D, as_entity, as_f64, geometry::GeometryMeta};
 #[cfg(target_arch = "wasm32")]
 use wasm_bindgen::prelude::wasm_bindgen;
 use js_proxy_gen_macro::pi_js_export;
 
-#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
-#[pi_js_export]
-pub fn p3d_abstruct_mesh_enable(app: &mut Engine, param: &mut ActionSetScene3D, abstructmesh: f64, val: bool) {
-    // let abstructmesh: Entity = as_entity(abstructmesh);
+// #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+// #[pi_js_export]
+// pub fn p3d_abstruct_mesh_enable(app: &mut Engine, param: &mut ActionSetScene3D, abstructmesh: f64, val: bool) {
+//     // let abstructmesh: Entity = as_entity(abstructmesh);
 
-    // let mut cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
+//     // let mut cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
 
-    // cmds.abstructmeshcmds.enable.push(OpsAbstructMeshEnable::ops(abstructmesh, val));
-}
+//     // cmds.abstructmeshcmds.enable.push(OpsAbstructMeshEnable::ops(abstructmesh, val));
+// }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
@@ -31,7 +29,7 @@ pub fn p3d_mesh(app: &mut Engine, param: &mut ActionSetScene3D, scene: f64) -> f
     let mut cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
 
     cmds.transformcmds.tree.push(OpsTransformNodeParent::ops(id, scene));
-    cmds.meshcmds.create.push(OpsMeshCreation::ops(scene, id, String::from("")));
+    cmds.meshcmds.create.push(OpsMeshCreation::ops(scene, id));
 
     as_f64(&id)
 }
@@ -312,6 +310,46 @@ pub fn p3d_mesh_stencil_write(
 
     let mut cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
     cmds.meshcmds.stencil_write.push(OpsStencilWrite::ops(mesh, val as u32));
+}
+
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
+pub fn p3d_mesh_bounding_box(
+    app: &mut Engine, param: &mut ActionSetScene3D, mesh: f64,
+    minx: f64, miny: f64, minz: f64,
+    maxx: f64, maxy: f64, maxz: f64
+) {
+    let mesh: Entity = as_entity(mesh);
+
+    let mut cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
+    cmds.meshcmds.bounding.push(OpsMeshBounding::ops(mesh, (minx as f32, miny as f32, minz as f32), (maxx as f32, maxy as f32, maxz as f32)));
+}
+
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
+///
+/// * `mode` = `1`: ECullingStrategy::Optimistic
+/// * `mode` = `2`: ECullingStrategy::STANDARD
+/// * `mode` = `_`: ECullingStrategy::None
+pub fn p3d_mesh_bounding_cullingmode(
+    app: &mut Engine, param: &mut ActionSetScene3D, mesh: f64,
+    mode: f64
+) {
+    let mesh: Entity = as_entity(mesh);
+
+    let mut cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
+    let mode = match mode as u8 {
+        1 => {
+            ECullingStrategy::Optimistic
+        }
+        2 => {
+            ECullingStrategy::STANDARD
+        }
+        _ => {
+            ECullingStrategy::None
+        }
+    };
+    cmds.meshcmds.boundingculling.push(OpsMeshBoundingCullingMode::ops(mesh, mode));
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]

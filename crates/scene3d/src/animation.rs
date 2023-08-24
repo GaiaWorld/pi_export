@@ -1,16 +1,13 @@
 
-use std::{mem::{replace, transmute}, fmt::Debug, ops::Range};
+use std::{mem::{replace, transmute}, fmt::Debug};
 use js_proxy_gen_macro::pi_js_export;
-use derive_deref::{Deref, DerefMut};
 use pi_gltf2_load::TValue;
 use pi_node_materials::prelude::*;
-use pi_scene_math::{Vector3, Quaternion};
-use std::ops::Deref;
 
 use pi_animation::amount::AnimationAmountCalc;
 use pi_curves::{easing::EEasingMode, steps::EStepMode, curve::{frame_curve::{FrameCurve, frames::interplate_frame_values_step}, frame::{FrameDataValue, KeyFrameCurveValue}, FramePerSecond, FrameIndex}};
 use pi_engine_shell::prelude::*;
-use pi_export_base::{export::{Engine, Atom}, constants::{RenderFormat, DepthStencilFormat}};
+use pi_export_base::export::Engine;
 use pi_scene_context::prelude::*;
 use pi_slotmap::DefaultKey;
 
@@ -283,7 +280,6 @@ pub fn p3d_animation_group(
     param: &mut ActionSetScene3D,
     scene: f64,
     group_target: f64,
-    key_group: &Atom,
 ) -> Option<f64> {
     let scene: Entity = as_entity(scene);
     let group_target: Entity = as_entity(group_target);
@@ -657,7 +653,7 @@ fn curve<const N: usize, T: TValue<N> + FrameDataValue + Debug>(
 /// * `CubicBezierCurve` data: [design_frame_per_second, total_frame, (x, y, ..), (x, y, ..), (x1, y1, x2, y2)]
 /// * `GLTFCubicSpline` data: [design_frame_per_second, (frame, (x, y, ..), (x, y, ..), (x, y, ..)), ...]
 pub fn p3d_anime_curve_query(app: &mut Engine, param: &mut ActionSetScene3D, key: String, property: EAnimePropertyID) -> bool {
-    let mut cmds = param.acts.get_mut(&mut app.world);
+    let cmds = param.acts.get_mut(&mut app.world);
 
     let key = key.asset_u64();
     let property = unsafe { transmute(property) };
@@ -667,123 +663,123 @@ pub fn p3d_anime_curve_query(app: &mut Engine, param: &mut ActionSetScene3D, key
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
-pub fn p3d_anime_curve_create(app: &mut Engine, param: &mut ActionSetScene3D, key: String, property: EAnimePropertyID, data: &[f32], mode: EAnimeCurve) {
+pub fn p3d_anime_curve_create(app: &mut Engine, param: &mut ActionSetScene3D, key: String, property: EAnimePropertyID, data: &[f32], mode: EAnimeCurve) -> bool {
     
-    let mut cmds = param.acts.get_mut(&mut app.world);
+    let cmds = param.acts.get_mut(&mut app.world);
     let key = key.asset_u64();
 
-    let mut cmds = cmds.anime_assets;
+    let cmds = cmds.anime_assets;
 
     match property {
         EAnimePropertyID::LocalPosition       => {
             let v = curve::<3, LocalPosition>(data,  mode);
-            cmds.position.insert(key, TypeFrameCurve(v));
+            cmds.position.insert(key, TypeFrameCurve(v)).is_ok()
         },
         EAnimePropertyID::LocalScaling        => {
             let v = curve::<3, LocalScaling>(data,  mode);
-            cmds.scaling.insert(key, TypeFrameCurve(v));
+            cmds.scaling.insert(key, TypeFrameCurve(v)).is_ok()
         },
         EAnimePropertyID::LocalRotation    => {
             let v = curve::<4, LocalRotationQuaternion>(data,  mode);
-            cmds.quaternion.insert(key, TypeFrameCurve(v));
+            cmds.quaternion.insert(key, TypeFrameCurve(v)).is_ok()
         },
         EAnimePropertyID::LocalEulerAngles    => {
             let v = curve::<3, LocalEulerAngles>(data,  mode);
-            cmds.euler.insert(key, TypeFrameCurve(v));
+            cmds.euler.insert(key, TypeFrameCurve(v)).is_ok()
         },
         EAnimePropertyID::Alpha               => {
             let v = curve::<1, Alpha>(data,  mode);
-            cmds.alpha.insert(key, TypeFrameCurve(v));
+            cmds.alpha.insert(key, TypeFrameCurve(v)).is_ok()
         },
         EAnimePropertyID::MainColor           => {
             let v = curve::<3, MainColor>(data,  mode);
-            cmds.maincolor_curves.insert(key, TypeFrameCurve(v));
+            cmds.maincolor_curves.insert(key, TypeFrameCurve(v)).is_ok()
         },
         EAnimePropertyID::MainTexUScale       => {
             let v = curve::<1, MainTexUScale>(data,  mode);
-            cmds.mainuscl_curves.insert(key, TypeFrameCurve(v));
+            cmds.mainuscl_curves.insert(key, TypeFrameCurve(v)).is_ok()
         },
         EAnimePropertyID::MainTexVScale       => {
             let v = curve::<1, MainTexVScale>(data,  mode);
-            cmds.mainvscl_curves.insert(key, TypeFrameCurve(v));
+            cmds.mainvscl_curves.insert(key, TypeFrameCurve(v)).is_ok()
         },
         EAnimePropertyID::MainTexUOffset      => {
             let v = curve::<1, MainTexUOffset>(data,  mode);
-            cmds.mainuoff_curves.insert(key, TypeFrameCurve(v));
+            cmds.mainuoff_curves.insert(key, TypeFrameCurve(v)).is_ok()
         },
         EAnimePropertyID::MainTexVOffset      => {
             let v = curve::<1, MainTexVOffset>(data,  mode);
-            cmds.mainvoff_curves.insert(key, TypeFrameCurve(v));
+            cmds.mainvoff_curves.insert(key, TypeFrameCurve(v)).is_ok()
         },
         EAnimePropertyID::OpacityTexUScale    => {
             let v = curve::<1, OpacityTexUScale>(data,  mode);
-            cmds.opacityuscl_curves.insert(key, TypeFrameCurve(v));
+            cmds.opacityuscl_curves.insert(key, TypeFrameCurve(v)).is_ok()
         },
         EAnimePropertyID::OpacityTexVScale    => {
             let v = curve::<1, OpacityTexVScale>(data,  mode);
-            cmds.opacityvscl_curves.insert(key, TypeFrameCurve(v));
+            cmds.opacityvscl_curves.insert(key, TypeFrameCurve(v)).is_ok()
         },
         EAnimePropertyID::OpacityTexUOffset   => {
             let v = curve::<1, OpacityTexUOffset>(data,  mode);
-            cmds.opacityuoff_curves.insert(key, TypeFrameCurve(v));
+            cmds.opacityuoff_curves.insert(key, TypeFrameCurve(v)).is_ok()
         },
         EAnimePropertyID::OpacityTexVOffset   => {
             let v = curve::<1, OpacityTexVOffset>(data,  mode);
-            cmds.opacityvoff_curves.insert(key, TypeFrameCurve(v));
+            cmds.opacityvoff_curves.insert(key, TypeFrameCurve(v)).is_ok()
         },
         EAnimePropertyID::AlphaCutoff         => {
             let v = curve::<1, Cutoff>(data,  mode);
-            cmds.alphacutoff.insert(key, TypeFrameCurve(v));
+            cmds.alphacutoff.insert(key, TypeFrameCurve(v)).is_ok()
         },
         EAnimePropertyID::CameraFov           => {
             let v = curve::<1, CameraFov>(data,  mode);
-            cmds.camerafov.insert(key, TypeFrameCurve(v));
+            cmds.camerafov.insert(key, TypeFrameCurve(v)).is_ok()
         },
         EAnimePropertyID::CameraOrthSize      => {
             let v = curve::<1, CameraOrthSize>(data,  mode);
-            cmds.camerasize.insert(key, TypeFrameCurve(v));
+            cmds.camerasize.insert(key, TypeFrameCurve(v)).is_ok()
         },
         EAnimePropertyID::LightDiffuse        => {
             let v = curve::<3, LightDiffuse>(data,  mode);
-            cmds.lightdiffuse_curves.insert(key, TypeFrameCurve(v));
+            cmds.lightdiffuse_curves.insert(key, TypeFrameCurve(v)).is_ok()
         },
         EAnimePropertyID::MaskTexUScale       => {
             let v = curve::<1, MaskTexUScale>(data,  mode);
-            cmds.maskuscl_curves.insert(key, TypeFrameCurve(v));
+            cmds.maskuscl_curves.insert(key, TypeFrameCurve(v)).is_ok()
         },
         EAnimePropertyID::MaskTexVScale       => {
             let v = curve::<1, MaskTexVScale>(data,  mode);
-            cmds.maskvscl_curves.insert(key, TypeFrameCurve(v));
+            cmds.maskvscl_curves.insert(key, TypeFrameCurve(v)).is_ok()
         },
         EAnimePropertyID::MaskTexUOffset      => {
             let v = curve::<1, MaskTexUOffset>(data,  mode);
-            cmds.maskuoff_curves.insert(key, TypeFrameCurve(v));
+            cmds.maskuoff_curves.insert(key, TypeFrameCurve(v)).is_ok()
         },
         EAnimePropertyID::MaskTexVOffset      => {
             let v = curve::<1, MaskTexVOffset>(data,  mode);
-            cmds.maskvoff_curves.insert(key, TypeFrameCurve(v));
+            cmds.maskvoff_curves.insert(key, TypeFrameCurve(v)).is_ok()
         },
         EAnimePropertyID::MaskCutoff          => {
             let v = curve::<1, MaskCutoff>(data,  mode);
-            cmds.maskcutoff_curves.insert(key, TypeFrameCurve(v));
+            cmds.maskcutoff_curves.insert(key, TypeFrameCurve(v)).is_ok()
         },
         EAnimePropertyID::Enable            => {
             let v = curve::<1, Enable>(data,  mode);
-            cmds.enable.insert(key, TypeFrameCurve(v));
+            cmds.enable.insert(key, TypeFrameCurve(v)).is_ok()
         },
         EAnimePropertyID::BoneOffset          => {
             let v = curve::<1, InstanceBoneoffset>(data,  mode);
-            cmds.boneoff_curves.insert(key, TypeFrameCurve(v));
+            cmds.boneoff_curves.insert(key, TypeFrameCurve(v)).is_ok()
         },
         EAnimePropertyID::IndicesRange        => {
             let v = curve::<2, IndiceRenderRange>(data,  mode);
-            cmds.indicerange_curves.insert(key, TypeFrameCurve(v));
+            cmds.indicerange_curves.insert(key, TypeFrameCurve(v)).is_ok()
         },
         EAnimePropertyID::Intensity => {
-            
+            false
         },
         EAnimePropertyID::CellId => {
-            
+            false
         },
     }
 }

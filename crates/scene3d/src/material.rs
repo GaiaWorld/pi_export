@@ -1,14 +1,11 @@
 
-use derive_deref::{Deref, DerefMut};
 use std::ops::Deref;
 use pi_engine_shell::prelude::*;
-use pi_scene_context::{
-    prelude::*,
-};
+use pi_scene_context::prelude::*;
 
-use pi_export_base::{export::{Engine, Atom}, constants::{RenderFormat, DepthStencilFormat, EAddressMode, EFilterMode, EAnisotropyClamp, CompareFunction, SamplerBorderColor}};
+use pi_export_base::{export::{Engine, Atom}, constants::{EAddressMode, EFilterMode, EAnisotropyClamp, CompareFunction, SamplerBorderColor}};
 
-use crate::{engine::ActionSetScene3D, as_entity, as_f64, geometry::GeometryMeta};
+use crate::{engine::ActionSetScene3D, as_entity, as_f64};
 #[cfg(target_arch = "wasm32")]
 use wasm_bindgen::prelude::wasm_bindgen;
 use js_proxy_gen_macro::pi_js_export;

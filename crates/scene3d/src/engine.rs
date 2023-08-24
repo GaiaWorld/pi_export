@@ -4,7 +4,7 @@ use std::{mem::transmute, ops::Deref};
 use pi_3d::PluginBundleDefault;
 use pi_assets::asset::Handle;
 use pi_engine_shell::prelude::*;
-use pi_export_base::{export::Engine};
+use pi_export_base::export::Engine;
 use pi_gltf2_load::{GLTF, PluginGLTF2Res, GLTFResLoader, KeyGLTF, TypeAnimeAssetMgrs, TypeAnimeContexts};
 use pi_mesh_builder::{cube::PluginCubeBuilder, quad::PluginQuadBuilder};
 use pi_node_materials::{PluginNodeMaterial, NodeMaterialBlocks, prelude::*};
@@ -22,12 +22,13 @@ use crate::{as_entity, as_f64};
 #[cfg(target_arch = "wasm32")]
 use wasm_bindgen::prelude::wasm_bindgen;
 use js_proxy_gen_macro::pi_js_export;
+use pi_hal::*;
 
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_init_engine(app: &mut Engine) {
-    use pi_engine_shell::frame_time::PluginFrameTime;
+    // use pi_engine_shell::frame_time::PluginFrameTime;
 
     if app.world.get_resource::<AssetMgrConfigs>().is_none() {
         app.insert_resource(AssetMgrConfigs::default());
@@ -76,10 +77,17 @@ pub struct ActionSets<'w> {
     pub trail: ActionSetTrailRenderer<'w>,
 }
 
+#[derive(SystemParam)]
+pub struct GlobalState<'w> {
+    pub state: ResMut<'w, pi_3d_state::StateGlobal>,
+}
+
+
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub struct ActionSetScene3D {
     pub(crate) acts: SystemState<ActionSets<'static>>,
+    pub(crate) state: SystemState<GlobalState<'static>>,
     pub(crate) particlesys: SystemState<ParticleSystemActionSet<'static>>,
     pub(crate) world_transform: QueryState<&'static WorldMatrix>,
     pub(crate) local_transform: QueryState<&'static LocalMatrix>,
@@ -94,6 +102,7 @@ impl ActionSetScene3D {
     pub fn create(app: &mut Engine) -> Self {
         Self {
             acts: SystemState::<ActionSets>::new(&mut app.world),
+            state: SystemState::<GlobalState>::new(&mut app.world),
             world_transform: app.world.query(),
             local_transform: app.world.query(),
             view_matrix: app.world.query(),
@@ -104,7 +113,7 @@ impl ActionSetScene3D {
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
-pub fn p3d_entity(app: &mut Engine, param: &mut ActionSetScene3D) -> f64 {
+pub fn p3d_entity(app: &mut Engine) -> f64 {
     let id: Entity = app.world.spawn_empty().id();
     as_f64(&id)
 }
@@ -180,6 +189,51 @@ pub fn p3d_query_world_matrix(app: &mut Engine, param: &mut ActionSetScene3D, en
     } else {
         false
     }
+}
+
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
+pub fn p3d_query_scene_state(app: &mut Engine, param: &mut ActionSetScene3D, entity: f64, result: &mut [f32]) -> bool {
+    let entity: Entity = as_entity(entity);
+    
+    let cmds = param.state.get_mut(&mut app.world);
+
+    if let Some(state) = cmds.state.scenes.get(&entity) {
+        result[0] = state.count_mesh as f32;
+        result[1] = state.count_drawobj as f32;
+        result[2] = state.count_transform as f32;
+        result[3] = state.count_particlesys as f32;
+        result[4] = state.count_vertex as f32;
+        result[5] = state.count_trail as f32;
+        true
+    } else {
+        false
+    }
+}
+
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
+pub fn p3d_query_resource_state(app: &mut Engine, param: &mut ActionSetScene3D, result: &mut [f32]) {
+    
+    let cmds = param.state.get_mut(&mut app.world);
+
+    result[0] = cmds.state.count_bindbuffer as f32;
+    result[1] = cmds.state.count_bindgroup as f32;
+    result[2] = cmds.state.count_gltf as f32;
+    result[3] = cmds.state.count_imgtexture as f32;
+    result[4] = cmds.state.count_shader as f32;
+    result[5] = cmds.state.count_pipeline as f32;
+    result[6] = (cmds.state.size_geometrybuffer / 1024) as f32;
+    result[7] = cmds.state.count_geometrybuffer as f32;
+}
+
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
+pub fn p3d_global_state(app: &mut Engine, param: &mut ActionSetScene3D, val: bool) {
+    
+    let mut cmds = param.state.get_mut(&mut app.world);
+
+    cmds.state.debug = val;
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]

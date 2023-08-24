@@ -78,3 +78,16 @@ pub fn p3d_particle_system_timescale(
     
     cmds.particlesys_state_cmds.push(OpsCPUParticleSystemState::ops_speed(entity, speed as f32));
 }
+
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
+pub fn p3d_particle_system_stop(
+    app: &mut Engine,
+    param: &mut ActionSetScene3D,
+    entity: f64,
+) {
+    let mut cmds = param.particlesys.get_mut(&mut app.world);
+    let entity = as_entity(entity);
+    
+    cmds.particlesys_state_cmds.push(OpsCPUParticleSystemState::ops_stop(entity));
+}

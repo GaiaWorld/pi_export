@@ -25,8 +25,17 @@ impl PassCfg {
 /// Pass 配置使用默认值
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
-pub fn p3d_scene(app: &mut Engine, param: &mut ActionSetScene3D, pass01: &PassCfg, pass02: &PassCfg, pass03: &PassCfg, pass04: &PassCfg, pass05: &PassCfg, pass06: &PassCfg, pass07: &PassCfg, pass08: &PassCfg) -> f64 {
+pub fn p3d_scene(app: &mut Engine, param: &mut ActionSetScene3D, pass01: &PassCfg, pass02: &PassCfg, pass03: &PassCfg, pass04: &PassCfg, pass05: &PassCfg, pass06: &PassCfg, pass07: &PassCfg, pass08: &PassCfg, cullingmode: f64, vals: &[i32]) -> f64 {
     let scene: Entity = app.world.spawn_empty().id();
+
+    let mut values = [0, 0, 0, 0, 0, 0, 0, 0, 0];
+    let mut idx = 0;
+    vals.iter().for_each(|val| {
+        if idx < 9 {
+            values[idx] = *val as i32;
+        }
+        idx += 1;
+    });
 
     let mut scenecmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
     scenecmds.animegroupcmd.scene_ctxs.init_scene(scene);
@@ -41,7 +50,9 @@ pub fn p3d_scene(app: &mut Engine, param: &mut ActionSetScene3D, pass01: &PassCf
             p06: PassRenderInfo { color_format: pass06.0.val(), depth_stencil_format: pass06.1.format(), blendable: pass06.2 },
             p07: PassRenderInfo { color_format: pass07.0.val(), depth_stencil_format: pass07.1.format(), blendable: pass07.2 },
             p08: PassRenderInfo { color_format: pass08.0.val(), depth_stencil_format: pass08.1.format(), blendable: pass08.2 },
-        }
+        },
+        cullingmode as u8,
+        values
     ));
 
     as_f64(&scene)

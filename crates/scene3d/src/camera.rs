@@ -2,9 +2,7 @@
 use js_proxy_gen_macro::pi_js_export;
 use pi_engine_shell::prelude::*;
 use pi_export_base::{export::Engine, constants::{DepthStencilFormat, RenderFormat}};
-use pi_scene_context::{
-    prelude::*,
-};
+use pi_scene_context::prelude::*;
 
 use crate::{engine::ActionSetScene3D, as_entity, as_f64, material::OpsPass};
 #[cfg(target_arch = "wasm32")]
@@ -19,7 +17,7 @@ pub fn p3d_camera(app: &mut Engine, param: &mut ActionSetScene3D, scene: f64, to
     let mut scenecmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
 
     scenecmds.transformcmds.tree.push(OpsTransformNodeParent::ops(id, scene));
-    scenecmds.cameracmds.create.push(OpsCameraCreation::ops(scene, id, String::from(""), toscreen));
+    scenecmds.cameracmds.create.push(OpsCameraCreation::ops(scene, id,  toscreen));
 
     as_f64(&id)
 }
