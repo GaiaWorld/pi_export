@@ -205,6 +205,9 @@ pub fn p3d_query_scene_state(app: &mut Engine, param: &mut ActionSetScene3D, ent
         result[3] = state.count_particlesys as f32;
         result[4] = state.count_vertex as f32;
         result[5] = state.count_trail as f32;
+        result[6] = state.count_material as f32;
+        result[7] = state.count_animationgroup as f32;
+        result[8] = state.count_geometry as f32;
         true
     } else {
         false
@@ -225,6 +228,7 @@ pub fn p3d_query_resource_state(app: &mut Engine, param: &mut ActionSetScene3D, 
     result[5] = cmds.state.count_pipeline as f32;
     result[6] = (cmds.state.size_geometrybuffer / 1024) as f32;
     result[7] = cmds.state.count_geometrybuffer as f32;
+    result[8] = cmds.state.count_shadermeta as f32;
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]

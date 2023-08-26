@@ -22,14 +22,14 @@ use js_proxy_gen_macro::pi_js_export;
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
-pub fn p3d_mesh(app: &mut Engine, param: &mut ActionSetScene3D, scene: f64) -> f64 {
+pub fn p3d_mesh(app: &mut Engine, param: &mut ActionSetScene3D, scene: f64, instancestate: f64, instance_use_single_buffer: bool) -> f64 {
     let id: Entity = app.world.spawn_empty().id();
     let scene: Entity = as_entity(scene);
 
     let mut cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
 
     cmds.transformcmds.tree.push(OpsTransformNodeParent::ops(id, scene));
-    cmds.meshcmds.create.push(OpsMeshCreation::ops(scene, id));
+    cmds.meshcmds.create.push(OpsMeshCreation::ops(scene, id, MeshInstanceState { state: instancestate as u32, use_single_instancebuffer: instance_use_single_buffer }));
 
     as_f64(&id)
 }
