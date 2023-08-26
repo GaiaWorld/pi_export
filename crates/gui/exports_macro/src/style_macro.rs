@@ -867,7 +867,7 @@ style_out_export!(@expr animation_timing_function_str, AnimationTimingFunctionTy
 	}
 }, value: &str,;);
 
-other_out_export!(set_default_style, gui, gui.commands.set_default_style_by_str(value, 0),; value: &str,;);
+other_out_export!(set_default_style, gui, {gui.commands.set_default_style_by_str(value, 0);},; value: &str,;);
 
 other_out_export!(
     create_class,

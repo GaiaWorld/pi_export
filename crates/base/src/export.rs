@@ -333,6 +333,29 @@ fn create_engine_inner(
 		.add_plugins(PiPostProcessPlugin);
 }
 
+// 在wasm目标上,返回渲染图的topo图
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+pub fn dump_graphviz(engine: &Engine) -> String  {
+	let g = engine.world.get_resource::<pi_bevy_render_plugin::PiRenderGraph>().unwrap();
+	g.dump_graphviz()
+}
+
+// 在wasm目标上,返回system依赖图
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+pub fn dump_system(engine: &mut Engine) -> String  {
+	let label = bevy::prelude::Update;
+	engine.0.world
+	.resource_scope::<bevy::prelude::Schedules, _>(|world, mut schedules| {
+		let schedule = schedules
+			.get_mut(&bevy::prelude::Update)
+			.ok_or_else(|| format!("schedule with label {label:?} doesn't exist"))
+			.unwrap();
+
+		bevy_mod_debugdump::schedule_graph::schedule_graph_dot(schedule, world, &Default::default())
+	})
+	// bevy_mod_debugdump::schedule_graph_dot(&mut engine.0, bevy::prelude::Update, &Default::default())
+}
+
 
 // 帧推
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]

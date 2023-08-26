@@ -24,7 +24,6 @@ bevy = { version="0.11", default-features = false }
 wgpu = { version = "0.16", default-features = false, feature = ["glsl"] }
 pi_bevy_asset = {version = "0.1", registry = "yn"}
 pi_bevy_render_plugin = {version = "0.1", registry = "yn"}
-pi_bevy_ecs_extend = {version = "0.1", registry = "yn"}
 pi_bevy_winit_window = {version = "0.1", registry = "yn"}
 pi_bevy_post_process= {version = "0.1", registry = "yn"}
 pi_window_renderer = {version = "0.1", registry = "yn"}
@@ -34,15 +33,13 @@ winit = { registry = "yn", version = "0.27"}
 pi-async-rt = {version = "0.1"}
 js_proxy_gen_macro = { registry = "yn", version = "0.2" }
 tracing-subscriber = "0.3"
+bevy_mod_debugdump = "0.8"
 
-js-sys = "0.3"
-web-sys = {version="0.3", features = [
-	"HtmlCanvasElement"
-]}
-wasm-bindgen = { version = "0.2", features = ["serde-serialize"] }
-wasm-bindgen-futures = { version = "0.4" }
 
 [target.'cfg(target_arch = "wasm32")'.dependencies]
 wasm-bindgen = { version = "0.2", features = ["serde-serialize"]}
 js-sys = "0.3"
+web-sys = {version="0.3", features = [
+	"HtmlCanvasElement"
+]}
 

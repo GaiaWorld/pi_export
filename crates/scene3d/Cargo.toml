@@ -29,7 +29,6 @@ pi_assets 				= "0.13"
 pi_export_base 			= { path = "../base" }
 pi_hal 					= {version = "0.1", registry = "yn"}
 log						= "0.4"
-pi_web_logger 			= { git = "http://ser.yinengyun.com:10082/tech/pi_web_logger.git" }
 
 pi_scene_math           = { git = "https://github.com/GaiaWorld/pi_scene" }
 pi_animation            = {version = "0.1", registry = "yn"}
@@ -48,13 +47,14 @@ pi_trail_renderer       = { git = "https://github.com/GaiaWorld/pi_3d.git" }
 pi_3d_state             = { git = "https://github.com/GaiaWorld/pi_3d.git" }
 
 bytemuck                = { version = "1.4", features = [ "derive" ] }
-js-sys 					= "0.3"
-web-sys 				= { version="0.3", features = [ "HtmlCanvasElement" ] }
-wasm-bindgen 			= { version = "0.2", features = ["serde-serialize"] }
-wasm-bindgen-futures 	= { version = "0.4" }
+
 js_proxy_gen_macro      = { registry = "yn", version = "0.2" }
 pi_render 				= { version = "0.1", registry = "yn" }
 
 [target.'cfg(target_arch = "wasm32")'.dependencies]
 wgpu 					= { version = "0.16", default-features = false, features = ["glsl"] }
 pi-async-rt 		    = { version = "0.1", features = ["serial"] }
+wasm-bindgen 			= { version = "0.2", features = ["serde-serialize"] }
+js-sys 					= "0.3"
+web-sys 				= { version="0.3", features = [ "HtmlCanvasElement" ] }
+wasm-bindgen-futures 	= { version = "0.4" }

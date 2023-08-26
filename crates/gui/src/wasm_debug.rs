@@ -112,6 +112,7 @@ struct Info {
     pub render_obj: Vec<RenderObject>,
 	pub animation: String,
 	pub as_image: String,
+	pub canvas: String,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -281,14 +282,6 @@ pub fn get_layout(engine: &mut Engine, node_id: f64) -> JsValue {
 // 		console::log_2(&"node_state:".into(), &format!("{:?}", gui.gui.node_state.lend().get(node_id)).into());
 // 	}
 // }
-
-
-#[wasm_bindgen]
-pub fn dump_graphviz(engine: &Engine)  {
-	let g = engine.world.get_resource::<PiRenderGraph>().unwrap();
-	log::info!("{}", g.dump_graphviz());
-	
-}
 
 #[allow(unused_attributes)]
 #[wasm_bindgen]
@@ -957,6 +950,7 @@ pub fn node_info(engine: &mut Engine, node_id: f64) -> JsValue {
 			Option<&Animation>,
 			Option<&TextShadow>,
 			Option<&AsImage>,
+			Option<&Canvas>,
 		)
     )>();
     let (
@@ -998,10 +992,11 @@ pub fn node_info(engine: &mut Engine, node_id: f64) -> JsValue {
 			animation,
 			text_shadow,
 			as_image,
+			canvas,
 		)
     ) = query.get(&engine.world, node_id).unwrap();
-
-    let info = Info {
+	
+    let mut info = Info {
         // char_block: char_block,
         overflow: overflow.map_or(false, |r| r.0),
         // by_overflow: by_overflow,
@@ -1056,7 +1051,16 @@ pub fn node_info(engine: &mut Engine, node_id: f64) -> JsValue {
         children: children,
 		animation: format!("{:?}", animation),
 		as_image: format!("{:?}", as_image),
+		canvas: "".to_string(),
     };
+	let canvas = canvas.map(|r| {r.clone()});
+	let canvas_graph_id = if let Some(canvas) = canvas.clone() {
+		let mut q = engine.world.query::<Option<&GraphId>>();
+		q.get(&engine.world, *canvas).unwrap()
+	} else {
+		None
+	};
+	info.canvas = format!("{:?}, {:?}", canvas, canvas_graph_id);
 
     return JsValue::from_serde(&info).unwrap();
 }

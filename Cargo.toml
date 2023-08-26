@@ -30,10 +30,10 @@ probabilistic-collections = { git = "https://github.com/GaiaWorld/pi_probabilist
 # pi_hal = { path = "../pi_hal" }
 
 # pi_render
-# pi_render = { path = "../pi_render" }
-# render_utils = { path = "../pi_render/crates/render_utils" }
-# render_derive = { path = "../pi_render/crates/render_derive" }
-# render_compile = { path = "../pi_render/crates/render_compile" }
+pi_render = { path = "../pi_render" }
+render_utils = { path = "../pi_render/crates/render_utils" }
+render_derive = { path = "../pi_render/crates/render_derive" }
+render_compile = { path = "../pi_render/crates/render_compile" }
 
 # pi_bevy
 # pi_bevy_render_plugin = { path="../pi_bevy/crates/render" }
@@ -44,7 +44,7 @@ probabilistic-collections = { git = "https://github.com/GaiaWorld/pi_probabilist
 # pi_window_renderer = { path="../pi_bevy/crates/window_renderer" }
 # pi_bevy_post_process= { path = "../pi_bevy/crates/post_process" }
 
-# pi_ui_render = { path = "../pi_ui_render_new" }
+pi_ui_render = { path = "../pi_ui_render_new" }
 # pi_style = { path = "../pi_style" }
 # pi_postprocess ={path="../pi_post_process"}
 # pi_animation ={path="../pi_animation"}
