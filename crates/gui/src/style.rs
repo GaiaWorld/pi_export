@@ -4239,12 +4239,16 @@ pub mod style_macro {
     }
     #[cfg(feature = "pi_js_export")]
     pub fn set_default_style(gui: &mut Gui, value: &str) {
-        gui.commands.set_default_style_by_str(value, 0)
+        {
+            gui.commands.set_default_style_by_str(value, 0);
+        }
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     pub fn set_default_style(gui: &mut Gui, value: &str) {
-        gui.commands.set_default_style_by_str(value, 0)
+        {
+            gui.commands.set_default_style_by_str(value, 0);
+        }
     }
     #[cfg(feature = "pi_js_export")]
     pub fn create_class(gui: &mut Gui, css: &str, scope_hash: u32) {
@@ -5060,7 +5064,7 @@ pub mod style_macro {
             for (group_id, ty, count) in events.iter() {
                 match map.get(*group_id) {
                     Some(r) => {
-                        log::trace!(target: format!("animationevent_{}", &r.1.1.as_str()).as_str(), "ty: {:?}", ty);
+                        ();
                         arr[i] = r.0.index();
                         arr[i + 1] = r.0.generation();
                         arr[i + 2] = r.1.1.get_hash() as u32;

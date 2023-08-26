@@ -1,12 +1,7 @@
 
-## 检查重复库 
-* 安装工具 `cargo install --locked cargo-deny`
-* 查看重复库 `cargo deny check bans 2>a.txt`
 
 ## Gui测试性能（chrome://tracing）
 例： `cargo run --example cmd_play --release --features trace`
-
-## wasm尺寸分析工具 `twiggy`
 
 ## 编译为wasm
 1. `set RUST_LOG=info`
@@ -17,6 +12,14 @@
 	+ 编译profiling版本： `wasm-pack build --profiling  --target web --out-dir pkg_profiling --out-name gui`
 	+ 编译debug版本： `wasm-pack build --debug  --target web --out-dir pkg_pdebug --out-name gui`
 4. 编译为pi可用的wasm：wasm_engine中执行编译脚本
+
+## 检查重复库 
+* 安装工具 `cargo install --locked cargo-deny`
+* 输出依赖库 `cargo tree >> a.txt`
+* 查看重复库 `cargo deny check bans 2>a.txt`
+
+
+## wasm尺寸分析工具 `twiggy`
 
 ## 尺寸优化
 + wgpu和naga feature禁用spirv（少200k）

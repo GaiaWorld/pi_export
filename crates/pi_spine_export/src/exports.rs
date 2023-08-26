@@ -19,6 +19,7 @@ use pi_spine_rs::{
     PluginSpineRenderer,
     SpineTextureLoad
 };
+#[cfg(target_arch="wasm32")]
 use wasm_bindgen::prelude::wasm_bindgen;
 pub use pi_export_base::export::Atom;
 
