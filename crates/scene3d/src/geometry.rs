@@ -338,15 +338,15 @@ pub fn p3d_create_indices_buffer(app: &mut Engine, param: &mut ActionSetScene3D,
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_geo_instance(geo: &mut GeometryMeta) {
-    geo.0.push(VertexBufferDesc::instance_world_matrix());
+    // geo.0.push(VertexBufferDesc::instance_world_matrix());
 }
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_geo_instance_color(geo: &mut GeometryMeta) {
-    geo.0.push(VertexBufferDesc::instance_color());
+    // geo.0.push(VertexBufferDesc::instance_color());
 }
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_geo_instance_tilloff(geo: &mut GeometryMeta) {
-    geo.0.push(VertexBufferDesc::instance_tilloff());
+    // geo.0.push(VertexBufferDesc::instance_tilloff());
 }
