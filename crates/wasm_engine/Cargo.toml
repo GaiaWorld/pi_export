@@ -13,7 +13,7 @@ default = ["pi_js_export", "log/release_max_level_warn"]
 pi_js_export = []
 
 [dependencies]
-pi_export_gui = { path = "../gui", default-features=false,features=["record"] }
+pi_export_gui = { path = "../gui", default-features=false, features=["record"] }
 # pi_export_astar = { path = "../astar"}
 pi_export_base = { path = "../base"}
 pi_spine_export = { path = "../pi_spine_export"}

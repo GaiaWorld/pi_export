@@ -8,6 +8,7 @@ edition = "2021"
 default = ["pi_js_export", "wasm_bindgen"]
 pi_js_export = []
 wasm_bindgen = []
+# system_graph = [] # 提供接口，返回system的日程图
 
 [dependencies]
 paste = "1.0"

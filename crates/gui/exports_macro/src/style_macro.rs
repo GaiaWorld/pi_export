@@ -517,6 +517,7 @@ style_out_export!(@expr as_image, AsImageType, {
 
 // style_out_export!(@expr as_image, AsImageType, unsafe{transmute(v)},; v: u8,);
 style_out_export!(@expr filter_blur, BlurType, v,; v: f32,);
+
 style_out_export!(@expr transform_will_change, TransformWillChangeType, v,; v: bool,);
 
 // hsi, 效果与ps一致,  h: -180 ~ 180, s: -100 ~ 100, i: -100 ~ 100
@@ -959,6 +960,29 @@ other_out_export!(
 	},;;
 	node: f64, brush: f64,
 );
+
+/// 设置水波纹效果
+other_out_export!(@expr 
+	set_radial_wave,
+	gui,
+	{
+		gui.commands.push_cmd(RadialWave(pi_postprocess::prelude::RadialWave {
+			aspect_ratio,
+			start,
+			end,
+			center_x,
+			center_y,
+			cycle,
+			weight
+		}));
+	},;;
+	aspect_ratio: false,
+	start: 0.0,
+	end: 1.0,
+	center_x: 0.0,
+	center_y: 0.0,
+	cycle: 2,
+	weight: 2.0,);
 
 // 设置
 other_out_export!(
