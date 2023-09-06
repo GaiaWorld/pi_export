@@ -4,7 +4,7 @@ use std::{mem::transmute, ops::Deref};
 use pi_3d::PluginBundleDefault;
 use pi_assets::asset::Handle;
 use pi_engine_shell::prelude::*;
-use pi_export_base::export::Engine;
+pub use pi_export_base::export::Engine;
 use pi_gltf2_load::{GLTF, PluginGLTF2Res, GLTFResLoader, KeyGLTF, TypeAnimeAssetMgrs, TypeAnimeContexts};
 use pi_mesh_builder::{cube::PluginCubeBuilder, quad::PluginQuadBuilder};
 use pi_node_materials::{PluginNodeMaterial, NodeMaterialBlocks, prelude::*};
@@ -12,7 +12,7 @@ use pi_particle_system::{PluginParticleSystem, prelude::{ParticleSystemActionSet
 use pi_scene_context::prelude::*;
 use pi_trail_renderer::{PluginTrail, ActionSetTrailRenderer};
 use unlit_material::PluginUnlitMaterial;
-use pi_export_base::asset::Atom;
+pub use pi_export_base::asset::Atom;
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
@@ -29,6 +29,7 @@ use pi_hal::*;
 #[pi_js_export]
 pub fn p3d_init_engine(app: &mut Engine) {
     // use pi_engine_shell::frame_time::PluginFrameTime;
+    println!("======== p3d_init_engine");
 
     if app.world.get_resource::<AssetMgrConfigs>().is_none() {
         app.insert_resource(AssetMgrConfigs::default());

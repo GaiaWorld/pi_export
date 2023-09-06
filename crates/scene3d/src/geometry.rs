@@ -2,14 +2,14 @@
 use std::ops::Range;
 
 use pi_engine_shell::prelude::*;
-use pi_export_base::export::Engine;
+pub use pi_export_base::export::Engine;
 use pi_scene_context::prelude::*;
 use pi_mesh_builder::{
     cube::CubeBuilder,
     quad::QuadBuilder,
 };
 
-use crate::engine::ActionSetScene3D;
+pub use crate::engine::ActionSetScene3D;
 #[cfg(target_arch = "wasm32")]
 use wasm_bindgen::prelude::wasm_bindgen;
 use js_proxy_gen_macro::pi_js_export;

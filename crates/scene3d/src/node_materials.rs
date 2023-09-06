@@ -1,12 +1,53 @@
 
 
 use pi_engine_shell::prelude::*;
-use pi_export_base::export::Engine;
+pub use pi_export_base::export::Engine;
 use pi_scene_context::prelude::*;
 use pi_node_materials::prelude::*;
+pub use crate::engine::ActionSetScene3D;
 
-use crate::engine::ActionSetScene3D;
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
+pub enum EShaderStage {
+    /// Binding is not visible from any shader stage.
+    NONE,
+    /// Binding is visible from the vertex shader of a render pipeline.
+    VERTEX,
+    /// Binding is visible from the fragment shader of a render pipeline.
+    FRAGMENT,
+    /// Binding is visible from the compute shader of a compute pipeline.
+    COMPUTE,
+    /// Binding is visible from the vertex and fragment shaders of a render pipeline.
+    VERTEXFRAGMENT,
+}
+impl EShaderStage {
+    pub fn val(&self) -> pi_render::renderer::shader_stage::EShaderStage {
+        match self {
+            EShaderStage::NONE              => pi_render::renderer::shader_stage::EShaderStage::NONE,
+            EShaderStage::VERTEX            => pi_render::renderer::shader_stage::EShaderStage::VERTEX,
+            EShaderStage::FRAGMENT          => pi_render::renderer::shader_stage::EShaderStage::FRAGMENT,
+            EShaderStage::COMPUTE           => pi_render::renderer::shader_stage::EShaderStage::COMPUTE,
+            EShaderStage::VERTEXFRAGMENT    => pi_render::renderer::shader_stage::EShaderStage::VERTEXFRAGMENT,
+        }
+    }
+}
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
+pub enum EDefaultTexture {
+    Black,
+    White,
+}
+impl EDefaultTexture {
+    pub fn val(&self) -> pi_render::renderer::buildin_data::EDefaultTexture {
+        match self {
+            EDefaultTexture::Black => pi_render::renderer::buildin_data::EDefaultTexture::Black,
+            EDefaultTexture::White => pi_render::renderer::buildin_data::EDefaultTexture::White,
+        }
+    }
+}
 #[cfg(target_arch = "wasm32")]
 use wasm_bindgen::prelude::wasm_bindgen;
 use js_proxy_gen_macro::pi_js_export;
@@ -258,7 +299,7 @@ impl MaterialUniformDefines {
     #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
     #[pi_js_export]
     pub fn create() -> Self {
-        Self(MaterialValueBindDesc::none(EShaderStage::VERTEXFRAGMENT.mode()), vec![])
+        Self(MaterialValueBindDesc::none(pi_render::renderer::shader_stage::EShaderStage::VERTEXFRAGMENT.mode()), vec![])
     }
 }
 // #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
@@ -298,14 +339,14 @@ pub fn p3d_shader_uniform_uint(uniforms: &mut MaterialUniformDefines, key: &str,
 // }
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
-pub fn p3d_shader_uniform_tex(uniforms: &mut MaterialUniformDefines, key: &str, filterable: bool, stage: pi_export_base::constants::EShaderStage, default: pi_export_base::constants::EDefaultTexture) {
+pub fn p3d_shader_uniform_tex(uniforms: &mut MaterialUniformDefines, key: &str, filterable: bool, stage: &EShaderStage, default_r: &EDefaultTexture) {
     uniforms.1.push(
         UniformTexture2DDesc::new(
             UniformPropertyName::from(key),
             wgpu::TextureSampleType::Float { filterable },
             false,
             stage.val(),
-            default.val()
+            default_r.val()
         )
     );
 }
