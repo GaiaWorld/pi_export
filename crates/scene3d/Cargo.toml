@@ -39,7 +39,6 @@ pi_engine_shell 		= { git = "https://github.com/GaiaWorld/pi_3d.git" }
 pi_node_materials 		= { git = "https://github.com/GaiaWorld/pi_3d.git" }
 default_render 			= { git = "https://github.com/GaiaWorld/pi_3d.git" }
 pi_scene_context 		= { git = "https://github.com/GaiaWorld/pi_3d.git" }
-unlit_material 			= { git = "https://github.com/GaiaWorld/pi_3d.git" }
 pi_mesh_builder 		= { git = "https://github.com/GaiaWorld/pi_3d.git" }
 pi_gltf2_load           = { git = "https://github.com/GaiaWorld/pi_3d.git" }
 pi_particle_system      = { git = "https://github.com/GaiaWorld/pi_3d.git" }

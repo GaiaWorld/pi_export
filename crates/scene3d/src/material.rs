@@ -40,22 +40,22 @@ impl OpsPass {
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
-pub fn p3d_material(app: &mut Engine, param: &mut ActionSetScene3D, shader: &Atom, pass: OpsPass) -> f64 {
+pub fn p3d_material(app: &mut Engine, param: &mut ActionSetScene3D) -> f64 {
     let id: Entity = app.world.spawn_empty().id();
-    
-    let mut cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
-    cmds.matcmd.create.push(OpsMaterialCreate::ops(id, shader.as_str(), pass.val()));
 
-    as_f64(&id)
+    let result = as_f64(&id);
+
+    result
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_material_shader(app: &mut Engine, param: &mut ActionSetScene3D, mat: f64, shader: &Atom, pass: OpsPass) {
-    let mat: Entity = as_entity(mat);
+    let entity: Entity = as_entity(mat);
     // log::warn!("Create Material ShaderName: {:?}", shader.as_str());
     let mut cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
-    cmds.matcmd.create.push(OpsMaterialCreate::ops(mat, shader.as_str(), pass.val()));
+    // log::warn!("MaterialInit: {:?}, {}", entity, mat);
+    cmds.matcmd.create.push(OpsMaterialCreate::ops(entity, shader.as_str(), pass.val()));
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]

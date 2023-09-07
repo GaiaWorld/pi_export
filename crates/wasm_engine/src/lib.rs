@@ -17,6 +17,7 @@ pub use pi_export_base::export::*;
 // 	lights::*,
 // 	node_materials::*,
 // 	animation::*,
+//  trail::*,
 // };
 
 use wasm_bindgen::prelude::*;

@@ -311,27 +311,37 @@ pub fn p3d_geo_set_indice(geo: &mut GeometryMeta, name: String, start: Option<f6
 pub fn p3d_create_vertex_buffer(app: &mut Engine, param: &mut ActionSetScene3D, key: String, data: &[f32], length: f64) {
 
     let length = length as usize;
-    let data = bytemuck::cast_slice::<f32, u8>(&data[0..length]).to_vec();
+
+    let queue = app.world.get_resource::<PiRenderQueue>().unwrap().clone();
+    let queue = queue.0.clone();
+    let key = KeyVertexBuffer::from(key.as_str());
+    let key_u64 = key.asset_u64();
     
     let mut cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
-
-    if !ActionVertexBuffer::check(&cmds.geometrycmd.vb_mgr, KeyVertexBuffer::from(key.as_str())) {
-        ActionVertexBuffer::create(&mut cmds.geometrycmd.vb_wait, KeyVertexBuffer::from(key.as_str()), data);
+    if let Some(buffer) = cmds.geometrycmd.vb_mgr.get(&key_u64) {
+        queue.write_buffer(buffer.buffer(), 0, bytemuck::cast_slice(data));
+    } else {
+        let data = bytemuck::cast_slice::<f32, u8>(&data[0..length]).to_vec();
+        ActionVertexBuffer::create(&mut cmds.geometrycmd.vb_wait, key, data);
     }
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_create_indices_buffer(app: &mut Engine, param: &mut ActionSetScene3D, key: String, data: &[u16], length: f64) {
-
     let length = length as usize;
-    let data = bytemuck::cast_slice::<u16, u8>(&data[0..length]).to_vec();
-    
-    let mut cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
 
-    if !ActionVertexBuffer::check(&cmds.geometrycmd.vb_mgr, KeyVertexBuffer::from(key.as_str())) {
-        // log::warn!("CubeBuilder::KEY_BUFFER_INDICES");
-        ActionVertexBuffer::create_indices(&mut cmds.geometrycmd.vb_wait, KeyVertexBuffer::from(key.as_str()), data);
+    let queue = app.world.get_resource::<PiRenderQueue>().unwrap().clone();
+    let queue = queue.0.clone();
+    let key = KeyVertexBuffer::from(key.as_str());
+    let key_u64 = key.asset_u64();
+
+    let mut cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
+    if let Some(buffer) = cmds.geometrycmd.vb_mgr.get(&key_u64) {
+        queue.write_buffer(buffer.buffer(), 0, bytemuck::cast_slice(data));
+    } else {
+        let data = bytemuck::cast_slice::<u16, u8>(&data[0..length]).to_vec();
+        ActionVertexBuffer::create_indices(&mut cmds.geometrycmd.vb_wait, key, data);
     }
 }
 

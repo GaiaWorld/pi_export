@@ -10,8 +10,8 @@ use pi_mesh_builder::{cube::PluginCubeBuilder, quad::PluginQuadBuilder};
 use pi_node_materials::{PluginNodeMaterial, NodeMaterialBlocks, prelude::*};
 use pi_particle_system::{PluginParticleSystem, prelude::{ParticleSystemActionSet, ParticleSystemCalculatorID}};
 use pi_scene_context::prelude::*;
+use pi_particle_system::prelude::*;
 use pi_trail_renderer::{PluginTrail, ActionSetTrailRenderer};
-use unlit_material::PluginUnlitMaterial;
 use pi_export_base::asset::Atom;
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
@@ -39,7 +39,6 @@ pub fn p3d_init_engine(app: &mut Engine) {
         .add_plugins(PluginNodeMaterial)
         .add_plugins(PluginCubeBuilder)
         .add_plugins(PluginQuadBuilder)
-        .add_plugins(PluginUnlitMaterial)
         .add_plugins(PluginGroupNodeMaterialAnime)
         .add_plugins(PluginParticleSystem)
         .add_plugins(PluginGLTF2Res)
@@ -76,6 +75,7 @@ pub struct ActionSets<'w> {
     pub imgtex_loader: ResMut<'w, ImageTextureLoader>,
     pub imgtex_loader_state: ResMut<'w, StateTextureLoader>,
     pub imgtex_asset: Res<'w, ShareAssetMgr<ImageTexture>>,
+    pub imgtexview_asset: Res<'w, ShareAssetMgr<ImageTextureView>>,
     pub gltf2_asset: Res<'w, ShareAssetMgr<GLTF>>,
     pub gltf2_loader: ResMut<'w, GLTFResLoader>,
     pub device: Res<'w, PiRenderDevice>,
@@ -87,13 +87,16 @@ pub struct ActionSets<'w> {
 
 #[derive(SystemParam)]
 pub struct GlobalState<'w> {
-    pub state: ResMut<'w, pi_3d_state::StateGlobal>,
-    pub performance: ResMut<'w, pi_engine_shell::prelude::Performance>,
-    pub psperformance: ResMut<'w, pi_particle_system::prelude::ParticleSystemPerformance>,
-    pub statemesh: ResMut<'w, pi_scene_context::prelude::StateMesh>,
-    pub statetransform: ResMut<'w, pi_scene_context::prelude::StateTransform>,
-    pub statecamera: ResMut<'w, pi_scene_context::prelude::StateCamera>,
-    pub statematerial: ResMut<'w, pi_scene_context::prelude::StateMaterial>,
+    pub resource: Res<'w, pi_3d_state::StateResource>,
+    pub performance: Res<'w, pi_engine_shell::prelude::Performance>,
+    pub psperformance: Res<'w, pi_particle_system::prelude::ParticleSystemPerformance>,
+    // pub statemesh: ResMut<'w, pi_scene_context::prelude::StateMesh>,
+    pub statetransform: Res<'w, pi_scene_context::prelude::StateTransform>,
+    pub statecamera: Res<'w, pi_scene_context::prelude::StateCamera>,
+    pub statelight: Res<'w, pi_scene_context::prelude::StateLight>,
+    // pub statecamera: ResMut<'w, pi_scene_context::prelude::StateCamera>,
+    // pub statematerial: ResMut<'w, pi_scene_context::prelude::StateMaterial>,
+    pub statetrail: Res<'w, pi_trail_renderer::StateTrail>,
 }
 
 
@@ -102,7 +105,7 @@ pub struct GlobalState<'w> {
 pub struct ActionSetScene3D {
     pub(crate) acts: SystemState<ActionSets<'static>>,
     pub(crate) state: SystemState<GlobalState<'static>>,
-    pub(crate) particlesys: SystemState<ParticleSystemActionSet<'static>>,
+    pub(crate) actparticlesys: SystemState<ParticleSystemActionSet<'static>>,
     pub(crate) world_transform: QueryState<&'static WorldMatrix>,
     pub(crate) local_transform: QueryState<&'static LocalMatrix>,
     pub(crate) view_matrix: QueryState<&'static ViewerViewMatrix>,
@@ -110,6 +113,10 @@ pub struct ActionSetScene3D {
     pub(crate) materials: QueryState<(&'static AssetResShaderEffectMeta, &'static EffectTextureSamplersComp)>, // StateMaterialQuery,
     pub(crate) transforms: QueryState<(&'static SceneID, &'static Enable, &'static GlobalEnable)>, // StateTransformQuery,
     pub(crate) cameras: QueryState<(&'static Camera, &'static ModelList, &'static ModelListAfterCulling)>, // StateCameraQuery,
+    pub(crate) renderers: QueryState<(&'static ViewerID, &'static Renderer)>,
+    pub(crate) viewers: QueryState<(&'static ViewerActive, &'static SceneID)>,
+    pub(crate) particlesystems: QueryState<(&'static ParticleIDs, &'static SceneID)>,
+    pub(crate) trails: QueryState<(&'static pi_trail_renderer::TrailPoints, &'static SceneID)>,
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
@@ -124,11 +131,15 @@ impl ActionSetScene3D {
             world_transform: app.world.query(),
             local_transform: app.world.query(),
             view_matrix: app.world.query(),
-            particlesys: SystemState::<ParticleSystemActionSet>::new(&mut app.world),
+            actparticlesys: SystemState::<ParticleSystemActionSet>::new(&mut app.world),
             meshes: app.world.query(),
             materials: app.world.query(),
             transforms: app.world.query(),
             cameras: app.world.query(),
+            renderers: app.world.query(),
+            viewers: app.world.query(),
+            particlesystems: app.world.query(),
+            trails: app.world.query(),
         }
     }
 }
@@ -217,24 +228,88 @@ pub fn p3d_query_world_matrix(app: &mut Engine, param: &mut ActionSetScene3D, en
 #[pi_js_export]
 pub fn p3d_query_scene_state(app: &mut Engine, param: &mut ActionSetScene3D, entity: f64, result: &mut [f32]) -> bool {
     let entity: Entity = as_entity(entity);
+
+    let mut drawcalls = 0;
+    let mut count_vertex = 0;
+    param.renderers.iter(&app.world).for_each(|(idviewer, renderer)| {
+        if let Ok((_, idscene)) = param.viewers.get(&app.world, idviewer.0) {
+            if idscene.0 == entity {
+                drawcalls += renderer.draws.list.len();
+                count_vertex += renderer.vertexs;
+            }
+        }
+    });
+
+    let mut count_particlesys = 0;
+    let mut count_particle = 0;
+    param.particlesystems.iter(&app.world).for_each(|(particles, idscene)| {
+        if idscene.0 == entity {
+            count_particlesys += 1;
+            count_particle += particles.count();
+        }
+    });
+    
+    let mut count_trail = 0;
+    let mut count_trail_point = 0;
+    param.trails.iter(&app.world).for_each(|(trail, idscene)| {
+        if idscene.0 == entity {
+            count_trail += 1;
+            count_trail_point += trail.0.len();
+        }
+    });
+
+    let mut count_animegroup = 0;
+    let cmds = param.acts.get_mut(&mut app.world);
+    cmds.animegroupcmd.scene_ctxs.iter().for_each(|(idscene, ctx)| {
+        if entity == *idscene {
+            count_animegroup += ctx.0.group_mgr.groups.len();
+        }
+    });
+    
+    result[0] = drawcalls as f32;
+    result[1] = count_vertex as f32;
+    result[2] = count_particlesys as f32;
+    result[3] = count_particle as f32;
+    result[4] = count_animegroup as f32;
+    result[5] = count_trail as f32;
+    result[6] = count_trail_point as f32;
+
+    // result[5] = state.count_trail as f32;
+
+    // if let Some(state) = cmds.state.scenes.get(&entity) {
+    //     result[0] = state.count_mesh as f32;
+    //     result[1] = state.count_drawobj as f32;
+    //     result[2] = state.count_transform as f32;
+    //     result[3] = state.count_particlesys as f32;
+    //     result[4] = state.count_vertex as f32;
+    //     result[5] = state.count_trail as f32;
+    //     result[6] = state.count_material as f32;
+    //     result[7] = state.count_animationgroup as f32;
+    //     result[8] = state.count_geometry as f32;
+    //     result[9] = state.count_mesh_ok as f32;
+    //     true
+    // } else {
+    //     false
+    // }
+    true
+}
+
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
+pub fn p3d_query_performance_state(app: &mut Engine, param: &mut ActionSetScene3D, result: &mut [f32]) {
     
     let cmds = param.state.get_mut(&mut app.world);
 
-    if let Some(state) = cmds.state.scenes.get(&entity) {
-        result[0] = state.count_mesh as f32;
-        result[1] = state.count_drawobj as f32;
-        result[2] = state.count_transform as f32;
-        result[3] = state.count_particlesys as f32;
-        result[4] = state.count_vertex as f32;
-        result[5] = state.count_trail as f32;
-        result[6] = state.count_material as f32;
-        result[7] = state.count_animationgroup as f32;
-        result[8] = state.count_geometry as f32;
-        result[9] = state.count_mesh_ok as f32;
-        true
-    } else {
-        false
-    }
+    result[0] = cmds.performance.animation as f32;
+    result[1] = cmds.performance.animationgroup as f32;
+    result[2] = cmds.psperformance.total() as f32;
+    result[3] = cmds.statetransform.calc_world_time as f32;
+    result[4] = cmds.statecamera.culling_time as f32 + cmds.statelight.culling_time as f32;
+    result[5] = cmds.performance.gltfanaly as f32;
+    result[6] = cmds.performance.drawobjs as f32;
+    result[7] = cmds.performance.uniformupdate as f32;
+    result[8] = cmds.performance.uniformbufferupdate as f32;
+    result[9] = cmds.statetrail.calc_time as f32;
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
@@ -243,42 +318,32 @@ pub fn p3d_query_resource_state(app: &mut Engine, param: &mut ActionSetScene3D, 
     
     let cmds = param.state.get_mut(&mut app.world);
 
-    result[0] = cmds.state.count_bindbuffer as f32;
-    result[1] = cmds.state.count_bindgroup as f32;
-    result[2] = cmds.state.count_gltf as f32;
-    result[3] = cmds.state.count_imgtexture as f32;
-    result[4] = cmds.state.count_shader as f32;
-    result[5] = cmds.state.count_pipeline as f32;
-    result[6] = (cmds.state.size_geometrybuffer / 1024) as f32;
-    result[7] = cmds.state.count_geometrybuffer as f32;
-    result[8] = cmds.state.count_shadermeta as f32;
-    result[9] = cmds.state.mem_shadermeta as f32;
-    result[10] = cmds.state.mem_shader as f32;
-    result[11] = cmds.state.mem_bindbuffer as f32;
-    result[12] = cmds.state.mem_imgtexture as f32;
+    result[ 0] = cmds.resource.count_bindbuffer as f32;
+    result[ 1] = cmds.resource.count_bindgroup as f32;
+    result[ 2] = cmds.resource.count_gltf as f32;
+    result[ 3] = cmds.resource.count_imgtexture as f32;
+    result[ 4] = cmds.resource.count_shader as f32;
+    result[ 5] = cmds.resource.count_pipeline as f32;
+    result[ 6] = (cmds.resource.size_geometrybuffer / 1024) as f32;
+    result[ 7] = cmds.resource.count_geometrybuffer as f32;
+    result[ 8] = cmds.resource.count_shadermeta as f32;
+    result[ 9] = cmds.resource.mem_shadermeta as f32;
+    result[10] = cmds.resource.mem_shader as f32;
+    result[11] = cmds.resource.mem_bindbuffer as f32;
+    result[12] = cmds.resource.mem_imgtexture as f32;
     
-    result[13] = cmds.state.count_material as f32;
-    result[14] = cmds.state.count_passset0 as f32;
-    result[15] = cmds.state.count_passset1 as f32;
-    result[16] = cmds.state.count_passset2 as f32;
-    result[17] = cmds.state.count_passbindgroups as f32;
-    result[18] = cmds.state.count_passshader as f32;
-    result[19] = cmds.state.count_passpipeline as f32;
-    result[20] = cmds.state.count_passdraw as f32;
-    
-    result[21] = cmds.performance.animation as f32;
-    result[22] = cmds.performance.animationgroup as f32;
-    result[23] = cmds.performance.particlesystem as f32;
-    result[24] = cmds.performance.worldmatrix as f32;
-    result[25] = cmds.performance.culling as f32;
-    result[26] = cmds.performance.gltfanaly as f32;
-    result[27] = cmds.performance.drawobjs as f32;
-    result[28] = cmds.performance.uniformupdate as f32;
-    result[29] = cmds.performance.uniformbufferupdate as f32;
+    result[13] = cmds.resource.count_material as f32;
+    result[14] = cmds.resource.count_passset0 as f32;
+    result[15] = cmds.resource.count_passset1 as f32;
+    result[16] = cmds.resource.count_passset2 as f32;
+    result[17] = cmds.resource.count_passbindgroups as f32;
+    result[18] = cmds.resource.count_passshader as f32;
+    result[19] = cmds.resource.count_passpipeline as f32;
+    result[20] = cmds.resource.count_passdraw as f32;
 
-    result[30] = cmds.psperformance.particles as f32;
-    result[31] = cmds.state.count_passmat as f32;
-    result[32] = cmds.state.count_passtexs as f32;
+    result[21] = cmds.resource.count_passmat as f32;
+    result[22] = cmds.resource.count_passtexs as f32;
+    result[23] = cmds.resource.count_vertex as f32;
 
 }
 
@@ -386,13 +451,13 @@ pub fn p3d_transform_state(app: &mut Engine, param: &mut ActionSetScene3D, scene
         let scene = as_entity(scene);
         param.transforms.iter(&app.world).for_each(|(idscene, enable, globalenable)| {
             if idscene.0 == scene {
-                state.count += 0;
+                state.count += 1;
                 if enable.bool() { state.enable += 1; }
                 if globalenable.0 { state.global_enable += 1; }
             }
         });
     
-        let mut cmds = param.state.get_mut(&mut app.world);
+        let cmds = param.state.get(&mut app.world);
         state.calc_local_time   = cmds.statetransform.calc_local_time;
         state.calc_world_time   = cmds.statetransform.calc_world_time;
         state.max_level         = cmds.statetransform.max_level;
@@ -418,34 +483,41 @@ pub fn p3d_camera_state(app: &mut Engine, param: &mut ActionSetScene3D, camera: 
             state.includes  = includes.0.len() as u32;
             state.culling   = cullings.0.len() as u32;
         }
+        let cmds = param.state.get(&mut app.world);
+        state.culling_time = cmds.statecamera.culling_time;
     }
 
     result[0] = state.includes as f32;
     result[1] = state.culling as f32;
+    result[2] = state.culling_time as f32;
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_texture_loader_state(app: &mut Engine, param: &mut ActionSetScene3D, result: &mut [f32]) {
     
-    let mut cmds = param.acts.get_mut(&mut app.world);
+    let cmds = param.acts.get_mut(&mut app.world);
 
-    result[0] = cmds.imgtex_loader_state.image_count as f32;
-    result[1] = cmds.imgtex_loader_state.image_fail as f32;
-    result[2] = cmds.imgtex_loader_state.image_success as f32;
-    result[3] = cmds.imgtex_loader_state.texview_count as f32;
-    result[4] = cmds.imgtex_loader_state.texview_fail as f32;
-    result[5] = cmds.imgtex_loader_state.texview_success as f32;
+    result[ 0] = cmds.imgtex_loader_state.image_count as f32;
+    result[ 1] = cmds.imgtex_loader_state.image_fail as f32;
+    result[ 2] = cmds.imgtex_loader_state.image_success as f32;
+    result[ 3] = cmds.imgtex_loader_state.image_waiting as f32;
+    result[ 4] = cmds.imgtex_loader_state.texview_count as f32;
+    result[ 5] = cmds.imgtex_loader_state.texview_fail as f32;
+    result[ 6] = cmds.imgtex_loader_state.texview_success as f32;
+    result[ 7] = cmds.imgtex_loader_state.texview_waiting as f32;
+    result[ 8] = cmds.imgtex_asset.len() as f32;
+    result[ 9] = cmds.imgtex_asset.size() as f32;
+    result[10] = cmds.imgtexview_asset.len() as f32;
+    result[11] = cmds.imgtexview_asset.size() as f32;
 }
 
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_global_state(app: &mut Engine, param: &mut ActionSetScene3D, val: bool) {
-    
-    let mut cmds = param.state.get_mut(&mut app.world);
-
-    cmds.state.debug = val;
+    // let cmds = param.state.get(&mut app.world);
+    // cmds.resource.debug = val;
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
