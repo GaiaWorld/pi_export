@@ -20,7 +20,7 @@ pub mod style_macro {
     };
     use smallvec::SmallVec;
     pub use pi_export_base::export::{Atom, Engine};
-    use crate::index::{OffsetDocument, Size, Gui};
+    pub use crate::index::{OffsetDocument, Size, Gui};
     use pi_ui_render::resource::animation_sheet::KeyFramesSheet;
     #[cfg(target_arch = "wasm32")]
     use wasm_bindgen::prelude::wasm_bindgen;

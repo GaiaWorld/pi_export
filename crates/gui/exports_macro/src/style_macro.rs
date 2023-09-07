@@ -24,7 +24,7 @@ use pi_ui_render::components::user::RadialWave;
 use pi_style::style_parse::{parse_comma_separated, parse_text_shadow, parse_as_image, StyleParse};
 use smallvec::SmallVec;
 pub use pi_export_base::export::{Atom, Engine};
-use crate::index::{OffsetDocument, Size, Gui};
+pub use crate::index::{OffsetDocument, Size, Gui};
 use pi_ui_render::resource::animation_sheet::KeyFramesSheet;
 
 #[cfg(target_arch="wasm32")]
@@ -515,7 +515,6 @@ style_out_export!(@expr as_image, AsImageType, {
 
 // style_out_export!(@expr as_image, AsImageType, unsafe{transmute(v)},; v: u8,);
 style_out_export!(@expr filter_blur, BlurType, v,; v: f32,);
-
 style_out_export!(@expr transform_will_change, TransformWillChangeType, v,; v: bool,);
 
 // hsi, 效果与ps一致,  h: -180 ~ 180, s: -100 ~ 100, i: -100 ~ 100

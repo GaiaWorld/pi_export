@@ -4,7 +4,7 @@ use std::{mem::transmute, ops::Deref};
 use pi_3d::PluginBundleDefault;
 use pi_assets::asset::Handle;
 use pi_engine_shell::prelude::*;
-use pi_export_base::export::Engine;
+pub use pi_export_base::export::Engine;
 use pi_gltf2_load::{GLTF, PluginGLTF2Res, GLTFResLoader, KeyGLTF, TypeAnimeAssetMgrs, TypeAnimeContexts};
 use pi_mesh_builder::{cube::PluginCubeBuilder, quad::PluginQuadBuilder};
 use pi_node_materials::{PluginNodeMaterial, NodeMaterialBlocks, prelude::*};
@@ -12,7 +12,7 @@ use pi_particle_system::{PluginParticleSystem, prelude::{ParticleSystemActionSet
 use pi_scene_context::prelude::*;
 use pi_trail_renderer::{PluginTrail, ActionSetTrailRenderer};
 use unlit_material::PluginUnlitMaterial;
-use pi_export_base::asset::Atom;
+pub use pi_export_base::asset::Atom;
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
@@ -29,6 +29,7 @@ use pi_hal::*;
 #[pi_js_export]
 pub fn p3d_init_engine(app: &mut Engine) {
     // use pi_engine_shell::frame_time::PluginFrameTime;
+    println!("======== p3d_init_engine");
 
     if app.world.get_resource::<AssetMgrConfigs>().is_none() {
         app.insert_resource(AssetMgrConfigs::default());
@@ -45,6 +46,13 @@ pub fn p3d_init_engine(app: &mut Engine) {
         .add_plugins(PluginGLTF2Res)
         .add_plugins(PluginTrail)
         ;
+
+    app.add_systems(
+        Update,
+        (
+            sys_state_transform,
+        ).in_set(ERunStageChap::StateCheck)
+    );
 }
 
 #[derive(SystemParam)]
@@ -64,9 +72,10 @@ pub struct ActionSets<'w> {
     pub default_mat: Res<'w, SingleIDBaseDefaultMaterial>,
     pub node_material_blocks: Res<'w, NodeMaterialBlocks>,
     pub layer_mask: ResMut<'w, ActionListLayerMask>,
-    pub renderer_drawcalls: Res<'w, RendererDrawCallRecord>,
-    pub transform_record: Res<'w, TransformRecord>,
+    // pub renderer_drawcalls: Res<'w, RendererDrawCallRecord>,
+    // pub transform_record: Res<'w, TransformRecord>,
     pub imgtex_loader: ResMut<'w, ImageTextureLoader>,
+    pub imgtex_loader_state: ResMut<'w, StateTextureLoader>,
     pub imgtex_asset: Res<'w, ShareAssetMgr<ImageTexture>>,
     pub gltf2_asset: Res<'w, ShareAssetMgr<GLTF>>,
     pub gltf2_loader: ResMut<'w, GLTFResLoader>,
@@ -80,6 +89,12 @@ pub struct ActionSets<'w> {
 #[derive(SystemParam)]
 pub struct GlobalState<'w> {
     pub state: ResMut<'w, pi_3d_state::StateGlobal>,
+    pub performance: ResMut<'w, pi_engine_shell::prelude::Performance>,
+    pub psperformance: ResMut<'w, pi_particle_system::prelude::ParticleSystemPerformance>,
+    pub statemesh: ResMut<'w, pi_scene_context::prelude::StateMesh>,
+    pub statetransform: ResMut<'w, pi_scene_context::prelude::StateTransform>,
+    pub statecamera: ResMut<'w, pi_scene_context::prelude::StateCamera>,
+    pub statematerial: ResMut<'w, pi_scene_context::prelude::StateMaterial>,
 }
 
 
@@ -92,6 +107,10 @@ pub struct ActionSetScene3D {
     pub(crate) world_transform: QueryState<&'static WorldMatrix>,
     pub(crate) local_transform: QueryState<&'static LocalMatrix>,
     pub(crate) view_matrix: QueryState<&'static ViewerViewMatrix>,
+    pub(crate) meshes: QueryState<(&'static SceneID, &'static GlobalEnable, Option<&'static RenderGeometryEable>, Option<&'static InstanceMesh>, &'static AbstructMesh)>, // StateMeshQuery,
+    pub(crate) materials: QueryState<(&'static AssetResShaderEffectMeta, &'static EffectTextureSamplersComp)>, // StateMaterialQuery,
+    pub(crate) transforms: QueryState<(&'static SceneID, &'static Enable, &'static GlobalEnable)>, // StateTransformQuery,
+    pub(crate) cameras: QueryState<(&'static Camera, &'static ModelList, &'static ModelListAfterCulling)>, // StateCameraQuery,
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
@@ -107,6 +126,10 @@ impl ActionSetScene3D {
             local_transform: app.world.query(),
             view_matrix: app.world.query(),
             particlesys: SystemState::<ParticleSystemActionSet>::new(&mut app.world),
+            meshes: app.world.query(),
+            materials: app.world.query(),
+            transforms: app.world.query(),
+            cameras: app.world.query(),
         }
     }
 }
@@ -151,28 +174,28 @@ pub fn p3d_render_graphic(app: &mut Engine, param: &mut ActionSetScene3D, before
     cmds.renderercmds.connect.push(OpsRendererConnect::ops(before, after));
 }
 
-#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
-#[pi_js_export]
-pub fn p3d_query_drawcalls(app: &mut Engine, param: &mut ActionSetScene3D, renderer: f64) -> f64 {
-    let entity: Entity = as_entity(renderer);
+// #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+// #[pi_js_export]
+// pub fn p3d_query_drawcalls(app: &mut Engine, param: &mut ActionSetScene3D, renderer: f64) -> f64 {
+//     let entity: Entity = as_entity(renderer);
 
-    let cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
+//     let cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
 
-    if let Some(count) = cmds.renderer_drawcalls.0.get(&entity) {
-        *count as f64
-    } else {
-        0 as f64
-    }
-}
+//     if let Some(count) = cmds.renderer_drawcalls.0.get(&entity) {
+//         *count as f64
+//     } else {
+//         0 as f64
+//     }
+// }
 
-#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
-#[pi_js_export]
-pub fn p3d_query_world_matrix_time(app: &mut Engine, param: &mut ActionSetScene3D) -> f64 {
+// #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+// #[pi_js_export]
+// pub fn p3d_query_world_matrix_time(app: &mut Engine, param: &mut ActionSetScene3D) -> f64 {
 
-    let cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
+//     let cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
 
-    cmds.transform_record.all_wmcompute as f64
-}
+//     cmds.transform_record.all_wmcompute as f64
+// }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
@@ -208,6 +231,7 @@ pub fn p3d_query_scene_state(app: &mut Engine, param: &mut ActionSetScene3D, ent
         result[6] = state.count_material as f32;
         result[7] = state.count_animationgroup as f32;
         result[8] = state.count_geometry as f32;
+        result[9] = state.count_mesh_ok as f32;
         true
     } else {
         false
@@ -229,7 +253,192 @@ pub fn p3d_query_resource_state(app: &mut Engine, param: &mut ActionSetScene3D, 
     result[6] = (cmds.state.size_geometrybuffer / 1024) as f32;
     result[7] = cmds.state.count_geometrybuffer as f32;
     result[8] = cmds.state.count_shadermeta as f32;
+    result[9] = cmds.state.mem_shadermeta as f32;
+    result[10] = cmds.state.mem_shader as f32;
+    result[11] = cmds.state.mem_bindbuffer as f32;
+    result[12] = cmds.state.mem_imgtexture as f32;
+    
+    result[13] = cmds.state.count_material as f32;
+    result[14] = cmds.state.count_passset0 as f32;
+    result[15] = cmds.state.count_passset1 as f32;
+    result[16] = cmds.state.count_passset2 as f32;
+    result[17] = cmds.state.count_passbindgroups as f32;
+    result[18] = cmds.state.count_passshader as f32;
+    result[19] = cmds.state.count_passpipeline as f32;
+    result[20] = cmds.state.count_passdraw as f32;
+    
+    result[21] = cmds.performance.animation as f32;
+    result[22] = cmds.performance.animationgroup as f32;
+    result[23] = cmds.performance.particlesystem as f32;
+    result[24] = cmds.performance.worldmatrix as f32;
+    result[25] = cmds.performance.culling as f32;
+    result[26] = cmds.performance.gltfanaly as f32;
+    result[27] = cmds.performance.drawobjs as f32;
+    result[28] = cmds.performance.uniformupdate as f32;
+    result[29] = cmds.performance.uniformbufferupdate as f32;
+
+    result[30] = cmds.psperformance.particles as f32;
+    result[31] = cmds.state.count_passmat as f32;
+    result[32] = cmds.state.count_passtexs as f32;
+
 }
+
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
+pub fn p3d_material_state(app: &mut Engine, param: &mut ActionSetScene3D, result: &mut [f32]) {
+    
+    // let mut cmds = param.materials.get(&mut app.world);
+    let mut state = StateMaterial::default();
+    param.materials.iter(&app.world).for_each(|(meta, texs)| {
+        state.count += 1;
+        let texcount = meta.textures.len() as u32;
+        let mut isready = false;
+        if let Some(texs) = &texs.0 {
+            if texcount * 2 == texs.binding_count {
+                isready = true;
+            }
+        } else if texcount == 0 {
+            isready = false;
+        }
+        if isready { state.count_ready += 1; }
+
+        if texcount == 0 {
+            state.count_tex0 += 1;
+            if isready { state.count_tex0_ready += 1; }
+        }
+        else if texcount == 1 {
+            state.count_tex1 += 1;
+            if isready { state.count_tex1_ready += 1; }
+        }
+        else if texcount == 2 {
+            state.count_tex2 += 1;
+            if isready { state.count_tex2_ready += 1; }
+        }
+        else if texcount == 3 {
+            state.count_tex3 += 1;
+            if isready { state.count_tex3_ready += 1; }
+        }
+        else if texcount == 4 {
+            state.count_tex4 += 1;
+            if isready { state.count_tex4_ready += 1; }
+        }
+        else if texcount == 5 {
+            state.count_tex5 += 1;
+            if isready { state.count_tex5_ready += 1; }
+        }
+        else if texcount == 6 {
+            state.count_tex6 += 1;
+            if isready { state.count_tex6_ready += 1; }
+        }
+    });
+
+    result[ 0] = state.count as f32;
+    result[ 1] = state.count_ready as f32;
+    result[ 2] = state.count_tex0 as f32;
+    result[ 3] = state.count_tex0_ready as f32;
+    result[ 4] = state.count_tex1 as f32;
+    result[ 5] = state.count_tex1_ready as f32;
+    result[ 6] = state.count_tex2 as f32;
+    result[ 7] = state.count_tex2_ready as f32;
+    result[ 8] = state.count_tex3 as f32;
+    result[ 9] = state.count_tex3_ready as f32;
+    result[10] = state.count_tex4 as f32;
+    result[11] = state.count_tex4_ready as f32;
+    result[12] = state.count_tex5 as f32;
+    result[13] = state.count_tex5_ready as f32;
+    result[14] = state.count_tex6 as f32;
+    result[15] = state.count_tex6_ready as f32;
+}
+
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
+pub fn p3d_mesh_state(app: &mut Engine, param: &mut ActionSetScene3D, scene: Option<f64>, result: &mut [f32]) {
+    
+    // let mut cmds = param.state.get_mut(&mut app.world);
+
+    let mut state = StateMesh::default();
+    if let Some(scene) = scene {
+        let scene = as_entity(scene);
+        param.meshes.iter(&app.world).for_each(|(idscene, enable, geoenable, instance, _)| {
+            if idscene.0 == scene {
+                state.abstructmesh += 1;
+                if enable.0 { state.abstructenable_count += 1; }
+                if let Some(geoenable) = geoenable { 
+                    state.meshes += 1;
+                    if geoenable.0 { state.geometry_enable += 1; }
+                }
+                if instance.is_some() { state.instances += 1; }
+            }
+        });
+    }
+    result[0] = state.abstructmesh as f32;
+    result[1] = state.abstructenable_count as f32;
+    result[2] = state.meshes as f32;
+    result[3] = state.geometry_enable as f32;
+    result[4] = state.instances as f32;
+}
+
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
+pub fn p3d_transform_state(app: &mut Engine, param: &mut ActionSetScene3D, scene: Option<f64>, result: &mut [f32]) {
+
+    let mut state = StateTransform::default();
+    if let Some(scene) = scene {
+        let scene = as_entity(scene);
+        param.transforms.iter(&app.world).for_each(|(idscene, enable, globalenable)| {
+            if idscene.0 == scene {
+                state.count += 0;
+                if enable.bool() { state.enable += 1; }
+                if globalenable.0 { state.global_enable += 1; }
+            }
+        });
+    
+        let mut cmds = param.state.get_mut(&mut app.world);
+        state.calc_local_time   = cmds.statetransform.calc_local_time;
+        state.calc_world_time   = cmds.statetransform.calc_world_time;
+        state.max_level         = cmds.statetransform.max_level;
+    }
+    result[0] = state.count as f32;
+    result[1] = state.enable as f32;
+    result[2] = state.global_enable as f32;
+    result[3] = state.calc_local_time as f32;
+    result[4] = state.calc_world_time as f32;
+    result[5] = state.max_level as f32;
+}
+
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
+pub fn p3d_camera_state(app: &mut Engine, param: &mut ActionSetScene3D, camera: Option<f64>, result: &mut [f32]) {
+    
+    // let mut cmds = param.state.get_mut(&mut app.world);
+
+    let mut state = StateCamera::default();
+    if let Some(camera) = camera {
+        let camera = as_entity(camera);
+        if let Ok((_camera, includes, cullings)) = param.cameras.get(&app.world, camera) {
+            state.includes  = includes.0.len() as u32;
+            state.culling   = cullings.0.len() as u32;
+        }
+    }
+
+    result[0] = state.includes as f32;
+    result[1] = state.culling as f32;
+}
+
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
+pub fn p3d_texture_loader_state(app: &mut Engine, param: &mut ActionSetScene3D, result: &mut [f32]) {
+    
+    let mut cmds = param.acts.get_mut(&mut app.world);
+
+    result[0] = cmds.imgtex_loader_state.image_count as f32;
+    result[1] = cmds.imgtex_loader_state.image_fail as f32;
+    result[2] = cmds.imgtex_loader_state.image_success as f32;
+    result[3] = cmds.imgtex_loader_state.texview_count as f32;
+    result[4] = cmds.imgtex_loader_state.texview_fail as f32;
+    result[5] = cmds.imgtex_loader_state.texview_success as f32;
+}
+
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
@@ -282,6 +491,18 @@ pub struct GLTFRes(Handle<GLTF>);
 #[pi_js_export]
 pub fn p3d_gltf_val(item: &GLTFRes) -> String {
     item.0.output.clone()
+}
+
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
+/// 创建动画组
+pub fn p3d_animation_curve_id_bygltf(
+    gltf: &GLTFRes,
+    group_index: f64,
+    channel_index: f64,
+) -> f64 {
+    let key = gltf.0.key_anime_curve(group_index as usize, channel_index as usize);
+    unsafe { transmute(key) }
 }
 
 pub fn gltf_particle_calculator(item: &GLTFRes, index: f64) -> Option<&Handle<ParticleSystemCalculatorID>> {
