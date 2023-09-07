@@ -4,20 +4,20 @@ pub use pi_export_gui::*;
 // pub use pi_export_astar::export:: *;
 pub use pi_export_base::export::*;
 // pub use pi_export_quad_tree::export::*;
-// pub use pi_spine_export:: *;
-// pub use scene3d_export::{
-// 	engine::*,
-// 	scene::*,
-// 	transform_node::*,
-// 	camera::*,
-// 	mesh::*,
-// 	instance_mesh::*,
-// 	material::*,
-// 	geometry::*,
-// 	lights::*,
-// 	node_materials::*,
-// 	animation::*,
-// };
+pub use pi_spine_export:: *;
+pub use scene3d_export::{
+	engine::*,
+	scene::*,
+	transform_node::*,
+	camera::*,
+	mesh::*,
+	instance_mesh::*,
+	material::*,
+	geometry::*,
+	lights::*,
+	node_materials::*,
+	animation::*,
+};
 
 use wasm_bindgen::prelude::*;
 

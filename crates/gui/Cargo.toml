@@ -78,6 +78,7 @@ pi_bevy_asset = {version = "0.1", registry = "yn"}
 pi_bevy_winit_window = {version = "0.1", registry = "yn"}
 pi_window_renderer = {version = "0.1", registry = "yn"}
 bevy = {version="0.11", default-features = false}
+wgpu = {version = "0.1", registry = "yn", package="pi_wgpu"}
 
 [target.'cfg(target_arch = "wasm32")'.dependencies]
 wasm-bindgen = { version = "0.2", features = ["serde-serialize"] }
@@ -91,7 +92,7 @@ web-sys = {version="0.3", features = [
 js-sys = "0.3"
 # wgpu = { version = "0.16", default-features = false, features = ["glsl", "wgc"] }
 # pi_render = { git = "https://github.com/GaiaWorld/pi_render.git", branch="bevy_shader"}
-wgpu = { version = "0.16", default-features = false, features = ["glsl", "webgl"] }
+
 pi_render = { version = "0.1", registry = "yn", features=["webgl"] }
 pi_bevy_log = {version = "0.1", registry = "yn"}
 tracing_chrome_wasm = { path="../../../tracing-chrome", package="tracing-chrome"}
@@ -100,7 +101,6 @@ tracing_chrome_wasm = { path="../../../tracing-chrome", package="tracing-chrome"
 [target.'cfg(not(target_arch = "wasm32"))'.dependencies]
 pi_share = {version="0.4"}
 pi-async-rt = "0.1"
-wgpu = { version = "0.16", default-features = false, features = ["glsl"] }
 pi_render = { version = "0.1", registry = "yn" }
 
 [dev-dependencies]

@@ -13,6 +13,8 @@ pub mod style_macro {
     use pi_map::vecmap::VecMap;
     use pi_style::style::*;
     use pi_style::style_type::*;
+    use pi_ui_render::resource::NodeCmd;
+    use pi_ui_render::components::user::RadialWave;
     use pi_style::style_parse::{
         parse_comma_separated, parse_text_shadow, parse_as_image, StyleParse,
     };
@@ -4353,6 +4355,69 @@ pub mod style_macro {
             gui.commands
                 .push_cmd(
                     ComponentCmd(pi_ui_render::components::user::Canvas(brush), node),
+                );
+        }
+    }
+    #[cfg(feature = "pi_js_export")]
+    pub fn set_radial_wave(
+        gui: &mut Gui,
+        node: f64,
+        aspect_ratio: bool,
+        start: f32,
+        end: f32,
+        center_x: f32,
+        center_y: f32,
+        cycle: u8,
+        weight: f32,
+    ) {
+        {
+            let node = unsafe { Entity::from_bits(transmute::<f64, u64>(node)) };
+            gui.commands
+                .push_cmd(
+                    NodeCmd(
+                        RadialWave(pi_postprocess::prelude::RadialWave {
+                            aspect_ratio,
+                            start,
+                            end,
+                            center_x,
+                            center_y,
+                            cycle,
+                            weight,
+                        }),
+                        node,
+                    ),
+                );
+        }
+    }
+    #[cfg(target_arch = "wasm32")]
+    #[wasm_bindgen]
+    pub fn set_radial_wave(
+        gui: &mut Gui,
+        node: f64,
+        aspect_ratio: bool,
+        start: f32,
+        end: f32,
+        center_x: f32,
+        center_y: f32,
+        cycle: u8,
+        weight: f32,
+    ) {
+        {
+            let node = unsafe { Entity::from_bits(transmute::<f64, u64>(node)) };
+            gui.commands
+                .push_cmd(
+                    NodeCmd(
+                        RadialWave(pi_postprocess::prelude::RadialWave {
+                            aspect_ratio,
+                            start,
+                            end,
+                            center_x,
+                            center_y,
+                            cycle,
+                            weight,
+                        }),
+                        node,
+                    ),
                 );
         }
     }

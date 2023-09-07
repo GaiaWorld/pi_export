@@ -1,9 +1,7 @@
 //! 将设置布局属性的接口导出到js
 
 
-use std::{
-    mem::transmute,
-};
+use std::mem::transmute;
 
 // use crate::components::user::{
 //     BorderImageSlice, BorderRadius, CgColor, ClassName, Color, ColorAndPosition, FontSize, Hsi, ImageRepeat, LengthUnit, LineHeight,
@@ -20,9 +18,9 @@ use pi_flex_layout::prelude::*;
 use pi_hash::XHashMap;
 use pi_map::vecmap::VecMap;
 use pi_style::style::*;
-use pi_style::{
-    style_type::*,
-};
+use pi_style::style_type::*;
+use pi_ui_render::resource::NodeCmd;
+use pi_ui_render::components::user::RadialWave;
 use pi_style::style_parse::{parse_comma_separated, parse_text_shadow, parse_as_image, StyleParse};
 use smallvec::SmallVec;
 pub use pi_export_base::export::{Atom, Engine};
@@ -962,11 +960,12 @@ other_out_export!(
 );
 
 /// 设置水波纹效果
-other_out_export!(@expr 
+other_out_export!(
 	set_radial_wave,
 	gui,
 	{
-		gui.commands.push_cmd(RadialWave(pi_postprocess::prelude::RadialWave {
+		let node = unsafe { Entity::from_bits(transmute::<f64, u64>(node)) };
+		gui.commands.push_cmd(NodeCmd(RadialWave(pi_postprocess::prelude::RadialWave {
 			aspect_ratio,
 			start,
 			end,
@@ -974,15 +973,16 @@ other_out_export!(@expr
 			center_y,
 			cycle,
 			weight
-		}));
+		}), node));
 	},;;
-	aspect_ratio: false,
-	start: 0.0,
-	end: 1.0,
-	center_x: 0.0,
-	center_y: 0.0,
-	cycle: 2,
-	weight: 2.0,);
+	node: f64,
+	aspect_ratio: bool,
+	start: f32,
+	end: f32,
+	center_x: f32,
+	center_y: f32,
+	cycle: u8,
+	weight: f32,);
 
 // 设置
 other_out_export!(
