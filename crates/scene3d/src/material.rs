@@ -3,40 +3,16 @@ use std::ops::Deref;
 use pi_engine_shell::prelude::*;
 use pi_scene_context::prelude::*;
 
-use pi_export_base::{export::{Engine, Atom}, constants::{EAddressMode, EFilterMode, EAnisotropyClamp, CompareFunction, SamplerBorderColor}};
+pub use pi_export_base::{export::{Engine, Atom}, constants::{EAddressMode, EFilterMode, EAnisotropyClamp, CompareFunction, SamplerBorderColor}};
 
-use crate::{engine::ActionSetScene3D, as_entity, as_f64};
+pub use crate::camera::OpsPass;
+pub use crate::{engine::ActionSetScene3D, as_entity, as_f64};
 #[cfg(target_arch = "wasm32")]
 use wasm_bindgen::prelude::wasm_bindgen;
 use js_proxy_gen_macro::pi_js_export;
 
 
-#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
-#[pi_js_export]
-pub enum OpsPass {
-    ShadowCast,
-    Opaque,
-    Sky,
-    Water,
-    AlphaTest,
-    Transparent,
-    OpaqueExtend,
-    TransparentExtend,
-}
-impl OpsPass {
-    pub fn val(&self) -> EPassTag {
-        match self {
-            OpsPass::ShadowCast => EPassTag::ShadowCast,
-            OpsPass::Opaque => EPassTag::Opaque,
-            OpsPass::Sky => EPassTag::Sky,
-            OpsPass::Water => EPassTag::Water,
-            OpsPass::AlphaTest => EPassTag::AlphaTest,
-            OpsPass::Transparent => EPassTag::Transparent,
-            OpsPass::OpaqueExtend => EPassTag::OpaqueExtend,
-            OpsPass::TransparentExtend => EPassTag::TransparentExtend,
-        }
-    }
-}
+
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]

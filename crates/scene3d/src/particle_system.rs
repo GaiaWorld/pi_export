@@ -1,8 +1,8 @@
-use pi_export_base::export::{Engine, Atom};
+pub use pi_export_base::export::{Engine, Atom};
 use pi_particle_system::prelude::{OpsCPUParticleSystem, OpsCPUParticleSystemState};
 use pi_render::asset::TAssetKeyU64;
 
-use crate::{engine::{ActionSetScene3D, GLTFRes, gltf_particle_calculator}, as_entity};
+pub use crate::{engine::{ActionSetScene3D, GLTFRes, gltf_particle_calculator}, as_entity};
 
 #[cfg(target_arch = "wasm32")]
 use wasm_bindgen::prelude::wasm_bindgen;
@@ -18,7 +18,7 @@ pub fn p3d_particle_system(
     entity: f64,
     trailmesh: f64,
     trailgeo: f64,
-    key: Atom,
+    key: &Atom,
 ) {
     let mut cmds = param.actparticlesys.get_mut(&mut app.world);
     let scene = as_entity(scene);

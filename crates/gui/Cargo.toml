@@ -94,7 +94,7 @@ js-sys = "0.3"
 wgpu = { version = "0.16", default-features = false, features = ["glsl", "webgl"] }
 pi_render = { version = "0.1", registry = "yn", features=["webgl"] }
 pi_bevy_log = {version = "0.1", registry = "yn"}
-tracing_chrome_wasm = { path="../../../tracing-chrome", package="tracing-chrome"}
+# tracing_chrome_wasm = { path="../../../tracing-chrome", package="tracing-chrome"}
 
 
 [target.'cfg(not(target_arch = "wasm32"))'.dependencies]

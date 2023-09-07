@@ -1,14 +1,14 @@
 use std::ops::Deref;
 use pi_assets::asset::Handle;
 use pi_engine_shell::prelude::{ImageTexture, KeyImageTexture};
-use pi_export_base::{export::{Engine, Atom}, constants::*};
+pub use pi_export_base::{export::{Engine, Atom}, constants::*};
 // use pi_render::asset::TAssetKeyU64;
 
 #[cfg(target_arch = "wasm32")]
 use wasm_bindgen::prelude::wasm_bindgen;
 use js_proxy_gen_macro::pi_js_export;
 
-use crate::engine::ActionSetScene3D;
+pub use crate::engine::ActionSetScene3D;
 
 // #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 // #[pi_js_export]

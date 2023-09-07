@@ -3,15 +3,16 @@ use std::{mem::{replace, transmute}, fmt::Debug};
 use js_proxy_gen_macro::pi_js_export;
 use pi_gltf2_load::TValue;
 use pi_node_materials::prelude::*;
-use pi_export_base::export::{Engine, Atom};
+pub use pi_export_base::export::Atom;
 
 use pi_animation::amount::AnimationAmountCalc;
 use pi_curves::{easing::EEasingMode, steps::EStepMode, curve::{frame_curve::{FrameCurve, frames::interplate_frame_values_step}, frame::{FrameDataValue, KeyFrameCurveValue}, FramePerSecond, FrameIndex}};
 use pi_engine_shell::prelude::*;
+pub use pi_export_base::export::Engine;
 use pi_scene_context::prelude::*;
 use pi_slotmap::DefaultKey;
-
-use crate::{engine::ActionSetScene3D, as_entity, as_f64, as_f64_dk, as_dk};
+pub use crate::engine::ActionSetScene3D;
+use crate::{as_entity, as_f64, as_f64_dk, as_dk};
 
 
 #[cfg(target_arch = "wasm32")]

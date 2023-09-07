@@ -5,32 +5,32 @@ use js_proxy_gen_macro::pi_js_export;
 #[cfg(target_arch = "wasm32")]
 use wasm_bindgen::prelude::*;
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
-#[pi_js_export]
-pub enum EShaderStage {
-    /// Binding is not visible from any shader stage.
-    NONE,
-    /// Binding is visible from the vertex shader of a render pipeline.
-    VERTEX,
-    /// Binding is visible from the fragment shader of a render pipeline.
-    FRAGMENT,
-    /// Binding is visible from the compute shader of a compute pipeline.
-    COMPUTE,
-    /// Binding is visible from the vertex and fragment shaders of a render pipeline.
-    VERTEXFRAGMENT,
-}
-impl EShaderStage {
-    pub fn val(&self) -> pi_render::renderer::shader_stage::EShaderStage {
-        match self {
-            EShaderStage::NONE              => pi_render::renderer::shader_stage::EShaderStage::NONE,
-            EShaderStage::VERTEX            => pi_render::renderer::shader_stage::EShaderStage::VERTEX,
-            EShaderStage::FRAGMENT          => pi_render::renderer::shader_stage::EShaderStage::FRAGMENT,
-            EShaderStage::COMPUTE           => pi_render::renderer::shader_stage::EShaderStage::COMPUTE,
-            EShaderStage::VERTEXFRAGMENT    => pi_render::renderer::shader_stage::EShaderStage::VERTEXFRAGMENT,
-        }
-    }
-}
+// #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+// #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+// #[pi_js_export]
+// pub enum EShaderStage {
+//     /// Binding is not visible from any shader stage.
+//     NONE,
+//     /// Binding is visible from the vertex shader of a render pipeline.
+//     VERTEX,
+//     /// Binding is visible from the fragment shader of a render pipeline.
+//     FRAGMENT,
+//     /// Binding is visible from the compute shader of a compute pipeline.
+//     COMPUTE,
+//     /// Binding is visible from the vertex and fragment shaders of a render pipeline.
+//     VERTEXFRAGMENT,
+// }
+// impl EShaderStage {
+//     pub fn val(&self) -> pi_render::renderer::shader_stage::EShaderStage {
+//         match self {
+//             EShaderStage::NONE              => pi_render::renderer::shader_stage::EShaderStage::NONE,
+//             EShaderStage::VERTEX            => pi_render::renderer::shader_stage::EShaderStage::VERTEX,
+//             EShaderStage::FRAGMENT          => pi_render::renderer::shader_stage::EShaderStage::FRAGMENT,
+//             EShaderStage::COMPUTE           => pi_render::renderer::shader_stage::EShaderStage::COMPUTE,
+//             EShaderStage::VERTEXFRAGMENT    => pi_render::renderer::shader_stage::EShaderStage::VERTEXFRAGMENT,
+//         }
+//     }
+// }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
@@ -243,21 +243,6 @@ pub fn sampler_desc(
     }
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
-#[pi_js_export]
-pub enum EDefaultTexture {
-    Black,
-    White,
-}
-impl EDefaultTexture {
-    pub fn val(&self) -> pi_render::renderer::buildin_data::EDefaultTexture {
-        match self {
-            EDefaultTexture::Black => pi_render::renderer::buildin_data::EDefaultTexture::Black,
-            EDefaultTexture::White => pi_render::renderer::buildin_data::EDefaultTexture::White,
-        }
-    }
-}
 
 #[derive(Debug, Clone, Copy, Hash, PartialEq, Eq)]
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]

@@ -1,12 +1,42 @@
 
 use js_proxy_gen_macro::pi_js_export;
 use pi_engine_shell::prelude::*;
-use pi_export_base::{export::Engine, constants::{DepthStencilFormat, RenderFormat}};
+pub use pi_export_base::constants::{DepthStencilFormat, RenderFormat};
 use pi_scene_context::prelude::*;
 
-use crate::{engine::ActionSetScene3D, as_entity, as_f64, material::OpsPass};
+pub use crate::{as_entity, as_f64};
 #[cfg(target_arch = "wasm32")]
 use wasm_bindgen::prelude::wasm_bindgen;
+
+pub use pi_export_base::export::Engine;
+pub use crate::engine::ActionSetScene3D;
+
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
+pub enum OpsPass {
+    ShadowCast,
+    Opaque,
+    Sky,
+    Water,
+    AlphaTest,
+    Transparent,
+    OpaqueExtend,
+    TransparentExtend,
+}
+impl OpsPass {
+    pub fn val(&self) -> EPassTag {
+        match self {
+            OpsPass::ShadowCast => EPassTag::ShadowCast,
+            OpsPass::Opaque => EPassTag::Opaque,
+            OpsPass::Sky => EPassTag::Sky,
+            OpsPass::Water => EPassTag::Water,
+            OpsPass::AlphaTest => EPassTag::AlphaTest,
+            OpsPass::Transparent => EPassTag::Transparent,
+            OpsPass::OpaqueExtend => EPassTag::OpaqueExtend,
+            OpsPass::TransparentExtend => EPassTag::TransparentExtend,
+        }
+    }
+}
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
@@ -131,7 +161,7 @@ impl PassOrders {
 }
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
-pub fn p3d_pass_orders(orders: &mut PassOrders, pass: OpsPass) {
+pub fn p3d_pass_orders(orders: &mut PassOrders, pass: &OpsPass) {
 
     orders.0.push(pass.val());
 }

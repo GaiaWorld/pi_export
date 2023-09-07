@@ -4,7 +4,7 @@ use std::{mem::transmute, ops::Deref};
 use pi_3d::PluginBundleDefault;
 use pi_assets::asset::Handle;
 use pi_engine_shell::prelude::*;
-use pi_export_base::export::Engine;
+pub use pi_export_base::export::Engine;
 use pi_gltf2_load::{GLTF, PluginGLTF2Res, GLTFResLoader, KeyGLTF, TypeAnimeAssetMgrs, TypeAnimeContexts};
 use pi_mesh_builder::{cube::PluginCubeBuilder, quad::PluginQuadBuilder};
 use pi_node_materials::{PluginNodeMaterial, NodeMaterialBlocks, prelude::*};
@@ -12,7 +12,7 @@ use pi_particle_system::{PluginParticleSystem, prelude::{ParticleSystemActionSet
 use pi_scene_context::prelude::*;
 use pi_particle_system::prelude::*;
 use pi_trail_renderer::{PluginTrail, ActionSetTrailRenderer};
-use pi_export_base::asset::Atom;
+pub use pi_export_base::asset::Atom;
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
@@ -29,6 +29,7 @@ use pi_hal::*;
 #[pi_js_export]
 pub fn p3d_init_engine(app: &mut Engine) {
     // use pi_engine_shell::frame_time::PluginFrameTime;
+    println!("======== p3d_init_engine");
 
     if app.world.get_resource::<AssetMgrConfigs>().is_none() {
         app.insert_resource(AssetMgrConfigs::default());
@@ -130,7 +131,7 @@ impl ActionSetScene3D {
             state: SystemState::<GlobalState>::new(&mut app.world),
             world_transform: app.world.query(),
             local_transform: app.world.query(),
-            view_matrix: app.world.query(),
+            view_matrix: app.world.query(),),
             actparticlesys: SystemState::<ParticleSystemActionSet>::new(&mut app.world),
             meshes: app.world.query(),
             materials: app.world.query(),
@@ -331,7 +332,7 @@ pub fn p3d_query_resource_state(app: &mut Engine, param: &mut ActionSetScene3D, 
     result[10] = cmds.resource.mem_shader as f32;
     result[11] = cmds.resource.mem_bindbuffer as f32;
     result[12] = cmds.resource.mem_imgtexture as f32;
-    
+
     result[13] = cmds.resource.count_material as f32;
     result[14] = cmds.resource.count_passset0 as f32;
     result[15] = cmds.resource.count_passset1 as f32;
@@ -456,7 +457,7 @@ pub fn p3d_transform_state(app: &mut Engine, param: &mut ActionSetScene3D, scene
                 if globalenable.0 { state.global_enable += 1; }
             }
         });
-    
+
         let cmds = param.state.get(&mut app.world);
         state.calc_local_time   = cmds.statetransform.calc_local_time;
         state.calc_world_time   = cmds.statetransform.calc_world_time;
@@ -495,7 +496,7 @@ pub fn p3d_camera_state(app: &mut Engine, param: &mut ActionSetScene3D, camera: 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_texture_loader_state(app: &mut Engine, param: &mut ActionSetScene3D, result: &mut [f32]) {
-    
+
     let cmds = param.acts.get_mut(&mut app.world);
 
     result[ 0] = cmds.imgtex_loader_state.image_count as f32;
@@ -516,6 +517,7 @@ pub fn p3d_texture_loader_state(app: &mut Engine, param: &mut ActionSetScene3D, 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_global_state(app: &mut Engine, param: &mut ActionSetScene3D, val: bool) {
+
     // let cmds = param.state.get(&mut app.world);
     // cmds.resource.debug = val;
 }
