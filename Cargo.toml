@@ -9,7 +9,7 @@ exclude = ["crates/gui/exports_macro"]
 
 # [patch.crates-io]
 [patch.crates-io]
-# probabilistic-collections = { git = "https://github.com/GaiaWorld/pi_probabilistic_collections.git" }
+probabilistic-collections = { git = "https://github.com/GaiaWorld/pi_probabilistic_collections.git" }
 # pi_time = { path = "../pi_time" }
 # pi_path_finding = { path = "../pi_path_finding" }
 # pi_flex_layout = { path = "../pi_flex_layout" }

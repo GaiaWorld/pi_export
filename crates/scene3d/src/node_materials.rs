@@ -339,7 +339,7 @@ pub fn p3d_shader_uniform_uint(uniforms: &mut MaterialUniformDefines, key: &str,
 // }
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
-pub fn p3d_shader_uniform_tex(uniforms: &mut MaterialUniformDefines, key: &str, filterable: bool, stage: &EShaderStage, default_r: &EDefaultTexture) {
+pub fn p3d_shader_uniform_tex(uniforms: &mut MaterialUniformDefines, key: &str, filterable: bool, stage: EShaderStage, default_r: EDefaultTexture) {
     uniforms.1.push(
         UniformTexture2DDesc::new(
             UniformPropertyName::from(key),

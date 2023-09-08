@@ -161,7 +161,7 @@ impl PassOrders {
 }
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
-pub fn p3d_pass_orders(orders: &mut PassOrders, pass: &OpsPass) {
+pub fn p3d_pass_orders(orders: &mut PassOrders, pass: OpsPass) {
 
     orders.0.push(pass.val());
 }

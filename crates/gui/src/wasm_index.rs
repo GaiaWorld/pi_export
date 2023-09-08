@@ -24,7 +24,6 @@ use pi_async_rt::prelude::AsyncRuntime;
 use pi_bevy_ecs_extend::prelude::{Layer, OrDefault};
 use pi_bevy_post_process::PiPostProcessPlugin;
 use pi_bevy_render_plugin::{PiRenderPlugin, FrameState};
-use pi_window_renderer::PluginWindowRender;
 use pi_bevy_asset::PiAssetPlugin;
 use pi_hash::XHashMap;
 use pi_slotmap::SecondaryMap;

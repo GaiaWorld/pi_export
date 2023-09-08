@@ -131,7 +131,7 @@ impl ActionSetScene3D {
             state: SystemState::<GlobalState>::new(&mut app.world),
             world_transform: app.world.query(),
             local_transform: app.world.query(),
-            view_matrix: app.world.query(),),
+            view_matrix: app.world.query(),
             actparticlesys: SystemState::<ParticleSystemActionSet>::new(&mut app.world),
             meshes: app.world.query(),
             materials: app.world.query(),
