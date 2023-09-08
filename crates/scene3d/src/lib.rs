@@ -18,6 +18,7 @@ pub mod texture;
 pub mod gltf;
 pub mod animation;
 pub mod particle_system;
+pub mod trail;
 
 pub fn as_entity(val: f64) -> Entity {
     Entity::from_bits(val.to_bits())

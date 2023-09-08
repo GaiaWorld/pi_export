@@ -81,18 +81,20 @@ lto = false
 
 # [patch."https://github.com/GaiaWorld/pi_scene"]
 # pi_scene_math = { path = "../pi_scene/crates/pi_scene_math" }
+# pi_scene_math = { path = "../pi_scene/crates/pi_scene_math" }
 
 # [patch."https://github.com/GaiaWorld/pi_3d"]
-# pi_3d               = { path="../pi_3d" }
-# pi_engine_shell     = { path="../pi_3d/crates/pi_engine_shell" }
-# pi_node_materials   = { path="../pi_3d/crates/node_materials" }
-# default_render      = { path="../pi_3d/crates/default_render" }
-# pi_scene_context    = { path="../pi_3d/crates/pi_scene_context" }
-# unlit_material      = { path="../pi_3d/crates/unlit_material" }
-# pi_mesh_builder     = { path="../pi_3d/crates/pi_mesh_builder" }
-# pi_trail_renderer = { path="../pi_3d/crates/trail" }
-# pi_gltf2_load = { path="../pi_3d/crates/gltf2" }
-# pi_particle_system = { path="../pi_3d/crates/particle_system" }
+# pi_3d               = { path = "../pi_3d" }
+# pi_engine_shell     = { path = "../pi_3d/crates/pi_engine_shell" }
+# pi_node_materials   = { path = "../pi_3d/crates/node_materials" }
+# default_render      = { path = "../pi_3d/crates/default_render" }
+# pi_scene_context    = { path = "../pi_3d/crates/pi_scene_context" }
+# unlit_material      = { path = "../pi_3d/crates/unlit_material" }
+# pi_mesh_builder     = { path = "../pi_3d/crates/pi_mesh_builder" }
+# pi_trail_renderer   = { path = "../pi_3d/crates/trail" }
+# pi_gltf2_load       = { path = "../pi_3d/crates/gltf2" }
+# pi_particle_system  = { path = "../pi_3d/crates/particle_system" }
+# pi_3d_state         = { path = "../pi_3d/crates/state" }
 
 # [net]
 # git-fetch-with-cli = true

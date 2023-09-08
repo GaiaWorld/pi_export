@@ -20,7 +20,7 @@ pub fn p3d_particle_system(
     trailgeo: f64,
     key: &Atom,
 ) {
-    let mut cmds = param.particlesys.get_mut(&mut app.world);
+    let mut cmds = param.actparticlesys.get_mut(&mut app.world);
     let scene = as_entity(scene);
     let entity = as_entity(entity);
     let trailmesh = as_entity(trailmesh);
@@ -43,7 +43,7 @@ pub fn p3d_particle_system_with_gltf(
     index_calculator: f64,
 ) {
     if let Some(calculator) = gltf_particle_calculator(gltf, index_calculator) {
-        let mut cmds = param.particlesys.get_mut(&mut app.world);
+        let mut cmds = param.actparticlesys.get_mut(&mut app.world);
         let scene = as_entity(scene);
         let entity = as_entity(entity);
         let trailmesh = as_entity(trailmesh);
@@ -59,7 +59,7 @@ pub fn p3d_particle_system_start(
     param: &mut ActionSetScene3D,
     entity: f64,
 ) {
-    let mut cmds = param.particlesys.get_mut(&mut app.world);
+    let mut cmds = param.actparticlesys.get_mut(&mut app.world);
     let entity = as_entity(entity);
     
     cmds.particlesys_state_cmds.push(OpsCPUParticleSystemState::ops_start(entity));
@@ -73,7 +73,7 @@ pub fn p3d_particle_system_timescale(
     entity: f64,
     speed: f64
 ) {
-    let mut cmds = param.particlesys.get_mut(&mut app.world);
+    let mut cmds = param.actparticlesys.get_mut(&mut app.world);
     let entity = as_entity(entity);
     
     cmds.particlesys_state_cmds.push(OpsCPUParticleSystemState::ops_speed(entity, speed as f32));
@@ -86,7 +86,7 @@ pub fn p3d_particle_system_stop(
     param: &mut ActionSetScene3D,
     entity: f64,
 ) {
-    let mut cmds = param.particlesys.get_mut(&mut app.world);
+    let mut cmds = param.actparticlesys.get_mut(&mut app.world);
     let entity = as_entity(entity);
     
     cmds.particlesys_state_cmds.push(OpsCPUParticleSystemState::ops_stop(entity));

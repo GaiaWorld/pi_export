@@ -49,15 +49,29 @@ pub fn p3d_mesh_geometry(app: &mut Engine, param: &mut ActionSetScene3D, mesh: f
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
-pub fn p3d_mesh_indexrange(app: &mut Engine, param: &mut ActionSetScene3D, mesh: f64, index_start: Option<f64>, index_count: Option<f64>) {
+pub fn p3d_mesh_indexrange(app: &mut Engine, param: &mut ActionSetScene3D, mesh: f64, index_start: Option<f64>, index_end: Option<f64>) {
     let mesh: Entity = as_entity(mesh);
 
     let mut cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
 
-    if let (Some(index_start), Some(index_count)) = (index_start, index_count) {
+    if let (Some(index_start), Some(index_count)) = (index_start, index_end) {
         cmds.meshcmds.indexrange.push(OpsMeshRenderIndiceRange::ops(mesh, Some(index_start as u32), Some(index_count as u32)));
     } else {
         cmds.meshcmds.indexrange.push(OpsMeshRenderIndiceRange::ops(mesh, None, None));
+    }
+}
+
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
+pub fn p3d_mesh_vertexrange(app: &mut Engine, param: &mut ActionSetScene3D, mesh: f64, vertex_start: Option<f64>, vertex_count: Option<f64>) {
+    let mesh: Entity = as_entity(mesh);
+
+    let mut cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
+
+    if let (Some(vertex_start), Some(vertex_count)) = (vertex_start, vertex_count) {
+        cmds.meshcmds.vertexrange.push(OpsMeshRenderVertexRange::ops(mesh, Some(vertex_start as u32), Some(vertex_count as u32)));
+    } else {
+        cmds.meshcmds.vertexrange.push(OpsMeshRenderVertexRange::ops(mesh, None, None));
     }
 }
 
