@@ -130,26 +130,26 @@ pub fn log_animation(
 	key_frames.log();
 }
 
-// 开始录制性能
-#[wasm_bindgen]
-pub fn start_record_performance(
-    engine: &mut Engine,
-) {
-	let mut flush_guard = engine.world.get_non_send_resource::<tracing_chrome_wasm::FlushGuard<crate::ShareChromeWrite>>().unwrap();
-	flush_guard.start();
-}
+// // 开始录制性能
+// #[wasm_bindgen]
+// pub fn start_record_performance(
+//     engine: &mut Engine,
+// ) {
+// 	let mut flush_guard = engine.world.get_non_send_resource::<tracing_chrome_wasm::FlushGuard<crate::ShareChromeWrite>>().unwrap();
+// 	flush_guard.start();
+// }
 
-// 结束录制性能
-#[wasm_bindgen]
-pub fn end_record_performance(
-    engine: &mut Engine,
-) -> Vec<u8> {
-	let mut flush_guard = engine.world.get_non_send_resource::<tracing_chrome_wasm::FlushGuard<crate::ShareChromeWrite>>().unwrap();
-	flush_guard.end();
+// // 结束录制性能
+// #[wasm_bindgen]
+// pub fn end_record_performance(
+//     engine: &mut Engine,
+// ) -> Vec<u8> {
+// 	let mut flush_guard = engine.world.get_non_send_resource::<tracing_chrome_wasm::FlushGuard<crate::ShareChromeWrite>>().unwrap();
+// 	flush_guard.end();
 
-	let mut chrome_write = engine.world.get_resource_mut::<ShareChromeWrite>().unwrap();
-	chrome_write.take()
-}
+// 	let mut chrome_write = engine.world.get_resource_mut::<ShareChromeWrite>().unwrap();
+// 	chrome_write.take()
+// }
 
 // /**
 //  * 获取canvas资源

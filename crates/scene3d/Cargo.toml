@@ -13,7 +13,7 @@ default 				= ["pi_js_export"]
 pi_js_export 			= []
 
 [dependencies]
-wgpu 					= { version = "0.16", default-features = false }
+wgpu = {version = "0.1", registry = "yn", package="pi_wgpu"}
 bevy 					= { version = "0.11", default-features = false}
 pi_bevy_asset 			= {version = "0.1", registry = "yn"}
 pi_bevy_render_plugin 	= {version = "0.1", registry = "yn"}
@@ -52,7 +52,6 @@ js_proxy_gen_macro      = { registry = "yn", version = "0.2" }
 pi_render 				= { version = "0.1", registry = "yn" }
 
 [target.'cfg(target_arch = "wasm32")'.dependencies]
-wgpu 					= { version = "0.16", default-features = false, features = ["glsl"] }
 pi-async-rt 		    = { version = "0.1", features = ["serial"] }
 wasm-bindgen 			= { version = "0.2", features = ["serde-serialize"] }
 js-sys 					= "0.3"

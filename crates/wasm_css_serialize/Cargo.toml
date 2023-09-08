@@ -23,7 +23,7 @@ smallvec={version = "1.8", features = ["serde"]}
 pi_web_logger={git ="http://ser.yinengyun.com:10082/tech/pi_web_logger.git"}
 pi_style = {version = "0.1", registry = "yn"}
 pi_ui_render = {version = "0.1", registry = "yn"}
-wgpu = { version = "0.16", default-features = false, features = ["glsl", "webgl"] }
+wgpu = {version = "0.1", registry = "yn", package="pi_wgpu"}
 pi_render = { version = "0.1", registry = "yn", features = ["webgl"] }
 pi_bevy_render_plugin = { version = "0.1", registry = "yn", features=["webgl"]}
 

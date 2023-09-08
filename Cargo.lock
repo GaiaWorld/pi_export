@@ -86,7 +86,7 @@ version = "0.7.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "fcb51a0695d8f838b1ee009b3fbf66bda078cd64590202a864a8f3e8c4315c47"
 dependencies = [
- "getrandom",
+ "getrandom 0.2.10",
  "once_cell",
  "version_check",
 ]
@@ -98,7 +98,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "2c99f64d1e06488f620f932677e24bc6e2897582980441ae90a671415bd7ec2f"
 dependencies = [
  "cfg-if",
- "getrandom",
+ "getrandom 0.2.10",
  "once_cell",
  "version_check",
 ]
@@ -589,7 +589,7 @@ dependencies = [
  "bevy_ecs",
  "bevy_utils",
  "console_error_panic_hook",
- "tracing-chrome 0.7.1",
+ "tracing-chrome",
  "tracing-error",
  "tracing-log",
  "tracing-subscriber",
@@ -793,7 +793,7 @@ checksum = "829eb8d0d06a0baeabc2e8bad74136ed3329b055aa1e11c5d9df09ebb9be3d85"
 dependencies = [
  "ahash 0.8.3",
  "bevy_utils_proc_macros",
- "getrandom",
+ "getrandom 0.2.10",
  "hashbrown 0.14.0",
  "instant",
  "petgraph",
@@ -2042,6 +2042,17 @@ dependencies = [
 
 [[package]]
 name = "getrandom"
+version = "0.1.16"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "8fc3cb4d91f53b50155bdcfd23f6a4c39ae1969c2ae85982b135750cccaf5fce"
+dependencies = [
+ "cfg-if",
+ "libc",
+ "wasi 0.9.0+wasi-snapshot-preview1",
+]
+
+[[package]]
+name = "getrandom"
 version = "0.2.10"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "be4136b2a15dd319360be1c07d9933517ccf0be8f16bf62a3bee4f0d618df427"
@@ -2177,7 +2188,7 @@ dependencies = [
  "into-attr-derive",
  "pest",
  "pest_derive",
- "rand",
+ "rand 0.8.5",
  "tempfile",
 ]
 
@@ -2794,7 +2805,7 @@ version = "0.7.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "6a51313c5820b0b02bd422f4b44776fbf47961755c74ce64afc73bfad10226c3"
 dependencies = [
- "getrandom",
+ "getrandom 0.2.10",
 ]
 
 [[package]]
@@ -3115,7 +3126,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "2a54938017eacd63036332b4ae5c8a49fc8c0c1d6d629893057e4f13609edd06"
 dependencies = [
  "num-traits",
- "rand",
+ "rand 0.8.5",
  "serde",
 ]
 
@@ -3282,7 +3293,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "5d5285893bb5eb82e6aaf5d59ee909a06a16737a8970984dd7746ba9283498d6"
 dependencies = [
  "phf_shared",
- "rand",
+ "rand 0.8.5",
 ]
 
 [[package]]
@@ -3331,7 +3342,7 @@ dependencies = [
  "pi_timer",
  "pi_wrr",
  "quanta",
- "rand",
+ "rand 0.8.5",
  "slotmap",
  "st3",
 ]
@@ -3413,7 +3424,7 @@ dependencies = [
  "pi_trail_renderer",
  "pi_wgpu",
  "pi_wy_rng",
- "rand",
+ "rand 0.8.5",
  "render_derive",
  "render_utils",
  "smallvec",
@@ -3688,7 +3699,7 @@ name = "pi_css_serialize_wasm"
 version = "0.1.0"
 dependencies = [
  "cssparser",
- "getrandom",
+ "getrandom 0.2.10",
  "log",
  "pi-async-rt",
  "pi_bevy_render_plugin",
@@ -3698,13 +3709,13 @@ dependencies = [
  "pi_style",
  "pi_ui_render",
  "pi_web_logger",
+ "pi_wgpu",
  "postcard",
  "serde",
  "serde_json",
  "smallvec",
  "uuid",
  "wasm-bindgen",
- "wgpu",
 ]
 
 [[package]]
@@ -3837,7 +3848,6 @@ name = "pi_export_base"
 version = "0.1.0"
 dependencies = [
  "bevy",
- "bevy_mod_debugdump",
  "derive_deref",
  "js-sys",
  "js_proxy_gen_macro",
@@ -3856,6 +3866,7 @@ dependencies = [
  "pi_hash",
  "pi_render",
  "pi_share",
+ "pi_wgpu",
  "pi_window_renderer",
  "serde_json",
  "tracing-subscriber",
@@ -3926,6 +3937,7 @@ dependencies = [
  "pi_time",
  "pi_ucd",
  "pi_ui_render",
+ "pi_wgpu",
  "pi_window_renderer",
  "polygon2",
  "postcard",
@@ -3934,12 +3946,10 @@ dependencies = [
  "siphasher",
  "smallvec",
  "tracing",
- "tracing-chrome 0.7.0",
  "tracing-core",
  "uuid",
  "wasm-bindgen",
  "web-sys",
- "wgpu",
  "winit 0.27.8",
 ]
 
@@ -4260,7 +4270,7 @@ dependencies = [
  "pi_trail_renderer",
  "pi_wgpu",
  "pi_wy_rng",
- "rand",
+ "rand 0.8.5",
  "render_derive",
  "render_utils",
  "smallvec",
@@ -4313,7 +4323,7 @@ dependencies = [
  "pi_share",
  "pi_wy_rng",
  "pollster",
- "rand",
+ "rand 0.8.5",
  "smallvec",
  "wgpu",
 ]
@@ -4635,7 +4645,7 @@ dependencies = [
  "pi_time",
  "pi_wgpu",
  "pi_wy_rng",
- "rand",
+ "rand 0.8.5",
  "render_derive",
  "render_utils",
  "smallvec",
@@ -4731,7 +4741,7 @@ name = "pi_wasm_engine"
 version = "0.1.0"
 dependencies = [
  "bevy",
- "getrandom",
+ "getrandom 0.2.10",
  "log",
  "pi-async-rt",
  "pi_bevy_log",
@@ -4741,6 +4751,7 @@ dependencies = [
  "pi_render",
  "pi_spine_export",
  "pi_web_logger",
+ "pi_wgpu",
  "scene3d_export",
  "uuid",
  "wasm-bindgen",
@@ -4783,6 +4794,7 @@ dependencies = [
  "wasm-bindgen",
  "wasm-bindgen-futures",
  "web-sys",
+ "wgpu",
  "winapi",
 ]
 
@@ -4832,7 +4844,7 @@ version = "0.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "747ddd51dbb85451a68f5269fe3a6337aea6ac25ba3331d17292755607ab0e7b"
 dependencies = [
- "rand",
+ "rand 0.8.5",
 ]
 
 [[package]]
@@ -4937,12 +4949,12 @@ checksum = "f0f73cdaf19b52e6143685c3606206e114a4dfa969d6b14ec3894c88eb38bd4b"
 [[package]]
 name = "probabilistic-collections"
 version = "0.7.0"
-source = "git+https://github.com/GaiaWorld/pi_probabilistic_collections.git#0cfd2b3b595d67628696958fe9454f30d14ecd87"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "10e885f79599b2c3fe1ad8ab539b4dbb0c6b801b5948696a6b0b6dee18675cea"
 dependencies = [
  "bincode",
  "byteorder",
- "getrandom",
- "rand",
+ "rand 0.7.3",
  "rand_xorshift",
  "siphasher",
 ]
@@ -5068,14 +5080,37 @@ checksum = "17fd96390ed3feda12e1dfe2645ed587e0bea749e319333f104a33ff62f77a0b"
 
 [[package]]
 name = "rand"
+version = "0.7.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "6a6b1679d49b24bbfe0c803429aa1874472f50d9b363131f0e89fc356b544d03"
+dependencies = [
+ "getrandom 0.1.16",
+ "libc",
+ "rand_chacha 0.2.2",
+ "rand_core 0.5.1",
+ "rand_hc",
+]
+
+[[package]]
+name = "rand"
 version = "0.8.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "34af8d1a0e25924bc5b7c43c079c942339d8f0a8b57c39049bef581b46327404"
 dependencies = [
  "libc",
- "rand_chacha",
- "rand_core",
+ "rand_chacha 0.3.1",
+ "rand_core 0.6.4",
  "serde",
+]
+
+[[package]]
+name = "rand_chacha"
+version = "0.2.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f4c8ed856279c9737206bf725bf36935d8666ead7aa69b52be55af369d193402"
+dependencies = [
+ "ppv-lite86",
+ "rand_core 0.5.1",
 ]
 
 [[package]]
@@ -5085,7 +5120,16 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e6c10a63a0fa32252be49d21e7709d4d4baf8d231c2dbce1eaa8141b9b127d88"
 dependencies = [
  "ppv-lite86",
- "rand_core",
+ "rand_core 0.6.4",
+]
+
+[[package]]
+name = "rand_core"
+version = "0.5.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "90bde5296fc891b0cef12a6d03ddccc162ce7b2aff54160af9338f8d40df6d19"
+dependencies = [
+ "getrandom 0.1.16",
 ]
 
 [[package]]
@@ -5094,17 +5138,26 @@ version = "0.6.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ec0be4795e2f6a28069bec0b5ff3e2ac9bafc99e6a9a7dc3547996c5c816922c"
 dependencies = [
- "getrandom",
+ "getrandom 0.2.10",
  "serde",
 ]
 
 [[package]]
-name = "rand_xorshift"
-version = "0.3.0"
+name = "rand_hc"
+version = "0.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d25bf25ec5ae4a3f1b92f929810509a2f53d7dca2f50b794ff57e3face536c8f"
+checksum = "ca3129af7b92a17112d59ad498c6f81eaf463253766b90396d39ea7a39d6613c"
 dependencies = [
- "rand_core",
+ "rand_core 0.5.1",
+]
+
+[[package]]
+name = "rand_xorshift"
+version = "0.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "77d416b86801d23dde1aa643023b775c3a462efc0ed96443add11546cdf1dca8"
+dependencies = [
+ "rand_core 0.5.1",
 ]
 
 [[package]]
@@ -5481,12 +5534,12 @@ dependencies = [
  "pi_scene_math",
  "pi_slotmap",
  "pi_trail_renderer",
+ "pi_wgpu",
  "pi_window_renderer",
  "unlit_material",
  "wasm-bindgen",
  "wasm-bindgen-futures",
  "web-sys",
- "wgpu",
 ]
 
 [[package]]
@@ -5999,16 +6052,6 @@ dependencies = [
 
 [[package]]
 name = "tracing-chrome"
-version = "0.7.0"
-dependencies = [
- "pi_time",
- "serde_json",
- "tracing-core",
- "tracing-subscriber",
-]
-
-[[package]]
-name = "tracing-chrome"
 version = "0.7.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "496b3cd5447f7ff527bbbf19b071ad542a000adf297d4127078b4dfdb931f41a"
@@ -6085,7 +6128,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "97fee6b57c6a41524a810daee9286c02d7752c4253064d0b05472833a438f675"
 dependencies = [
  "cfg-if",
- "rand",
+ "rand 0.8.5",
  "static_assertions",
 ]
 
@@ -6159,7 +6202,7 @@ version = "1.4.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "79daa5ed5740825c40b389c5e50312b9c86df53fccd33f281df655642b43869d"
 dependencies = [
- "getrandom",
+ "getrandom 0.2.10",
  "serde",
  "wasm-bindgen",
 ]
@@ -6230,6 +6273,12 @@ name = "wasi"
 version = "0.7.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b89c3ce4ce14bdc6fb6beaf9ec7928ca331de5df7e5ea278375642a2f478570d"
+
+[[package]]
+name = "wasi"
+version = "0.9.0+wasi-snapshot-preview1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "cccddf32554fecc6acb585f82a32a72e28b48f8c4c1883ddfeeeaa96f7d8e519"
 
 [[package]]
 name = "wasi"
