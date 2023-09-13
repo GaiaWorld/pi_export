@@ -14,7 +14,7 @@ use pi_ui_render::{
     system::node::user_setting::user_setting,
     utils::cmd::SingleCmd,
 };
-use bevy::ecs::{
+use bevy_ecs::{
     prelude::Entity,
     system::{CommandQueue, Query, SystemState},
     world::WorldCell,
@@ -40,7 +40,7 @@ pub use super::{index::Gui, ShareChromeWrite};
 use pi_export_play::as_value;
 // pub use pi_ui_render::gui::Gui;
 pub use pi_export_base::export::{Engine, Atom};
-use bevy::app::App;
+use bevy_app::prelude::App;
 use cssparser::ParseError;
 use js_proxy_gen_macro::pi_js_export;
 use js_sys::{Array, Function, Float64Array};
@@ -215,11 +215,11 @@ pub fn log_animation(
 // // wasm 使用单线程运行时，需要手动推
 // pub struct RuntimePlugin;
 
-// impl bevy::app::Plugin for RuntimePlugin {
+// impl bevy_app::Plugin for RuntimePlugin {
 //     fn build(&self, app: &mut App) {
 //         app.add_stage_before(
 // 			RuntimeStage::Start,
-// 			bevy::prelude::SystemStage::single(|| {
+// 			bevy_ecs::prelude::SystemStage::single(|| {
 // 				run_all(&pi_hal::runtime::RUNNER_MULTI.lock());
 // 				run_all(&pi_hal::runtime::RUNNER_RENDER.lock());
 // 			}),
@@ -234,7 +234,7 @@ pub fn log_animation(
 // 		app.add_stage_after(
 // 			last,
 // 			RuntimeStage::End,
-// 			bevy::prelude::SystemStage::single(|| {
+// 			bevy_ecs::prelude::SystemStage::single(|| {
 // 				run_all(&pi_hal::runtime::RUNNER_MULTI.lock());
 // 				run_all(&pi_hal::runtime::RUNNER_RENDER.lock());
 // 			}),
@@ -242,7 +242,7 @@ pub fn log_animation(
 //     }
 // }
 
-// #[derive(Debug, Hash, PartialEq, Eq, Clone, bevy::ecs::schedule::StageLabel)]
+// #[derive(Debug, Hash, PartialEq, Eq, Clone, bevy_ecs::schedule::StageLabel)]
 // pub enum RuntimeStage {
 // 	Start,
 // 	End

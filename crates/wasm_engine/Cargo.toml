@@ -23,7 +23,7 @@ pi_web_logger = {git = "http://ser.yinengyun.com:10082/tech/pi_web_logger.git"}
 
 # wasm-bindgen = { version = "0.2"}
 wasm-bindgen = { version = "=0.2.87" }
-bevy = { version = "0.11", default-features=false}
+bevy_ecs = "0.11"
 
 
 # log

@@ -10,7 +10,7 @@
 #![feature(can_vector)]
 
 
-use bevy::prelude::Resource;
+use bevy_ecs::prelude::Resource;
 use std::{mem::replace, io};
 use pi_share::Share;
 use std::cell::RefCell;

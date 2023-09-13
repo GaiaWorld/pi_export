@@ -1,7 +1,7 @@
-use pi_export_base::export::Engine;
+pub use pi_export_base::export::Engine;
 use pi_trail_renderer::{OpsTrail, OpsTrailAgeControl};
 
-use crate::{engine::ActionSetScene3D, as_entity};
+pub use crate::{engine::ActionSetScene3D, as_entity};
 
 #[cfg(target_arch = "wasm32")]
 use wasm_bindgen::prelude::wasm_bindgen;

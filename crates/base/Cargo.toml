@@ -21,7 +21,10 @@ pi_export_macro = {path="../macro"}
 pi_share = {version="0.4"}
 pi_assets = "0.13"
 pi_hal = {version = "0.1", registry = "yn"}
-bevy = { version="0.11", default-features = false }
+bevy_ecs = "0.11"
+bevy_app = {version = "0.11", default_features = false}
+bevy_a11y = "0.11"
+bevy_window = {version = "0.1", registry = "yn", package = "pi_bevy_window" }
 pi_bevy_asset = {version = "0.1", registry = "yn"}
 pi_bevy_render_plugin = {version = "0.1", registry = "yn"}
 pi_bevy_winit_window = {version = "0.1", registry = "yn"}
@@ -35,6 +38,7 @@ js_proxy_gen_macro = { registry = "yn", version = "0.2" }
 tracing-subscriber = "0.3"
 # bevy_mod_debugdump = "0.8"
 wgpu = {version = "0.1", registry = "yn", package="pi_wgpu", features=["wgpu"]}
+tracing = "0.1"
 
 
 [target.'cfg(target_arch = "wasm32")'.dependencies]

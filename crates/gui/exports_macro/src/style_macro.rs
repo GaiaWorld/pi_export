@@ -12,7 +12,7 @@ use pi_ui_render::resource::ComponentCmd;
 use pi_null::Null;
 use pi_ui_render::components::user::ClassName;
 use pi_export_play::as_value;
-use bevy::ecs::prelude::Entity;
+use bevy_ecs::prelude::Entity;
 use ordered_float::NotNan;
 use pi_flex_layout::prelude::*;
 use pi_hash::XHashMap;

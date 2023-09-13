@@ -9,7 +9,7 @@ use pi_bevy_post_process::PiPostProcessPlugin;
 use pi_hash::XHashMap;
 use pi_render::{rhi::{asset::{RenderRes, TextureRes}, bind_group::BindGroup, pipeline::RenderPipeline}, renderer::sampler::SamplerRes};
 use pi_share::Share;
-use bevy::app::App;
+use bevy_app::prelude::App;
 use pi_bevy_render_plugin::{FrameState, PiRenderPlugin};
 use pi_window_renderer::PluginWindowRender;
 #[cfg(target_arch = "wasm32")]
@@ -250,7 +250,7 @@ pub fn create_engine(canvas: web_sys::HtmlCanvasElement, width: u32, height: u32
 
     let mut app = App::default();
 
-    let mut window_plugin = bevy::window::WindowPlugin::default();
+    let mut window_plugin = bevy_window::WindowPlugin::default();
 	window_plugin.primary_window = None;
 
 	let mut log = pi_bevy_log::LogPlugin::<Vec<u8>>::default();
@@ -259,12 +259,12 @@ pub fn create_engine(canvas: web_sys::HtmlCanvasElement, width: u32, height: u32
 	}
 
 	log.level= match log_level {
-		0 => bevy::log::Level::TRACE,
-		1 => bevy::log::Level::DEBUG,
-		2 => bevy::log::Level::INFO,
-		3 => bevy::log::Level::WARN,
-		4 => bevy::log::Level::ERROR,
-		_ => bevy::log::Level::WARN,
+		0 => tracing::Level::TRACE,
+		1 => tracing::Level::DEBUG,
+		2 => tracing::Level::INFO,
+		3 => tracing::Level::WARN,
+		4 => tracing::Level::ERROR,
+		_ => tracing::Level::WARN,
 	};
 	// let chrome_write = ShareChromeWrite::new();
 	// log.chrome_write = None;
@@ -314,7 +314,7 @@ fn create_engine_inner(
 	asset_total_capacity: u32,
 	asset_config: &str,
 ) {
-	let mut window_plugin = bevy::window::WindowPlugin::default();
+	let mut window_plugin = bevy_window::WindowPlugin::default();
 	window_plugin.primary_window = None;
 
 	app
@@ -322,7 +322,7 @@ fn create_engine_inner(
 		// 	filter: "wgpu=debug".to_string(),
 		// 	level: bevy::log::Level::DEBUG,
 		// })
-		.add_plugins(bevy::a11y::AccessibilityPlugin)
+		.add_plugins(bevy_a11y::AccessibilityPlugin)
 		// .add_plugins(bevy::input::InputPlugin::default())
 		.add_plugins(window_plugin)
 		.add_plugins(winit_plugin)
@@ -418,9 +418,10 @@ fn runtime_run() {
 }
 
 #[cfg(target_arch = "wasm32")]
-impl bevy::app::Plugin for RuntimePlugin {
+impl bevy_app::Plugin for RuntimePlugin {
     fn build(&self, app: &mut App) {
-		use bevy::prelude::{First, IntoSystemConfigs};
+		use bevy_app::prelude::First;
+		use bevy_ecs::prelude::IntoSystemConfigs;
 		use pi_bevy_render_plugin::should_run;
         app.add_systems(First,
 			runtime_run.run_if(should_run)

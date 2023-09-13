@@ -1,6 +1,6 @@
 use std::mem::transmute;
 
-use bevy::prelude::Entity;
+use bevy_ecs::prelude::Entity;
 use pi_slotmap::DefaultKey;
 
 pub mod engine;

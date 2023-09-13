@@ -1,6 +1,5 @@
 use std::mem::transmute;
 
-use bevy::prelude::Entity;
 pub use pi_export_base::export::Engine;
 use pi_null::Null;
 use pi_ui_render::{
@@ -15,7 +14,8 @@ use pi_ui_render::{
 use pi_ui_render::system::RunState;
 use pi_bevy_render_plugin::FrameState;
 
-use bevy::ecs::{
+use bevy_ecs::{
+	prelude::Entity,
     entity::Entities,
     query::QueryState,
     system::{Query, Res, SystemState},
@@ -233,7 +233,7 @@ pub fn render_gui(gui: &mut Gui, engine: &mut Engine) {
 
 	#[cfg(feature = "trace")]
 	let _span = tracing::warn_span!("flush").entered();
-	bevy::ecs::system::CommandQueue::default().apply(&mut engine.world);
+	bevy_ecs::system::CommandQueue::default().apply(&mut engine.world);
 	flush_data(gui, engine);
 	*engine.world.get_resource_mut::<RunState>().unwrap() = RunState::RENDER;
 	
@@ -245,7 +245,7 @@ pub fn render_gui(gui: &mut Gui, engine: &mut Engine) {
 pub fn calc(gui: &mut Gui, engine: &mut Engine) {
 	#[cfg(feature = "trace")]
 	let _span = tracing::warn_span!("calc").entered();
-	bevy::ecs::system::CommandQueue::default().apply(&mut engine.world);
+	bevy_ecs::system::CommandQueue::default().apply(&mut engine.world);
 	flush_data(gui, engine);
 	*engine.world.get_resource_mut::<RunState>().unwrap() = RunState::MATRIX;
 	*engine.world.get_resource_mut::<FrameState>().unwrap() = FrameState::UnActive;
@@ -257,7 +257,7 @@ pub fn calc(gui: &mut Gui, engine: &mut Engine) {
 pub fn calc_layout(gui: &mut Gui, engine: &mut Engine) {
 	#[cfg(feature = "trace")]
 	let _span = tracing::warn_span!("calc_layout").entered();
-	bevy::ecs::system::CommandQueue::default().apply(&mut engine.world);
+	bevy_ecs::system::CommandQueue::default().apply(&mut engine.world);
 	flush_data(gui, engine);
 	*engine.world.get_resource_mut::<RunState>().unwrap() = RunState::LAYOUT;
 	*engine.world.get_resource_mut::<FrameState>().unwrap() = FrameState::UnActive;
@@ -269,7 +269,7 @@ pub fn calc_layout(gui: &mut Gui, engine: &mut Engine) {
 pub fn calc_geo(gui: &mut Gui, engine: &mut Engine) {
 	#[cfg(feature = "trace")]
 	let _span = tracing::warn_span!("calc_geo").entered();
-	bevy::ecs::system::CommandQueue::default().apply(&mut engine.world);
+	bevy_ecs::system::CommandQueue::default().apply(&mut engine.world);
 	flush_data(gui, engine);
 	*engine.world.get_resource_mut::<RunState>().unwrap() = RunState::MATRIX;
 	*engine.world.get_resource_mut::<FrameState>().unwrap() = FrameState::UnActive;

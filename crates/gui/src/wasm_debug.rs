@@ -34,7 +34,7 @@ use pi_ui_render::components::pass_2d::ParentPassId;
 use super::index::Gui;
 pub use pi_export_base::export::Engine;
 use pi_ui_render::resource::ClassSheet;
-use bevy::ecs::prelude::Entity;
+use bevy_ecs::prelude::Entity;
 use pi_map::vecmap::VecMap;
 use pi_style::style::ImageRepeatOption;
 use smallvec::SmallVec;
