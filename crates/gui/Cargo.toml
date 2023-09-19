@@ -59,7 +59,7 @@ json ="0.12"
 pi_slotmap_tree ="0.3"
 
 pi_flex_layout = "0.2"
-pi_spatial = "0.4"
+pi_spatial = "0.5"
 pi_hal = {version = "0.1", registry = "yn"}
 js_proxy_gen_macro = { registry = "yn", version = "0.2" }
 pi_postprocess = {version = "0.1", registry = "yn"}
