@@ -64,6 +64,16 @@ pub fn p3d_camera_size(app: &mut Engine, param: &mut ActionSetScene3D, camera: f
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
+pub fn p3d_camera_fov(app: &mut Engine, param: &mut ActionSetScene3D, camera: f64, fov: f64) {
+    let camera: Entity = as_entity(camera);
+
+    let mut scenecmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
+
+    scenecmds.cameracmds.fov.push(OpsCameraFov::ops(camera, fov as f32));
+}
+
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
 pub fn p3d_camera_active(app: &mut Engine, param: &mut ActionSetScene3D, camera: f64, active: bool) {
     let camera: Entity = as_entity(camera);
 
