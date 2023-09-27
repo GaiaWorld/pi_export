@@ -1,7 +1,7 @@
 
 use std::mem::transmute;
 
-use bevy_ecs::{prelude::Commands, system::CommandQueue};
+use bevy_ecs::{prelude::Commands, system::CommandQueue, query::QueryState};
 use pi_bevy_asset::ShareAssetMgr;
 use pi_bevy_render_plugin::{PiRenderGraph, PiRenderDevice, component::GraphId};
 pub use pi_export_base::{export::Engine, constants::*, asset::TextureDefaultView};
@@ -93,9 +93,17 @@ pub fn spine_renderer_create(app: &mut Engine, name: String, width: Option<f64>,
 #[pi_js_export]
 pub fn spine_renderer_dispose(app: &mut Engine, id_renderer: f64) {
     let id_renderer = KeySpineRenderer::from_f64(id_renderer);
+    
+    let mut nodequery: QueryState<&'static GraphId> = app.world.query();
+    
+    if let Ok(nodeid) = nodequery.get(&app.world, id_renderer.0).cloned() {
+        let mut render_graph = app.world.get_resource_mut::<PiRenderGraph>().unwrap();
+        render_graph.remove_node(nodeid.0);
+    }
 
     let mut queue = CommandQueue::default();
     let mut commands = Commands::new(&mut queue, &app.world);
+
     commands.entity(id_renderer.0).despawn();
     queue.apply(&mut app.world);
 

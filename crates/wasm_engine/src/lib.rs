@@ -17,7 +17,7 @@ pub use scene3d_export::{
 	lights::*,
 	node_materials::*,
 	animation::*,
- trail::*,
+ 	trail::*,
 };
 
 use wasm_bindgen::prelude::*;

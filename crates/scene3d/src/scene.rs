@@ -139,5 +139,5 @@ pub fn p3d_layermask(app: &mut Engine, param: &mut ActionSetScene3D, node: f64, 
 
     let mut scenecmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
 
-    scenecmds.layer_mask.push(OpsLayerMask::ops(node, val as u32));
+    scenecmds.meshcmds.layermask.push(OpsLayerMask::ops(node, val as u32));
 }

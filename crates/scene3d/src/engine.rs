@@ -70,7 +70,7 @@ pub struct ActionSets<'w> {
     pub renderercmds: ActionSetRenderer<'w>,
     pub default_mat: Res<'w, SingleIDBaseDefaultMaterial>,
     pub node_material_blocks: ResMut<'w, NodeMaterialBlocks>,
-    pub layer_mask: ResMut<'w, ActionListLayerMask>,
+    // pub layer_mask: ResMut<'w, ActionListLayerMask>,
     // pub renderer_drawcalls: Res<'w, RendererDrawCallRecord>,
     // pub transform_record: Res<'w, TransformRecord>,
     pub imgtex_loader: ResMut<'w, ImageTextureLoader>,
