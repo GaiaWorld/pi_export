@@ -394,6 +394,16 @@ pub fn query(engine: &mut Engine, gui: &mut Gui, x: f32, y: f32) -> Option<f64> 
     }
 }
 
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
+pub enum BlendMode {
+    Normal,
+    AlphaAdd,
+    Subtract,
+    Multiply,
+    OneOne,
+}
+
 /// aabb的ab查询函数, aabb的oct查询函数应该使用intersects
 fn ab_query_func(arg: &mut AbQueryArgs, id: EntityKey, aabb: &Aabb2, _bind: &()) {
     let (_layer, _is_show, z_range, inpass) = match arg.query.get(*id) {
