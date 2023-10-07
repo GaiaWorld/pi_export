@@ -1,5 +1,5 @@
 use std::ops::Deref;
-use pi_assets::asset::Handle;
+use pi_assets::asset::{Handle, Size};
 use pi_engine_shell::prelude::{ImageTexture, KeyImageTexture};
 pub use pi_export_base::{export::{Engine, Atom}, constants::*};
 // use pi_render::asset::TAssetKeyU64;
@@ -94,4 +94,19 @@ pub fn p3d_create_data_texture(app: &mut Engine, param: &mut ActionSetScene3D, k
 pub fn p3d_update_data_texture(app: &mut Engine, param: &mut ActionSetScene3D, texture: &DataTextureRes, data:&[u8]) {
     let cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
     texture.0.update(&cmds.queue, data, 0, 0, texture.0.width(), texture.0.height());
+}
+
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
+pub fn p3d_query_texture(app: &mut Engine, param: &mut ActionSetScene3D, isfile: bool, url: &Atom, srgb: bool, info: &mut [f32]) -> bool {
+    let cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
+    let key = if isfile { KeyImageTexture::File(url.deref().clone(), srgb) } else { KeyImageTexture::Data(url.deref().clone(), srgb) };
+    if let Some(img) = cmds.imgtex_asset.get(&key) {
+        info[0] = img.width() as f32;
+        info[1] = img.height() as f32;
+        info[2] = img.size() as f32;
+        true
+    } else {
+        false
+    }
 }

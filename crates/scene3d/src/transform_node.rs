@@ -180,7 +180,7 @@ pub fn p3d_local_quaternion_arr(app: &mut Engine, param: &mut ActionSetScene3D, 
         let x = data[i * size + 1] as f32;
         let y = data[i * size + 2] as f32;
         let z = data[i * size + 3] as f32;
-        let w = data[i * size + 3] as f32;
+        let w = data[i * size + 4] as f32;
         cmds.transformcmds.localrotq.push(OpsTransformNodeLocalRotationQuaternion::ops(node, x as f32, y as f32, z as f32, w as f32));
     }
 }

@@ -110,6 +110,8 @@ pub struct ActionSetScene3D {
     pub(crate) world_transform: QueryState<&'static WorldMatrix>,
     pub(crate) local_transform: QueryState<&'static LocalMatrix>,
     pub(crate) view_matrix: QueryState<&'static ViewerViewMatrix>,
+    pub(crate) project_matrix: QueryState<&'static ViewerProjectionMatrix>,
+    pub(crate) vp_matrix: QueryState<&'static ViewerTransformMatrix>,
     pub(crate) meshes: QueryState<(&'static SceneID, &'static GlobalEnable, Option<&'static RenderGeometryEable>, Option<&'static InstanceMesh>, &'static AbstructMesh)>, // StateMeshQuery,
     pub(crate) materials: QueryState<(&'static AssetResShaderEffectMeta, &'static EffectTextureSamplersComp)>, // StateMaterialQuery,
     pub(crate) transforms: QueryState<(&'static SceneID, &'static Enable, &'static GlobalEnable)>, // StateTransformQuery,
@@ -132,6 +134,8 @@ impl ActionSetScene3D {
             world_transform: app.world.query(),
             local_transform: app.world.query(),
             view_matrix: app.world.query(),
+            project_matrix: app.world.query(),
+            vp_matrix: app.world.query(),
             actparticlesys: SystemState::<ParticleSystemActionSet>::new(&mut app.world),
             meshes: app.world.query(),
             materials: app.world.query(),
@@ -545,6 +549,40 @@ pub fn p3d_query_view_matrix(app: &mut Engine, param: &mut ActionSetScene3D, ent
     let entity: Entity = as_entity(entity);
 
     if let Ok(trans) = param.view_matrix.get(&app.world, entity) {
+        let mut i = 0;
+        trans.0.as_slice().iter().for_each(|val| {
+            matrix[i] = *val;
+            i += 1;
+        });
+        true
+    } else {
+        false
+    }
+}
+
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
+pub fn p3d_query_project_matrix(app: &mut Engine, param: &mut ActionSetScene3D, entity: f64, matrix: &mut [f32]) -> bool {
+    let entity: Entity = as_entity(entity);
+
+    if let Ok(trans) = param.project_matrix.get(&app.world, entity) {
+        let mut i = 0;
+        trans.0.as_slice().iter().for_each(|val| {
+            matrix[i] = *val;
+            i += 1;
+        });
+        true
+    } else {
+        false
+    }
+}
+
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
+pub fn p3d_query_viewproject_matrix(app: &mut Engine, param: &mut ActionSetScene3D, entity: f64, matrix: &mut [f32]) -> bool {
+    let entity: Entity = as_entity(entity);
+
+    if let Ok(trans) = param.vp_matrix.get(&app.world, entity) {
         let mut i = 0;
         trans.0.as_slice().iter().for_each(|val| {
             matrix[i] = *val;
