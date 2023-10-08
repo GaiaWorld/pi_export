@@ -48,7 +48,7 @@ pub fn spine_renderer_create(app: &mut Engine, name: String, width: Option<f64>,
 		(Some(w), Some(h)) => Some((w as u32, h as u32)),
 		_ => None,
     };
-    log::warn!("Spine To Screen: {:?}", rendersize.is_none());
+    // log::warn!("Spine To Screen: {:?}", rendersize.is_none());
 
     let id_renderer = {
         let id = app.world.spawn_empty().id();
@@ -74,7 +74,7 @@ pub fn spine_renderer_create(app: &mut Engine, name: String, width: Option<f64>,
                 // queue.apply(&mut app.world);
                 app.world.entity_mut(id_renderer.0).insert(GraphId(nodeid));
                 // actions.push(ESpineCommand::Graph(id_renderer, nodeid));
-                log::warn!("Spine render_graph Ok");
+                // log::warn!("Spine render_graph Ok");
             },
             Err(e) => {
                 log::warn!("Spine render_graph Err {:?}", e);
