@@ -291,12 +291,12 @@ pub fn create_engine(window: &Arc<Window>, width: u32, height: u32, asset_total_
 	// window_plugin.window.width = width as f32;
     // window_plugin.window.height = height as f32;
 	// window_plugin.add_primary_window = false;
-	if cfg!(target_os = "android"){
-		println!("-=============== target_os = android");
+	// if cfg!(target_os = "android"){
+	// 	println!("-=============== target_os = android");
 		let mut options = PiRenderOptions::default();
 		options.0.backends = Backend::Gl.into();
 		app.insert_resource(options);
-	}
+	// }
 	
 	create_engine_inner(
 		&mut app, 
