@@ -38,6 +38,7 @@ use bevy_ecs::prelude::Entity;
 use pi_map::vecmap::VecMap;
 use pi_style::style::ImageRepeatOption;
 use smallvec::SmallVec;
+use pi_bevy_ecs_extend::prelude::Layer;
 
 #[derive(Serialize, Deserialize, Debug)]
 struct Quad {
@@ -113,6 +114,7 @@ struct Info {
 	pub animation: String,
 	pub as_image: String,
 	pub canvas: String,
+	pub layer: String,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -951,6 +953,7 @@ pub fn node_info(engine: &mut Engine, node_id: f64) -> JsValue {
 			Option<&TextShadow>,
 			Option<&AsImage>,
 			Option<&Canvas>,
+			Option<&Layer>,
 		)
     )>();
     let (
@@ -993,6 +996,7 @@ pub fn node_info(engine: &mut Engine, node_id: f64) -> JsValue {
 			text_shadow,
 			as_image,
 			canvas,
+			layer,
 		)
     ) = query.get(&engine.world, node_id).unwrap();
 	
@@ -1052,6 +1056,7 @@ pub fn node_info(engine: &mut Engine, node_id: f64) -> JsValue {
 		animation: format!("{:?}", animation),
 		as_image: format!("{:?}", as_image),
 		canvas: "".to_string(),
+		layer: format!("{:?}", layer),
     };
 	let canvas = canvas.map(|r| {r.clone()});
 	let canvas_graph_id = if let Some(canvas) = canvas.clone() {

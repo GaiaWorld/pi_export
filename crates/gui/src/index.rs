@@ -1,5 +1,7 @@
 use std::mem::transmute;
 
+#[cfg(debug_assertions)]
+use pi_ui_render::resource::DebugEntity;
 pub use pi_export_base::export::Engine;
 use pi_null::Null;
 use pi_ui_render::{
@@ -349,6 +351,17 @@ pub fn is_play_end(engine: &mut Engine) -> bool {
 	}
 	#[cfg(not(feature="record"))]
 	false
+}
+
+
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
+pub fn set_debug_entity(engine: &mut Engine, node_id: f64) {
+	#[cfg(debug_assertions)]
+	{
+		let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
+		engine.world.insert_resource(DebugEntity(EntityKey(node_id)));
+	}
 }
 
 #[derive(Debug, Serialize, Deserialize)]

@@ -19,7 +19,7 @@ pub fn create_class_map() -> ClassMapList {
 
 #[wasm_bindgen]
 pub fn paser_class_map(value: &str, scope_hash: u32, class_map: &mut ClassMapList) {
-	log::warn!("start parse css!, value len: {}", value.len());
+	log::debug!("start parse css!, value len: {}", value.len());
     match parse_class_map_from_string(value, scope_hash as usize) {
         Ok(r) => class_map.0.push(r),
         Err(_r) => ()
@@ -28,7 +28,7 @@ pub fn paser_class_map(value: &str, scope_hash: u32, class_map: &mut ClassMapLis
 
 #[wasm_bindgen]
 pub fn serialize_class_map_list(class_map: &ClassMapList) -> Vec<u8> {
-	log::warn!("start serialize_class_map!, value len: {}", class_map.0.len());
+	log::debug!("start serialize_class_map!, value len: {}", class_map.0.len());
     match postcard::to_stdvec(&class_map.0) {
 		Ok(bin) => return bin,
 		Err(r) =>{
