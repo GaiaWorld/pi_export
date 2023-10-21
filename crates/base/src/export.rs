@@ -268,9 +268,22 @@ pub fn create_engine(canvas: web_sys::HtmlCanvasElement, width: u32, height: u32
 	};
 	// let chrome_write = ShareChromeWrite::new();
 	// log.chrome_write = None;
+	let window ={
+		use pi_winit::platform::web::WindowBuilderExtWebSys;
+		use wasm_bindgen::JsCast;
+		let event_loop = pi_winit::event_loop::EventLoop::new();
+		Arc::new(
+			pi_winit::window::WindowBuilder::new()
+				.with_canvas(Some(canvas))
+				.build(&event_loop)
+				.unwrap(),
+		)
+	};
+	
+
 	create_engine_inner(
 		&mut app, 
-		pi_bevy_winit_window::WinitPlugin::new(canvas).with_size(width, height),
+		pi_bevy_winit_window::WinitPlugin::new(window).with_size(width, height),
 		asset_total_capacity,
 		asset_config,
 	);
