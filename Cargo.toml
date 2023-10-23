@@ -27,7 +27,7 @@ probabilistic-collections = { git = "https://github.com/GaiaWorld/pi_probabilist
 # wasm-bindgen = { path = "../wasm-bindgen" }
 
 [patch.yn]
-# winit = { path = "../winit" }
+pi_winit = { path = "../winit", package = "winit" }
 # pi_hal = { path = "../pi_hal" }
 # pi_wgpu = "0.1"
 
@@ -99,8 +99,8 @@ debug = false
 # [patch."https://github.com/GaiaWorld/pi_path_finding"]
 # pi_path_finding = { path = "../pi_path_finding" }
 
-# [patch."https://github.com/GaiaWorld/pi_spine_rs"]
-# pi_spine_rs = { path = "../pi_spine_rs" }
+[patch."https://github.com/GaiaWorld/pi_spine_rs"]
+pi_spine_rs = { path = "../pi_spine_rs" }
 
 
 # [patch."https://github.com/GaiaWorld/pi_scene"]

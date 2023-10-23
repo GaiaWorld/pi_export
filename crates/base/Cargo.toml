@@ -36,7 +36,7 @@ pi-async-rt = {version = "0.1"}
 js_proxy_gen_macro = { registry = "yn", version = "0.2" }
 tracing-subscriber = "0.3"
 # bevy_mod_debugdump = "0.8"
-wgpu = {version = "0.1", registry = "yn", package="pi_wgpu", features=["wgpu"]}
+wgpu = {version = "0.1", registry = "yn", package="pi_wgpu"}
 tracing = "0.1"
 
 
