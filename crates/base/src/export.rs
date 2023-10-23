@@ -24,7 +24,7 @@ use pi_async_rt::rt::serial_local_compatible_wasm_runtime::{LocalTaskRunner, Loc
 use pi_async_rt::prelude::AsyncRuntime;
 use wgpu::{TextureView, Buffer};
 #[cfg(not(target_arch = "wasm32"))]
-pub use winit::window::Window;
+pub use pi_winit::window::Window;
 
 #[cfg(all(feature="pi_js_export", not(target_arch="wasm32")))]
 #[derive(Debug, Deref, DerefMut)]
