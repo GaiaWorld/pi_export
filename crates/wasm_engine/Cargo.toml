@@ -8,8 +8,9 @@ edition = "2018"
 crate-type = ["cdylib"]
 
 [features]
-default = ["pi_js_export", "log/release_max_level_warn"]
-# default = ["pi_js_export", "bevy/trace_chrome", "pi_bevy_render_plugin/trace", "pi_bevy_log/tracing_chrome_wasm", "pi_export_gui/trace", "tracing/release_max_level_warn"]
+default = ["pi_js_export", "release"]
+release = ["log/release_max_level_warn", "tracing/release_max_level_off"]
+trace = ["log/release_max_level_info", "tracing/release_max_level_info", "pi_bevy_log/tracing-chrome", "pi_bevy_render_plugin/trace", "bevy_app/trace", "bevy_ecs/trace"]
 pi_js_export = []
 
 [dependencies]
@@ -24,22 +25,18 @@ pi_web_logger = {git = "http://ser.yinengyun.com:10082/tech/pi_web_logger.git"}
 # wasm-bindgen = { version = "0.2"}
 wasm-bindgen = { version = "=0.2.87" }
 bevy_ecs = "0.11"
+bevy_app = "0.11"
 
-
-# log
-# log = "0.4"
-# log={version = "0.4", features=["release_max_level_warn", "max_level_warn"]}
-log = {version = "0.4", features=["release_max_level_warn"]}
-# tracing = { version = "0.1", features=["release_max_level_warn"]}
-# features = ["release_max_level_warn", "max_level_warn"] 
+log = "0.4"
+tracing = "0.1"
 
 # 添加webgl feature
 # wgpu = {version = "0.1", registry = "yn", package="pi_wgpu", features=["wgpu"]}
 # wgpu1 = { version = "0.16", package = "wgpu", default-features = false, features = ["glsl", "webgl"] }
-# wgpu = { version = "0.16", default-features = false, features = ["glsl", "wgc"] }
 pi_render = { version = "0.1", registry = "yn", features=["webgl"] }
 pi_bevy_render_plugin = { version = "0.1", registry = "yn", features=["webgl"]}
 pi_bevy_log = {version = "0.1", registry = "yn"}
+pi_wgpu =  {version = "0.1", registry = "yn"}
 
 
 getrandom = { version = "0.2", features = ["js"] }

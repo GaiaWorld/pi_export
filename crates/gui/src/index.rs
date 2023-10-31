@@ -11,7 +11,7 @@ use pi_ui_render::{
         user::{Overflow, Point2}, NodeBundle,
     },
     prelude::UserCommands,
-    resource::QuadTree,
+    resource::{QuadTree, fragment::NodeTag},
 };
 use pi_ui_render::system::RunState;
 use pi_bevy_render_plugin::FrameState;
@@ -110,7 +110,7 @@ pub fn create_node(gui: &mut Gui) -> f64 {
 	#[cfg(feature="record")]
 	gui.node_cmd.0.push(entity);
 
-	gui.commands.set_node_bundle(entity, NodeBundle::default());
+	gui.commands.init_node(entity, NodeTag::Div);
 	// log::warn!("entity :{:?}", entity);
 	unsafe { transmute(entity.to_bits()) }
 }
@@ -123,28 +123,44 @@ pub fn create_vnode(gui: &mut Gui) -> f64 {
 	#[cfg(feature="record")]
 	gui.node_cmd.0.push(entity);
 
-	let mut node_bundle = NodeBundle::default();
-	node_bundle.node_state.set_vnode(true);
-	gui.commands.set_node_bundle(entity, node_bundle);
+	gui.commands.init_node(entity, NodeTag::VNode);
 	unsafe { transmute(entity.to_bits()) }
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn create_text_node(gui: &mut Gui) -> f64 {
-	create_node(gui)
+	let entity = gui.entitys.reserve_entity();
+
+	#[cfg(feature="record")]
+	gui.node_cmd.0.push(entity);
+
+	gui.commands.init_node(entity, NodeTag::Span);
+	unsafe { transmute(entity.to_bits()) }
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn create_image_node(gui: &mut Gui) -> f64 {
-	create_node(gui)
+	let entity = gui.entitys.reserve_entity();
+
+	#[cfg(feature="record")]
+	gui.node_cmd.0.push(entity);
+
+	gui.commands.init_node(entity, NodeTag::Image);
+	unsafe { transmute(entity.to_bits()) }
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn create_canvas_node(gui: &mut Gui) -> f64 {
-	create_node(gui)
+	let entity = gui.entitys.reserve_entity();
+
+	#[cfg(feature="record")]
+	gui.node_cmd.0.push(entity);
+
+	gui.commands.init_node(entity, NodeTag::Canvas);
+	unsafe { transmute(entity.to_bits()) }
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
@@ -276,6 +292,13 @@ pub fn calc_geo(gui: &mut Gui, engine: &mut Engine) {
 	*engine.world.get_resource_mut::<RunState>().unwrap() = RunState::MATRIX;
 	*engine.world.get_resource_mut::<FrameState>().unwrap() = FrameState::UnActive;
 	engine.update();
+}
+
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
+pub fn set_is_run(engine: &mut Engine, value: bool) {
+	// #[cfg(feature = "debug")]
+	engine.world.get_resource_mut::<pi_ui_render::system::draw_obj::calc_text::IsRun>().unwrap().0 = value;
 }
 
 // 每帧取record
