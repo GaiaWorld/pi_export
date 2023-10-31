@@ -26,15 +26,15 @@ probabilistic-collections = { git = "https://github.com/GaiaWorld/pi_probabilist
 # pi_spatial ={path="../pi_spatial"}
 # wasm-bindgen = { path = "../wasm-bindgen" }
 
-bevy_app = { path = "../bevy/crates/bevy_app" }
-bevy_ecs = { path = "../bevy/crates/bevy_ecs" }
-bevy_tasks = { path = "../bevy/crates/bevy_tasks" }
-bevy_window = { path = "../bevy/crates/bevy_window" }
-bevy_utils = { path = "../bevy/crates/bevy_utils" }
-bevy_a11y = { path = "../bevy/crates/bevy_a11y" }
-bevy_input = { path = "../bevy/crates/bevy_input" }
-bevy_reflect = { path = "../bevy/crates/bevy_reflect" }
-bevy_math = { path = "../bevy/crates/bevy_math" }
+# bevy_app = { path = "../bevy/crates/bevy_app" }
+# bevy_ecs = { path = "../bevy/crates/bevy_ecs" }
+# bevy_tasks = { path = "../bevy/crates/bevy_tasks" }
+# bevy_window = { path = "../bevy/crates/bevy_window" }
+# bevy_utils = { path = "../bevy/crates/bevy_utils" }
+# bevy_a11y = { path = "../bevy/crates/bevy_a11y" }
+# bevy_input = { path = "../bevy/crates/bevy_input" }
+# bevy_reflect = { path = "../bevy/crates/bevy_reflect" }
+# bevy_math = { path = "../bevy/crates/bevy_math" }
 
 [patch.yn]
 # pi_winit = { path = "../winit", package = "winit" }
