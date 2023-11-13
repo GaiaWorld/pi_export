@@ -10,6 +10,7 @@ crate-type = ["cdylib"]
 [dependencies]
 # pi_ui_render= {git ="https://github.com/GaiaWorld/pi_ui_render.git"}
 wasm-bindgen = { version = "=0.2.87", features = ["serde-serialize"] }
+js-sys = "0.3"
 postcard = {version = "1.0", features = ["use-std"]}
 log = "0.4"
 getrandom = {version = "0.2.7", features=["js"]}
@@ -26,6 +27,7 @@ pi_ui_render = {version = "0.1", registry = "yn"}
 wgpu = {version = "0.1", registry = "yn", package="pi_wgpu"}
 pi_render = { version = "0.1", registry = "yn", features = ["webgl"] }
 pi_bevy_render_plugin = { version = "0.1", registry = "yn", features=["webgl"]}
+pi_hal = { version = "0.1", registry = "yn" }
 
 [target.'cfg(target_arch = "wasm32")'.dependencies]
 pi-async-rt = {version = "0.1", features = ["serial"]}

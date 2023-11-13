@@ -1,5 +1,7 @@
 use std::mem::transmute;
 
+use pi_flex_layout::{prelude::CharNode, style::{PositionType, FlexWrap, FlexDirection, AlignContent, AlignItems, AlignSelf, JustifyContent, Display, Dimension}};
+use pi_slotmap::DefaultKey;
 #[cfg(debug_assertions)]
 use pi_ui_render::resource::DebugEntity;
 pub use pi_export_base::export::Engine;
@@ -7,8 +9,8 @@ use pi_null::Null;
 use pi_ui_render::{
     components::{
         calc::{InPassId, IsShow, LayoutResult, Quad, WorldMatrix, ZRange, EntityKey},
-        pass_2d::{GraphId, ParentPassId},
-        user::{Overflow, Point2}, NodeBundle,
+        pass_2d::ParentPassId,
+        user::{Overflow, Point2, NodeState, Vector4},
     },
     prelude::UserCommands,
     resource::{QuadTree, fragment::NodeTag},
@@ -23,11 +25,12 @@ use bevy_ecs::{
     system::{Query, Res, SystemState},
 };
 use pi_bevy_ecs_extend::prelude::{Down, Layer, OrDefault, Up};
-use pi_style::style::Aabb2;
+use pi_style::{style::{Aabb2, FitType, ImageRepeatOption, TextAlign, VerticalAlign, WhiteSpace, FontStyle, LineHeight, Color}, style_parse::Attribute};
 use serde::{Serialize, Deserialize};
 use js_proxy_gen_macro::pi_js_export;
 #[cfg(feature="record")]
 use pi_ui_render::system::cmd_play::{Records, CmdNodeCreate, PlayState, TraceOption };
+pub use pi_export_base::export::Atom as Atom1;
 
 
 #[cfg(target_arch = "wasm32")]
@@ -47,20 +50,21 @@ pub struct Gui {
 
     pub(crate) down_query: QueryState<&'static Down>,
     pub(crate) up_query: QueryState<&'static Up>,
-    pub(crate) layer_query: QueryState<&'static Layer>,
     pub(crate) enable_query: QueryState<&'static IsShow>,
-    pub(crate) depth_query: QueryState<&'static ZRange>,
     pub(crate) layout_query: QueryState<&'static LayoutResult>,
     pub(crate) quad_query: QueryState<&'static Quad>,
-    pub(crate) matrix_query: QueryState<&'static WorldMatrix>,
-    pub(crate) overflow_query: QueryState<(&'static ParentPassId, &'static Quad, OrDefault<Overflow>)>,
-    pub(crate) in_pass2d_query: QueryState<&'static InPassId>,
-    pub(crate) graph_id: QueryState<&'static GraphId>,
     pub(crate) query_state: SystemState<(
         Res<'static, QuadTree>,
         Query<'static, 'static, (&'static Layer, &'static IsShow, &'static ZRange, &'static InPassId)>,
         Query<'static, 'static, (&'static ParentPassId, &'static Quad, OrDefault<Overflow>)>,
     )>,
+
+	// pub(crate) depth_query: QueryState<&'static ZRange>,
+	// pub(crate) layer_query: QueryState<&'static Layer>,
+    // pub(crate) matrix_query: QueryState<&'static WorldMatrix>,
+    // pub(crate) overflow_query: QueryState<(&'static ParentPassId, &'static Quad, OrDefault<Overflow>)>,
+    // pub(crate) in_pass2d_query: QueryState<&'static InPassId>,
+    // pub(crate) graph_id: QueryState<&'static GraphId>,
 }
 
 impl Gui {
@@ -70,15 +74,9 @@ impl Gui {
 		Gui {
 			down_query: engine.world.query(),
 			up_query: engine.world.query(),
-			layer_query: engine.world.query(),
 			enable_query: engine.world.query(),
-			depth_query: engine.world.query(),
 			layout_query: engine.world.query(),
 			quad_query: engine.world.query(),
-			matrix_query: engine.world.query(),
-			overflow_query: engine.world.query(),
-			in_pass2d_query: engine.world.query(),
-			graph_id: engine.world.query(),
 			query_state: SystemState::new(&mut engine.world),
 			// 这里使用非安全的方法，将entities转为静态声明周期，外部需要保证entities使用期间， app的指针不能更改（如将App放入堆中就不可行）
 			entitys: unsafe { transmute(engine.world.entities()) },
@@ -87,6 +85,13 @@ impl Gui {
 			node_cmd: CmdNodeCreate::default(),
 			#[cfg(feature="record")]
 			record_option: TraceOption::default(),
+
+			// depth_query: engine.world.query(),
+			// layer_query: engine.world.query(),
+			// matrix_query: engine.world.query(),
+			// overflow_query: engine.world.query(),
+			// in_pass2d_query: engine.world.query(),
+			// graph_id: engine.world.query(),
 		}
 	}
 	pub fn entitys(&self) -> &'static Entities {
@@ -247,8 +252,6 @@ pub fn render_gui(gui: &mut Gui, engine: &mut Engine) {
 		}
 	}
 	
-
-
 	#[cfg(feature = "trace")]
 	let _span = tracing::warn_span!("flush").entered();
 	bevy_ecs::system::CommandQueue::default().apply(&mut engine.world);
@@ -292,6 +295,32 @@ pub fn calc_geo(gui: &mut Gui, engine: &mut Engine) {
 	*engine.world.get_resource_mut::<RunState>().unwrap() = RunState::MATRIX;
 	*engine.world.get_resource_mut::<FrameState>().unwrap() = FrameState::UnActive;
 	engine.update();
+}
+
+// 取到keyframes
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
+pub fn get_keyframes(engine: &mut Engine, name: &Atom1, scope_hash: u32) -> String {
+	let sheet = engine.world.get_resource::<pi_ui_render::resource::animation_sheet::KeyFramesSheet>().unwrap();
+	match sheet.get_keyframes((**name).clone(), scope_hash as usize) {
+		Some(r) => {
+			let mut temp_str_arr = Vec::new();
+			let mut ret = Vec::new();
+			for (_process, attrs) in r.iter() {
+				for attr in attrs.iter() {
+					let rr = to_css_str(attr);
+					if rr.0 != "" {
+						temp_str_arr.push("\"".to_string() + rr.0 + "\": \"" + rr.1.as_str() + "\"");
+					}
+				}
+				ret.push("{".to_string() + temp_str_arr.join(",").as_str() + "}");
+				temp_str_arr.clear();
+			}
+			
+			return "[".to_string() + ret.join(",").as_str() + "]";
+		},
+		None => return "".to_string(),
+	};
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
@@ -387,6 +416,59 @@ pub fn set_debug_entity(engine: &mut Engine, node_id: f64) {
 	}
 }
 
+/**
+ * -buffer Vec<Vec<u8>>
+ */
+#[cfg(target_arch="wasm32")]
+#[wasm_bindgen]
+pub fn sdf_on_load(key: f64, buffer: js_sys::Array) {
+	let mut v = Vec::new();
+	for i in buffer.iter() {
+		v.push(js_sys::Uint8Array::from(i).to_vec());
+	}
+	pi_hal::font::sdf_brush::on_load(unsafe {transmute::<_, DefaultKey>(key)}, v);
+}
+
+#[pi_js_export]
+pub struct SdfVec(Vec<Vec<u8>>);
+
+#[pi_js_export]
+pub fn create_vec_sdf() -> SdfVec {
+	SdfVec(Vec::new())
+}
+
+#[pi_js_export]
+pub fn sdf_push(vec: &mut SdfVec, buffer: Vec<u8>) {
+	vec.0.push(buffer);
+}
+
+#[cfg(not(target_arch="wasm32"))]
+#[pi_js_export]
+pub fn sdf_on_load(key: f64, buffer: &mut SdfVec) {
+	let r = std::mem::replace(&mut buffer.0, Vec::new());
+	pi_hal::font::sdf_brush::on_load(unsafe {transmute::<_, DefaultKey>(key)}, r);
+}
+
+// 添加sdf字体
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
+pub fn add_sdf_font(gui: &mut Gui, bin: &[u8]) {
+	let cfg = match postcard::from_bytes::<pi_hal::font::sdf_brush::FontCfg>(bin) {
+		Ok(r) => r,
+		Err(e) => {
+			log::info!("parse sdf cfg fail, {:?}", e);
+			return;
+		}
+	};
+	gui.commands.add_sdf_font(cfg);
+	// font_sheet = 
+	// let mut v = Vec::new();
+	// for i in buffer.iter() {
+	// 	v.push(js_sys::Uint8Array::from(i).to_vec());
+	// }
+	// pi_hal::font::sdf_brush::on_load(unsafe {transmute::<_, DefaultKey>(key)}, v);
+}
+
 #[derive(Debug, Serialize, Deserialize)]
 pub struct OffsetDocument {
     pub left: f32,
@@ -440,6 +522,243 @@ pub enum BlendMode {
     OneOne,
 }
 
+
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
+pub fn query_text(engine: &mut Engine, node_id: f64, x: f32, y: f32) -> CharPos {
+	let node = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
+	query_text1(engine, node, x, y)
+}
+
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
+pub fn get_text_pos(gui: &mut Gui, engine: &mut Engine, node_id: f64, index: u32) -> CharPos {
+	let node = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
+	get_text_pos1(gui, engine, node, index as usize)
+}
+
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
+pub struct CharPos {
+	index: i32,
+	x: f32,
+	y: f32,
+}
+
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+impl CharPos {
+	#[pi_js_export]
+	pub fn index(&self) -> i32 {
+		self.index
+	}
+	#[pi_js_export]
+	pub fn x(&self) -> f32 {
+		self.x
+	}
+	#[pi_js_export]
+	pub fn y(&self) -> f32 {
+		self.y
+	}
+}
+
+// #[wasm_bindgen]
+pub fn get_text_pos1(gui: &mut Gui, engine: &mut Engine, node: Entity, index: usize) -> CharPos {
+	calc_layout(gui, engine);
+	// log::info!("get_text_pos====={}", index);
+
+	let mut char_pos = CharPos {
+		index: 0,
+		x: 0.0,
+		y:0.0,
+	};
+
+	let node_state = match engine.world.get::<NodeState>(node) {
+		Some(r) => r,
+		None => return char_pos,
+	};
+
+	let len = node_state.text.len();
+	if len == 0 {
+		return char_pos
+	}
+
+	let text = &node_state.text;
+	let mut i = index;
+	if index >= len {
+		i = len - 1;
+	}
+	let mut char = &text[i];
+
+	// log::info!("get_text_pos start=====i: {}, char_i:{}, len:{}", i, char.char_i, len);
+
+	// 跳过char_i为-1的节点
+	while char.char_i == -1 && i < len-1 {
+		i += 1;
+		char =  &text[i]
+	}
+	while char.char_i == -1 && i > 0 {
+		i -= 1;
+		char =  &text[i]
+	}
+	if char.char_i == -1 {
+		return char_pos
+	}
+
+	// log::info!("get_text_pos start i====={}, {}, {:?}", i, char.char_i, text);
+
+	if char.char_i != index as isize {
+		let diff;
+		if index as isize > char.char_i {
+			diff = 1;
+		} else {
+			diff = -1;
+		}
+		while char.char_i != index as isize {
+			// log::info!("get_text_pos loop i====={}, {}, {}", i, index, char.char_i);
+			let r = i as isize + diff;
+			if r < 0 {
+				i = 0;
+				break;
+			}
+			i = r as usize;
+			if i < len {
+				char = &text[i];
+			} else {
+				break;
+			}
+		}
+	}
+
+	// log::info!("get_text_pos end i====={}, {}, {}", i, index, char.char_i);
+	if char.char_i == -1 {
+		return char_pos
+	}
+
+	let pos = calc_text_pos(char, text);
+	set_text_pos(i, &mut char_pos, text, pos);
+	char_pos
+	
+	
+	// match JsValue::from_serde(&char_pos) {
+	// 	Ok(r) => r,
+	// 	Err(_e) => {
+	// 		log::info!("serde char_pos fail");
+	// 		panic!();
+	// 	}
+	// }
+}
+
+fn query_text1(engine: &mut Engine, node: Entity, x: f32, y: f32) -> CharPos {
+
+	let mut query_state = engine.world.query::<(&NodeState, &WorldMatrix)>();
+	let mut char_pos = CharPos {
+		index: 0,
+		x: 0.0,
+		y:0.0,
+	};
+
+	let (node_state, matrix) = match query_state.get(&mut engine.world, node) {
+		Ok(r) => r,
+		_ => return char_pos,
+	};
+	let mut start = 0;
+	let mut end = node_state.text.len();
+
+	let text = &node_state.text;
+	// log::info!("world_matrix======{:?}", world_matrix);
+	let invert = matrix.invert().unwrap();
+	// log::info!("invert======{:?}", invert);
+	let p = invert.0 * Vector4::new(x, y, 1.0, 1.0);  // 得到相对于当前节点布局左上角的位置
+	let mut pos = (0.0, 0.0,0.0,0.0);
+	while start < end {
+		let diff = (end - start)/2 + 1;
+		let mut cur = end - diff;
+		// log::info!("text======{:?}, {}, {}", cur, start, end);
+		let mut char = &text[cur];
+		// 跳过没有意义的字符
+		while char.char_i == -1 && cur > start {
+			cur = cur - 1;
+			char = &text[cur];
+		}
+		if char.char_i == -1 && cur == start {
+			start = (end - diff) + 1;
+			continue;
+		}
+
+		pos = calc_text_pos(char, text);
+		let center_x = (pos.0 + pos.2)/2.0;
+		// let center_y = (pos.1 + pos.3)/2.0;
+
+		// log::info!("p: {}, {}, char_pos:{:?}, char_size: {:?}, index:{:?}, char_i:{}, context_id:{}, pos:{:?}, cur:{:?}", p.x, p.y, char.pos, char.size, cur, char.char_i, char.context_id, pos, cur);
+		if pos.0 > p.x {
+			if pos.3 >= p.y {
+				end = cur;
+			} else {
+				start = cur + 1;
+			}
+		} else if pos.2 < p.x{
+			if pos.1 <= p.y {
+				start = cur + 1;
+			} else {
+				end = cur;
+			}
+			
+		} else {
+			if pos.1 > p.y {
+				end = cur;
+			} else if pos.3 < p.y {
+				start = cur + 1;
+			} else if center_x > p.x {
+				start = cur;
+				break;
+			} else {
+				start = cur + 1;
+			}
+		}
+	}
+
+	// log::info!("start: {}, pos:{:?}", start, pos);
+	set_text_pos(start, &mut char_pos, text, pos);
+
+	char_pos
+}
+
+fn set_text_pos(index: usize, char_pos: &mut CharPos, text: &Vec<CharNode>, r: (f32,f32,f32,f32)) {
+	let len = text.len();
+	// log::info!("set_text_pos: {:?}, index: {:?}, text:{:?}", len, index, text);
+	if len > 0 {
+		let char;
+		if index < len {
+			// log::info!("set_text_pos1: {:?}, index: {:?}", len, index);
+			char = &text[index];
+			// log::info!("set_text_pos1 end: {:?}, index: {:?}", len, index);
+			char_pos.x = r.0;
+			char_pos.y = r.1;
+			char_pos.index = char.char_i as i32;
+		} else {
+			// log::info!("set_text_pos2: {:?}, index: {:?}", len, len - 1);
+			char = &text[len - 1];
+			// log::info!("set_text_pos2 end: {:?}, index: {:?}", len, len - 1);
+			char_pos.x = r.2;
+			char_pos.y = r.1;
+			char_pos.index = (char.char_i + 1) as i32;
+		}
+	}
+}
+
+fn calc_text_pos(char: &CharNode, text: &Vec<CharNode>) -> (f32, f32, f32, f32) {
+	let mut r = (char.pos.left, char.pos.top, char.pos.right, char.pos.bottom);
+	if char.context_id > -1 {
+		let context_s = &text[char.context_id as usize];
+		// log::info!("calc_text_pos====context_id: {}, {:?}", char.context_id, context_s);
+		r.0 += context_s.pos.left;
+		r.1 += context_s.pos.top;
+		r.2 += context_s.pos.left;
+		r.3 += context_s.pos.top;
+	}
+	r
+}
+
 /// aabb的ab查询函数, aabb的oct查询函数应该使用intersects
 fn ab_query_func(arg: &mut AbQueryArgs, id: EntityKey, aabb: &Aabb2, _bind: &()) {
     let (_layer, _is_show, z_range, inpass) = match arg.query.get(*id) {
@@ -490,6 +809,473 @@ pub struct AbQueryArgs<'s, 'w> {
     aabb: Aabb2,
     result: EntityKey,
     max_z: usize,
+}
+
+pub fn to_css_str(attr: &Attribute) -> (&'static str, String) {
+    match attr {
+        Attribute::ClipPath(_) => todo!(),
+		Attribute::AsImage(r) => ("as-image", match r.0 {
+			pi_style::style::AsImage::None => "none".to_string(),
+			pi_style::style::AsImage::Advise => "advise".to_string(),
+			pi_style::style::AsImage::Force => "force".to_string(),
+		}),
+        Attribute::PositionType(r) => ("position", match r.0 {
+            PositionType::Relative => "relative".to_string(),
+            PositionType::Absolute => "absolute".to_string(),
+        }),
+        Attribute::FlexWrap(r) => ("flex-wrap", match r.0 {
+            FlexWrap::NoWrap => "nowrap".to_string(),
+            FlexWrap::Wrap => "wrap".to_string(),
+            FlexWrap::WrapReverse => "wrapreverse".to_string(),
+        }),
+        Attribute::FlexDirection(r) => ("flex-direction", match r.0 {
+            FlexDirection::Column => "column".to_string(),
+            FlexDirection::ColumnReverse => "columnreverse".to_string(),
+            FlexDirection::Row => "row".to_string(),
+            FlexDirection::RowReverse => "rowreverse".to_string(),
+        }),
+        Attribute::AlignContent(r) => ("align-content", match r.0 {
+            // AlignContent::Auto => "auto".to_string(),
+            AlignContent::FlexStart => "flex-start".to_string(),
+            AlignContent::Center => "center".to_string(),
+            AlignContent::FlexEnd => "flex-end".to_string(),
+            AlignContent::Stretch => "stretch".to_string(),
+            // AlignContent::Baseline => "baseline".to_string(),
+            AlignContent::SpaceBetween => "space-between".to_string(),
+            AlignContent::SpaceAround => "space-around".to_string(),
+        }),
+        Attribute::AlignItems(r) => ("align-items", match r.0 {
+            // AlignItems::Auto => "auto".to_string(),
+            AlignItems::FlexStart => "flex-start".to_string(),
+            AlignItems::Center => "center".to_string(),
+            AlignItems::FlexEnd => "flex-end".to_string(),
+            AlignItems::Stretch => "stretch".to_string(),
+            AlignItems::Baseline => "baseline".to_string(),
+            // AlignItems::SpaceBetween => "space-between".to_string(),
+            // AlignItems::SpaceAround => "space-around".to_string(),
+        }),
+        Attribute::AlignSelf(r) => ("align-self", match r.0 {
+            AlignSelf::Auto => "auto".to_string(),
+            AlignSelf::FlexStart => "flex-start".to_string(),
+            AlignSelf::Center => "center".to_string(),
+            AlignSelf::FlexEnd => "flex-end".to_string(),
+            AlignSelf::Stretch => "stretch".to_string(),
+            AlignSelf::Baseline => "baseline".to_string(),
+            // AlignSelf::SpaceBetween => "space-between".to_string(),
+            // AlignSelf::SpaceAround => "space-around".to_string(),
+        }),
+        Attribute::JustifyContent(r) => ("justify-content", match r.0 {
+            JustifyContent::FlexStart => "flex-start".to_string(),
+            JustifyContent::Center => "center".to_string(),
+            JustifyContent::FlexEnd => "flex-end".to_string(),
+            JustifyContent::SpaceBetween => "space-between".to_string(),
+            JustifyContent::SpaceAround => "space-around".to_string(),
+            JustifyContent::SpaceEvenly => "space-evenly".to_string(),
+        }),
+
+        Attribute::ObjectFit(r) => ("object-fit", match r.0 {
+            FitType::None => "none".to_string(),
+            FitType::Fill => "fill".to_string(),
+            FitType::Contain => "contain".to_string(),
+            FitType::Cover => "cover".to_string(),
+            FitType::ScaleDown => "scale-down".to_string(),
+            // FitType::Repeat => "repeat".to_string(),
+            // FitType::RepeatX => "repeat-x".to_string(),
+            // FitType::RepeatY => "repeat-y".to_string(),
+        }),
+
+        Attribute::BackgroundRepeat(r) => ("background-repeat", {
+                match r.x {
+                    ImageRepeatOption::Stretch => "stretch ",
+                    ImageRepeatOption::Repeat => "repeat ",
+                    ImageRepeatOption::Round => "round ",
+                    ImageRepeatOption::Space => "space ",
+                }.to_string()
+                + match r.y {
+                    ImageRepeatOption::Stretch => "stretch",
+                    ImageRepeatOption::Repeat => "repeat",
+                    ImageRepeatOption::Round => "round",
+                    ImageRepeatOption::Space => "space",
+                }
+        }),
+        Attribute::TextAlign(r) =>("text-align", match r.0 {
+            TextAlign::Left => "left".to_string(),
+            TextAlign::Right => "right".to_string(),
+            TextAlign::Center => "center".to_string(),
+            TextAlign::Justify => "justify".to_string(),
+        }),
+        Attribute::VerticalAlign(r) => ("vertical-align", match r.0 {
+            VerticalAlign::Top => "top".to_string(),
+            VerticalAlign::Middle => "middle".to_string(),
+            VerticalAlign::Bottom => "bottom".to_string(),
+        }),
+        Attribute::WhiteSpace(r) => ("white-space", match r.0 {
+            WhiteSpace::Normal => "normal".to_string(),
+            WhiteSpace::Nowrap => "nowrap".to_string(),
+            WhiteSpace::PreWrap => "pre-wrap".to_string(),
+            WhiteSpace::Pre => "pre".to_string(),
+            WhiteSpace::PreLine => "pre-line".to_string(),
+        }),
+        Attribute::FontStyle(r) => ("font-style", match r.0 {
+            FontStyle::Normal => "normal".to_string(),
+            FontStyle::Ttalic => "ttalic".to_string(),
+            FontStyle::Oblique => "oblique".to_string(),
+        }),
+        Attribute::Enable(r) => ("enable", match r.0 {
+            pi_style::style::Enable::Auto => "auto".to_string(),
+            pi_style::style::Enable::None => "none".to_string(),
+            pi_style::style::Enable::Visible => "visible".to_string(),
+        }),
+        Attribute::Display(r) => ("display", match r.0 {
+            Display::Flex => "flex".to_string(),
+            Display::None => "none".to_string(),
+        }),
+        Attribute::Visibility(r) => ("visibility", match r.0 {
+            true => "visible".to_string(),
+            false => "hidden".to_string(),
+        }),
+        Attribute::Overflow(r) => ("overflow", match r.0 {
+            true => "hidden".to_string(),
+            false => "visible".to_string(),
+        }),
+		// "[-a-zA-Z]*:
+        Attribute::LetterSpacing(r) => ("letter-spacing", r.to_string()),
+        Attribute::LineHeight(r) => ("line-height",match r.0 {
+            LineHeight::Normal => "normal".to_string(),
+            LineHeight::Length(r) => r.to_string() + "px",
+            LineHeight::Number(r) => r.to_string(),
+            LineHeight::Percent(r) => (r * 100.0).to_string() + "%",
+        }),
+        Attribute::TextIndent(r) => ("text-indent", r.to_string() + "px"),
+        Attribute::WordSpacing(r) => ("word-space", r.to_string() + "px"),
+        Attribute::FontWeight(r) => ("font-weight", r.to_string()),
+        Attribute::FontSize(_r) => ("","".to_string()), // TODO
+        Attribute::FontFamily(r) => ("font-family", r.to_string()),
+        Attribute::ZIndex(r) => ("z-index", r.to_string()),
+        Attribute::Opacity(r) => ("opacity", r.0.to_string()),
+        // Attribute::BorderImageRepeat(BorderImageRepeat)(x, y) => "" + r.to_string() + " " +,
+        Attribute::BackgroundImage(r) => ("baskground-image-source", r.to_string()),
+        Attribute::BorderImage(r) => ("border-image-source", r.to_string()),
+
+        Attribute::FlexShrink(r) => ("flex-shrink", r.to_string()),
+        Attribute::FlexGrow(r) => ("flex-grow", r.to_string()),
+        Attribute::Width(r) => ("width",match r.0 {
+            Dimension::Undefined => "".to_string(),
+            Dimension::Auto => "auto".to_string(),
+            Dimension::Points(r) =>  r.to_string() + "px",
+            Dimension::Percent(r) =>  (r * 100.0).to_string() + "%",
+        }),
+        Attribute::Height(r) => ("height",match r.0 {
+            Dimension::Undefined => "".to_string(),
+            Dimension::Auto => "auto".to_string(),
+            Dimension::Points(r) =>  r.to_string() + "px",
+            Dimension::Percent(r) =>  (r * 100.0).to_string() + "%",
+        }),
+        Attribute::MarginLeft(r) => ("margin-left",match r.0 {
+            Dimension::Undefined => "".to_string(),
+            Dimension::Auto => "auto".to_string(),
+            Dimension::Points(r) =>  r.to_string() + "px",
+            Dimension::Percent(r) =>  (r * 100.0).to_string() + "%",
+        }),
+        Attribute::MarginTop(r) => ("margin-top",match r.0 {
+            Dimension::Undefined => "".to_string(),
+            Dimension::Auto => "auto".to_string(),
+            Dimension::Points(r) =>  r.to_string() + "px",
+            Dimension::Percent(r) =>  (r * 100.0).to_string() + "%",
+        }),
+        Attribute::MarginBottom(r) => ("margin-bottom",match r.0 {
+            Dimension::Undefined => "".to_string(),
+            Dimension::Auto => "auto".to_string(),
+            Dimension::Points(r) =>  r.to_string() + "px",
+            Dimension::Percent(r) =>  (r * 100.0).to_string() + "%",
+        }),
+        Attribute::MarginRight(r) => ("margin-right",match r.0 {
+            Dimension::Undefined => "".to_string(),
+            Dimension::Auto => "auto".to_string(),
+            Dimension::Points(r) =>  r.to_string() + "px",
+            Dimension::Percent(r) =>  (r * 100.0).to_string() + "%",
+        }),
+        Attribute::PaddingLeft(r) => ("padding-left",match r.0 {
+            Dimension::Undefined => "".to_string(),
+            Dimension::Auto => "auto".to_string(),
+            Dimension::Points(r) =>  r.to_string() + "px",
+            Dimension::Percent(r) =>  (r * 100.0).to_string() + "%",
+        }),
+        Attribute::PaddingTop(r) => ("padding-top",match r.0 {
+            Dimension::Undefined => "".to_string(),
+            Dimension::Auto => "auto".to_string(),
+            Dimension::Points(r) =>  r.to_string() + "px",
+            Dimension::Percent(r) =>  (r * 100.0).to_string() + "%",
+        }),
+        Attribute::PaddingBottom(r) => ("padding-bottom",match r.0 {
+            Dimension::Undefined => "".to_string(),
+            Dimension::Auto => "auto".to_string(),
+            Dimension::Points(r) =>  r.to_string() + "px",
+            Dimension::Percent(r) =>  (r * 100.0).to_string() + "%",
+        }),
+        Attribute::PaddingRight(r) => ("padding-right",match r.0 {
+            Dimension::Undefined => "".to_string(),
+            Dimension::Auto => "auto".to_string(),
+            Dimension::Points(r) =>  r.to_string() + "px",
+            Dimension::Percent(r) =>  (r * 100.0).to_string() + "%",
+        }),
+        Attribute::BorderLeft(r) => ("border-left",match r.0 {
+            Dimension::Undefined => "".to_string(),
+            Dimension::Auto => "auto".to_string(),
+            Dimension::Points(r) =>  r.to_string() + "px",
+            Dimension::Percent(r) =>  (r * 100.0).to_string() + "%",
+        }),
+        Attribute::BorderTop(r) => ("border-top",match r.0 {
+            Dimension::Undefined => "".to_string(),
+            Dimension::Auto => "auto".to_string(),
+            Dimension::Points(r) =>  r.to_string() + "px",
+            Dimension::Percent(r) =>  (r * 100.0).to_string() + "%",
+        }),
+        Attribute::BorderBottom(r) => ("border-bottom",match r.0 {
+            Dimension::Undefined => "".to_string(),
+            Dimension::Auto => "auto".to_string(),
+            Dimension::Points(r) =>  r.to_string() + "px",
+            Dimension::Percent(r) =>  (r * 100.0).to_string() + "%",
+        }),
+        Attribute::BorderRight(r) => ("border-right",match r.0 {
+            Dimension::Undefined => "".to_string(),
+            Dimension::Auto => "auto".to_string(),
+            Dimension::Points(r) =>  r.to_string() + "px",
+            Dimension::Percent(r) =>  (r * 100.0).to_string() + "%",
+        }),
+        // Attribute::Border(r) => ("visibility",match r.0 {
+        //     Dimension::Undefined => "".to_string(),
+        //     Dimension::Auto => "auto".to_string(),
+        //     Dimension::Points(r) =>  r.to_string() + "px",
+        //     Dimension::Percent(r) =>  (r * 100.0).to_string() + "%",
+        // },
+        Attribute::MinWidth(r) => ("min-width",match r.0 {
+            Dimension::Undefined => "".to_string(),
+            Dimension::Auto => "auto".to_string(),
+            Dimension::Points(r) =>  r.to_string() + "px",
+            Dimension::Percent(r) =>  (r * 100.0).to_string() + "%",
+        }),
+        Attribute::MinHeight(r) => ("min-height",match r.0 {
+            Dimension::Undefined => "".to_string(),
+            Dimension::Auto => "auto".to_string(),
+            Dimension::Points(r) =>  r.to_string() + "px",
+            Dimension::Percent(r) =>  (r * 100.0).to_string() + "%",
+        }),
+        Attribute::MaxHeight(r) => ("max-height",match r.0 {
+            Dimension::Undefined => "".to_string(),
+            Dimension::Auto => "auto".to_string(),
+            Dimension::Points(r) =>  r.to_string() + "px",
+            Dimension::Percent(r) =>  (r * 100.0).to_string() + "%",
+        }),
+        Attribute::MaxWidth(r) => ("max-width",match r.0 {
+            Dimension::Undefined => "".to_string(),
+            Dimension::Auto => "auto".to_string(),
+            Dimension::Points(r) =>  r.to_string() + "px",
+            Dimension::Percent(r) =>  (r * 100.0).to_string() + "%",
+        }),
+        Attribute::FlexBasis(r) => ("flex-basis",match r.0 {
+            Dimension::Undefined => "".to_string(),
+            Dimension::Auto => "auto".to_string(),
+            Dimension::Points(r) =>  r.to_string() + "px",
+            Dimension::Percent(r) =>  (r * 100.0).to_string() + "%",
+        }),
+        Attribute::PositionLeft(r) => ("left",match r.0 {
+            Dimension::Undefined => "".to_string(),
+            Dimension::Auto => "auto".to_string(),
+            Dimension::Points(r) =>  r.to_string() + "px",
+            Dimension::Percent(r) =>  (r * 100.0).to_string() + "%",
+        }),
+        Attribute::PositionTop(r) => ("top",match r.0 {
+            Dimension::Undefined => "".to_string(),
+            Dimension::Auto => "auto".to_string(),
+            Dimension::Points(r) =>  r.to_string() + "px",
+            Dimension::Percent(r) =>  (r * 100.0).to_string() + "%",
+        }),
+        Attribute::PositionRight(r) => ("right",match r.0 {
+            Dimension::Undefined => "".to_string(),
+            Dimension::Auto => "auto".to_string(),
+            Dimension::Points(r) =>  r.to_string() + "px",
+            Dimension::Percent(r) =>  (r * 100.0).to_string() + "%",
+        }),
+        Attribute::PositionBottom(r) => ("bottom",match r.0 {
+            Dimension::Undefined => "".to_string(),
+            Dimension::Auto => "auto".to_string(),
+            Dimension::Points(r) =>  r.to_string() + "px",
+            Dimension::Percent(r) =>  (r * 100.0).to_string() + "%",
+        }),
+        Attribute::BackgroundColor(color) => ("background-color", match &color.0 {
+            Color::RGBA(r) => {
+                "rgba(".to_string()
+                    + r.x.to_string().as_str()
+                    + ","
+                    + r.y.to_string().as_str()
+                    + ","
+                    + r.z.to_string().as_str()
+                    + ","
+                    + r.w.to_string().as_str()
+                    + ")"
+            }
+            Color::LinearGradient(_r) => "linear-gradient".to_string(),
+        }),
+
+        Attribute::BorderColor(r) => ("border-color",{
+            let r = &r.0;
+            "rgba(".to_string()
+                + r.x.to_string().as_str()
+                + ","
+                + r.y.to_string().as_str()
+                + ","
+                + r.z.to_string().as_str()
+                + ","
+                + r.w.to_string().as_str()
+                + ")"
+        }),
+        Attribute::BoxShadow(r) => ("box-shadow",{
+            r.h.to_string()
+                + " "
+                + r.v.to_string().as_str()
+                + " "
+                + r.blur.to_string().as_str()
+                + " "
+                + r.spread.to_string().as_str()
+                + " rgba("
+                + r.color.x.to_string().as_str()
+                + ","
+                + r.color.y.to_string().as_str()
+                + ","
+                + r.color.z.to_string().as_str()
+                + ","
+                + r.color.w.to_string().as_str()
+                + ")"
+            // pub h: f32,         // 水平偏移，正右负左
+            // pub v: f32,         // 垂直偏移，正下负上
+            // pub blur: f32,      // 模糊半径，0代表不模糊，
+            // pub spread: f32,    // 阴影扩展，上下左右各加上这个值
+            // pub color: CgColor, // 阴影颜色
+        }),
+
+        Attribute::BackgroundImageClip(r) => ("image-clip",{
+           	(r.top * 100.0).to_string()
+                + "% "
+                + (r.right * 100.0).to_string().as_str()
+                + "% "
+                + (r.bottom * 100.0).to_string().as_str()
+                + "% "
+                + (r.left * 100.0).to_string().as_str()
+                + "%"
+        }),
+        Attribute::MaskImageClip(r) => ("mask-image-clip",{
+            (r.top * 100.0).to_string()
+                + "% "
+                + (r.right * 100.0).to_string().as_str()
+                + "% "
+                + (r.bottom * 100.0).to_string().as_str()
+                + "% "
+                + (r.left * 100.0).to_string().as_str()
+                + "%"
+        }),
+
+        Attribute::BorderImageClip(r) => ("border-image-clip",{
+            (r.top * 100.0).to_string()
+                + "% "
+                + (r.right * 100.0).to_string().as_str()
+                + "% "
+                + (r.bottom * 100.0).to_string().as_str()
+                + "% "
+                + (r.left * 100.0).to_string().as_str()
+                + "%"
+        }),
+        Attribute::BorderImageSlice(r) => ("border-image-slice",{
+            let mut f = "";
+            if r.fill {
+                f = " fill";
+            }
+            (r.top * 100.0).to_string()
+                + "% "
+                + (r.right * 100.0).to_string().as_str()
+                + "% "
+                + (r.bottom * 100.0).to_string().as_str()
+                + "% "
+                + (r.left * 100.0).to_string().as_str()
+                + "%"
+                + f
+        }),
+
+        Attribute::Color(r) => ("color",match &r.0 {
+            Color::RGBA(r) => {
+                "rgba(".to_string()
+                    + r.x.to_string().as_str()
+                    + ","
+                    + r.y.to_string().as_str()
+                    + ","
+                    + r.z.to_string().as_str()
+                    + ","
+                    + r.w.to_string().as_str()
+                    + ")"
+            }
+            Color::LinearGradient(_r) => "linear-gradient".to_string(),
+        }),
+        Attribute::TextShadow(r) => ("text-shadow",{
+            let mut rr = "".to_string();
+            for shadow in r.iter() {
+                rr = rr
+                    + shadow.h.to_string().as_str()
+                    + " "
+                    + shadow.v.to_string().as_str()
+                    + " "
+                    + shadow.blur.to_string().as_str()
+                    + " rgba("
+                    + shadow.color.x.to_string().as_str()
+                    + ","
+                    + shadow.color.y.to_string().as_str()
+                    + ","
+                    + shadow.color.z.to_string().as_str()
+                    + ","
+                    + shadow.color.w.to_string().as_str()
+                    + ","
+                    + ")";
+            }
+            rr
+        }),
+        Attribute::TextStroke(r) => ("text-stroke",{
+            "rgba(".to_string()
+                + r.0.color.x.to_string().as_str()
+                + ","
+                + r.0.color.y.to_string().as_str()
+                + ","
+                + r.0.color.z.to_string().as_str()
+                + ","
+                + r.0.color.w.to_string().as_str()
+                + ")"
+        }),
+
+        Attribute::BorderRadius(_r) => ("", "".to_string()),    // TODO
+        Attribute::TransformFunc(_r) => ("", "".to_string()),   // TODO
+        Attribute::TransformOrigin(_r) => ("", "".to_string()), // TODO
+        Attribute::Hsi(_r) => ("", "".to_string()),
+        Attribute::BorderImageRepeat(r) => ("border-image-repeat", format!("{:?}", r.x) + " " + format!("{:?}", r.y).as_str()),
+        Attribute::Blur(r) => ("blur", r.0.to_string() + "px"),
+        Attribute::MaskImage(r) => ("mask-image",format!("{:?}", r.0)),
+        Attribute::Transform(_r) => ("", "".to_string()),               // TODO
+		Attribute::Translate(_r) => ("", "".to_string()),               // TODO
+		Attribute::Scale(_r) => ("", "".to_string()),               // TODO
+		Attribute::Rotate(_r) => ("", "".to_string()),               // TODO
+        Attribute::TransformWillChange(_r) => ("", "".to_string()),     // TODO
+        Attribute::BlendMode(_r) => ("", "".to_string()),               // TODO
+        Attribute::Direction(_r) => ("", "".to_string()),               // TODO
+        Attribute::AspectRatio(_r) => ("", "".to_string()),             // TODO
+        Attribute::Order(_r) => ("", "".to_string()),                   // TODO
+        Attribute::TextContent(_r) => ("", "".to_string()),             // TODO
+        Attribute::VNode(_r) => ("", "".to_string()),                   // TODO
+        Attribute::AnimationName(_r) => ("", "".to_string()),           // TODO
+        Attribute::AnimationDuration(_r) => ("", "".to_string()),       // TODO
+        Attribute::AnimationTimingFunction(_r) => ("", "".to_string()), // TODO
+        Attribute::AnimationDelay(_r) => ("", "".to_string()),          // TODO
+        Attribute::AnimationIterationCount(_r) => ("", "".to_string()), // TODO
+        Attribute::AnimationDirection(_r) => ("", "".to_string()),      // TODO
+        Attribute::AnimationFillMode(_r) => ("", "".to_string()),       // TODO
+        Attribute::AnimationPlayState(_r) => ("", "".to_string()),      // TODO
+    }
 }
 
 

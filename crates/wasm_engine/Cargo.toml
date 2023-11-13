@@ -14,8 +14,10 @@ trace = ["log/release_max_level_info", "tracing/release_max_level_info", "pi_bev
 pi_js_export = []
 
 [dependencies]
+async-executor = "=1.6.0" #1.7.1bug
 pi_export_gui = { path = "../gui", default-features=false, features=["record"] }
 # pi_export_astar = { path = "../astar"}
+# pi_export_base = { path = "../base", features = ["allow_not_run"]}
 pi_export_base = { path = "../base"}
 pi_spine_export = { path = "../pi_spine_export"}
 # pi_export_quad_tree = { path = "../quad_tree"}
@@ -36,10 +38,21 @@ tracing = "0.1"
 pi_render = { version = "0.1", registry = "yn", features=["webgl"] }
 pi_bevy_render_plugin = { version = "0.1", registry = "yn", features=["webgl"]}
 pi_bevy_log = {version = "0.1", registry = "yn"}
-pi_wgpu =  {version = "0.1", registry = "yn"}
+pi_wgpu =  {version = "0.1", registry = "yn", features = ["single_thread"]}
 
 
 getrandom = { version = "0.2", features = ["js"] }
+
+# pi_3d 		            = { git = "https://github.com/GaiaWorld/pi_3d.git" }
+# pi_engine_shell 		= { git = "https://github.com/GaiaWorld/pi_3d.git", features = ["allow_not_run"] }
+# pi_node_materials 		= { git = "https://github.com/GaiaWorld/pi_3d.git", features = ["allow_not_run"] }
+# default_render 			= { git = "https://github.com/GaiaWorld/pi_3d.git" }
+# pi_scene_context 		= { git = "https://github.com/GaiaWorld/pi_3d.git", features = ["allow_not_run"] }
+# pi_mesh_builder 		= { git = "https://github.com/GaiaWorld/pi_3d.git" }
+# pi_gltf2_load           = { git = "https://github.com/GaiaWorld/pi_3d.git", features = ["allow_not_run"] }
+# pi_particle_system      = { git = "https://github.com/GaiaWorld/pi_3d.git", features = ["allow_not_run"] }
+# pi_trail_renderer       = { git = "https://github.com/GaiaWorld/pi_3d.git", features = ["allow_not_run"] }
+# pi_3d_state             = { git = "https://github.com/GaiaWorld/pi_3d.git", features = ["allow_not_run"] }
 
 [target.'cfg(target_arch = "wasm32")'.dependencies]
 pi-async-rt = {version = "0.1", features = ["serial"]}

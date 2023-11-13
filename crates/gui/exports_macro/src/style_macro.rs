@@ -11,12 +11,9 @@ use pi_ui_render::components::calc::EntityKey;
 use pi_ui_render::resource::ComponentCmd;
 use pi_null::Null;
 use pi_ui_render::components::user::ClassName;
-use pi_export_play::as_value;
 use bevy_ecs::prelude::Entity;
 use ordered_float::NotNan;
 use pi_flex_layout::prelude::*;
-use pi_hash::XHashMap;
-use pi_map::vecmap::VecMap;
 use pi_style::style::*;
 use pi_style::style_type::*;
 use pi_ui_render::resource::NodeCmd;
@@ -868,7 +865,7 @@ style_out_export!(@expr animation_timing_function_str, AnimationTimingFunctionTy
 other_out_export!(set_default_style, gui, {gui.commands.set_default_style_by_str(value, 0);},; value: &str,;);
 
 other_out_export!(
-    create_class,
+    create_class_by_str,
     gui,
     {
         gui.commands.add_css(css, scope_hash as usize);

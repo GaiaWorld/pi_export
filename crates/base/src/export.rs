@@ -227,6 +227,16 @@ pub fn set_log_filter(engine: &mut Engine, filter: &str) {
 	}
 }
 
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[cfg(feature = "pi_js_export")]
+pub fn set_is_not_run(app: &mut Engine, value: bool) {
+	#[cfg(feature = "allow_not_run")]
+	{
+		let mut is_not_run = app.app_mut().world.get_resource_mut::<pi_bevy_ecs_extend::IsNotRun>().unwrap();
+		is_not_run.0 = value;
+	}
+}
+
 #[cfg(target_arch = "wasm32")]
 pub static mut RUNNER: OnceCell<LocalTaskRunner<()>> = OnceCell::new();
 
@@ -281,13 +291,13 @@ pub fn create_engine(canvas: web_sys::HtmlCanvasElement, width: u32, height: u32
 	};
 	
 
+	app.add_plugins(log);
 	create_engine_inner(
 		&mut app, 
 		pi_bevy_winit_window::WinitPlugin::new(window).with_size(width, height),
 		asset_total_capacity,
 		asset_config,
 	);
-	app.add_plugins(log);
     app.add_plugins(RuntimePlugin); // wasm需要主动推运行时
     Engine::new(app)
 }

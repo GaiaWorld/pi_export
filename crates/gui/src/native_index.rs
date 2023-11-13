@@ -4,6 +4,8 @@ pub use pi_export_base::export::{Engine, Atom};
 // pub use pi_ui_render::gui::Gui;
 use std::intrinsics::transmute;
 pub use winit::window::Window;
+use std::sync::Arc;
+use pi_slotmap::DefaultKey;
 
 // #[derive(Debug, Clone)]
 // #[cfg(feature="pi_js_export")]
@@ -20,25 +22,37 @@ pub fn create_gui(
     engine: &mut Engine,
     width: f32,
     height: f32,
-    load_image_fun: u32,
+    load_sdf_fun: Arc<dyn Fn(f64, f64, Vec<u8>, Option<Box<dyn FnOnce(Result<u32, String>) + Send + 'static>>) + Send  + 'static>,
     class_sheet: u32,
     font_sheet: u32,
     cur_time: u32,
     animation_event_fun: u32,
 	debug: u32,
+	use_sdf: bool,
 ) -> Gui {
-	println!("width====================!!!!!, {:?}", width);
+
     let mut gui = Gui::new(engine);
+	let debug: pi_ui_render::system::cmd_play::TraceOption = unsafe { transmute(debug as u8) };
 
 	#[cfg(feature="record")]
 	{
-		let debug: pi_ui_render::system::cmd_play::TraceOption = unsafe { transmute(debug as u8) };
-		engine.add_plugins(UiPlugin {cmd_trace: debug.clone()});
+		
+		engine.add_plugins(UiPlugin {cmd_trace: debug.clone(), use_sdf});
 		gui.record_option = debug;
 	}
 
 	#[cfg(not(feature="record"))]
-    engine.add_plugins(UiPlugin::default());
+    engine.add_plugins(UiPlugin{ cmd_trace: debug.clone(), use_sdf });
+
+	let fun: Arc<dyn Fn(f64, f64, Vec<u8>, Option<Box<dyn FnOnce(Result<u32, String>) + Send + Sync + 'static>>) + Send + Sync + 'static>  = unsafe { transmute(load_sdf_fun)};
+	if use_sdf {
+		pi_hal::font::sdf_brush::init_load_cb(std::sync::Arc::new(move |key: DefaultKey, font_family: usize, chars: &[char]| {
+			let r: Vec<u8> = Vec::from(bytemuck::cast_slice::<_, u8>(unsafe {transmute::<_, &[u32]>(chars)}) );
+			fun(unsafe {transmute::<_, f64>(key)}, font_family as f64, r , None);
+			// let chars1 = js_sys::Uint32Array::from(unsafe {transmute::<_, &[u32]>(chars)});
+			// fun.call3(&JsValue::from(0), &unsafe {transmute::<_, f64>(key)}.into(), &(font_family as u32).into(), chars1.as_ref()); 
+		}));
+	}
 
 	// // 设置动画的监听器
     // let a_callback = Share::new(move |list: &Vec<(AnimationGroupID, EAnimationEvent, u32)>, map: &SecondaryMap<AnimationGroupID, (ObjKey, pi_atom::Atom)>| {

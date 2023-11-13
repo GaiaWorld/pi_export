@@ -35,6 +35,7 @@ use pi_style::{
     style_type::*,
 };
 use smallvec::SmallVec;
+use pi_slotmap::DefaultKey;
 
 pub use super::{index::Gui, ShareChromeWrite};
 use pi_export_play::as_value;
@@ -80,7 +81,7 @@ pub fn create_gui(
     engine: &mut Engine,
     width: f32,
     height: f32,
-    load_image_fun: Option<Function>,
+    load_sdf_fun: Option<Function>,
     class_sheet: u32,
     font_sheet: u32,
     cur_time: u32,
@@ -92,12 +93,19 @@ pub fn create_gui(
     #[cfg(feature="record")]
 	{
 		let debug: pi_ui_render::system::cmd_play::TraceOption = unsafe { transmute(debug) };
-		engine.add_plugin(UiPlugin {cmd_trace: debug.clone()});
+		engine.add_plugin(UiPlugin {cmd_trace: debug.clone(), use_sdf: match &load_sdf_fun {Some(r) => true, _ => false}});
 		gui.record_option = debug;
 	}
 
 	#[cfg(not(feature="record"))]
-    engine.add_plugin(UiPlugin::default());
+    engine.add_plugin(UiPlugin {use_sdf: match &load_sdf_fun {Some(r) => true, _ => false}});
+
+	if let Some(fun) = load_sdf_fun {
+		pi_hal::font::sdf_brush::init_load_cb(std::rc::Rc::new(move|key: DefaultKey, font_family: usize, chars: &[char]| {
+			let chars1 = js_sys::Uint32Array::from(unsafe {transmute::<_, &[u32]>(chars)});
+			fun.call3(&JsValue::from(0), &unsafe {transmute::<_, f64>(key)}.into(), &(font_family as u32).into(), chars1.as_ref()); 
+		}));
+	}
 
     gui
 }

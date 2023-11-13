@@ -6,6 +6,8 @@ use wasm_bindgen::prelude::*;
 pub use fragment::serde_fragment_as_bin;
 
 mod fragment;
+mod sdf;
+pub use sdf::*;
 
 #[derive(Default)]
 #[wasm_bindgen]

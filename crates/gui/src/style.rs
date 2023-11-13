@@ -5,12 +5,9 @@ pub mod style_macro {
     use pi_ui_render::resource::ComponentCmd;
     use pi_null::Null;
     use pi_ui_render::components::user::ClassName;
-    use pi_export_play::as_value;
     use bevy_ecs::prelude::Entity;
     use ordered_float::NotNan;
     use pi_flex_layout::prelude::*;
-    use pi_hash::XHashMap;
-    use pi_map::vecmap::VecMap;
     use pi_style::style::*;
     use pi_style::style_type::*;
     use pi_ui_render::resource::NodeCmd;
@@ -4253,14 +4250,14 @@ pub mod style_macro {
         }
     }
     #[cfg(feature = "pi_js_export")]
-    pub fn create_class(gui: &mut Gui, css: &str, scope_hash: u32) {
+    pub fn create_class_by_str(gui: &mut Gui, css: &str, scope_hash: u32) {
         {
             gui.commands.add_css(css, scope_hash as usize);
         }
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
-    pub fn create_class(gui: &mut Gui, css: &str, scope_hash: u32) {
+    pub fn create_class_by_str(gui: &mut Gui, css: &str, scope_hash: u32) {
         {
             gui.commands.add_css(css, scope_hash as usize);
         }
