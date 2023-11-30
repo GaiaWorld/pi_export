@@ -4452,48 +4452,16 @@ pub mod style_macro {
         }
     }
     #[cfg(feature = "pi_js_export")]
-    pub fn set_clear_color(
-        gui: &mut Gui,
-        r: f32,
-        g: f32,
-        b: f32,
-        a: f32,
-        root: f64,
-        is_clear_window: bool,
-    ) {
+    pub fn set_clear_color(gui: &mut Gui, r: f32, g: f32, b: f32, a: f32) {
         {
-            let root = unsafe { Entity::from_bits(transmute::<f64, u64>(root)) };
-            gui.commands
-                .set_clear_color(
-                    root,
-                    pi_ui_render::components::user::ClearColor(
-                        CgColor::new(r, g, b, a),
-                        is_clear_window,
-                    ),
-                );
+            gui.commands.set_clear_color(CgColor::new(r, g, b, a));
         }
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
-    pub fn set_clear_color(
-        gui: &mut Gui,
-        r: f32,
-        g: f32,
-        b: f32,
-        a: f32,
-        root: f64,
-        is_clear_window: bool,
-    ) {
+    pub fn set_clear_color(gui: &mut Gui, r: f32, g: f32, b: f32, a: f32) {
         {
-            let root = unsafe { Entity::from_bits(transmute::<f64, u64>(root)) };
-            gui.commands
-                .set_clear_color(
-                    root,
-                    pi_ui_render::components::user::ClearColor(
-                        CgColor::new(r, g, b, a),
-                        is_clear_window,
-                    ),
-                );
+            gui.commands.set_clear_color(CgColor::new(r, g, b, a));
         }
     }
     #[cfg(feature = "pi_js_export")]

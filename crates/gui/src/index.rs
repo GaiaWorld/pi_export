@@ -256,7 +256,7 @@ pub fn render_gui(gui: &mut Gui, engine: &mut Engine) {
 	let _span = tracing::warn_span!("flush").entered();
 	bevy_ecs::system::CommandQueue::default().apply(&mut engine.world);
 	flush_data(gui, engine);
-	*engine.world.get_resource_mut::<RunState>().unwrap() = RunState::RENDER;
+	*engine.world.get_resource_mut::<RunState>().unwrap() = RunState::MATRIX;
 	
 }
 

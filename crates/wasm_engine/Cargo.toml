@@ -23,6 +23,7 @@ pi_spine_export = { path = "../pi_spine_export"}
 # pi_export_quad_tree = { path = "../quad_tree"}
 scene3d_export = { path = "../scene3d" }
 pi_web_logger = {git = "http://ser.yinengyun.com:10082/tech/pi_web_logger.git"}
+pi_share = "=0.4.7"
 
 # wasm-bindgen = { version = "0.2"}
 wasm-bindgen = { version = "=0.2.87" }
@@ -33,12 +34,12 @@ log = "0.4"
 tracing = "0.1"
 
 # 添加webgl feature
-# wgpu = {version = "0.1", registry = "yn", package="pi_wgpu", features=["wgpu"]}
 # wgpu1 = { version = "0.16", package = "wgpu", default-features = false, features = ["glsl", "webgl"] }
 pi_render = { version = "0.1", registry = "yn", features=["webgl"] }
 pi_bevy_render_plugin = { version = "0.1", registry = "yn", features=["webgl"]}
 pi_bevy_log = {version = "0.1", registry = "yn"}
-pi_wgpu =  {version = "0.1", registry = "yn", features = ["single_thread"]}
+# pi_wgpu =  {version = "0.1", registry = "yn", features = ["single_thread"]}
+pi_wgpu =  {version = "0.1", registry = "yn", features = ["single_thread", "use_wgpu"]}
 
 
 getrandom = { version = "0.2", features = ["js"] }

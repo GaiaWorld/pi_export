@@ -32,17 +32,16 @@ pub fn create_gui(
 ) -> Gui {
 
     let mut gui = Gui::new(engine);
-	let debug: pi_ui_render::system::cmd_play::TraceOption = unsafe { transmute(debug as u8) };
 
 	#[cfg(feature="record")]
 	{
-		
+		let debug: pi_ui_render::system::cmd_play::TraceOption = unsafe { transmute(debug as u8) };
 		engine.add_plugins(UiPlugin {cmd_trace: debug.clone(), use_sdf});
 		gui.record_option = debug;
 	}
 
 	#[cfg(not(feature="record"))]
-    engine.add_plugins(UiPlugin{ cmd_trace: debug.clone(), use_sdf });
+    engine.add_plugins(UiPlugin{ use_sdf });
 
 	let fun: Arc<dyn Fn(f64, f64, Vec<u8>, Option<Box<dyn FnOnce(Result<u32, String>) + Send + Sync + 'static>>) + Send + Sync + 'static>  = unsafe { transmute(load_sdf_fun)};
 	if use_sdf {
