@@ -37,7 +37,7 @@ pub fn p3d_init_engine(app: &mut Engine) {
 
     app
         .add_plugins(PluginBundleDefault)
-        .add_plugins(PluginNodeMaterial)
+        // .add_plugins(PluginNodeMaterial)
         .add_plugins(PluginCubeBuilder)
         .add_plugins(PluginQuadBuilder)
         .add_plugins(PluginGroupNodeMaterialAnime)
@@ -60,6 +60,8 @@ pub struct ActionSets<'w> {
     pub scene_dispose: ResMut<'w, ActionListSceneDispose>,
     pub obj_dispose: ResMut<'w, ActionListDispose>,
     pub cameracmds: ActionSetCamera<'w>,
+    pub lightcmds: ActionSetLighting<'w>,
+    pub shadowcmds: ActionSetShadow<'w>,
     pub transformcmds: ActionSetTransform<'w>,
     pub meshcmds: ActionSetMesh<'w>,
     pub abstructmeshcmds: ActionSetAbstructMesh<'w>,
@@ -84,6 +86,12 @@ pub struct ActionSets<'w> {
     pub anime_assets: TypeAnimeAssetMgrs<'w>,
     pub anime_contexts: TypeAnimeContexts<'w>,
     pub trail: ActionSetTrailRenderer<'w>,
+    pub render_targets: ResMut<'w, CustomRenderTargets>,
+    pub asset_samp: Res<'w, ShareAssetMgr<SamplerRes>>,
+    pub asset_atlas: Res<'w, PiSafeAtlasAllocator>,
+    pub scene_lighting_limit: ResMut<'w, SceneLightLimit>,
+    pub model_lighting_limit: ResMut<'w, ModelLightLimit>,
+    pub scene_shadow_limit: ResMut<'w, SceneShadowLimit>,
 }
 
 #[derive(SystemParam)]
@@ -105,7 +113,9 @@ pub struct GlobalState<'w> {
 #[pi_js_export]
 pub struct ActionSetScene3D {
     pub(crate) acts: SystemState<ActionSets<'static>>,
+    pub(crate) errors: SystemState<ResMut<'static, ErrorRecord>>,
     pub(crate) state: SystemState<GlobalState<'static>>,
+    pub(crate) tree: SystemState<EntityTree<'static, 'static>>,
     pub(crate) actparticlesys: SystemState<ParticleSystemActionSet<'static>>,
     pub(crate) world_transform: QueryState<&'static WorldMatrix>,
     pub(crate) local_transform: QueryState<&'static LocalMatrix>,
@@ -113,13 +123,16 @@ pub struct ActionSetScene3D {
     pub(crate) project_matrix: QueryState<&'static ViewerProjectionMatrix>,
     pub(crate) vp_matrix: QueryState<&'static ViewerTransformMatrix>,
     pub(crate) meshes: QueryState<(&'static SceneID, &'static GlobalEnable, Option<&'static RenderGeometryEable>, Option<&'static InstanceMesh>, &'static AbstructMesh)>, // StateMeshQuery,
-    pub(crate) materials: QueryState<(&'static AssetResShaderEffectMeta, &'static EffectTextureSamplersComp)>, // StateMaterialQuery,
+    pub(crate) materials: QueryState<(&'static AssetResShaderEffectMeta, &'static EffectTextureSamplersComp, Option<&'static TextureSlot01>, Option<&'static TextureSlot02>, Option<&'static TextureSlot03>, Option<&'static TextureSlot04>)>, // StateMaterialQuery,
     pub(crate) transforms: QueryState<(&'static SceneID, &'static Enable, &'static GlobalEnable)>, // StateTransformQuery,
     pub(crate) cameras: QueryState<(&'static Camera, &'static ModelList, &'static ModelListAfterCulling)>, // StateCameraQuery,
     pub(crate) renderers: QueryState<(&'static ViewerID, &'static Renderer)>,
     pub(crate) viewers: QueryState<(&'static ViewerActive, &'static SceneID)>,
     pub(crate) particlesystems: QueryState<(&'static ParticleIDs, &'static SceneID)>,
     pub(crate) trails: QueryState<(&'static pi_trail_renderer::TrailPoints, &'static SceneID)>,
+    pub(crate) model: QueryState<(&'static RenderGeometryEable, &'static PassID01, &'static PassID02, &'static PassID03, &'static PassID04, &'static PassID05, &'static PassID06, &'static PassID07, &'static PassID08)>,
+    pub(crate) pass: QueryState<(&'static PassViewerID, &'static PassRendererID, &'static PassMaterialID, Option<&'static PassBindGroupScene>, Option<&'static PassBindGroupModel>, Option<&'static PassBindGroupTextureSamplers>, Option<&'static PassBindGroups>, Option<&'static PassShader>, Option<&'static PassDraw>)>,
+    pub(crate) nodes: QueryState<(&'static SceneID, &'static Enable, &'static GlobalEnable, &'static Layer, Option<&'static InstanceMesh>, Option<&'static Mesh>, Option<&'static Camera>, Option<&'static DirectLight>, Option<&'static PointLight>)>, // StateTransformQuery,
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
@@ -131,6 +144,8 @@ impl ActionSetScene3D {
         Self {
             acts: SystemState::<ActionSets>::new(&mut app.world),
             state: SystemState::<GlobalState>::new(&mut app.world),
+            errors: SystemState::<ResMut<ErrorRecord>>::new(&mut app.world),
+            tree: SystemState::<EntityTree<'static, 'static>>::new(&mut app.world),
             world_transform: app.world.query(),
             local_transform: app.world.query(),
             view_matrix: app.world.query(),
@@ -145,6 +160,9 @@ impl ActionSetScene3D {
             viewers: app.world.query(),
             particlesystems: app.world.query(),
             trails: app.world.query(),
+            model: app.world.query(),
+            pass: app.world.query(),
+            nodes: app.world.query(),
         }
     }
 }
@@ -180,13 +198,42 @@ pub fn p3d_scene_dispose(app: &mut Engine, param: &mut ActionSetScene3D, scene: 
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
-pub fn p3d_render_graphic(app: &mut Engine, param: &mut ActionSetScene3D, before: f64, after: f64) {
+pub fn p3d_lighting_shadow_limit(app: &mut Engine, param: &mut ActionSetScene3D, 
+    scene_max_direct_light_count: f64,
+    scene_max_point_light_count: f64,
+    scene_max_spot_light_count: f64,
+    scene_max_hemi_light_count: f64,
+    scene_max_shadow_count: f64,
+    model_max_direct_light_count: f64,
+    model_max_point_light_count: f64,
+    model_max_spot_light_count: f64,
+    model_max_hemi_light_count: f64,
+) {
+    
+    let mut cmds = param.acts.get_mut(&mut app.world);
+
+    cmds.scene_lighting_limit.0.max_direct_light_count = scene_max_direct_light_count as u32;
+    cmds.scene_lighting_limit.0.max_point_light_count = scene_max_point_light_count as u32;
+    cmds.scene_lighting_limit.0.max_spot_light_count = scene_max_spot_light_count as u32;
+    cmds.scene_lighting_limit.0.max_hemi_light_count = scene_max_hemi_light_count as u32;
+    
+    cmds.scene_shadow_limit.0.max_count = scene_max_shadow_count as u32;
+
+    cmds.model_lighting_limit.0.max_direct_light_count = model_max_direct_light_count as u32;
+    cmds.model_lighting_limit.0.max_point_light_count = model_max_point_light_count as u32;
+    cmds.model_lighting_limit.0.max_spot_light_count = model_max_spot_light_count as u32;
+    cmds.model_lighting_limit.0.max_hemi_light_count = model_max_hemi_light_count as u32;
+}
+
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
+pub fn p3d_render_graphic(app: &mut Engine, param: &mut ActionSetScene3D, before: f64, after: f64, isdisconnect: bool) {
     let before: Entity = as_entity(before);
     let after: Entity = as_entity(after);
 
     let mut cmds = param.acts.get_mut(&mut app.world);
 
-    cmds.renderercmds.connect.push(OpsRendererConnect::ops(before, after));
+    cmds.renderercmds.connect.push(OpsRendererConnect::ops(before, after, isdisconnect));
 }
 
 // #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
@@ -358,12 +405,12 @@ pub fn p3d_material_state(app: &mut Engine, param: &mut ActionSetScene3D, result
     
     // let mut cmds = param.materials.get(&mut app.world);
     let mut state = StateMaterial::default();
-    param.materials.iter(&app.world).for_each(|(meta, texs)| {
+    param.materials.iter(&app.world).for_each(|(meta, texs, _, _, _, _)| {
         state.count += 1;
-        let texcount = meta.textures.len() as u32;
+        let texcount = meta.textures.len();
         let mut isready = false;
         if let Some(texs) = &texs.0 {
-            if texcount * 2 == texs.binding_count {
+            if texcount == texs.textures.len() {
                 isready = true;
             }
         } else if texcount == 0 {
@@ -517,6 +564,20 @@ pub fn p3d_texture_loader_state(app: &mut Engine, param: &mut ActionSetScene3D, 
     result[11] = cmds.imgtexview_asset.size() as f32;
 }
 
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
+pub fn p3d_errors(app: &mut Engine, param: &mut ActionSetScene3D, info: &mut [u32], flag: bool) -> f64 {
+    let count = info.len();
+    let mut errors = param.errors.get_mut(&mut app.world);
+    errors.1 = flag;
+    let mut idx = 0;
+    errors.drain(count).for_each(|v| {
+        info[idx] = v;
+        idx += 1;
+    });
+
+    idx as f64
+}
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
@@ -689,10 +750,17 @@ pub fn p3d_get_gltf_fail_reason(app: &mut Engine, param: &mut ActionSetScene3D, 
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
-pub fn p3d_create_image_load(app: &mut Engine, param: &mut ActionSetScene3D, url: &Atom, srgb: bool) -> f64 {
+pub fn p3d_create_image_load(app: &mut Engine, param: &mut ActionSetScene3D, url: &Atom, srgb: bool, compressed: bool, depth_or_array_layers: f64) -> f64 {
     let mut cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
 
-    let id = cmds.imgtex_loader.create_load(KeyImageTexture::File(url.deref().clone(), srgb));
+    let id = cmds.imgtex_loader.create_load(KeyImageTexture { 
+        url: url.deref().clone(),
+        srgb,
+        file: true,
+        compressed,
+        depth_or_array_layers: depth_or_array_layers as u8,
+        useage: wgpu::TextureUsages::COPY_DST | wgpu::TextureUsages::TEXTURE_BINDING
+    });
 
     unsafe { transmute(id) }
 }
@@ -751,6 +819,146 @@ pub fn p3d_get_image_fail_reason(app: &mut Engine, param: &mut ActionSetScene3D,
     let mut cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
     let id: IDImageTextureLoad = unsafe { transmute(id) };
     cmds.imgtex_loader.query_failed_reason(id)
+}
+
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
+pub fn p3d_query_children(app: &mut Engine, param: &mut ActionSetScene3D, id: f64, info: &mut [f64]) -> f64 {
+    let id = as_entity(id);
+    let tree = param.tree.get(&app.world);
+    let mut idx = 0;
+    if let Some(down) = tree.get_down(id) {
+        tree.iter(down.head()).for_each(|child| {
+            if let Ok((idscene, enable, genable, layer, instance, mesh, camera, directlight, pointlight)) = param.nodes.get(&app.world, child) {
+                let mut ntype = 1;
+                ntype |= if enable.bool()   { 2 } else { 0 };
+                ntype |= if genable.0       { 4 } else { 0 };
+                if instance.is_some()       { ntype |= 8 };
+                if mesh.is_some()           { ntype |= 16 };
+                if camera.is_some()         { ntype |= 32 };
+                if directlight.is_some()    { ntype |= 64 };
+                if pointlight.is_some()     { ntype |= 128 };
+                let id = as_f64(&child);
+
+                info[idx] = id; idx += 1;
+                info[idx] = ntype as f64; idx += 1;
+            }
+        });
+    }
+
+    idx as f64
+}
+
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
+pub fn p3d_query_mesh_info(app: &mut Engine, param: &mut ActionSetScene3D, id: f64, info: &mut [u32]) -> bool {
+    let id = as_entity(id);
+    if let Ok((geoenable, pass01, pass02, pass03, pass04, pass05, pas06, pass07, pass08)) = param.model.get(&app.world, id) {
+        let temp = [pass01.0, pass02.0, pass03.0, pass04.0, pass05.0, pas06.0, pass07.0, pass08.0];
+        for i in 0..8 {
+            if let Ok((idviewer, idrenderer, idrmaterial, set0, set1, set2, bindgroups, shader, draw)) = param.pass.get(&app.world, temp[i]) {
+                info[i * 3 + 0] = idviewer.0.index();
+                info[i * 3 + 1] = idrenderer.0.index();
+                let mut state: u32 = 0;
+                if let Some(set0) = set0 {
+                    if set0.val().is_some() { state |= 1 << 0; }
+                }
+                if let Some(set0) = set1 {
+                    if set0.val().is_some() { state |= 1 << 1; }
+                }
+                if let Some(set0) = set2 {
+                    if set0.val().is_some() { state |= 1 << 2; }
+                }
+                if let Some(set0) = bindgroups {
+                    if set0.val().is_some() { state |= 1 << 3; }
+                }
+                if let Some(set0) = shader {
+                    if set0.val().is_some() { state |= 1 << 4; }
+                }
+                if let Some(set0) = draw {
+                    if set0.val().is_some() { state |= 1 << 5; }
+                }
+                info[i * 3 + 2] = state;
+            }
+        }
+        info[8 * 3 + 0] = if geoenable.0 { 1 } else { 0 };
+
+        true
+    } else {
+        false
+    }
+    
+}
+
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
+pub fn p3d_query_material_info(app: &mut Engine, param: &mut ActionSetScene3D, id: f64, info: &mut [u32]) -> bool {
+    let id = as_entity(id);
+    if let Ok((
+        meta, textures
+        , slot01, slot02, slot03, slot04
+    )) = param.materials.get(&app.world, id) {
+
+        let mut idx = 0;
+        if let Some(slot) = slot01 {
+            match &slot.0.url {
+                EKeyTexture::Tex(key) => { info[idx * 2 + 0] = 1; info[idx * 2 + 1] = key.get_hash() as u32; },
+                EKeyTexture::Image(key) => { info[idx * 2 + 0] = 2; info[idx * 2 + 1] = key.url().url.get_hash() as u32; },
+                EKeyTexture::SRT(_) => { info[idx * 2 + 0] = 4; info[idx * 2 + 1] = 0 as u32; },
+            }
+        } else { info[idx * 2 + 0] = 0; info[idx * 2 + 1] = 0 as u32; }
+        idx += 1;
+        if let Some(slot) = slot02 {
+            match &slot.0.url {
+                EKeyTexture::Tex(key) => { info[idx * 2 + 0] = 1; info[idx * 2 + 1] = key.get_hash() as u32; },
+                EKeyTexture::Image(key) => { info[idx * 2 + 0] = 2; info[idx * 2 + 1] = key.url().url.get_hash() as u32; },
+                EKeyTexture::SRT(_) => { info[idx * 2 + 0] = 4; info[idx * 2 + 1] = 0 as u32; },
+            }
+        } else { info[idx * 2 + 0] = 0; info[idx * 2 + 1] = 0 as u32; }
+        idx += 1;
+        if let Some(slot) = slot03 {
+            match &slot.0.url {
+                EKeyTexture::Tex(key) => { info[idx * 2 + 0] = 1; info[idx * 2 + 1] = key.get_hash() as u32; },
+                EKeyTexture::Image(key) => { info[idx * 2 + 0] = 2; info[idx * 2 + 1] = key.url().url.get_hash() as u32; },
+                EKeyTexture::SRT(_) => { info[idx * 2 + 0] = 4; info[idx * 2 + 1] = 0 as u32; },
+            }
+        } else { info[idx * 2 + 0] = 0; info[idx * 2 + 1] = 0 as u32; }
+        idx += 1;
+        if let Some(slot) = slot04 {
+            match &slot.0.url {
+                EKeyTexture::Tex(key) => { info[idx * 2 + 0] = 1; info[idx * 2 + 1] = key.get_hash() as u32; },
+                EKeyTexture::Image(key) => { info[idx * 2 + 0] = 2; info[idx * 2 + 1] = key.url().url.get_hash() as u32; },
+                EKeyTexture::SRT(_) => { info[idx * 2 + 0] = 4; info[idx * 2 + 1] = 0 as u32; },
+            }
+        } else { info[idx * 2 + 0] = 0; info[idx * 2 + 1] = 0 as u32; }
+        idx += 1;
+
+        // if let Some(texs) = &textures.0 {
+        //     if let Some(slot) = &texs.textures.0 {
+        //         match &slot.0.0.key() {
+        //             KeyTextureViewUsage::Tex(_, _) => todo!(),
+        //             KeyTextureViewUsage::Image(_, _) => todo!(),
+        //             KeyTextureViewUsage::Render(_, _) => todo!(),
+        //             KeyTextureViewUsage::SRT(_, _, _) => todo!(),
+        //             KeyTextureViewUsage::Temp(_, _) => todo!(),
+        //         }
+        //     } else { info[idx * 2 + 0] = 0; info[idx * 2 + 1] = 0 as u32; }
+        // }
+
+        true
+    } else {
+        false
+    }
+}
+
+fn texture_view_usage_info(key: &KeyTextureViewUsage) {
+    match key {
+        KeyTextureViewUsage::Tex(_, _) => todo!(),
+        KeyTextureViewUsage::Image(_, _) => todo!(),
+        KeyTextureViewUsage::Render(_, _) => todo!(),
+        KeyTextureViewUsage::SRT(_, _, _) => todo!(),
+        KeyTextureViewUsage::Temp(_, _) => todo!(),
+    }
 }
 
 // #[cfg_attr(target_arch="wasm32", wasm_bindgen)]

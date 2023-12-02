@@ -2,9 +2,11 @@
 use std::mem::transmute;
 
 use pi_engine_shell::prelude::*;
-pub use pi_export_base::{export::Engine, constants::{BlendFactor, BlendOperation, CullMode, FrontFace, PrimitiveTopology, PolygonMode, CompareFunction, StencilOperation, ERenderAlignment, EScalingMode}};
+use pi_export_base::constants::ContextConstants;
+pub use pi_export_base::{export::Engine, constants::*};
 use pi_scene_context::prelude::*;
 
+use crate::constants::EngineConstants;
 pub use crate::{engine::ActionSetScene3D, as_entity, as_f64, geometry::GeometryMeta};
 #[cfg(target_arch = "wasm32")]
 use wasm_bindgen::prelude::wasm_bindgen;
@@ -143,12 +145,12 @@ pub fn p3d_mesh_instance_tilloffs(
 #[pi_js_export]
 pub fn p3d_mesh_blend(
     app: &mut Engine, param: &mut ActionSetScene3D, mesh: f64, enable: bool,
-    src_color: BlendFactor,
-    dst_color: BlendFactor,
-    src_alpha: BlendFactor,
-    dst_alpha: BlendFactor,
-    opt_color: BlendOperation,
-    opt_alpha: BlendOperation,
+    src_color: f64,
+    dst_color: f64,
+    src_alpha: f64,
+    dst_alpha: f64,
+    opt_color: f64,
+    opt_alpha: f64,
 ) {
     let mesh: Entity = as_entity(mesh);
 
@@ -156,12 +158,12 @@ pub fn p3d_mesh_blend(
 
     let blend = ModelBlend {
         enable,
-        src_color: unsafe { transmute(src_color)},
-        dst_color: unsafe { transmute(dst_color)},
-        src_alpha: unsafe { transmute(src_alpha)},
-        dst_alpha: unsafe { transmute(dst_alpha)},
-        opt_color: unsafe { transmute(opt_color)},
-        opt_alpha: unsafe { transmute(opt_alpha)},
+        src_color: ContextConstants::blend_factor(src_color),
+        dst_color: ContextConstants::blend_factor(dst_color),
+        src_alpha: ContextConstants::blend_factor(src_alpha),
+        dst_alpha: ContextConstants::blend_factor(dst_alpha),
+        opt_color: ContextConstants::blend_operation(opt_color),
+        opt_alpha: ContextConstants::blend_operation(opt_alpha),
     };
     cmds.meshcmds.blend.push(OpsRenderBlend::ops(mesh, blend));
 }
@@ -169,41 +171,41 @@ pub fn p3d_mesh_blend(
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_mesh_cull_mode(
-    app: &mut Engine, param: &mut ActionSetScene3D, mesh: f64, val: CullMode) {
+    app: &mut Engine, param: &mut ActionSetScene3D, mesh: f64, val: f64) {
     let mesh: Entity = as_entity(mesh);
 
     let mut cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
-    cmds.meshcmds.cullmode.push(OpsCullMode::ops(mesh, unsafe { transmute(val) }));
+    cmds.meshcmds.cullmode.push(OpsCullMode::ops(mesh, ContextConstants::cull_mode(val) ));
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_mesh_frontface(
-    app: &mut Engine, param: &mut ActionSetScene3D, mesh: f64, val: FrontFace) {
+    app: &mut Engine, param: &mut ActionSetScene3D, mesh: f64, val: f64) {
     let mesh: Entity = as_entity(mesh);
 
     let mut cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
-    cmds.meshcmds.frontface.push(OpsFrontFace::ops(mesh, unsafe { transmute(val) }));
+    cmds.meshcmds.frontface.push(OpsFrontFace::ops(mesh, ContextConstants::front_face(val) ));
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_mesh_topology(
-    app: &mut Engine, param: &mut ActionSetScene3D, mesh: f64, val: PrimitiveTopology) {
+    app: &mut Engine, param: &mut ActionSetScene3D, mesh: f64, val: f64) {
     let mesh: Entity = as_entity(mesh);
 
     let mut cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
-    cmds.meshcmds.topology.push(OpsTopology::ops(mesh, unsafe { transmute(val) }));
+    cmds.meshcmds.topology.push(OpsTopology::ops(mesh, ContextConstants::topolygon(val) ));
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_mesh_polygon_mode(
-    app: &mut Engine, param: &mut ActionSetScene3D, mesh: f64, val: PolygonMode) {
+    app: &mut Engine, param: &mut ActionSetScene3D, mesh: f64, val: f64) {
     let mesh: Entity = as_entity(mesh);
 
     let mut cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
-    cmds.meshcmds.polygonmode.push(OpsPolygonMode::ops(mesh, unsafe { transmute(val) }));
+    cmds.meshcmds.polygonmode.push(OpsPolygonMode::ops(mesh, ContextConstants::polygon(val) ));
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
@@ -248,11 +250,11 @@ pub fn p3d_mesh_depth_write(
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_mesh_depth_compare(
-    app: &mut Engine, param: &mut ActionSetScene3D, mesh: f64, val: CompareFunction) {
+    app: &mut Engine, param: &mut ActionSetScene3D, mesh: f64, val: f64) {
     let mesh: Entity = as_entity(mesh);
 
     let mut cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
-    cmds.meshcmds.depth_compare.push(OpsDepthCompare::ops(mesh, unsafe { transmute(val) }));
+    cmds.meshcmds.depth_compare.push(OpsDepthCompare::ops(mesh, ContextConstants::compare_function(val) ));
 }
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
@@ -273,16 +275,16 @@ pub fn p3d_mesh_depth_bias(
 pub fn p3d_mesh_stencil_front(
     app: &mut Engine, param: &mut ActionSetScene3D,
     mesh: f64, 
-    compare: CompareFunction,
-    fail_op: StencilOperation,
-    depth_fail_op: StencilOperation,
-    pass_op: StencilOperation,
+    compare: f64,
+    fail_op: f64,
+    depth_fail_op: f64,
+    pass_op: f64,
 ) {
     let mesh: Entity = as_entity(mesh);
-    let compare = unsafe { transmute(compare) };
-    let fail_op = unsafe { transmute(fail_op) };
-    let depth_fail_op = unsafe { transmute(depth_fail_op) };
-    let pass_op = unsafe { transmute(pass_op) };
+    let compare = ContextConstants::compare_function(compare) ;
+    let fail_op = ContextConstants::stencil_operation(fail_op) ;
+    let depth_fail_op = ContextConstants::stencil_operation(depth_fail_op) ;
+    let pass_op = ContextConstants::stencil_operation(pass_op) ;
 
     let mut cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
     cmds.meshcmds.stencil_front.push(OpsStencilFront::ops(mesh, compare, fail_op, depth_fail_op, pass_op));
@@ -292,16 +294,16 @@ pub fn p3d_mesh_stencil_front(
 pub fn p3d_mesh_stencil_back(
     app: &mut Engine, param: &mut ActionSetScene3D,
     mesh: f64, 
-    compare: CompareFunction,
-    fail_op: StencilOperation,
-    depth_fail_op: StencilOperation,
-    pass_op: StencilOperation,
+    compare: f64,
+    fail_op: f64,
+    depth_fail_op: f64,
+    pass_op: f64,
 ) {
     let mesh: Entity = as_entity(mesh);
-    let compare = unsafe { transmute(compare) };
-    let fail_op = unsafe { transmute(fail_op) };
-    let depth_fail_op = unsafe { transmute(depth_fail_op) };
-    let pass_op = unsafe { transmute(pass_op) };
+    let compare = ContextConstants::compare_function(compare) ;
+    let fail_op = ContextConstants::stencil_operation(fail_op) ;
+    let depth_fail_op = ContextConstants::stencil_operation(depth_fail_op) ;
+    let pass_op = ContextConstants::stencil_operation(pass_op) ;
 
     let mut cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
     cmds.meshcmds.stencil_back.push(OpsStencilBack::ops(mesh, compare, fail_op, depth_fail_op, pass_op));
@@ -398,20 +400,20 @@ pub fn p3d_mesh_render_queue_arr(
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_mesh_render_alignment(
-    app: &mut Engine, param: &mut ActionSetScene3D, mesh: f64, val: ERenderAlignment) {
+    app: &mut Engine, param: &mut ActionSetScene3D, mesh: f64, val: f64) {
     let mesh: Entity = as_entity(mesh);
 
     let mut cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
-    cmds.meshcmds.render_alignment.push(OpsMeshRenderAlignment::ops(mesh, unsafe { transmute(val) }));
+    cmds.meshcmds.render_alignment.push(OpsMeshRenderAlignment::ops(mesh, EngineConstants::render_alignment(val) ));
 }
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_abstruct_mesh_scaling_mode(
-    app: &mut Engine, param: &mut ActionSetScene3D, mesh: f64, val: EScalingMode) {
+    app: &mut Engine, param: &mut ActionSetScene3D, mesh: f64, val: f64) {
     let mesh: Entity = as_entity(mesh);
 
     let mut cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
-    cmds.abstructmeshcmds.scaling_mode.push(OpsAbstructMeshScalingMode::ops(mesh, unsafe { transmute(val) }));
+    cmds.abstructmeshcmds.scaling_mode.push(OpsAbstructMeshScalingMode::ops(mesh, EngineConstants::scaling_mode(val) ));
 }
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]

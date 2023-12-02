@@ -1,11 +1,12 @@
 
 use std::ops::Deref;
 use pi_engine_shell::prelude::*;
+use pi_export_base::constants::ContextConstants;
 use pi_scene_context::prelude::*;
 
-pub use pi_export_base::{export::{Engine, Atom}, constants::{EAddressMode, EFilterMode, EAnisotropyClamp, CompareFunction, SamplerBorderColor}};
+pub use pi_export_base::{export::{Engine, Atom}, constants::* };
 
-pub use crate::camera::OpsPass;
+use crate::{constants::EngineConstants, as_dk};
 pub use crate::{engine::ActionSetScene3D, as_entity, as_f64};
 #[cfg(target_arch = "wasm32")]
 use wasm_bindgen::prelude::wasm_bindgen;
@@ -26,23 +27,24 @@ pub fn p3d_material(app: &mut Engine, param: &mut ActionSetScene3D) -> f64 {
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
-pub fn p3d_material_shader(app: &mut Engine, param: &mut ActionSetScene3D, mat: f64, shader: &Atom, pass: OpsPass) {
+pub fn p3d_material_shader(app: &mut Engine, param: &mut ActionSetScene3D, mat: f64, shader: &Atom) {
     let entity: Entity = as_entity(mat);
     // log::warn!("Create Material ShaderName: {:?}", shader.as_str());
     let mut cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
     // log::warn!("MaterialInit: {:?}, {}", entity, mat);
-    cmds.matcmd.create.push(OpsMaterialCreate::ops(entity, shader.as_str(), pass.val()));
+    cmds.matcmd.create.push(OpsMaterialCreate::ops(entity, shader.as_str()));
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
-pub fn p3d_material_apply(app: &mut Engine, param: &mut ActionSetScene3D, mat: f64, mesh: f64) {
+pub fn p3d_material_apply(app: &mut Engine, param: &mut ActionSetScene3D, mat: f64, mesh: f64, pass: f64) {
     let mat: Entity = as_entity(mat);
     let mesh: Entity = as_entity(mesh);
+    let pass = EngineConstants::passtag(pass);
 
     let mut cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
 
-    cmds.matcmd.usemat.push(OpsMaterialUse::ops(mesh, mat));
+    cmds.matcmd.usemat.push(OpsMaterialUse::ops(mesh, mat, pass));
 }
 
 // #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
@@ -101,17 +103,27 @@ pub fn p3d_material_uniform_tex(
     app: &mut Engine, param: &mut ActionSetScene3D, mat: f64,  key: &Atom,
     url: &Atom,
     srgb: bool,
+    compressed: bool,
     filter: bool,
-    address_mode_u: EAddressMode,
-    address_mode_v: EAddressMode,
-    address_mode_w: EAddressMode,
-    mag_filter: EFilterMode,
-    min_filter: EFilterMode,
-    mipmap_filter: EFilterMode,
-    compare: CompareFunction,
-    anisotropy_clamp: EAnisotropyClamp,
-    border_color: SamplerBorderColor,
+    address_mode_u: f64,
+    address_mode_v: f64,
+    address_mode_w: f64,
+    mag_filter: f64,
+    min_filter: f64,
+    mipmap_filter: f64,
+    anisotropy_clamp: f64,
+    border_color: f64,
+    compare: Option<f64>,
 ) {
+    let address_mode_u = EngineConstants::address_mode(address_mode_u);
+    let address_mode_v = EngineConstants::address_mode(address_mode_v);
+    let address_mode_w = EngineConstants::address_mode(address_mode_w);
+    let mag_filter = ContextConstants::filter_mode(mag_filter);
+    let min_filter = ContextConstants::filter_mode(min_filter);
+    let mipmap_filter = ContextConstants::filter_mode(mipmap_filter);
+    let compare = if let Some(compare) = compare { Some(ContextConstants::compare_function(compare).val2()) } else { None };
+    let anisotropy_clamp = EngineConstants::anisotropy_clamp(anisotropy_clamp);
+    let border_color = EngineConstants::border_color(border_color);
     let mat: Entity = as_entity(mat);
     let mut cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
     cmds.matcmd.texture.push(
@@ -131,7 +143,7 @@ pub fn p3d_material_uniform_tex(
                     border_color,
                 ),
                 url: EKeyTexture::Image(KeyImageTextureView::new(
-                    KeyImageTexture::File(pi_atom::Atom::from(url.to_string()), srgb),
+                    KeyImageTexture { url: pi_atom::Atom::from(url.to_string()), srgb, file: true, compressed, depth_or_array_layers: 0, useage: wgpu::TextureUsages::TEXTURE_BINDING | wgpu::TextureUsages::COPY_DST },
                     TextureViewDesc {
                         aspect: wgpu::TextureAspect::All,
                         base_mip_level: 0,
@@ -143,4 +155,26 @@ pub fn p3d_material_uniform_tex(
             }
         )
     );
+}
+
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
+pub fn p3d_material_uniform_tex_from_render_target(
+    app: &mut Engine, param: &mut ActionSetScene3D, mat: f64, key: &Atom, key_tilloff: &Atom, url: f64,
+) {
+    let texparam = UniformTextureWithSamplerParam { slotname: key.deref().clone(), ..Default::default() };
+
+    // let address_mode_u = EngineConstants::address_mode(address_mode_u);
+    // let address_mode_v = EngineConstants::address_mode(address_mode_v);
+    // let address_mode_w = EngineConstants::address_mode(address_mode_w);
+    // let mag_filter = ContextConstants::filter_mode(mag_filter);
+    // let min_filter = ContextConstants::filter_mode(min_filter);
+    // let mipmap_filter = ContextConstants::filter_mode(mipmap_filter);
+    // let compare = ContextConstants::compare_function(compare);
+    // let anisotropy_clamp = EngineConstants::anisotropy_clamp(anisotropy_clamp);
+    // let border_color = EngineConstants::border_color(border_color);
+    let mat: Entity = as_entity(mat);
+    let key = as_dk(&url);
+    let mut cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
+    cmds.matcmd.texturefromtarget.push(OpsUniformTextureFromRenderTarget::ops(mat, texparam, key, key_tilloff.deref().clone()));
 }

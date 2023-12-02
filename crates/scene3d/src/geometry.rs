@@ -16,7 +16,13 @@ use js_proxy_gen_macro::pi_js_export;
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
-pub struct VBMeta(pub(crate) VertexBufferDesc);
+pub struct VBMeta{
+    pub(crate) key: KeyVertexBuffer,
+    pub(crate) range: VertexBufferDescRange,
+    pub(crate) attrs: Vec<VertexAttribute>,
+    pub(crate) instance: bool,
+
+}
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 impl VBMeta {
@@ -24,12 +30,19 @@ impl VBMeta {
     #[pi_js_export]
     pub fn create(name: String, start: Option<f64>, end: Option<f64>) -> Self {
         let range = if let (Some(start), Some(end)) = (start, end) {
-            Some(Range { start: start as u64, end: end as u64 })
+            VertexBufferDescRange::new(start as VertexBufferRangeVType, end as VertexBufferRangeVType)
         } else {
-            None
+            VertexBufferDescRange::default()
         };
 
-        Self(VertexBufferDesc::vertices(KeyVertexBuffer::from(name.as_str()), range, vec![]))
+        Self {
+            key: KeyVertexBuffer::from(name.as_str()),
+            range,
+            attrs: vec![],
+            instance: false,
+        }
+
+        // Self(VertexBufferDesc::vertices(KeyVertexBuffer::from(name.as_str()), range, vec![]))
     }
     // #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
     // #[pi_js_export]
@@ -259,7 +272,7 @@ impl VertexFormat {
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_vbmeta_attr(meta: &mut VBMeta, kind: VertexDataKind, format: VertexFormat) {
-    meta.0.attrs.push(VertexAttribute { kind: kind.val(), format: format.val() });
+    meta.attrs.push(VertexAttribute { kind: kind.val(), format: format.val() });
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
@@ -287,7 +300,7 @@ impl GeometryMeta {
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_geo_set_vertex(geo: &mut GeometryMeta, vb: &VBMeta) {
-    geo.0.push(vb.0.clone());
+    geo.0.push( VertexBufferDesc::new(vb.key.clone(), vb.range.clone(), vb.attrs.clone(), vb.instance) );
 }
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]

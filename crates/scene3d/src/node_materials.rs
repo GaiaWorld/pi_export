@@ -275,11 +275,29 @@ pub struct NodeMaterialBlock(Atom, NodeMaterialBlockInfo);
 impl NodeMaterialBlock {
     #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
     #[pi_js_export]
-    pub fn create(key: &Atom, vs: &str, fs: &str) -> Self {
-        Self(key.clone(), NodeMaterialBlockInfo { fs: String::from(fs), vs: String::from(vs), mat4: vec![], vec4: vec![], vec2: vec![], float: vec![], uint: vec![], textures: vec![], varyings: vec![], depends: vec![] })
+    pub fn create(key: &Atom, vs_define: &str, vs_surface: &str, fs_define: &str, fs_surface: &str, bind_defines: Option<f64>) -> Self {
+        let mut info = NodeMaterialBlockInfo {
+            vs_define: String::from(vs_define), vs_surface: String::from(vs_surface),
+            fs_define: String::from(fs_define), fs_surface: String::from(fs_surface),
+            ..Default::default()
+        };
+        if let Some(bind_defines) = bind_defines {
+            info.binddefines = bind_defines as BindDefine;
+        }
+        Self(key.clone(), info)
     }
 }
 
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
+pub fn p3d_node_material_block_extend_depend(block: &mut NodeMaterialBlock, depend: &Atom) {
+    block.1.depends.push(depend.deref().clone());
+}
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
+pub fn p3d_node_material_block_extend_bind_define(block: &mut NodeMaterialBlock, bind_define: f64) {
+    block.1.binddefines = block.1.binddefines | (bind_define as BindDefine)
+}
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_node_material_block_mat4(block: &mut NodeMaterialBlock, key: &Atom, m11: f64, m12: f64, m13: f64, m14: f64, m21: f64, m22: f64, m23: f64, m24: f64, m31: f64, m32: f64, m33: f64, m34: f64, m41: f64, m42: f64, m43: f64, m44: f64) {
@@ -312,13 +330,14 @@ pub fn p3d_node_material_block_varying(block: &mut NodeMaterialBlock, varying: f
 }
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
-pub fn p3d_node_material_block_texture(block: &mut NodeMaterialBlock, key: &Atom, filterable: bool, stage: EShaderStage, default_r: EDefaultTexture) {
+pub fn p3d_node_material_block_texture(block: &mut NodeMaterialBlock, key: &Atom, filterable: bool, stage: EShaderStage, default_r: EDefaultTexture, demision: f64) {
     block.1.textures.push(UniformTexture2DDesc::new(
         key.deref().clone(),
         wgpu::TextureSampleType::Float { filterable },
+        dimision(demision),
         false,
         stage.val(),
-        default_r.val()
+        default_r.val(),
     ))
 }
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
@@ -409,11 +428,12 @@ pub fn p3d_shader_uniform_uint(uniforms: &mut MaterialUniformDefines, key: &str,
 // }
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
-pub fn p3d_shader_uniform_tex(uniforms: &mut MaterialUniformDefines, key: &str, filterable: bool, stage: EShaderStage, default_r: EDefaultTexture) {
+pub fn p3d_shader_uniform_tex(uniforms: &mut MaterialUniformDefines, key: &str, filterable: bool, stage: EShaderStage, default_r: EDefaultTexture, demision: f64) {
     uniforms.1.push(
         UniformTexture2DDesc::new(
             UniformPropertyName::from(key),
             wgpu::TextureSampleType::Float { filterable },
+            dimision(demision),
             false,
             stage.val(),
             default_r.val()
@@ -442,8 +462,10 @@ pub fn p3d_regist_material(
     fs_define_code: &str,
     vs_code: &str,
     fs_code: &str,
-    varying: f64,
     includes: &NodematerialIncludes,
+    instance_code: &str,
+    instance_state_check: f64,
+    binds_defines_base: Option<f64>,
 ) {
     let cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
 
@@ -454,15 +476,22 @@ pub fn p3d_regist_material(
     nodemat.vs = String::from(vs_code);
     nodemat.fs = String::from(fs_code);
 
+    if let Some(binds_defines_base) = binds_defines_base {
+        nodemat.binddefines = binds_defines_base as BindDefine;
+        // log::error!("binds_defines_base {:?}", binds_defines_base);
+    }
+    nodemat.effect_varying_while_instance = String::from(instance_code);
+    nodemat.check_instance = EVerticeExtendCode(instance_state_check as u32);
+
     nodemat.values = uniforms.0.clone();
     nodemat.textures = uniforms.1.clone();
 
-    let varyings = &mut nodemat.varyings;
-    let mut tempvaryings = to_varyings(varying as u32);
+    // let varyings = &mut nodemat.varyings;
+    // let mut tempvaryings = to_varyings(varying as u32);
     
-    tempvaryings.drain(..).for_each(|item| {
-        varyings.0.push(item);
-    });
+    // tempvaryings.drain(..).for_each(|item| {
+    //     varyings.0.push(item);
+    // });
     
     includes.0.iter().for_each(|val| {
         nodemat.include(val, &cmds.node_material_blocks);
@@ -499,4 +528,16 @@ fn to_varyings(varying: u32) -> Vec<Varying> {
     if varying & VARYING_V4H          ==  VARYING_V4H           { result.push(Varying { format: pi_atom::Atom::from(""), name: pi_atom::Atom::from("") }); }
 
     return result;
+}
+
+fn dimision(dimision: f64) -> wgpu::TextureViewDimension {
+    match (dimision as u8) {
+        1 => wgpu::TextureViewDimension::D1,
+        2 => wgpu::TextureViewDimension::D2,
+        3 => wgpu::TextureViewDimension::D2Array,
+        4 => wgpu::TextureViewDimension::Cube,
+        5 => wgpu::TextureViewDimension::CubeArray,
+        6 => wgpu::TextureViewDimension::D3,
+        _ => wgpu::TextureViewDimension::D2,
+    }
 }
