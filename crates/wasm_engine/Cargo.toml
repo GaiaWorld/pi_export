@@ -38,8 +38,8 @@ tracing = "0.1"
 pi_render = { version = "0.1", registry = "yn", features=["webgl"] }
 pi_bevy_render_plugin = { version = "0.1", registry = "yn", features=["webgl"]}
 pi_bevy_log = {version = "0.1", registry = "yn"}
-# pi_wgpu =  {version = "0.1", registry = "yn", features = ["single_thread"]}
-pi_wgpu =  {version = "0.1", registry = "yn", features = ["single_thread", "use_wgpu"]}
+pi_wgpu =  {version = "0.1", registry = "yn", features = ["single_thread"]}
+# pi_wgpu =  {version = "0.1", registry = "yn", features = ["single_thread", "use_wgpu"]}
 
 
 getrandom = { version = "0.2", features = ["js"] }

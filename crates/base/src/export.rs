@@ -2,13 +2,14 @@
 
 use std::{sync::Arc, cell::RefCell};
 
-use derive_deref::{Deref, DerefMut};
+use derive_deref_rs::Deref;
 use pi_assets::{allocator::Allocator, asset::{Asset, Handle, Size}, mgr::AssetMgr};
+use pi_async_rt::rt::AsyncValueNonBlocking;
 use pi_bevy_asset::{PiAssetPlugin, AssetConfig, AssetDesc};
 use pi_bevy_post_process::PiPostProcessPlugin;
 use pi_hash::XHashMap;
 use pi_render::{rhi::{asset::{RenderRes, TextureRes}, bind_group::BindGroup, pipeline::RenderPipeline}, renderer::sampler::SamplerRes};
-use pi_share::Share;
+use pi_share::{Share, ShareMutex};
 use bevy_app::prelude::App;
 use pi_bevy_render_plugin::{FrameState, PiRenderPlugin};
 use pi_window_renderer::PluginWindowRender;
@@ -27,21 +28,42 @@ use wgpu::{TextureView, Buffer};
 pub use pi_winit::window::Window;
 
 #[cfg(all(feature="pi_js_export", not(target_arch="wasm32")))]
-#[derive(Debug, Deref, DerefMut)]
-pub struct Engine(pub App);
+#[derive(Debug, Deref)]
+pub struct Engine {
+	#[deref]
+	pub app: App,
+	/// 上帧等待
+	pub last_frame_awaiting: Share<std::sync::atomic::AtomicBool>,
+}
+
+#[cfg(all(feature="pi_js_export", not(target_arch="wasm32")))]
+impl Engine {
+	pub fn new(app: App) -> Self { Self{
+		app,
+		last_frame_awaiting: Share::new(std::sync::atomic::AtomicBool::new(false))
+	} }
+	pub fn app(&self) -> &App { &self.app }
+	pub fn app_mut(&mut self) -> &mut App { &mut self.app }
+}
 
 #[cfg(target_arch="wasm32")]
 #[wasm_bindgen]
 #[derive(Debug, Deref, DerefMut)]
-pub struct Engine(pub(crate) App);
-
-impl Engine {
-	pub fn new(app: App) -> Self { Self(app) }
-	pub fn app(&self) -> &App { &self.0 }
-	pub fn app_mut(&mut self) -> &mut App { &mut self.0 }
+pub struct Engine {
+	#[deref]
+	pub(crate) app: App,
 }
 
-#[derive(Debug, Clone, Deref, DerefMut)]
+#[cfg(target_arch="wasm32")]
+impl Engine {
+	pub fn new(app: App) -> Self { Self{
+		app,
+	} }
+	pub fn app(&self) -> &App { &self.app }
+	pub fn app_mut(&mut self) -> &mut App { &mut self.app }
+}
+
+#[derive(Debug, Clone, Deref)]
 #[cfg_attr(target_arch = "wasm32", wasm_bindgen)]
 #[cfg(feature = "pi_js_export")]
 pub struct Atom(pi_atom::Atom);
@@ -329,7 +351,7 @@ pub fn create_engine(window: &Arc<Window>, width: u32, height: u32, asset_total_
 		asset_config,
 	);
 
-    Engine(app)
+    Engine::new(app)
 }
 
 fn create_engine_inner(
@@ -386,11 +408,30 @@ pub fn dump_graphviz(engine: &Engine) -> String  {
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[cfg(feature = "pi_js_export")]
 pub fn fram_call(engine: &mut Engine, _cur_time: u32) {
+    use std::mem::transmute;
+
+
 	#[cfg(feature = "trace")]
 	let _span = tracing::warn_span!("frame_call").entered();
 	*engine.world.get_resource_mut::<FrameState>().unwrap() = FrameState::Active;
-	engine.update();
-	*engine.world.get_resource_mut::<FrameState>().unwrap() = FrameState::UnActive;
+
+	#[cfg(all(feature="pi_js_export", not(target_arch="wasm32")))]
+	{
+		use pi_async_rt::prelude::AsyncRuntime;
+		while engine.last_frame_awaiting.load(std::sync::atomic::Ordering::Relaxed) {} // 等待上帧完成
+		let engine: &'static mut Engine = unsafe { transmute(engine) };
+		engine.last_frame_awaiting.store(true, std::sync::atomic::Ordering::Relaxed);
+		let _ = pi_hal::runtime::RENDER_RUNTIME.spawn(async move {
+			engine.update();
+			*engine.world.get_resource_mut::<FrameState>().unwrap() = FrameState::UnActive;
+			engine.last_frame_awaiting.store(false, std::sync::atomic::Ordering::Relaxed); // 设置为非等待状态
+		});
+	}
+	
+	#[cfg(target_arch="wasm32")]{
+		engine.update();
+		*engine.world.get_resource_mut::<FrameState>().unwrap() = FrameState::UnActive;
+	}
 }
 
 pub fn parse_asset_config(asset_config: &str) -> AssetConfig {
