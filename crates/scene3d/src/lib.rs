@@ -7,18 +7,24 @@ pub mod engine;
 pub mod scene;
 pub mod transform_node;
 pub mod camera;
+pub mod renderer;
+pub mod render_target;
 pub mod mesh;
 pub mod mesh_builder;
 pub mod instance_mesh;
 pub mod geometry;
 pub mod material;
 pub mod lights;
+pub mod shadow;
 pub mod node_materials;
 pub mod texture;
 pub mod gltf;
 pub mod animation;
 pub mod particle_system;
 pub mod trail;
+pub mod pass;
+pub mod constants;
+pub mod commands;
 
 pub fn as_entity(val: f64) -> Entity {
     Entity::from_bits(val.to_bits())

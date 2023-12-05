@@ -8,6 +8,7 @@ pub use pi_export_base::{export::{Engine, Atom}, constants::*};
 use wasm_bindgen::prelude::wasm_bindgen;
 use js_proxy_gen_macro::pi_js_export;
 
+use crate::constants::EngineConstants;
 pub use crate::engine::ActionSetScene3D;
 
 // #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
@@ -62,27 +63,21 @@ pub struct DataTextureRes(Handle<ImageTexture>);
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
-pub fn p3d_create_data_texture(app: &mut Engine, param: &mut ActionSetScene3D, key: &Atom, data: &[u8], width: f64, height: f64, format: EDataTextureFormat) -> Option<DataTextureRes> {
-    let (format, size_per_pixel) = match format {
-        EDataTextureFormat::RGBA8 => (wgpu::TextureFormat::Rgba8Unorm, 4 * 1),
-        EDataTextureFormat::R8 => (wgpu::TextureFormat::R8Unorm, 1 * 1),
-        EDataTextureFormat::R16UI => (wgpu::TextureFormat::R16Uint, 1 * 2),
-        EDataTextureFormat::R32UI => (wgpu::TextureFormat::R32Uint, 1 * 4),
-        EDataTextureFormat::R8_SNORM => (wgpu::TextureFormat::R8Unorm, 1 * 1),
-        EDataTextureFormat::R16F => (wgpu::TextureFormat::R16Float, 1 * 2),
-        EDataTextureFormat::R16I => (wgpu::TextureFormat::R16Sint, 1 * 2),
-    };
+pub fn p3d_create_data_texture(app: &mut Engine, param: &mut ActionSetScene3D, key: &Atom, data: &[u8], width: f64, height: f64, format: f64, size_per_pixel: f64) -> Option<DataTextureRes> {
+
+    let format = EngineConstants::render_color_format(format).val();
+    let size_per_pixel = size_per_pixel as u32;
     let width = width as u32;
     let height = height as u32;
     let dimension = wgpu::TextureViewDimension::D2;
     let is_opacity = true;
-    let cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
-    let key = KeyImageTexture::Data(key.deref().clone(), false);
-    if let Some(data) = cmds.imgtex_asset.get(&key) {
+    let resource = param.resource.get_mut(&mut app.world);
+    let key = KeyImageTexture { url: key.deref().clone(), srgb: false, file: false, compressed: false, depth_or_array_layers: 0, useage: wgpu::TextureUsages::COPY_DST | wgpu::TextureUsages::TEXTURE_BINDING };
+    if let Some(data) = resource.imgtex_asset.get(&key) {
         Some(DataTextureRes(data))
     } else {
-        let texture = ImageTexture::create_data_texture(&cmds.device, &cmds.queue, &key, data, width, height, format, dimension, size_per_pixel, is_opacity);
-        match cmds.imgtex_asset.insert(key, texture) {
+        let texture = ImageTexture::create_data_texture(&resource.device, &resource.queue, &key, data, width, height, format, dimension, size_per_pixel, is_opacity);
+        match resource.imgtex_asset.insert(key, texture) {
             Ok(data) => Some(DataTextureRes(data)),
             Err(_) => None,
         }
@@ -92,16 +87,18 @@ pub fn p3d_create_data_texture(app: &mut Engine, param: &mut ActionSetScene3D, k
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_update_data_texture(app: &mut Engine, param: &mut ActionSetScene3D, texture: &DataTextureRes, data:&[u8]) {
-    let cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
-    texture.0.update(&cmds.queue, data, 0, 0, texture.0.width(), texture.0.height());
+    let resource = param.resource.get_mut(&mut app.world);
+    texture.0.update(&resource.queue, data, 0, 0, texture.0.width(), texture.0.height());
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
-pub fn p3d_query_texture(app: &mut Engine, param: &mut ActionSetScene3D, isfile: bool, url: &Atom, srgb: bool, info: &mut [f32]) -> bool {
-    let cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
-    let key = if isfile { KeyImageTexture::File(url.deref().clone(), srgb) } else { KeyImageTexture::Data(url.deref().clone(), srgb) };
-    if let Some(img) = cmds.imgtex_asset.get(&key) {
+pub fn p3d_query_texture(app: &mut Engine, param: &mut ActionSetScene3D, isfile: bool, url: &Atom, srgb: bool, compressed: bool, depth_or_array_layers: f64, useage: f64, info: &mut [f32]) -> bool {
+    let resource = param.resource.get_mut(&mut app.world);
+
+    let useage = EngineConstants::texture_usage(useage);
+    let key = KeyImageTexture { url: url.deref().clone(), srgb, file: isfile, compressed, depth_or_array_layers: depth_or_array_layers as u8, useage };
+    if let Some(img) = resource.imgtex_asset.get(&key) {
         info[0] = img.width() as f32;
         info[1] = img.height() as f32;
         info[2] = img.size() as f32;

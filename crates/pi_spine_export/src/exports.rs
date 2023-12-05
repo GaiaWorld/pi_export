@@ -5,11 +5,11 @@ use bevy_ecs::{prelude::Commands, system::CommandQueue, query::QueryState};
 use pi_bevy_asset::ShareAssetMgr;
 use pi_bevy_render_plugin::{PiRenderGraph, PiRenderDevice, component::GraphId};
 pub use pi_export_base::{export::Engine, constants::*, asset::TextureDefaultView};
-use pi_window_renderer::{WindowRenderer, PluginWindowRender};
+// use pi_window_renderer::{WindowRenderer, PluginWindowRender};
 use pi_hash::XHashMap;
-use pi_render::{renderer::sampler::SamplerRes, asset::TAssetKeyU64};
+use pi_render::{renderer::sampler::SamplerRes, asset::TAssetKeyU64, rhi::sampler::EAnisotropyClamp};
 
-pub use pi_export_base::constants::BlendFactor;
+// pub use pi_export_base::constants::BlendFactor;
 use js_proxy_gen_macro::pi_js_export;
 use pi_spine_rs::{
     KeySpineRenderer,
@@ -54,9 +54,9 @@ pub fn spine_renderer_create(app: &mut Engine, name: String, width: Option<f64>,
         let id = app.world.spawn_empty().id();
         let id_renderer = KeySpineRenderer(id);
     
-        let final_render_format = app.world.get_resource::<WindowRenderer>().unwrap().format();
+        // let final_render_format = app.world.get_resource::<WindowRenderer>().unwrap().format();
         let mut ctx = app.world.get_resource_mut::<SpineRenderContext>().unwrap();
-        ActionSpine::create_spine_renderer(id_renderer, rendersize, &mut ctx, final_render_format);
+        ActionSpine::create_spine_renderer(id_renderer, rendersize, &mut ctx, wgpu::TextureFormat::Rgba8Unorm);
         
         id_renderer
     };
@@ -189,15 +189,12 @@ pub fn spine_remove_texture(app: &mut Engine, id_renderer: f64, key: &Atom) {
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn spine_use_texture(app: &mut Engine, id_renderer: f64, texture: &TextureDefaultView, 
-    address_mode_u: EAddressMode,
-    address_mode_v: EAddressMode,
-    address_mode_w: EAddressMode,
-    mag_filter: EFilterMode,
-    min_filter: EFilterMode,
-    mipmap_filter: EFilterMode,
-    compare: CompareFunction,
-    anisotropy_clamp: EAnisotropyClamp,
-    border_color: SamplerBorderColor,
+    address_mode_u: f64,
+    address_mode_v: f64,
+    address_mode_w: f64,
+    mag_filter: f64,
+    min_filter: f64,
+    mipmap_filter: f64,
 ) {
 
     let id_renderer = KeySpineRenderer::from_f64(id_renderer);
@@ -205,15 +202,15 @@ pub fn spine_use_texture(app: &mut Engine, id_renderer: f64, texture: &TextureDe
     let asset_samplers = app.world.get_resource::<ShareAssetMgr<SamplerRes>>().unwrap();
 
     let samplerdesc = sampler_desc(
-        address_mode_u,
-        address_mode_v,
-        address_mode_w,
-        mag_filter,
-        min_filter,
-        mipmap_filter,
-        compare,
-        anisotropy_clamp,
-        border_color,
+        ContextConstants::address_mode(address_mode_u),
+        ContextConstants::address_mode(address_mode_v),
+        ContextConstants::address_mode(address_mode_w),
+        ContextConstants::filter_mode(mag_filter),
+        ContextConstants::filter_mode(min_filter),
+        ContextConstants::filter_mode(mipmap_filter),
+        None,
+        EAnisotropyClamp::None,
+        None,
     );
     let sampler = if let Some(sampler) = asset_samplers.get(&samplerdesc) {
         sampler
@@ -253,10 +250,10 @@ pub fn spine_blend(app: &mut Engine, id_renderer: f64, val: bool) {
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
-pub fn spine_blend_mode(app: &mut Engine, id_renderer: f64, src: BlendFactor, dst: BlendFactor) {
+pub fn spine_blend_mode(app: &mut Engine, id_renderer: f64, src: f64, dst: f64) {
     let id_renderer = KeySpineRenderer::from_f64(id_renderer);
     let mut cmds = app.world.get_resource_mut::<ActionListSpine>().unwrap();
-    ActionSpine::spine_blend_mode(&mut cmds, id_renderer, src.val().val(), dst.val().val());
+    ActionSpine::spine_blend_mode(&mut cmds, id_renderer, ContextConstants::blend_factor(src).val(), ContextConstants::blend_factor(dst).val());
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
