@@ -5,51 +5,10 @@ use std::ops::Deref;
 use pi_engine_shell::prelude::*;
 use pi_scene_context::prelude::*;
 use pi_node_materials::prelude::*;
+use crate::constants::EngineConstants;
 pub use crate::engine::ActionSetScene3D;
 pub use pi_export_base::{export::{Engine, Atom}, constants::*};
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
-#[pi_js_export]
-pub enum EShaderStage {
-    /// Binding is not visible from any shader stage.
-    NONE,
-    /// Binding is visible from the vertex shader of a render pipeline.
-    VERTEX,
-    /// Binding is visible from the fragment shader of a render pipeline.
-    FRAGMENT,
-    /// Binding is visible from the compute shader of a compute pipeline.
-    COMPUTE,
-    /// Binding is visible from the vertex and fragment shaders of a render pipeline.
-    VERTEXFRAGMENT,
-}
-impl EShaderStage {
-    pub fn val(&self) -> pi_render::renderer::shader_stage::EShaderStage {
-        match self {
-            EShaderStage::NONE              => pi_render::renderer::shader_stage::EShaderStage::NONE,
-            EShaderStage::VERTEX            => pi_render::renderer::shader_stage::EShaderStage::VERTEX,
-            EShaderStage::FRAGMENT          => pi_render::renderer::shader_stage::EShaderStage::FRAGMENT,
-            EShaderStage::COMPUTE           => pi_render::renderer::shader_stage::EShaderStage::COMPUTE,
-            EShaderStage::VERTEXFRAGMENT    => pi_render::renderer::shader_stage::EShaderStage::VERTEXFRAGMENT,
-        }
-    }
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
-#[pi_js_export]
-pub enum EDefaultTexture {
-    Black,
-    White,
-}
-impl EDefaultTexture {
-    pub fn val(&self) -> pi_render::renderer::buildin_data::EDefaultTexture {
-        match self {
-            EDefaultTexture::Black => pi_render::renderer::buildin_data::EDefaultTexture::Black,
-            EDefaultTexture::White => pi_render::renderer::buildin_data::EDefaultTexture::White,
-        }
-    }
-}
 #[cfg(target_arch = "wasm32")]
 use wasm_bindgen::prelude::wasm_bindgen;
 use js_proxy_gen_macro::pi_js_export;
@@ -330,23 +289,23 @@ pub fn p3d_node_material_block_varying(block: &mut NodeMaterialBlock, varying: f
 }
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
-pub fn p3d_node_material_block_texture(block: &mut NodeMaterialBlock, key: &Atom, filterable: bool, stage: EShaderStage, default_r: EDefaultTexture, demision: f64) {
+pub fn p3d_node_material_block_texture(block: &mut NodeMaterialBlock, key: &Atom, filterable: bool, stage: f64, default_texture: f64, demision: f64) {
     block.1.textures.push(UniformTexture2DDesc::new(
         key.deref().clone(),
         wgpu::TextureSampleType::Float { filterable },
-        dimision(demision),
+        EngineConstants::texture_view_dimension(demision),
         false,
-        stage.val(),
-        default_r.val(),
+        EngineConstants::shader_stage(stage),
+        EngineConstants::default_texture(default_texture),
     ))
 }
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_node_material_block_regist(app: &mut Engine, param: &mut ActionSetScene3D, block: &NodeMaterialBlock) {
     
-    let mut cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
+    let mut resource = param.resource.get_mut(&mut app.world);
 
-    cmds.node_material_blocks.0.insert(block.0.deref().clone(), block.1.clone());
+    resource.node_material_blocks.0.insert(block.0.deref().clone(), block.1.clone());
 }
 
 
@@ -428,15 +387,15 @@ pub fn p3d_shader_uniform_uint(uniforms: &mut MaterialUniformDefines, key: &str,
 // }
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
-pub fn p3d_shader_uniform_tex(uniforms: &mut MaterialUniformDefines, key: &str, filterable: bool, stage: EShaderStage, default_r: EDefaultTexture, demision: f64) {
+pub fn p3d_shader_uniform_tex(uniforms: &mut MaterialUniformDefines, key: &str, filterable: bool, stage: f64, default_texture: f64, demision: f64) {
     uniforms.1.push(
         UniformTexture2DDesc::new(
             UniformPropertyName::from(key),
             wgpu::TextureSampleType::Float { filterable },
-            dimision(demision),
+            EngineConstants::texture_view_dimension(demision),
             false,
-            stage.val(),
-            default_r.val()
+            EngineConstants::shader_stage(stage),
+            EngineConstants::default_texture(default_texture),
         )
     );
 }
@@ -447,9 +406,9 @@ pub fn p3d_check_shader(
     app: &mut Engine, param: &mut ActionSetScene3D,
     key: &str
 ) -> bool {
-    let cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
+    let resource = param.resource.get_mut(&mut app.world);
 
-    cmds.matcmd.metas.get(&KeyShaderMeta::from(key)).is_some()
+    resource.shader_metas.get(&KeyShaderMeta::from(key)).is_some()
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
@@ -467,7 +426,7 @@ pub fn p3d_regist_material(
     instance_state_check: f64,
     binds_defines_base: Option<f64>,
 ) {
-    let cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
+    let resource = param.resource.get_mut(&mut app.world);
 
     let mut nodemat = NodeMaterialBuilder::new();
     nodemat.vs_define = String::from(vs_define_code);
@@ -494,12 +453,12 @@ pub fn p3d_regist_material(
     // });
     
     includes.0.iter().for_each(|val| {
-        nodemat.include(val, &cmds.node_material_blocks);
+        nodemat.include(val, &resource.node_material_blocks);
     });
 
     // log::warn!("Material {:?}", key);
 
-    ActionMaterial::regist_material_meta(&cmds.matcmd.metas, KeyShaderMeta::from(key), nodemat.meta());
+    ActionMaterial::regist_material_meta(&resource.shader_metas, KeyShaderMeta::from(key), nodemat.meta());
 }
 
 fn to_varyings(varying: u32) -> Vec<Varying> {
@@ -528,16 +487,4 @@ fn to_varyings(varying: u32) -> Vec<Varying> {
     if varying & VARYING_V4H          ==  VARYING_V4H           { result.push(Varying { format: pi_atom::Atom::from(""), name: pi_atom::Atom::from("") }); }
 
     return result;
-}
-
-fn dimision(dimision: f64) -> wgpu::TextureViewDimension {
-    match (dimision as u8) {
-        1 => wgpu::TextureViewDimension::D1,
-        2 => wgpu::TextureViewDimension::D2,
-        3 => wgpu::TextureViewDimension::D2Array,
-        4 => wgpu::TextureViewDimension::Cube,
-        5 => wgpu::TextureViewDimension::CubeArray,
-        6 => wgpu::TextureViewDimension::D3,
-        _ => wgpu::TextureViewDimension::D2,
-    }
 }

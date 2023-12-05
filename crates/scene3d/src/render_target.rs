@@ -3,7 +3,6 @@ use js_proxy_gen_macro::pi_js_export;
 use pi_engine_shell::prelude::*;
 use pi_export_base::constants::ContextConstants;
 pub use pi_export_base::constants::*;
-use pi_scene_context::prelude::*;
 
 use crate::{as_dk, constants::EngineConstants, as_f64_dk};
 pub use crate::{as_entity, as_f64};
@@ -17,7 +16,7 @@ pub use crate::engine::ActionSetScene3D;
 #[pi_js_export]
 pub fn p3d_create_render_target(app: &mut Engine, param: &mut ActionSetScene3D, color_format: f64, depth_stencil_format: f64, width: f64, height: f64, filter: f64, address: f64, anisotropy_clamp: f64) -> Option<f64> {
     
-    let mut scenecmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
+    let mut resource = param.resource.get_mut(&mut app.world);
     
     let filter = ContextConstants::filter_mode(filter);
     let address = EngineConstants::address_mode(address);
@@ -30,8 +29,8 @@ pub fn p3d_create_render_target(app: &mut Engine, param: &mut ActionSetScene3D, 
     let color_format = EngineConstants::render_color_format(color_format);
     let depth_stencil_format = EngineConstants::render_depth_format(depth_stencil_format);
 
-    if let Some(key) = scenecmds.render_targets.create(
-        &scenecmds.device, sampler, &scenecmds.asset_samp, &scenecmds.asset_atlas, color_format, depth_stencil_format, width as u32, height as u32
+    if let Some(key) = resource.render_targets.create(
+        &resource.device, sampler, &resource.asset_samp, &resource.asset_atlas, color_format, depth_stencil_format, width as u32, height as u32
     ) {
         Some(as_f64_dk(&key))
     } else {
@@ -43,7 +42,7 @@ pub fn p3d_create_render_target(app: &mut Engine, param: &mut ActionSetScene3D, 
 #[pi_js_export]
 pub fn p3d_dispose_render_target(app: &mut Engine, param: &mut ActionSetScene3D, key: f64) {
     
-    let mut scenecmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
+    let mut resource = param.resource.get_mut(&mut app.world);
     
-    scenecmds.render_targets.delete(as_dk(&key));
+    resource.render_targets.delete(as_dk(&key));
 }

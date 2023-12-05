@@ -24,6 +24,7 @@ pub mod particle_system;
 pub mod trail;
 pub mod pass;
 pub mod constants;
+pub mod commands;
 
 pub fn as_entity(val: f64) -> Entity {
     Entity::from_bits(val.to_bits())

@@ -1024,7 +1024,7 @@ impl ContextConstants {
 }
 impl ContextConstants {
     pub fn polygon(val: f64) -> PolygonMode {
-        match (val as u32) {
+        match val as u32 {
             Self::LINES => { PolygonMode::Line },
             Self::POINTS => { PolygonMode::Point },
             Self::TRIANGLES => { PolygonMode::Fill },
@@ -1032,7 +1032,7 @@ impl ContextConstants {
         }
     }
     pub fn topolygon(val: f64) -> PrimitiveTopology {
-        match (val as u32) {
+        match val as u32 {
             Self::POINTS => { PrimitiveTopology::PointList },
             Self::LINE_LOOP => { PrimitiveTopology::LineList },
             Self::LINE_STRIP => { PrimitiveTopology::LineStrip },
@@ -1042,7 +1042,7 @@ impl ContextConstants {
         }
     }
     pub fn stencil_operation(val: f64) -> StencilOperation {
-        match (val as u32) {
+        match val as u32 {
             Self::KEEP => { StencilOperation::Keep },
             Self::ZERO => { StencilOperation::Zero },
             Self::REPLACE => { StencilOperation::Replace },
@@ -1055,21 +1055,21 @@ impl ContextConstants {
         }
     }
     pub fn front_face(val: f64) -> FrontFace {
-        match (val as u32) {
+        match val as u32 {
             Self::CW => { FrontFace::Cw },
             Self::CCW => { FrontFace::Ccw },
             _ => { FrontFace::Ccw },
         }
     }
     pub fn cull_mode(val: f64) -> CullMode {
-        match (val as u32) {
+        match val as u32 {
             Self::NONE => { CullMode::Off },
             Self::FRONT => { CullMode::Front },
             _ => { CullMode::Back },
         }
     }
     pub fn address_mode(val: f64) -> EAddressMode {
-        match (val as u32) {
+        match val as u32 {
             ContextConstants::REPEAT => { EAddressMode::Repeat },
             ContextConstants::CLAMP_TO_EDGE => { EAddressMode::ClampToEdge },
             ContextConstants::MIRRORED_REPEAT => { EAddressMode::MirrorRepeat },
@@ -1077,14 +1077,14 @@ impl ContextConstants {
         }
     }
     pub fn filter_mode(val: f64) -> EFilterMode {
-        match (val as u32) {
+        match val as u32 {
             Self::NEAREST => { EFilterMode::Nearest },
             Self::LINEAR => { EFilterMode::Linear },
             _ => { EFilterMode::Nearest },
         }
     }
     pub fn compare_function(val: f64) -> CompareFunction {
-        match (val as u32) {
+        match val as u32 {
             Self::NEVER         => CompareFunction::Never,
             Self::LESS          => CompareFunction::Less,
             Self::EQUAL         => CompareFunction::Equal,
@@ -1097,7 +1097,7 @@ impl ContextConstants {
         }
     }
     pub fn blend_operation(val: f64) -> BlendOperation {
-        match (val as u32) {
+        match val as u32 {
             Self::FUNC_ADD              => BlendOperation::Add,
             Self::FUNC_SUBTRACT         => BlendOperation::Subtract,
             Self::FUNC_REVERSE_SUBTRACT => BlendOperation::ReverseSubtract,
@@ -1107,7 +1107,7 @@ impl ContextConstants {
         }
     }
     pub fn blend_factor(val: f64) -> BlendFactor {
-        match (val as u32) {
+        match val as u32 {
             Self::ZERO                      => BlendFactor::Zero,
             Self::ONE                       => BlendFactor::One,
             Self::SRC_COLOR                 => BlendFactor::Src,

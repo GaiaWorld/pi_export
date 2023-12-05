@@ -8,17 +8,17 @@ pub use pi_export_base::export::Engine;
 use pi_gltf2_load::{GLTF, PluginGLTF2Res, GLTFResLoader, KeyGLTF, TypeAnimeAssetMgrs, TypeAnimeContexts};
 use pi_mesh_builder::{cube::PluginCubeBuilder, quad::PluginQuadBuilder};
 use pi_node_materials::{PluginNodeMaterial, NodeMaterialBlocks, prelude::*};
-use pi_particle_system::{PluginParticleSystem, prelude::{ParticleSystemActionSet, ParticleSystemCalculatorID}};
+use pi_particle_system::{PluginParticleSystem, prelude::*};
 use pi_scene_context::prelude::*;
 use pi_particle_system::prelude::*;
-use pi_trail_renderer::{PluginTrail, ActionSetTrailRenderer};
+use pi_trail_renderer::{PluginTrail, ActionSetTrailRenderer, ResTrailBuffer};
 pub use pi_export_base::asset::Atom;
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub struct ImageRes(Handle<pi_render::renderer::texture::ImageTexture>);
 
-use crate::{as_entity, as_f64};
+use crate::{as_entity, as_f64, commands::CommandsExchangeD3};
 #[cfg(target_arch = "wasm32")]
 use wasm_bindgen::prelude::wasm_bindgen;
 use js_proxy_gen_macro::pi_js_export;
@@ -55,46 +55,6 @@ pub fn p3d_init_engine(app: &mut Engine) {
 }
 
 #[derive(SystemParam)]
-pub struct ActionSets<'w> {
-    pub scene: ActionSetScene<'w>,
-    pub scene_dispose: ResMut<'w, ActionListSceneDispose>,
-    pub obj_dispose: ResMut<'w, ActionListDispose>,
-    pub cameracmds: ActionSetCamera<'w>,
-    pub lightcmds: ActionSetLighting<'w>,
-    pub shadowcmds: ActionSetShadow<'w>,
-    pub transformcmds: ActionSetTransform<'w>,
-    pub meshcmds: ActionSetMesh<'w>,
-    pub abstructmeshcmds: ActionSetAbstructMesh<'w>,
-    pub instancemeshcmds: ActionSetInstanceMesh<'w>,
-    pub geometrycmd: ActionSetGeometry<'w>,
-    pub matcmd: ActionSetMaterial<'w>,
-    pub animegroupcmd: ActionSetAnimationGroup<'w>,
-    pub renderercmds: ActionSetRenderer<'w>,
-    pub default_mat: Res<'w, SingleIDBaseDefaultMaterial>,
-    pub node_material_blocks: ResMut<'w, NodeMaterialBlocks>,
-    // pub layer_mask: ResMut<'w, ActionListLayerMask>,
-    // pub renderer_drawcalls: Res<'w, RendererDrawCallRecord>,
-    // pub transform_record: Res<'w, TransformRecord>,
-    pub imgtex_loader: ResMut<'w, ImageTextureLoader>,
-    pub imgtex_loader_state: ResMut<'w, StateTextureLoader>,
-    pub imgtex_asset: Res<'w, ShareAssetMgr<ImageTexture>>,
-    pub imgtexview_asset: Res<'w, ShareAssetMgr<ImageTextureView>>,
-    pub gltf2_asset: Res<'w, ShareAssetMgr<GLTF>>,
-    pub gltf2_loader: ResMut<'w, GLTFResLoader>,
-    pub device: Res<'w, PiRenderDevice>,
-    pub queue: Res<'w, PiRenderQueue>,
-    pub anime_assets: TypeAnimeAssetMgrs<'w>,
-    pub anime_contexts: TypeAnimeContexts<'w>,
-    pub trail: ActionSetTrailRenderer<'w>,
-    pub render_targets: ResMut<'w, CustomRenderTargets>,
-    pub asset_samp: Res<'w, ShareAssetMgr<SamplerRes>>,
-    pub asset_atlas: Res<'w, PiSafeAtlasAllocator>,
-    pub scene_lighting_limit: ResMut<'w, SceneLightLimit>,
-    pub model_lighting_limit: ResMut<'w, ModelLightLimit>,
-    pub scene_shadow_limit: ResMut<'w, SceneShadowLimit>,
-}
-
-#[derive(SystemParam)]
 pub struct GlobalState<'w> {
     pub resource: Res<'w, pi_3d_state::StateResource>,
     pub performance: Res<'w, pi_engine_shell::prelude::Performance>,
@@ -112,11 +72,10 @@ pub struct GlobalState<'w> {
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub struct ActionSetScene3D {
-    pub(crate) acts: SystemState<ActionSets<'static>>,
-    pub(crate) errors: SystemState<ResMut<'static, ErrorRecord>>,
+    pub(crate) acts: SystemState<pi_3d::ActionSets<'static>>,
+    pub(crate) resource: SystemState<pi_3d::ResourceSets<'static>>,
     pub(crate) state: SystemState<GlobalState<'static>>,
     pub(crate) tree: SystemState<EntityTree<'static, 'static>>,
-    pub(crate) actparticlesys: SystemState<ParticleSystemActionSet<'static>>,
     pub(crate) world_transform: QueryState<&'static WorldMatrix>,
     pub(crate) local_transform: QueryState<&'static LocalMatrix>,
     pub(crate) view_matrix: QueryState<&'static ViewerViewMatrix>,
@@ -142,16 +101,15 @@ impl ActionSetScene3D {
     #[pi_js_export]
     pub fn create(app: &mut Engine) -> Self {
         Self {
-            acts: SystemState::<ActionSets>::new(&mut app.world),
+            acts: SystemState::<pi_3d::ActionSets>::new(&mut app.world),
+            resource: SystemState::<pi_3d::ResourceSets>::new(&mut app.world),
             state: SystemState::<GlobalState>::new(&mut app.world),
-            errors: SystemState::<ResMut<ErrorRecord>>::new(&mut app.world),
             tree: SystemState::<EntityTree<'static, 'static>>::new(&mut app.world),
             world_transform: app.world.query(),
             local_transform: app.world.query(),
             view_matrix: app.world.query(),
             project_matrix: app.world.query(),
             vp_matrix: app.world.query(),
-            actparticlesys: SystemState::<ParticleSystemActionSet>::new(&mut app.world),
             meshes: app.world.query(),
             materials: app.world.query(),
             transforms: app.world.query(),
@@ -174,13 +132,10 @@ pub fn p3d_entity(app: &mut Engine) -> f64 {
     as_f64(&id)
 }
 
-
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
-pub fn p3d_dispose(app: &mut Engine, param: &mut ActionSetScene3D, entity: f64) {
+pub fn p3d_dispose(cmds: &mut CommandsExchangeD3, entity: f64) {
     let entity: Entity = as_entity(entity);
-
-    let mut cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
 
     cmds.obj_dispose.push(OpsDispose::ops(entity));
 }
@@ -188,10 +143,8 @@ pub fn p3d_dispose(app: &mut Engine, param: &mut ActionSetScene3D, entity: f64) 
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
-pub fn p3d_scene_dispose(app: &mut Engine, param: &mut ActionSetScene3D, scene: f64) {
+pub fn p3d_scene_dispose(cmds: &mut CommandsExchangeD3, scene: f64) {
     let entity: Entity = as_entity(scene);
-
-    let mut cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
 
     cmds.scene_dispose.push(OpsSceneDispose::ops(entity));
 }
@@ -210,54 +163,29 @@ pub fn p3d_lighting_shadow_limit(app: &mut Engine, param: &mut ActionSetScene3D,
     model_max_hemi_light_count: f64,
 ) {
     
-    let mut cmds = param.acts.get_mut(&mut app.world);
+    let mut resource = param.resource.get_mut(&mut app.world);
 
-    cmds.scene_lighting_limit.0.max_direct_light_count = scene_max_direct_light_count as u32;
-    cmds.scene_lighting_limit.0.max_point_light_count = scene_max_point_light_count as u32;
-    cmds.scene_lighting_limit.0.max_spot_light_count = scene_max_spot_light_count as u32;
-    cmds.scene_lighting_limit.0.max_hemi_light_count = scene_max_hemi_light_count as u32;
+    resource.scene_lighting_limit.0.max_direct_light_count = scene_max_direct_light_count as u32;
+    resource.scene_lighting_limit.0.max_point_light_count = scene_max_point_light_count as u32;
+    resource.scene_lighting_limit.0.max_spot_light_count = scene_max_spot_light_count as u32;
+    resource.scene_lighting_limit.0.max_hemi_light_count = scene_max_hemi_light_count as u32;
     
-    cmds.scene_shadow_limit.0.max_count = scene_max_shadow_count as u32;
+    resource.scene_shadow_limit.0.max_count = scene_max_shadow_count as u32;
 
-    cmds.model_lighting_limit.0.max_direct_light_count = model_max_direct_light_count as u32;
-    cmds.model_lighting_limit.0.max_point_light_count = model_max_point_light_count as u32;
-    cmds.model_lighting_limit.0.max_spot_light_count = model_max_spot_light_count as u32;
-    cmds.model_lighting_limit.0.max_hemi_light_count = model_max_hemi_light_count as u32;
+    resource.model_lighting_limit.0.max_direct_light_count = model_max_direct_light_count as u32;
+    resource.model_lighting_limit.0.max_point_light_count = model_max_point_light_count as u32;
+    resource.model_lighting_limit.0.max_spot_light_count = model_max_spot_light_count as u32;
+    resource.model_lighting_limit.0.max_hemi_light_count = model_max_hemi_light_count as u32;
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
-pub fn p3d_render_graphic(app: &mut Engine, param: &mut ActionSetScene3D, before: f64, after: f64, isdisconnect: bool) {
+pub fn p3d_render_graphic(cmds: &mut CommandsExchangeD3, before: f64, after: f64, isdisconnect: bool) {
     let before: Entity = as_entity(before);
     let after: Entity = as_entity(after);
 
-    let mut cmds = param.acts.get_mut(&mut app.world);
-
-    cmds.renderercmds.connect.push(OpsRendererConnect::ops(before, after, isdisconnect));
+    cmds.renderer_connect.push(OpsRendererConnect::ops(before, after, isdisconnect));
 }
-
-// #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
-// #[pi_js_export]
-// pub fn p3d_query_drawcalls(app: &mut Engine, param: &mut ActionSetScene3D, renderer: f64) -> f64 {
-//     let entity: Entity = as_entity(renderer);
-
-//     let cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
-
-//     if let Some(count) = cmds.renderer_drawcalls.0.get(&entity) {
-//         *count as f64
-//     } else {
-//         0 as f64
-//     }
-// }
-
-// #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
-// #[pi_js_export]
-// pub fn p3d_query_world_matrix_time(app: &mut Engine, param: &mut ActionSetScene3D) -> f64 {
-
-//     let cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
-
-//     cmds.transform_record.all_wmcompute as f64
-// }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
@@ -311,8 +239,8 @@ pub fn p3d_query_scene_state(app: &mut Engine, param: &mut ActionSetScene3D, ent
     });
 
     let mut count_animegroup = 0;
-    let cmds = param.acts.get_mut(&mut app.world);
-    cmds.animegroupcmd.scene_ctxs.iter().for_each(|(idscene, ctx)| {
+    let resource = param.resource.get_mut(&mut app.world);
+    resource.anime_scene_ctxs.iter().for_each(|(idscene, ctx)| {
         if entity == *idscene {
             count_animegroup += ctx.0.group_mgr.groups.len();
         }
@@ -548,30 +476,30 @@ pub fn p3d_camera_state(app: &mut Engine, param: &mut ActionSetScene3D, camera: 
 #[pi_js_export]
 pub fn p3d_texture_loader_state(app: &mut Engine, param: &mut ActionSetScene3D, result: &mut [f32]) {
 
-    let cmds = param.acts.get_mut(&mut app.world);
+    let resource = param.resource.get_mut(&mut app.world);
 
-    result[ 0] = cmds.imgtex_loader_state.image_count as f32;
-    result[ 1] = cmds.imgtex_loader_state.image_fail as f32;
-    result[ 2] = cmds.imgtex_loader_state.image_success as f32;
-    result[ 3] = cmds.imgtex_loader_state.image_waiting as f32;
-    result[ 4] = cmds.imgtex_loader_state.texview_count as f32;
-    result[ 5] = cmds.imgtex_loader_state.texview_fail as f32;
-    result[ 6] = cmds.imgtex_loader_state.texview_success as f32;
-    result[ 7] = cmds.imgtex_loader_state.texview_waiting as f32;
-    result[ 8] = cmds.imgtex_asset.len() as f32;
-    result[ 9] = cmds.imgtex_asset.size() as f32;
-    result[10] = cmds.imgtexview_asset.len() as f32;
-    result[11] = cmds.imgtexview_asset.size() as f32;
+    result[ 0] = resource.imgtex_loader_state.image_count as f32;
+    result[ 1] = resource.imgtex_loader_state.image_fail as f32;
+    result[ 2] = resource.imgtex_loader_state.image_success as f32;
+    result[ 3] = resource.imgtex_loader_state.image_waiting as f32;
+    result[ 4] = resource.imgtex_loader_state.texview_count as f32;
+    result[ 5] = resource.imgtex_loader_state.texview_fail as f32;
+    result[ 6] = resource.imgtex_loader_state.texview_success as f32;
+    result[ 7] = resource.imgtex_loader_state.texview_waiting as f32;
+    result[ 8] = resource.imgtex_asset.len() as f32;
+    result[ 9] = resource.imgtex_asset.size() as f32;
+    result[10] = resource.imgtexview_asset.len() as f32;
+    result[11] = resource.imgtexview_asset.size() as f32;
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_errors(app: &mut Engine, param: &mut ActionSetScene3D, info: &mut [u32], flag: bool) -> f64 {
     let count = info.len();
-    let mut errors = param.errors.get_mut(&mut app.world);
-    errors.1 = flag;
+    let mut resource = param.resource.get_mut(&mut app.world);
+    resource.error_record.1 = flag;
     let mut idx = 0;
-    errors.drain(count).for_each(|v| {
+    resource.error_record.drain(count).for_each(|v| {
         info[idx] = v;
         idx += 1;
     });
@@ -685,22 +613,22 @@ pub fn gltf_particle_calculator(item: &GLTFRes, index: f64) -> Option<&Handle<Pa
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_create_gltf_load(app: &mut Engine, param: &mut ActionSetScene3D, entity: f64, baseurl: &Atom, dyndesc: String) {
-    let cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
+    let resource = param.resource.get_mut(&mut app.world);
 
     let entity: Entity = as_entity(entity);
 
     let param = KeyGLTF { base_url: baseurl.deref().clone(), dyn_desc: pi_atom::Atom::from(dyndesc) };
 
-    cmds.gltf2_loader.create_load(entity, param);
+    resource.gltf2_loader.create_load(entity, param);
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_query_gltf_load(app: &mut Engine, param: &mut ActionSetScene3D, success: &mut [f64], failed: &mut [f64]) {
-    let cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
+    let resource = param.resource.get_mut(&mut app.world);
 
     let max = success.len();
-    let mut item = cmds.gltf2_loader.success.pop();
+    let mut item = resource.gltf2_loader.success.pop();
     let mut idx = 0;
     while let Some(entity) = item {
         success[idx] = as_f64(&entity);
@@ -709,12 +637,12 @@ pub fn p3d_query_gltf_load(app: &mut Engine, param: &mut ActionSetScene3D, succe
         if idx >= max {
             break;
         }
-        item = cmds.gltf2_loader.success.pop();
+        item = resource.gltf2_loader.success.pop();
     }
     success[idx] = 0.;
     
     let max = success.len();
-    let mut item = cmds.gltf2_loader.fails.pop();
+    let mut item = resource.gltf2_loader.fails.pop();
     let mut idx = 0;
     while let Some(entity) = item {
         failed[idx] = as_f64(&entity);
@@ -723,7 +651,7 @@ pub fn p3d_query_gltf_load(app: &mut Engine, param: &mut ActionSetScene3D, succe
         if idx >= max {
             break;
         }
-        item = cmds.gltf2_loader.fails.pop();
+        item = resource.gltf2_loader.fails.pop();
     }
     failed[idx] = 0.;
 }
@@ -731,9 +659,9 @@ pub fn p3d_query_gltf_load(app: &mut Engine, param: &mut ActionSetScene3D, succe
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_get_gltf(app: &mut Engine, param: &mut ActionSetScene3D, entity: f64) -> Option<GLTFRes> {
-    let mut cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
+    let mut resource = param.resource.get_mut(&mut app.world);
     let entity: Entity = as_entity(entity);
-    if let Some(val) = cmds.gltf2_loader.get_success(entity) {
+    if let Some(val) = resource.gltf2_loader.get_success(entity) {
         Some(GLTFRes(val))
     } else {
         None
@@ -743,17 +671,17 @@ pub fn p3d_get_gltf(app: &mut Engine, param: &mut ActionSetScene3D, entity: f64)
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_get_gltf_fail_reason(app: &mut Engine, param: &mut ActionSetScene3D, entity: f64) -> Option<String> {
-    let mut cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
+    let mut resource = param.resource.get_mut(&mut app.world);
     let entity: Entity = as_entity(entity);
-    cmds.gltf2_loader.get_fail_reason(entity)
+    resource.gltf2_loader.get_fail_reason(entity)
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_create_image_load(app: &mut Engine, param: &mut ActionSetScene3D, url: &Atom, srgb: bool, compressed: bool, depth_or_array_layers: f64) -> f64 {
-    let mut cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
+    let mut resource = param.resource.get_mut(&mut app.world);
 
-    let id = cmds.imgtex_loader.create_load(KeyImageTexture { 
+    let id = resource.imgtex_loader.create_load(KeyImageTexture { 
         url: url.deref().clone(),
         srgb,
         file: true,
@@ -768,10 +696,10 @@ pub fn p3d_create_image_load(app: &mut Engine, param: &mut ActionSetScene3D, url
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_query_image_load(app: &mut Engine, param: &mut ActionSetScene3D, success: &mut [f64], failed: &mut [f64]) {
-    let cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
+    let resource = param.resource.get_mut(&mut app.world);
 
     let max = success.len();
-    let mut item = cmds.imgtex_loader.success_load.pop();
+    let mut item = resource.imgtex_loader.success_load.pop();
     let mut idx = 0;
     while let Some(entity) = item {
         success[idx] = unsafe { transmute(entity) };
@@ -781,12 +709,12 @@ pub fn p3d_query_image_load(app: &mut Engine, param: &mut ActionSetScene3D, succ
             break;
         }
 
-        item = cmds.imgtex_loader.success_load.pop();
+        item = resource.imgtex_loader.success_load.pop();
     }
     success[idx] = 0.;
     
     let max = success.len();
-    let mut item = cmds.imgtex_loader.fails.pop();
+    let mut item = resource.imgtex_loader.fails.pop();
     let mut idx = 0;
     while let Some(entity) = item {
         failed[idx] = unsafe { transmute(entity) };
@@ -796,7 +724,7 @@ pub fn p3d_query_image_load(app: &mut Engine, param: &mut ActionSetScene3D, succ
             break;
         }
 
-        item = cmds.imgtex_loader.fails.pop();
+        item = resource.imgtex_loader.fails.pop();
     }
     failed[idx] = 0.;
 }
@@ -804,9 +732,9 @@ pub fn p3d_query_image_load(app: &mut Engine, param: &mut ActionSetScene3D, succ
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_get_image(app: &mut Engine, param: &mut ActionSetScene3D, id: f64) -> Option<ImageRes> {
-    let mut cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
+    let mut resource = param.resource.get_mut(&mut app.world);
     let id: IDImageTextureLoad = unsafe { transmute(id) };
-    if let Some(img) = cmds.imgtex_loader.query_success(id) {
+    if let Some(img) = resource.imgtex_loader.query_success(id) {
         Some(ImageRes(img))
     } else {
         None
@@ -816,9 +744,9 @@ pub fn p3d_get_image(app: &mut Engine, param: &mut ActionSetScene3D, id: f64) ->
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_get_image_fail_reason(app: &mut Engine, param: &mut ActionSetScene3D, id: f64) -> Option<String> {
-    let mut cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
+    let mut resource = param.resource.get_mut(&mut app.world);
     let id: IDImageTextureLoad = unsafe { transmute(id) };
-    cmds.imgtex_loader.query_failed_reason(id)
+    resource.imgtex_loader.query_failed_reason(id)
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
@@ -960,41 +888,3 @@ fn texture_view_usage_info(key: &KeyTextureViewUsage) {
         KeyTextureViewUsage::Temp(_, _) => todo!(),
     }
 }
-
-// #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
-// #[pi_js_export]
-// pub fn p3d_query_global_position(app: &mut Engine, param: &mut ActionSetScene3D, entity: f64, position: &mut [f32]) -> bool {
-//     let entity: Entity = as_entity(entity);
-
-//     let mut cmds = param.acts.get_mut(&mut app.world);
-
-//     if let Ok(mut trans) = cmds.query.global_transform.get_mut(entity) {
-//         let mut i = 0;
-//         trans.position().as_slice().iter().for_each(|val| {
-//             matrix[i] = *val;
-//             i += 1;
-//         });
-//         true
-//     } else {
-//         false
-//     }
-// }
-
-// #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
-// #[pi_js_export]
-// pub fn p3d_query_global_scaling(app: &mut Engine, param: &mut ActionSetScene3D, entity: f64, scaling: &mut [f32]) -> bool {
-//     let entity: Entity = as_entity(entity);
-
-//     let mut cmds = param.acts.get_mut(&mut app.world);
-
-//     if let Ok(mut trans) = cmds.query.global_transform.get_mut(entity) {
-//         let mut i = 0;
-//         trans.scaling().as_slice().iter().for_each(|val| {
-//             matrix[i] = *val;
-//             i += 1;
-//         });
-//         true
-//     } else {
-//         false
-//     }
-// }
