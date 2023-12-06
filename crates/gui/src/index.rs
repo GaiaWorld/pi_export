@@ -270,7 +270,21 @@ pub fn calc(gui: &mut Gui, engine: &mut Engine) {
 	flush_data(gui, engine);
 	*engine.world.get_resource_mut::<RunState>().unwrap() = RunState::MATRIX;
 	*engine.world.get_resource_mut::<FrameState>().unwrap() = FrameState::UnActive;
+
+	await_last_frame(engine);
 	engine.update();
+}
+
+#[cfg(all(feature="pi_js_export", not(target_arch="wasm32")))]
+// 等待上次帧运行结束
+fn await_last_frame(engine: &mut Engine) {
+	while engine.last_frame_awaiting.load(std::sync::atomic::Ordering::Relaxed) {}
+}
+
+// 等待上次帧运行结束
+#[cfg(all(target_arch="wasm32"))]
+#[inline]
+fn await_last_frame(engine: &mut Engine) {
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
@@ -282,6 +296,7 @@ pub fn calc_layout(gui: &mut Gui, engine: &mut Engine) {
 	flush_data(gui, engine);
 	*engine.world.get_resource_mut::<RunState>().unwrap() = RunState::LAYOUT;
 	*engine.world.get_resource_mut::<FrameState>().unwrap() = FrameState::UnActive;
+	await_last_frame(engine);
 	engine.update();
 }
 
@@ -294,10 +309,11 @@ pub fn calc_geo(gui: &mut Gui, engine: &mut Engine) {
 	flush_data(gui, engine);
 	*engine.world.get_resource_mut::<RunState>().unwrap() = RunState::MATRIX;
 	*engine.world.get_resource_mut::<FrameState>().unwrap() = FrameState::UnActive;
+	await_last_frame(engine);
 	engine.update();
 }
 
-// 取到keyframes
+// 取到keyframes(应该在每帧开始前取上一帧产生的事件， 因为在本地平台帧推被异步出去，合适完成帧推目前没有设计回调， 因此事件总是延迟一帧，但应该问题不大)
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn get_keyframes(engine: &mut Engine, name: &Atom1, scope_hash: u32) -> String {

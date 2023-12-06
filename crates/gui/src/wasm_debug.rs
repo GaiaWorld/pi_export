@@ -39,6 +39,8 @@ use pi_map::vecmap::VecMap;
 use pi_style::style::ImageRepeatOption;
 use smallvec::SmallVec;
 use pi_bevy_ecs_extend::prelude::Layer;
+use pi_ui_render::components::pass_2d::Camera;
+use pi_ui_render::components::calc::View;
 
 #[derive(Serialize, Deserialize, Debug)]
 struct Quad {
@@ -115,6 +117,8 @@ struct Info {
 	pub as_image: String,
 	pub canvas: String,
 	pub layer: String,
+	pub view_port: String,
+	pub view: String,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -330,7 +334,8 @@ pub fn node_info(engine: &mut Engine, node_id: f64) -> JsValue {
 
     let world_matrix = &engine.world.query::<&WorldMatrix>().get(&engine.world, node_id).unwrap().clone();
 
-    // let transform =  engine.world.query::<&Transform>();
+    let view_port =  engine.world.query::<&Camera>().get(&engine.world, node_id).map(|r| {r.view_port.clone()});
+	let view =  engine.world.query::<&View>().get(&engine.world, node_id).map(|r| {r.clone()});
 
     // let draw_list =  engine.world.query::<&DrawList>();
 
@@ -584,6 +589,8 @@ pub fn node_info(engine: &mut Engine, node_id: f64) -> JsValue {
 		as_image: format!("{:?}", as_image),
 		canvas: "".to_string(),
 		layer: format!("{:?}", layer),
+		view_port: format!("{:?}", view_port),
+		view: format!("{:?}", view),
     };
 	let canvas = canvas.map(|r| {r.clone()});
 	let canvas_graph_id = if let Some(canvas) = canvas.clone() {

@@ -17,7 +17,7 @@ pi_atom = "0.2"
 pi_hash="0.1"
 log = "0.4"
 serde_json = "1.0"
-derive_deref = "1.1"
+derive-deref-rs = "0.1"
 pi_export_macro = {path="../macro"}
 pi_share = {version="0.4"}
 pi_assets = "0.13"
