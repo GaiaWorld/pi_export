@@ -4,12 +4,13 @@ use pi_engine_shell::prelude::*;
 use pi_scene_context::prelude::*;
 use pi_scene_math::Vector3;
 
-use crate::{constants::EngineConstants, commands::CommandsExchangeD3};
+use crate::{constants::EngineConstants};
+pub use crate::commands::CommandsExchangeD3;
 use crate::{as_entity, as_f64};
 #[cfg(target_arch = "wasm32")]
 use wasm_bindgen::prelude::wasm_bindgen;
 
-use pi_export_base::export::Engine;
+pub use pi_export_base::export::Engine;
 
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]

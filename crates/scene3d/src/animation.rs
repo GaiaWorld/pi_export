@@ -12,7 +12,8 @@ pub use pi_export_base::export::Engine;
 use pi_scene_context::prelude::*;
 use pi_slotmap::DefaultKey;
 pub use crate::engine::ActionSetScene3D;
-use crate::{as_entity, as_f64, as_f64_dk, as_dk, commands::CommandsExchangeD3};
+use crate::{as_entity, as_f64, as_f64_dk, as_dk};
+pub use crate::commands::CommandsExchangeD3;
 
 
 #[cfg(target_arch = "wasm32")]

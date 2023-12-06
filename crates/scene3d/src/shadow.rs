@@ -3,12 +3,12 @@ use js_proxy_gen_macro::pi_js_export;
 use pi_engine_shell::prelude::*;
 use pi_scene_context::prelude::*;
 
-use crate::commands::CommandsExchangeD3;
+pub use crate::commands::CommandsExchangeD3;
 use crate::{as_entity, as_f64};
 #[cfg(target_arch = "wasm32")]
 use wasm_bindgen::prelude::wasm_bindgen;
 
-use pi_export_base::export::Engine;
+pub use pi_export_base::export::Engine;
 
 /// * pass_tag:
 ///     * 0b0000_0000_0000_0001

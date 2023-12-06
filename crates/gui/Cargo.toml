@@ -84,7 +84,7 @@ wgpu = {version = "0.1", registry = "yn", package="pi_wgpu"}
 wasm-bindgen = { version = "0.2", features = ["serde-serialize"] }
 uuid = { version = "1", features = ["js"] }
 # pi_share = {version="0.4", features=["serial", "rc"]}
-pi_share = {version="0.4"}
+pi_share = {version="=0.4.7"} # 更新的版本有问题，暂时回退
 pi-async-rt = {version = "0.1", features = ["serial"]}
 web-sys = {version="0.3", features = [
 	"HtmlCanvasElement"

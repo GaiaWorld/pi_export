@@ -2,7 +2,7 @@ pub use pi_export_base::export::{Engine, Atom};
 use pi_particle_system::prelude::{OpsCPUParticleSystem, OpsCPUParticleSystemState};
 use pi_render::asset::TAssetKeyU64;
 
-use crate::commands::CommandsExchangeD3;
+pub use crate::commands::CommandsExchangeD3;
 pub use crate::{engine::{ActionSetScene3D, GLTFRes, gltf_particle_calculator}, as_entity};
 
 #[cfg(target_arch = "wasm32")]

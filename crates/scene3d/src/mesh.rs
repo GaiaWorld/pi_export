@@ -5,7 +5,8 @@ use pi_export_base::constants::ContextConstants;
 pub use pi_export_base::{export::Engine, constants::*};
 use pi_scene_context::prelude::*;
 
-use crate::{constants::EngineConstants, commands::CommandsExchangeD3};
+use crate::{constants::EngineConstants};
+pub use crate::commands::CommandsExchangeD3;
 pub use crate::{engine::ActionSetScene3D, as_entity, as_f64, geometry::GeometryMeta};
 #[cfg(target_arch = "wasm32")]
 use wasm_bindgen::prelude::wasm_bindgen;

@@ -33,22 +33,41 @@ pub struct Engine {
 	#[deref]
 	pub app: App,
 	/// 上帧等待
-	pub last_frame_awaiting: Share<std::sync::atomic::AtomicBool>,
+	// pub last_frame_awaiting: Share<std::sync::atomic::AtomicBool>,
+	pub last_frame_awaiting: bool,
+	pub sender: crossbeam_channel::Sender<Box<dyn FnOnce() -> () + Send>>,
+
+	// 回应的sender和receiver
+	pub back_receiver: crossbeam_channel::Receiver<()>
 }
 
 #[cfg(all(feature="pi_js_export", not(target_arch="wasm32")))]
 impl Engine {
-	pub fn new(app: App) -> Self { Self{
-		app,
-		last_frame_awaiting: Share::new(std::sync::atomic::AtomicBool::new(false))
-	} }
+	pub fn new(app: App) -> Self { 
+		let (sender, receiver) = crossbeam_channel::bounded(1);
+		let (back_sender, back_receiver) = crossbeam_channel::bounded(1);
+		// let last_frame_awaiting = Share::new(std::sync::atomic::AtomicBool::new(false));
+		std::thread::spawn(move || {
+			loop {
+				let task: Box<dyn FnOnce() -> () + Send> = receiver.recv().unwrap();
+				task();
+				let _ = back_sender.send(());
+			}
+		});
+		Self{
+			app,
+			last_frame_awaiting: false,
+			sender,
+			back_receiver,
+		}
+	}
 	pub fn app(&self) -> &App { &self.app }
 	pub fn app_mut(&mut self) -> &mut App { &mut self.app }
 }
 
 #[cfg(target_arch="wasm32")]
 #[wasm_bindgen]
-#[derive(Debug, Deref, DerefMut)]
+#[derive(Debug, Deref)]
 pub struct Engine {
 	#[deref]
 	pub(crate) app: App,
@@ -417,18 +436,25 @@ pub fn fram_call(engine: &mut Engine, _cur_time: u32) {
 
 	#[cfg(all(feature="pi_js_export", not(target_arch="wasm32")))]
 	{
-		use pi_async_rt::prelude::AsyncRuntime;
-		while engine.last_frame_awaiting.load(std::sync::atomic::Ordering::Relaxed) {} // 等待上帧完成
+		log::warn!("fram_call start=====");
+		if engine.last_frame_awaiting {
+			engine.back_receiver.recv().unwrap();
+		} else {
+			engine.last_frame_awaiting = true;
+		}
+
+		log::warn!("fram_call start1=====");
 		let engine: &'static mut Engine = unsafe { transmute(engine) };
-		engine.last_frame_awaiting.store(true, std::sync::atomic::Ordering::Relaxed);
-		let _ = pi_hal::runtime::RENDER_RUNTIME.spawn(async move {
+		let sender = engine.sender.clone();
+		let _ = sender.send(Box::new(|| {
 			engine.update();
 			*engine.world.get_resource_mut::<FrameState>().unwrap() = FrameState::UnActive;
-			engine.last_frame_awaiting.store(false, std::sync::atomic::Ordering::Relaxed); // 设置为非等待状态
-		});
+			log::warn!("fram_call end=====");
+		}));
 	}
 	
-	#[cfg(target_arch="wasm32")]{
+	#[cfg(target_arch="wasm32")]
+	{
 		engine.update();
 		*engine.world.get_resource_mut::<FrameState>().unwrap() = FrameState::UnActive;
 	}

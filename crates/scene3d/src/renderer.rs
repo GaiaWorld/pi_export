@@ -4,7 +4,8 @@ use pi_engine_shell::prelude::*;
 pub use pi_export_base::constants::*;
 use pi_scene_context::prelude::*;
 
-use crate::{as_dk, constants::EngineConstants, commands::CommandsExchangeD3};
+use crate::{as_dk, constants::EngineConstants};
+pub use crate::commands::CommandsExchangeD3;
 pub use crate::{as_entity, as_f64};
 #[cfg(target_arch = "wasm32")]
 use wasm_bindgen::prelude::wasm_bindgen;

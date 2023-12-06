@@ -1,10 +1,10 @@
 use pi_engine_shell::prelude::*;
-use pi_export_base::export::Engine;
+pub use pi_export_base::export::Engine;
 use pi_particle_system::prelude::*;
 use pi_scene_context::prelude::*;
 use pi_trail_renderer::*;
 
-use crate::engine::ActionSetScene3D;
+pub use crate::engine::ActionSetScene3D;
 
 #[cfg(target_arch = "wasm32")]
 use wasm_bindgen::prelude::wasm_bindgen;

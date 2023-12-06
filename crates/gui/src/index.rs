@@ -278,7 +278,10 @@ pub fn calc(gui: &mut Gui, engine: &mut Engine) {
 #[cfg(all(feature="pi_js_export", not(target_arch="wasm32")))]
 // 等待上次帧运行结束
 fn await_last_frame(engine: &mut Engine) {
-	while engine.last_frame_awaiting.load(std::sync::atomic::Ordering::Relaxed) {}
+	if engine.last_frame_awaiting {
+		engine.back_receiver.recv().unwrap();
+		engine.last_frame_awaiting = false;
+	}
 }
 
 // 等待上次帧运行结束
