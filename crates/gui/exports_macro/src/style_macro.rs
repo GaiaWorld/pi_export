@@ -1247,14 +1247,18 @@ other_out_export!(
 	@with_return_node, 
     get_enable,
     gui: &mut Gui,
-	engine: &Engine,;
+	engine: &mut Engine,;
 	node,
 	bool,
-    if let Ok(is_show) = gui.enable_query.get(&engine.world, node) {
-		is_show.get_enable()
-	} else {
-		false
-	},;
+	{
+		pi_export_base::export::await_last_frame(engine);
+		if let Ok(is_show) = gui.enable_query.get(&engine.world, node) {
+			is_show.get_enable()
+		} else {
+			false
+		}
+	}
+   ,;
 );
 
 // 返回值原类型为f32,这里之所以返回u32，是因为在iphonex以上的机型的浏览器上多次连续调用返回值为浮点数时，浏览器会自动刷新或白屏，原因未知
@@ -1351,6 +1355,7 @@ other_out_export!(
 	node,
 	String,
     {
+		pi_export_base::export::await_last_frame(engine);
 		let value = match engine.world.get::<ClassName>( node){
 			Some(r) => Some(&r.0),
 			_ => None,
@@ -1440,12 +1445,27 @@ other_out_export!(
     get_animation_events_max_len,
 	u32,
     {
+		pi_export_base::export::await_last_frame(engine);
 		let key_frames = engine.world.get_resource::<KeyFramesSheet>().unwrap();
 		let events = key_frames.get_animation_events();
 
 		return (events.len() * 5) as u32;
-	},;engine: &Engine,;
+	},engine: &mut Engine,;;
 );
+
+// // 取出动画事件的buffer长度
+// other_out_export!(
+// 	@with_return, 
+//     get_animation_events_max_len,
+// 	u32,
+//     {
+// 		pi_export_base::export::await_last_frame(engine);
+// 		let key_frames = engine.world.get_resource::<KeyFramesSheet>().unwrap();
+// 		let events = key_frames.get_animation_events();
+
+// 		return (events.len() * 5) as u32;
+// 	},;engine: &mut Engine,;
+// );
 
 // 填充动画事件的buffer， 并返回buffer长度
 // 注意， 先调用get_animation_events_max_len获得事件buffer的长度， 将传入的buffer设置为该长度， 否则该函数可能panic
@@ -1502,10 +1522,21 @@ other_out_export!(
 	},;;value: f64,
 );
 
+// other_out_export!(
+// 	@with_return1,
+//     query(engine: &mut Engine, gui: &mut Gui,)()(x: f32, y: f32,)-> Option<f64> {
+// 		pi_export_base::export::await_last_frame(engine);
+// 		crate::index::query(engine, gui, x, y)
+// 	}
+// );
+
 other_out_export!(
 	@with_return1,
     query(engine: &mut Engine, gui: &mut Gui,)()(x: f32, y: f32,)-> Option<f64> {
-		crate::index::query(engine, gui, x, y)
+		{
+			pi_export_base::export::await_last_frame(engine);
+			crate::index::query(engine, gui, x, y)
+		}
 	}
 );
 

@@ -86,7 +86,7 @@ pub fn create_fragment(gui: &mut Gui, arr: &mut [f64], count: u32, key: u32) {
 		entitys.push(entity);
 		index = index + 1;
 	}
-	log::warn!("entitys=============={:?}", entitys);
+	// log::warn!("entitys=============={:?}", entitys);
 	gui.commands
 		.fragment_commands
 		.push(FragmentCommand { key, entitys });

@@ -246,6 +246,7 @@ impl CommandsExchangeD3 {
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_commands_exchange(app: &mut Engine, param: &mut ActionSetScene3D, cmds: &mut CommandsExchangeD3) {
+	pi_export_base::export::await_last_frame(app);
     let mut sets = param.acts.get_mut(&mut app.world);
     cmds.exchange(&mut sets);
 }

@@ -47,9 +47,7 @@ impl CommandsExchangeSpine {
 }
 impl CommandsExchangeSpine {
     pub(crate) fn exchange(&mut self, cmds: &mut ActionListSpine) {
-        self.0.drain().drain(..).for_each(|item| {
-            cmds.push(item);
-        });
+		std::mem::swap(cmds, &mut self.0);
     }
 }
 
@@ -58,6 +56,16 @@ impl CommandsExchangeSpine {
 pub fn spine_exchange_commands(
     engine: &mut Engine, cmds: &mut CommandsExchangeSpine,
 ) {
+	// #[cfg(all(feature="pi_js_export", not(target_arch="wasm32")))]
+	// {
+	// 	log::warn!("fram_call start=====");
+	// 	if engine.last_frame_awaiting {
+	// 		engine.back_receiver.recv().unwrap();
+	// 	} else {
+	// 		engine.last_frame_awaiting = true;
+	// 	}
+	// }
+	pi_export_base::export::await_last_frame(engine);
     let mut commands = engine.world.get_resource_mut::<ActionListSpine>().unwrap();
     cmds.exchange(&mut commands);
 }

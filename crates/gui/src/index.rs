@@ -1,5 +1,6 @@
 use std::mem::transmute;
 
+use pi_export_base::export::await_last_frame;
 use pi_flex_layout::{prelude::CharNode, style::{PositionType, FlexWrap, FlexDirection, AlignContent, AlignItems, AlignSelf, JustifyContent, Display, Dimension}};
 use pi_slotmap::DefaultKey;
 #[cfg(debug_assertions)]
@@ -71,6 +72,7 @@ impl Gui {
 	pub fn new(
 		engine: &mut Engine,
 	) -> Self {
+		pi_export_base::export::await_last_frame(engine);
 		Gui {
 			down_query: engine.world.query(),
 			up_query: engine.world.query(),
@@ -223,6 +225,7 @@ pub fn create_fragment_by_bin(gui: &mut Gui, bin: &[u8]) {
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn render_gui(gui: &mut Gui, engine: &mut Engine) {
+	await_last_frame(engine);
 	#[cfg(feature="record")]
 	if let TraceOption::Play = gui.record_option {
 		loop {
@@ -264,55 +267,41 @@ pub fn render_gui(gui: &mut Gui, engine: &mut Engine) {
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn calc(gui: &mut Gui, engine: &mut Engine) {
+	await_last_frame(engine);
+
 	#[cfg(feature = "trace")]
 	let _span = tracing::warn_span!("calc").entered();
 	bevy_ecs::system::CommandQueue::default().apply(&mut engine.world);
 	flush_data(gui, engine);
 	*engine.world.get_resource_mut::<RunState>().unwrap() = RunState::MATRIX;
 	*engine.world.get_resource_mut::<FrameState>().unwrap() = FrameState::UnActive;
-
-	await_last_frame(engine);
 	engine.update();
 }
 
-#[cfg(all(feature="pi_js_export", not(target_arch="wasm32")))]
-// 等待上次帧运行结束
-fn await_last_frame(engine: &mut Engine) {
-	if engine.last_frame_awaiting {
-		engine.back_receiver.recv().unwrap();
-		engine.last_frame_awaiting = false;
-	}
-}
-
-// 等待上次帧运行结束
-#[cfg(all(target_arch="wasm32"))]
-#[inline]
-fn await_last_frame(engine: &mut Engine) {
-}
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn calc_layout(gui: &mut Gui, engine: &mut Engine) {
+	await_last_frame(engine);
 	#[cfg(feature = "trace")]
 	let _span = tracing::warn_span!("calc_layout").entered();
 	bevy_ecs::system::CommandQueue::default().apply(&mut engine.world);
 	flush_data(gui, engine);
 	*engine.world.get_resource_mut::<RunState>().unwrap() = RunState::LAYOUT;
 	*engine.world.get_resource_mut::<FrameState>().unwrap() = FrameState::UnActive;
-	await_last_frame(engine);
 	engine.update();
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn calc_geo(gui: &mut Gui, engine: &mut Engine) {
+	await_last_frame(engine);
 	#[cfg(feature = "trace")]
 	let _span = tracing::warn_span!("calc_geo").entered();
 	bevy_ecs::system::CommandQueue::default().apply(&mut engine.world);
 	flush_data(gui, engine);
 	*engine.world.get_resource_mut::<RunState>().unwrap() = RunState::MATRIX;
 	*engine.world.get_resource_mut::<FrameState>().unwrap() = FrameState::UnActive;
-	await_last_frame(engine);
 	engine.update();
 }
 
@@ -320,6 +309,7 @@ pub fn calc_geo(gui: &mut Gui, engine: &mut Engine) {
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn get_keyframes(engine: &mut Engine, name: &Atom1, scope_hash: u32) -> String {
+	pi_export_base::export::await_last_frame(engine);
 	let sheet = engine.world.get_resource::<pi_ui_render::resource::animation_sheet::KeyFramesSheet>().unwrap();
 	match sheet.get_keyframes((**name).clone(), scope_hash as usize) {
 		Some(r) => {
@@ -353,6 +343,7 @@ pub fn set_is_run(engine: &mut Engine, value: bool) {
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn get_record(engine: &mut Engine) -> Vec<u8> {
+	pi_export_base::export::await_last_frame(engine);
 	#[cfg(feature="record")]
 	{
 		let mut records = engine.world.get_resource_mut::<Records>().unwrap();
@@ -376,6 +367,7 @@ pub fn get_record(engine: &mut Engine) -> Vec<u8> {
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn get_record_len(engine: &mut Engine) -> u32 {
+	pi_export_base::export::await_last_frame(engine);
 	#[cfg(feature="record")]
 	{
 		let records = engine.world.get_resource_mut::<Records>().unwrap();
@@ -415,6 +407,7 @@ pub fn set_next_record(engine: &mut Engine, bin: &[u8]) {
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn is_play_end(engine: &mut Engine) -> bool {
+	pi_export_base::export::await_last_frame(engine);
 	#[cfg(feature="record")]
 	match engine.world.get_resource_mut::<PlayState>() {
 		Some(r) => !r.is_running,
@@ -545,6 +538,7 @@ pub enum BlendMode {
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn query_text(engine: &mut Engine, node_id: f64, x: f32, y: f32) -> CharPos {
+	pi_export_base::export::await_last_frame(engine);
 	let node = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
 	query_text1(engine, node, x, y)
 }

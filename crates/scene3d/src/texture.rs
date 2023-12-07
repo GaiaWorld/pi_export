@@ -94,6 +94,7 @@ pub fn p3d_update_data_texture(app: &mut Engine, param: &mut ActionSetScene3D, t
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_query_texture(app: &mut Engine, param: &mut ActionSetScene3D, isfile: bool, url: &Atom, srgb: bool, compressed: bool, depth_or_array_layers: f64, useage: f64, info: &mut [f32]) -> bool {
+	
     let resource = param.resource.get_mut(&mut app.world);
 
     let useage = EngineConstants::texture_usage(useage);

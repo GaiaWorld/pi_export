@@ -1,15 +1,14 @@
 
 
-use std::{sync::Arc, cell::RefCell};
+use std::{sync::{Arc, OnceLock}, cell::RefCell};
 
 use derive_deref_rs::Deref;
 use pi_assets::{allocator::Allocator, asset::{Asset, Handle, Size}, mgr::AssetMgr};
-use pi_async_rt::rt::AsyncValueNonBlocking;
 use pi_bevy_asset::{PiAssetPlugin, AssetConfig, AssetDesc};
 use pi_bevy_post_process::PiPostProcessPlugin;
 use pi_hash::XHashMap;
 use pi_render::{rhi::{asset::{RenderRes, TextureRes}, bind_group::BindGroup, pipeline::RenderPipeline}, renderer::sampler::SamplerRes};
-use pi_share::{Share, ShareMutex};
+use pi_share::Share;
 use bevy_app::prelude::App;
 use pi_bevy_render_plugin::{FrameState, PiRenderPlugin};
 use pi_window_renderer::PluginWindowRender;
@@ -26,6 +25,16 @@ use pi_async_rt::prelude::AsyncRuntime;
 use wgpu::{TextureView, Buffer};
 #[cfg(not(target_arch = "wasm32"))]
 pub use pi_winit::window::Window;
+
+// pub struct FrameEndOnceLockWrap<F: FnMut() + Send + Sync>(pub OnceLock<Box<dyn FnMut() + Send + Sync>>);
+
+static mut FRAME_END_CB: OnceLock<Box<dyn FnMut() + Send + Sync + 'static>> = OnceLock::new();
+/// 初始化帧结束的回调，只能设置一次
+pub fn init_frame_end_cb<F: FnMut() + Send + Sync + 'static>(f: F) {
+	if let Err(_e) = unsafe { FRAME_END_CB.set(Box::new(f)) } {
+		println!("frame end callback init failed");
+	}
+}
 
 #[cfg(all(feature="pi_js_export", not(target_arch="wasm32")))]
 #[derive(Debug, Deref)]
@@ -47,11 +56,14 @@ impl Engine {
 		let (sender, receiver) = crossbeam_channel::bounded(1);
 		let (back_sender, back_receiver) = crossbeam_channel::bounded(1);
 		// let last_frame_awaiting = Share::new(std::sync::atomic::AtomicBool::new(false));
-		std::thread::spawn(move || {
+		let _ = std::thread::Builder::new().name("ecs".to_string()).spawn(move || {
 			loop {
 				let task: Box<dyn FnOnce() -> () + Send> = receiver.recv().unwrap();
 				task();
 				let _ = back_sender.send(());
+				if let Some(cb) = unsafe { FRAME_END_CB.get_mut() } {
+					cb();
+				}
 			}
 		});
 		Self{
@@ -434,22 +446,18 @@ pub fn fram_call(engine: &mut Engine, _cur_time: u32) {
 	let _span = tracing::warn_span!("frame_call").entered();
 	*engine.world.get_resource_mut::<FrameState>().unwrap() = FrameState::Active;
 
+	// log::warn!("fram_call start=====");
+	await_last_frame(engine);
+	// log::warn!("fram_call start1=====");
 	#[cfg(all(feature="pi_js_export", not(target_arch="wasm32")))]
 	{
-		log::warn!("fram_call start=====");
-		if engine.last_frame_awaiting {
-			engine.back_receiver.recv().unwrap();
-		} else {
-			engine.last_frame_awaiting = true;
-		}
-
-		log::warn!("fram_call start1=====");
+		engine.last_frame_awaiting = true;
 		let engine: &'static mut Engine = unsafe { transmute(engine) };
 		let sender = engine.sender.clone();
 		let _ = sender.send(Box::new(|| {
 			engine.update();
 			*engine.world.get_resource_mut::<FrameState>().unwrap() = FrameState::UnActive;
-			log::warn!("fram_call end=====");
+			// log::warn!("fram_call end=====");
 		}));
 	}
 	
@@ -459,6 +467,22 @@ pub fn fram_call(engine: &mut Engine, _cur_time: u32) {
 		*engine.world.get_resource_mut::<FrameState>().unwrap() = FrameState::UnActive;
 	}
 }
+
+#[cfg(all(feature="pi_js_export", not(target_arch="wasm32")))]
+// 等待上次帧运行结束
+pub fn await_last_frame(engine: &mut Engine) {
+	if engine.last_frame_awaiting {
+		engine.back_receiver.recv().unwrap();
+		engine.last_frame_awaiting = false;
+	}
+}
+
+// 等待上次帧运行结束
+#[cfg(all(target_arch="wasm32"))]
+#[inline]
+pub fn await_last_frame(engine: &mut Engine) {
+}
+
 
 pub fn parse_asset_config(asset_config: &str) -> AssetConfig {
 	let map: XHashMap<String, AssetDesc> = match serde_json::from_str(asset_config) {

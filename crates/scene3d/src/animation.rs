@@ -513,6 +513,7 @@ pub fn p3d_query_anime_events(
     receive_len: f64,
 ) -> f64 {
 
+	pi_export_base::export::await_last_frame(app);
     let mut resource = param.resource.get_mut(&mut app.world);
 
     let size = receive_len as usize / 4;

@@ -4733,22 +4733,28 @@ pub mod style_macro {
         0
     }
     #[cfg(feature = "pi_js_export")]
-    pub fn get_enable(gui: &mut Gui, engine: &Engine, node: f64) -> bool {
+    pub fn get_enable(gui: &mut Gui, engine: &mut Engine, node: f64) -> bool {
         let node = unsafe { Entity::from_bits(transmute::<f64, u64>(node)) };
-        if let Ok(is_show) = gui.enable_query.get(&engine.world, node) {
-            is_show.get_enable()
-        } else {
-            false
+        {
+            pi_export_base::export::await_last_frame(engine);
+            if let Ok(is_show) = gui.enable_query.get(&engine.world, node) {
+                is_show.get_enable()
+            } else {
+                false
+            }
         }
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
-    pub fn get_enable(gui: &mut Gui, engine: &Engine, node: f64) -> bool {
+    pub fn get_enable(gui: &mut Gui, engine: &mut Engine, node: f64) -> bool {
         let node = unsafe { Entity::from_bits(transmute::<f64, u64>(node)) };
-        if let Ok(is_show) = gui.enable_query.get(&engine.world, node) {
-            is_show.get_enable()
-        } else {
-            false
+        {
+            pi_export_base::export::await_last_frame(engine);
+            if let Ok(is_show) = gui.enable_query.get(&engine.world, node) {
+                is_show.get_enable()
+            } else {
+                false
+            }
         }
     }
     #[cfg(feature = "pi_js_export")]
@@ -4871,6 +4877,7 @@ pub mod style_macro {
     pub fn get_class_name(_gui: &mut Gui, engine: &mut Engine, node: f64) -> String {
         let node = unsafe { Entity::from_bits(transmute::<f64, u64>(node)) };
         {
+            pi_export_base::export::await_last_frame(engine);
             let value = match engine.world.get::<ClassName>(node) {
                 Some(r) => Some(&r.0),
                 _ => None,
@@ -4883,6 +4890,7 @@ pub mod style_macro {
     pub fn get_class_name(_gui: &mut Gui, engine: &mut Engine, node: f64) -> String {
         let node = unsafe { Entity::from_bits(transmute::<f64, u64>(node)) };
         {
+            pi_export_base::export::await_last_frame(engine);
             let value = match engine.world.get::<ClassName>(node) {
                 Some(r) => Some(&r.0),
                 _ => None,
@@ -5043,8 +5051,9 @@ pub mod style_macro {
         }
     }
     #[cfg(feature = "pi_js_export")]
-    pub fn get_animation_events_max_len(engine: &Engine) -> u32 {
+    pub fn get_animation_events_max_len(engine: &mut Engine) -> u32 {
         {
+            pi_export_base::export::await_last_frame(engine);
             let key_frames = engine.world.get_resource::<KeyFramesSheet>().unwrap();
             let events = key_frames.get_animation_events();
             return (events.len() * 5) as u32;
@@ -5052,8 +5061,9 @@ pub mod style_macro {
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
-    pub fn get_animation_events_max_len(engine: &Engine) -> u32 {
+    pub fn get_animation_events_max_len(engine: &mut Engine) -> u32 {
         {
+            pi_export_base::export::await_last_frame(engine);
             let key_frames = engine.world.get_resource::<KeyFramesSheet>().unwrap();
             let events = key_frames.get_animation_events();
             return (events.len() * 5) as u32;
@@ -5140,12 +5150,18 @@ pub mod style_macro {
     }
     #[cfg(feature = "pi_js_export")]
     pub fn query(engine: &mut Engine, gui: &mut Gui, x: f32, y: f32) -> Option<f64> {
-        crate::index::query(engine, gui, x, y)
+        {
+            pi_export_base::export::await_last_frame(engine);
+            crate::index::query(engine, gui, x, y)
+        }
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     pub fn query(engine: &mut Engine, gui: &mut Gui, x: f32, y: f32) -> Option<f64> {
-        crate::index::query(engine, gui, x, y)
+        {
+            pi_export_base::export::await_last_frame(engine);
+            crate::index::query(engine, gui, x, y)
+        }
     }
     pub fn to_linear_gradient_color(
         color_and_positions: &[f32],

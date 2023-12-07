@@ -191,6 +191,7 @@ pub fn p3d_render_graphic(cmds: &mut CommandsExchangeD3, before: f64, after: f64
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_query_world_matrix(app: &mut Engine, param: &mut ActionSetScene3D, entity: f64, matrix: &mut [f32]) -> bool {
+	pi_export_base::export::await_last_frame(app);
     let entity: Entity = as_entity(entity);
 
     if let Ok(trans) = param.world_transform.get(&app.world, entity) {
@@ -208,6 +209,7 @@ pub fn p3d_query_world_matrix(app: &mut Engine, param: &mut ActionSetScene3D, en
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_query_scene_state(app: &mut Engine, param: &mut ActionSetScene3D, entity: f64, result: &mut [f32]) -> bool {
+	pi_export_base::export::await_last_frame(app);
     let entity: Entity = as_entity(entity);
 
     let mut drawcalls = 0;
@@ -278,6 +280,7 @@ pub fn p3d_query_scene_state(app: &mut Engine, param: &mut ActionSetScene3D, ent
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_query_performance_state(app: &mut Engine, param: &mut ActionSetScene3D, result: &mut [f32]) {
+	pi_export_base::export::await_last_frame(app);
     
     let cmds = param.state.get_mut(&mut app.world);
 
@@ -296,6 +299,7 @@ pub fn p3d_query_performance_state(app: &mut Engine, param: &mut ActionSetScene3
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_query_resource_state(app: &mut Engine, param: &mut ActionSetScene3D, result: &mut [f32]) {
+	pi_export_base::export::await_last_frame(app);
     
     let cmds = param.state.get_mut(&mut app.world);
 
@@ -519,6 +523,7 @@ pub fn p3d_global_state(app: &mut Engine, param: &mut ActionSetScene3D, val: boo
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_query_local_matrix(app: &mut Engine, param: &mut ActionSetScene3D, entity: f64, matrix: &mut [f32]) -> bool {
+	pi_export_base::export::await_last_frame(app);
     let entity: Entity = as_entity(entity);
 
     if let Ok(trans) = param.local_transform.get(&app.world, entity) {
@@ -536,6 +541,7 @@ pub fn p3d_query_local_matrix(app: &mut Engine, param: &mut ActionSetScene3D, en
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_query_view_matrix(app: &mut Engine, param: &mut ActionSetScene3D, entity: f64, matrix: &mut [f32]) -> bool {
+	pi_export_base::export::await_last_frame(app);
     let entity: Entity = as_entity(entity);
 
     if let Ok(trans) = param.view_matrix.get(&app.world, entity) {
@@ -553,6 +559,7 @@ pub fn p3d_query_view_matrix(app: &mut Engine, param: &mut ActionSetScene3D, ent
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_query_project_matrix(app: &mut Engine, param: &mut ActionSetScene3D, entity: f64, matrix: &mut [f32]) -> bool {
+	pi_export_base::export::await_last_frame(app);
     let entity: Entity = as_entity(entity);
 
     if let Ok(trans) = param.project_matrix.get(&app.world, entity) {
@@ -570,6 +577,7 @@ pub fn p3d_query_project_matrix(app: &mut Engine, param: &mut ActionSetScene3D, 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_query_viewproject_matrix(app: &mut Engine, param: &mut ActionSetScene3D, entity: f64, matrix: &mut [f32]) -> bool {
+	pi_export_base::export::await_last_frame(app);
     let entity: Entity = as_entity(entity);
 
     if let Ok(trans) = param.vp_matrix.get(&app.world, entity) {
@@ -626,6 +634,7 @@ pub fn p3d_create_gltf_load(app: &mut Engine, param: &mut ActionSetScene3D, enti
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_query_gltf_load(app: &mut Engine, param: &mut ActionSetScene3D, success: &mut [f64], failed: &mut [f64]) {
+	pi_export_base::export::await_last_frame(app);
     let resource = param.resource.get_mut(&mut app.world);
 
     let max = success.len();
@@ -697,6 +706,7 @@ pub fn p3d_create_image_load(app: &mut Engine, param: &mut ActionSetScene3D, url
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_query_image_load(app: &mut Engine, param: &mut ActionSetScene3D, success: &mut [f64], failed: &mut [f64]) {
+	pi_export_base::export::await_last_frame(app);
     let resource = param.resource.get_mut(&mut app.world);
 
     let max = success.len();
@@ -753,6 +763,7 @@ pub fn p3d_get_image_fail_reason(app: &mut Engine, param: &mut ActionSetScene3D,
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_query_children(app: &mut Engine, param: &mut ActionSetScene3D, id: f64, info: &mut [f64]) -> f64 {
+	pi_export_base::export::await_last_frame(app);
     let id = as_entity(id);
     let tree = param.tree.get(&app.world);
     let mut idx = 0;
@@ -781,6 +792,7 @@ pub fn p3d_query_children(app: &mut Engine, param: &mut ActionSetScene3D, id: f6
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_query_mesh_info(app: &mut Engine, param: &mut ActionSetScene3D, id: f64, info: &mut [u32]) -> bool {
+	pi_export_base::export::await_last_frame(app);
     let id = as_entity(id);
     if let Ok((geoenable, pass01, pass02, pass03, pass04, pass05, pas06, pass07, pass08)) = param.model.get(&app.world, id) {
         let temp = [pass01.0, pass02.0, pass03.0, pass04.0, pass05.0, pas06.0, pass07.0, pass08.0];
@@ -825,6 +837,7 @@ pub fn p3d_query_mesh_info(app: &mut Engine, param: &mut ActionSetScene3D, id: f
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_query_material_info(app: &mut Engine, param: &mut ActionSetScene3D, id: f64, info: &mut [u32]) -> bool {
+	pi_export_base::export::await_last_frame(app);
     let id = as_entity(id);
     if let Ok((
         meta, textures
