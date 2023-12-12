@@ -1,7 +1,12 @@
-use std::mem::transmute;
+use std::cell::RefCell;
+use std::rc::Rc;
+use std::{mem::transmute, sync::Arc};
+use std::any::Any;
 
+use pi_bevy_asset::ShareAssetMgr;
 use pi_export_base::export::await_last_frame;
 use pi_flex_layout::{prelude::CharNode, style::{PositionType, FlexWrap, FlexDirection, AlignContent, AlignItems, AlignSelf, JustifyContent, Display, Dimension}};
+use pi_render::rhi::asset::TextureRes;
 use pi_slotmap::DefaultKey;
 #[cfg(debug_assertions)]
 use pi_ui_render::resource::DebugEntity;
@@ -32,11 +37,13 @@ use js_proxy_gen_macro::pi_js_export;
 #[cfg(feature="record")]
 use pi_ui_render::system::cmd_play::{Records, CmdNodeCreate, PlayState, TraceOption };
 pub use pi_export_base::export::Atom as Atom1;
+use pi_ui_render::system::res_load::ResSuccess;
 
 
 #[cfg(target_arch = "wasm32")]
 use pi_async_rt::prelude::{LocalTaskRunner, LocalTaskRuntime};
 use pi_spatial::quad_helper::intersects;
+use vm_builtin::V8InstanceContext;
 #[cfg(target_arch = "wasm32")]
 use wasm_bindgen::prelude::wasm_bindgen;
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
@@ -59,6 +66,7 @@ pub struct Gui {
         Query<'static, 'static, (&'static Layer, &'static IsShow, &'static ZRange, &'static InPassId)>,
         Query<'static, 'static, (&'static ParentPassId, &'static Quad, OrDefault<Overflow>)>,
     )>,
+	pub (crate) res_await_list: Vec<pi_atom::Atom>,
 
 	// pub(crate) depth_query: QueryState<&'static ZRange>,
 	// pub(crate) layer_query: QueryState<&'static Layer>,
@@ -87,6 +95,7 @@ impl Gui {
 			node_cmd: CmdNodeCreate::default(),
 			#[cfg(feature="record")]
 			record_option: TraceOption::default(),
+			res_await_list: Vec::default(),
 
 			// depth_query: engine.world.query(),
 			// layer_query: engine.world.query(),
@@ -550,6 +559,150 @@ pub fn get_text_pos(gui: &mut Gui, engine: &mut Engine, node_id: f64, index: u32
 	get_text_pos1(gui, engine, node, index as usize)
 }
 
+/// 是否存在资源
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
+pub fn has_res(engine: &mut Engine, path: &Atom1) -> bool {
+	// 暂时只支持纹理资源访问
+	if path.ends_with(".png") || path.ends_with(".jpg") || path.ends_with(".jpeg") || path.ends_with(".ktx") || path.ends_with(".ktx2") {
+		let reses = engine.world.get_resource_mut::<ShareAssetMgr<TextureRes>>().unwrap();
+		return reses.get(&(path.get_hash() as u64)).is_some()
+	}
+	false
+}
+
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
+pub struct ResHandle(Arc<dyn Any + Send + Sync + 'static>);
+
+/// 加载资源
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
+pub fn load_res(gui: &mut Gui, path: &Atom1) {
+	gui.res_await_list.push((**path).clone());
+}
+
+/// 获取已经加载成功的资源
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
+pub fn get_success_res_len(engine: &mut Engine) -> u32 {
+	if let Some(res_success) = engine.world.get_resource::<ResSuccess>() {
+		return( res_success.async_list.len() + res_success.sync_list.len()) as u32
+	} else {
+		0
+	}
+}
+
+// pub fn get_success_res(engine: &mut Engine, result: &mut [ResHandle], result_keys: &mut [u32]) {
+// 	let mut res_success = engine.world.get_resource_mut::<ResSuccess>().unwrap();
+// 	let res_success = &mut *res_success;
+// 	let mut i = 0;
+// 	while let Some(r) = res_success.async_list.pop() {
+// 		result[i] = ResHandle(r.1);
+// 		result_keys[i] = r.0.get_hash() as u32;
+// 		i += 1;
+// 	}
+
+// 	for r in res_success.sync_list.drain(..) {
+// 		result[i] = ResHandle(r.1);
+// 		result_keys[i] = r.0.get_hash() as u32;
+// 		i += 1;
+// 	}
+// }
+fn get_vid(scope: &mut v8::HandleScope) -> usize {
+    let v8c = scope
+        .get_slot::<Rc<RefCell<V8InstanceContext>>>()
+        .unwrap()
+        .clone();
+
+    let vid = v8c.borrow().get_vid();
+    vid
+}
+
+pub fn get_success_res(
+    scope: &mut v8::HandleScope,
+    args: v8::FunctionCallbackArguments,
+    _rv: v8::ReturnValue,
+) {
+	let context = scope.get_current_context();
+    let scope = &mut v8::ContextScope::new(scope, context);
+
+	let engine: v8::Local<'_, v8::Value> = args.get(0);
+    if !engine.is_object() {
+        let msg = v8::String::new(scope, "Invalid arguments 0th param!!!").unwrap();
+        let exception = v8::Exception::type_error(scope, msg);
+        scope.throw_exception(exception);
+        return;
+    }
+	let vid = get_vid(scope);
+	let engine = match vm_builtin::NativeObjectValue::from_native_object(scope, vid, vm_builtin::ContextHandle(0 as usize), engine) {
+		Err(_e) => panic!("arg error"),
+		Ok(arg) => if let vm_builtin::NativeObjectValue::NatObj(o) = arg {o} else {panic!("arg error");},
+	};
+	let engine = if let Some(o) = engine.get_mut::<Engine>(vid, 0){
+		o
+	} else {
+		panic!("arg error");
+	};
+
+	let result: v8::Local<'_, v8::Value> = args.get(1);
+    if !result.is_array() {
+        let msg = v8::String::new(scope, "Invalid arguments 1th param!!!").unwrap();
+        let exception = v8::Exception::type_error(scope, msg);
+        scope.throw_exception(exception);
+        return;
+    }
+	let result: v8::Local<v8::Array> = unsafe { v8::Local::cast(result) };
+
+	let result_keys: v8::Local<'_, v8::Value> = args.get(2);
+    if !result_keys.is_uint32_array() {
+        let msg = v8::String::new(scope, "Invalid arguments 2th param!!!").unwrap();
+        let exception = v8::Exception::type_error(scope, msg);
+        scope.throw_exception(exception);
+        return;
+    }
+	let result_keys: v8::Local<v8::Uint32Array> = unsafe { v8::Local::cast(result_keys) };
+
+	let mut res_success = engine.world.get_resource_mut::<ResSuccess>().unwrap();
+	let res_success = &mut *res_success;
+	let mut i = 0;
+	while let Some(r) = res_success.async_list.pop() {
+		let o = vm_builtin::NativeObjectValue::NatObj(vm_builtin::external::NativeObject::new_owned(ResHandle(r.1))).into_native_object(scope);
+		result.set_index(scope, i, o.into());
+		let n = v8::Number::new(scope,  r.0.get_hash() as f64).into();
+		result_keys.set_index(scope, i, n);
+		i += 1;
+	}
+
+	for r in res_success.sync_list.drain(..) {
+		let o = vm_builtin::NativeObjectValue::NatObj(vm_builtin::external::NativeObject::new_owned(ResHandle(r.1))).into_native_object(scope);
+		result.set_index(scope, i, o.into());
+		let n = v8::Number::new(scope,  r.0.get_hash() as f64).into();
+		result_keys.set_index(scope, i, n);
+		i += 1;
+	}
+}
+
+#[cfg(target_arch="wasm32")]
+#[wasm_bindgen]
+pub fn get_success_res(engine: &mut Engine, result: js_sys::Array, result_keys: &mut [u32]) {
+	let mut res_success = engine.world.get_resource_mut::<ResSuccess>().unwrap();
+	let res_success = &mut *res_success;
+	let mut i = 0;
+	while let Some(r) = res_success.async_list.pop() {
+		result.set(i, ResHandle(r.1).into());
+		result_keys[i as usize] = r.0.get_hash() as u32;
+		i += 1;
+	}
+
+	for r in res_success.sync_list.drain(..) {
+		result.set(i, ResHandle(r.1).into());
+		result_keys[i as usize] = r.0.get_hash() as u32;
+		i += 1;
+	}
+}
+
+
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub struct CharPos {
@@ -807,6 +960,10 @@ fn ab_query_func(arg: &mut AbQueryArgs, id: EntityKey, aabb: &Aabb2, _bind: &())
 fn flush_data(gui: &mut Gui, engine: &mut Engine) {
 	let mut com = engine.world.get_resource_mut::<pi_ui_render::prelude::UserCommands>().unwrap();
 	std::mem::swap(&mut gui.commands, &mut *com);
+
+	if let Some(mut com) = engine.world.get_resource_mut::<pi_ui_render::system::res_load::ResList>() {
+		std::mem::swap(&mut gui.res_await_list, &mut com.await_list);
+	};
 	
 	#[cfg(feature="record")]
 	if let TraceOption::Record = gui.record_option {
