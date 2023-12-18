@@ -12,8 +12,6 @@ trace = ["pi_ui_render/trace"]
 record = ["pi_ui_render/debug"]
 
 [dependencies]
-vm_builtin = { git = "http://ser.yinengyun.com:10082/tech/pi_v8.git", branch = "pi_app_new" }
-v8 = { git = "http://ser.yinengyun.com:10082/tech/v8.git" }
 pi_export_base = {path="../base"}
 pi_export_play ={path="../play"}
 pi_ui_render = {version = "0.1", registry = "yn"}
@@ -103,6 +101,8 @@ pi_bevy_log = {version = "0.1", registry = "yn"}
 pi_share = {version="0.4"}
 pi-async-rt = "0.1"
 pi_render = { version = "0.1", registry = "yn" }
+vm_builtin = { git = "http://ser.yinengyun.com:10082/tech/pi_v8.git", branch = "pi_app_new" }
+v8 = { git = "http://ser.yinengyun.com:10082/tech/v8.git" }
 
 [dev-dependencies]
 font_kit = { registry = "yn", version = "0.1" }

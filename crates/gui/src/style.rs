@@ -2866,6 +2866,114 @@ pub mod style_macro {
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
+    pub fn set_text_overflow(gui: &mut Gui, node_id: f64, s: &str) {
+        let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
+        gui.commands
+            .set_style(
+                node_id,
+                TextOverflowType({
+                    let mut input = cssparser::ParserInput::new(s);
+                    let mut parse = cssparser::Parser::new(&mut input);
+                    let text_overflow = pi_style::style::TextOverflow::parse(&mut parse);
+                    if let Ok(text_overflow) = text_overflow {
+                        text_overflow
+                    } else {
+                        Default::default()
+                    }
+                }),
+            );
+    }
+    #[cfg(target_arch = "wasm32")]
+    #[wasm_bindgen]
+    #[allow(unused_attributes)]
+    pub fn set_text_overflow(gui: &mut Gui, node_id: f64, s: &str) {
+        let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
+        gui.commands
+            .set_style(
+                node_id,
+                TextOverflowType({
+                    let mut input = cssparser::ParserInput::new(s);
+                    let mut parse = cssparser::Parser::new(&mut input);
+                    let text_overflow = pi_style::style::TextOverflow::parse(&mut parse);
+                    if let Ok(text_overflow) = text_overflow {
+                        text_overflow
+                    } else {
+                        Default::default()
+                    }
+                }),
+            );
+    }
+    #[cfg(feature = "pi_js_export")]
+    #[allow(unused_attributes)]
+    pub fn reset_text_overflow(gui: &mut Gui, node_id: f64) {
+        let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
+        gui.commands.set_style(node_id, ResetTextOverflowType);
+    }
+    #[cfg(target_arch = "wasm32")]
+    #[wasm_bindgen]
+    #[allow(unused_attributes)]
+    pub fn reset_text_overflow(gui: &mut Gui, node_id: f64) {
+        let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
+        gui.commands.set_style(node_id, ResetTextOverflowType);
+    }
+    #[cfg(feature = "pi_js_export")]
+    #[allow(unused_attributes)]
+    pub fn set_overflow_wrap(gui: &mut Gui, node_id: f64, s: &str) {
+        let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
+        gui.commands
+            .set_style(
+                node_id,
+                OverflowWrapType({
+                    let mut input = cssparser::ParserInput::new(s);
+                    let mut parse = cssparser::Parser::new(&mut input);
+                    let overflow_wrap = pi_flex_layout::style::OverflowWrap::parse(
+                        &mut parse,
+                    );
+                    if let Ok(overflow_wrap) = overflow_wrap {
+                        overflow_wrap
+                    } else {
+                        Default::default()
+                    }
+                }),
+            );
+    }
+    #[cfg(target_arch = "wasm32")]
+    #[wasm_bindgen]
+    #[allow(unused_attributes)]
+    pub fn set_overflow_wrap(gui: &mut Gui, node_id: f64, s: &str) {
+        let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
+        gui.commands
+            .set_style(
+                node_id,
+                OverflowWrapType({
+                    let mut input = cssparser::ParserInput::new(s);
+                    let mut parse = cssparser::Parser::new(&mut input);
+                    let overflow_wrap = pi_flex_layout::style::OverflowWrap::parse(
+                        &mut parse,
+                    );
+                    if let Ok(overflow_wrap) = overflow_wrap {
+                        overflow_wrap
+                    } else {
+                        Default::default()
+                    }
+                }),
+            );
+    }
+    #[cfg(feature = "pi_js_export")]
+    #[allow(unused_attributes)]
+    pub fn reset_overflow_wrap(gui: &mut Gui, node_id: f64) {
+        let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
+        gui.commands.set_style(node_id, ResetOverflowWrapType);
+    }
+    #[cfg(target_arch = "wasm32")]
+    #[wasm_bindgen]
+    #[allow(unused_attributes)]
+    pub fn reset_overflow_wrap(gui: &mut Gui, node_id: f64) {
+        let node_id = unsafe { Entity::from_bits(transmute::<f64, u64>(node_id)) };
+        gui.commands.set_style(node_id, ResetOverflowWrapType);
+    }
+    #[cfg(feature = "pi_js_export")]
+    #[allow(unused_attributes)]
     pub fn set_transform_origin(
         gui: &mut Gui,
         node_id: f64,

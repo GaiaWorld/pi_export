@@ -99,6 +99,7 @@ struct Info {
     // style_mark: StyleMark,
     children: Vec<f64>,
     pub render_obj: Vec<RenderObject>,
+	pub text_overflow: String,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -759,7 +760,18 @@ fn to_css_str(attr: Attribute) -> String {
         Attribute::AnimationIterationCount(_r) => "".to_string(), // TODO
         Attribute::AnimationDirection(_r) => "".to_string(),      // TODO
         Attribute::AnimationFillMode(_r) => "".to_string(),       // TODO
-        Attribute::AnimationPlayState(_r) => "".to_string(),      // TODO
+        Attribute::AnimationPlayState(_r) => "".to_string(),
+        Attribute::TextOverflow(r) =>  format!("text-overflow: {}", match &r.0 {
+            pi_style::style::TextOverflow::None => "none",
+            pi_style::style::TextOverflow::Clip => "clip",
+            pi_style::style::TextOverflow::Ellipsis => "ellipsis",
+            pi_style::style::TextOverflow::Custom(r) => r,
+        }),
+        Attribute::OverflowWrap(r) => "overflow-wrap:".to_string() + match &r.0 {
+            pi_flex_layout::style::OverflowWrap::Normal => "normal",
+            pi_flex_layout::style::OverflowWrap::Anywhere => "anywhere",
+            pi_flex_layout::style::OverflowWrap::BreakWord => "break-word",
+        },  
     }
 }
 
@@ -929,6 +941,9 @@ pub fn node_info(engine: &mut Engine, node_id: f64) -> String {
 			Option<&ParentPassId>,
 			Option<&GraphId>,
         ),
+		(
+			&TextOverflowData,
+		)
     )>();
     let (
         (
@@ -965,6 +980,9 @@ pub fn node_info(engine: &mut Engine, node_id: f64) -> String {
 			parentpass,
 			graph_id,
         ),
+		(
+			text_overflow,
+		),
     ) = query.get(&engine.world, node_id).unwrap();
 
     let info = Info {
@@ -1019,6 +1037,7 @@ pub fn node_info(engine: &mut Engine, node_id: f64) -> String {
 		parentpass: format!("{:?}", parentpass),
 		graph_id:  format!("{:?}", graph_id),
         children: children,
+		text_overflow: format!("{:?}", text_overflow),
     };
 
 	serde_json::to_string(&info).unwrap()

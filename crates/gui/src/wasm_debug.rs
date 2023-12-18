@@ -119,6 +119,7 @@ struct Info {
 	pub layer: String,
 	pub view_port: String,
 	pub view: String,
+	pub text_overflow_data: String,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -486,6 +487,7 @@ pub fn node_info(engine: &mut Engine, node_id: f64) -> JsValue {
 			Option<&AsImage>,
 			Option<&Canvas>,
 			Option<&Layer>,
+			Option<&TextOverflowData>,
 		)
     )>();
     let (
@@ -529,6 +531,7 @@ pub fn node_info(engine: &mut Engine, node_id: f64) -> JsValue {
 			as_image,
 			canvas,
 			layer,
+			text_overflow_data
 		)
     ) = query.get(&engine.world, node_id).unwrap();
 	
@@ -591,6 +594,7 @@ pub fn node_info(engine: &mut Engine, node_id: f64) -> JsValue {
 		layer: format!("{:?}", layer),
 		view_port: format!("{:?}", view_port),
 		view: format!("{:?}", view),
+		text_overflow_data: format!("{:?}", text_overflow_data),
     };
 	let canvas = canvas.map(|r| {r.clone()});
 	let canvas_graph_id = if let Some(canvas) = canvas.clone() {

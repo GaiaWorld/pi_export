@@ -43,7 +43,6 @@ use pi_ui_render::system::res_load::ResSuccess;
 #[cfg(target_arch = "wasm32")]
 use pi_async_rt::prelude::{LocalTaskRunner, LocalTaskRuntime};
 use pi_spatial::quad_helper::intersects;
-use vm_builtin::V8InstanceContext;
 #[cfg(target_arch = "wasm32")]
 use wasm_bindgen::prelude::wasm_bindgen;
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
@@ -609,9 +608,11 @@ pub fn get_success_res_len(engine: &mut Engine) -> u32 {
 // 		i += 1;
 // 	}
 // }
+
+#[cfg(not(target_arch="wasm32"))]
 fn get_vid(scope: &mut v8::HandleScope) -> usize {
     let v8c = scope
-        .get_slot::<Rc<RefCell<V8InstanceContext>>>()
+        .get_slot::<Rc<RefCell<vm_builtin::V8InstanceContext>>>()
         .unwrap()
         .clone();
 
@@ -619,6 +620,7 @@ fn get_vid(scope: &mut v8::HandleScope) -> usize {
     vid
 }
 
+#[cfg(not(target_arch="wasm32"))]
 pub fn get_success_res(
     scope: &mut v8::HandleScope,
     args: v8::FunctionCallbackArguments,
@@ -1444,7 +1446,18 @@ pub fn to_css_str(attr: &Attribute) -> (&'static str, String) {
         Attribute::AnimationIterationCount(_r) => ("", "".to_string()), // TODO
         Attribute::AnimationDirection(_r) => ("", "".to_string()),      // TODO
         Attribute::AnimationFillMode(_r) => ("", "".to_string()),       // TODO
-        Attribute::AnimationPlayState(_r) => ("", "".to_string()),      // TODO
+        Attribute::AnimationPlayState(_r) => ("", "".to_string()),
+        Attribute::TextOverflow(r) =>  ("text-overflow", match &r.0 {
+            pi_style::style::TextOverflow::None => "none".to_string(),
+            pi_style::style::TextOverflow::Clip => "clip".to_string(),
+            pi_style::style::TextOverflow::Ellipsis => "ellipsis".to_string(),
+            pi_style::style::TextOverflow::Custom(r) => r.clone(),
+        }),
+        Attribute::OverflowWrap(r) => ("overflow-wrap", match &r.0 {
+            pi_flex_layout::style::OverflowWrap::Normal => "normal".to_string(),
+            pi_flex_layout::style::OverflowWrap::Anywhere => "anywhere".to_string(),
+            pi_flex_layout::style::OverflowWrap::BreakWord => "break-word".to_string(),
+        }),      // TODO
     }
 }
 

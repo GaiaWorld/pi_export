@@ -608,6 +608,38 @@ style_out_export!(@expr
 	s: &str,; );
 
 style_out_export!(@expr 
+	text_overflow, 
+	TextOverflowType, 
+	{
+		let mut input = cssparser::ParserInput::new(s);
+		let mut parse = cssparser::Parser::new(&mut input);
+
+		let text_overflow = pi_style::style::TextOverflow::parse(&mut parse);
+		if let Ok(text_overflow) = text_overflow {
+			text_overflow
+		} else {
+			Default::default()
+		}
+	},
+	s: &str,; );
+
+style_out_export!(@expr 
+	overflow_wrap, 
+	OverflowWrapType, 
+	{
+		let mut input = cssparser::ParserInput::new(s);
+		let mut parse = cssparser::Parser::new(&mut input);
+
+		let overflow_wrap = pi_flex_layout::style::OverflowWrap::parse(&mut parse);
+		if let Ok(overflow_wrap) = overflow_wrap {
+			overflow_wrap
+		} else {
+			Default::default()
+		}
+	},
+	s: &str,; );
+
+style_out_export!(@expr 
 	transform_origin, 
 	TransformOriginType, 
 	{
