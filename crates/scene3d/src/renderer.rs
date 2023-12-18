@@ -117,3 +117,12 @@ pub fn p3d_render_clear_stencil(cmds: &mut CommandsExchangeD3, renderer: f64, va
 
     cmds.renderer_modify.push(OpsRendererCommand::StencilClear(renderer, RenderStencilClear(val as u32)));
 }
+///
+/// val 数值为 u32
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
+pub fn p3d_render_viewport(cmds: &mut CommandsExchangeD3, renderer: f64, x: f64, y: f64, w: f64, h: f64) {
+    let renderer: Entity = as_entity(renderer);
+
+    cmds.renderer_modify.push(OpsRendererCommand::Viewport(renderer, x as f32, y as f32, w as f32, h as f32));
+}
