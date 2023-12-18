@@ -371,6 +371,7 @@ pub fn create_engine(window: &Arc<Window>, width: u32, height: u32, asset_total_
 	// 	println!("-=============== target_os = android");
 		let mut options = PiRenderOptions::default();
 		options.0.backends = Backend::Gl.into();
+		options.0.present_mode = wgpu::PresentMode::Fifo;
 		// options.0.backends = Backend::Vulkan.into();
 		app.insert_resource(options);
 	// }
