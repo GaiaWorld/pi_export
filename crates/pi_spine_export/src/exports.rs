@@ -90,7 +90,7 @@ pub fn spine_renderer_create(app: &mut Engine, cmds: &mut CommandsExchangeSpine,
     // log::warn!("Spine To Screen: {:?}", rendersize.is_none());
 
     let id_renderer = {
-        let id = app.world.spawn_empty().id();
+        let id = app.world.entities().reserve_entity();
         let id_renderer = KeySpineRenderer(id);
     
         // // let final_render_format = app.world.get_resource::<WindowRenderer>().unwrap().format();

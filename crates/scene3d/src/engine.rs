@@ -129,7 +129,7 @@ impl ActionSetScene3D {
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_entity(app: &mut Engine) -> f64 {
-    let id: Entity = app.world.spawn_empty().id();
+    let id: Entity = app.world.entities().reserve_entity();
     as_f64(&id)
 }
 
