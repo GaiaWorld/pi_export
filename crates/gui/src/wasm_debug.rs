@@ -120,6 +120,7 @@ struct Info {
 	pub view_port: String,
 	pub view: String,
 	pub text_overflow_data: String,
+	pub archetype_count: usize,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -331,6 +332,7 @@ pub fn node_info(engine: &mut Engine, node_id: f64) -> JsValue {
 
     // let opacity =  engine.world.query::<&Opacity>().get(&engine.world, node_id);
 
+	let archetype_count = engine.world.archetypes().len();
     let layout = engine.world.query::<&LayoutResult>().get(&engine.world, node_id).unwrap().clone();
 
     let world_matrix = &engine.world.query::<&WorldMatrix>().get(&engine.world, node_id).unwrap().clone();
@@ -595,6 +597,7 @@ pub fn node_info(engine: &mut Engine, node_id: f64) -> JsValue {
 		view_port: format!("{:?}", view_port),
 		view: format!("{:?}", view),
 		text_overflow_data: format!("{:?}", text_overflow_data),
+		archetype_count,
     };
 	let canvas = canvas.map(|r| {r.clone()});
 	let canvas_graph_id = if let Some(canvas) = canvas.clone() {

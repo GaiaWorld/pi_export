@@ -4,6 +4,7 @@ use std::{mem::transmute, ops::Deref};
 use bevy_ecs::{prelude::Commands, system::CommandQueue, query::QueryState};
 use pi_bevy_asset::ShareAssetMgr;
 use pi_bevy_render_plugin::{PiRenderGraph, PiRenderDevice, component::GraphId};
+use pi_export_base::export::await_last_frame;
 pub use pi_export_base::{export::Engine, constants::*, asset::TextureDefaultView};
 // use pi_window_renderer::{WindowRenderer, PluginWindowRender};
 use pi_hash::XHashMap;
@@ -76,6 +77,7 @@ pub fn spine_exchange_commands(
 pub fn init_spine_context(
     engine: &mut Engine,
 ) {
+	await_last_frame(engine);
     engine
         .add_plugins(PluginSpineRenderer);
 }
@@ -193,6 +195,7 @@ impl SpineTextureLoadRecord {
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn spine_texture_loaded_query(app: &mut Engine, record: &mut SpineTextureLoadRecord) {
+	crate::export::await_last_frame(app);
     let loader = app.world.get_resource::<SpineTextureLoad>().unwrap();
     while let Some((key, res)) = loader.success.pop() {
         record.success.insert(key, TextureDefaultView::from(res));
@@ -231,7 +234,7 @@ pub fn spine_use_texture(app: &mut Engine, cmds: &mut CommandsExchangeSpine, id_
     min_filter: f64,
     mipmap_filter: f64,
 ) {
-
+	pi_base_export::await_last_frame(app);
     let id_renderer = KeySpineRenderer::from_f64(id_renderer);
     let device = app.world.get_resource::<PiRenderDevice>().unwrap().clone();
     let asset_samplers = app.world.get_resource::<ShareAssetMgr<SamplerRes>>().unwrap();
