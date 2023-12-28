@@ -15,7 +15,7 @@ pub use crate::engine::ActionSetScene3D;
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_create_render_target(app: &mut Engine, param: &mut ActionSetScene3D, color_format: f64, depth_stencil_format: f64, width: f64, height: f64, filter: f64, address: f64, anisotropy_clamp: f64) -> Option<f64> {
-    
+    pi_base_export::await_last_frame(app);
     let mut resource = param.resource.get_mut(&mut app.world);
     
     let filter = ContextConstants::filter_mode(filter);
@@ -41,7 +41,7 @@ pub fn p3d_create_render_target(app: &mut Engine, param: &mut ActionSetScene3D, 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_dispose_render_target(app: &mut Engine, param: &mut ActionSetScene3D, key: f64) {
-    
+    pi_base_export::await_last_frame(app);
     let mut resource = param.resource.get_mut(&mut app.world);
     
     resource.render_targets.delete(as_dk(&key));

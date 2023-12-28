@@ -30,6 +30,9 @@ pub fn create_gui(
 	debug: u32,
 	use_sdf: bool,
 ) -> Gui {
+    use pi_export_base::export::await_last_frame;
+
+	await_last_frame(engine);
 
     let mut gui = Gui::new(engine);
 

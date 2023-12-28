@@ -22,7 +22,7 @@ pub use pi_export_base::export::Engine;
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_shadow_generator(app: &mut Engine, cmds: &mut CommandsExchangeD3, scene: f64, light: f64, pass_tag: f64) -> f64 {
-    let id: Entity = app.world.spawn_empty().id();
+    let id: Entity = app.world.entities().reserve_entity();
     let scene: Entity = as_entity(scene);
     let light: Entity = as_entity(light);
 

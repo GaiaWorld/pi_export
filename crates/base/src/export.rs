@@ -55,6 +55,7 @@ impl Engine {
 	pub fn new(app: App) -> Self { 
 		let (sender, receiver) = crossbeam_channel::bounded(1);
 		let (back_sender, back_receiver) = crossbeam_channel::bounded(1);
+		log::warn!("create_engine=================================");
 		// let last_frame_awaiting = Share::new(std::sync::atomic::AtomicBool::new(false));
 		let _ = std::thread::Builder::new().name("ecs".to_string()).spawn(move || {
 			loop {
