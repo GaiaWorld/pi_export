@@ -77,7 +77,7 @@ pub struct ActionSetScene3D {
     pub(crate) resource: SystemState<pi_3d::ResourceSets<'static>>,
     pub(crate) state: SystemState<GlobalState<'static>>,
     pub(crate) tree: SystemState<EntityTree<'static, 'static>>,
-    pub(crate) world_transform: QueryState<&'static WorldMatrix>,
+    pub(crate) world_transform: QueryState<&'static GlobalTransform>,
     pub(crate) local_transform: QueryState<&'static LocalMatrix>,
     pub(crate) view_matrix: QueryState<&'static ViewerViewMatrix>,
     pub(crate) project_matrix: QueryState<&'static ViewerProjectionMatrix>,
@@ -196,7 +196,7 @@ pub fn p3d_query_world_matrix(app: &mut Engine, param: &mut ActionSetScene3D, en
 
     if let Ok(trans) = param.world_transform.get(&app.world, entity) {
         let mut i = 0;
-        trans.0.as_slice().iter().for_each(|val| {
+        trans.matrix.as_slice().iter().for_each(|val| {
             matrix[i] = *val;
             i += 1;
         });
