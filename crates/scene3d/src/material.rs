@@ -130,7 +130,7 @@ pub fn p3d_material_uniform_tex(
                 url: EKeyTexture::Image(KeyImageTextureView::new(
                     KeyImageTexture { url: pi_atom::Atom::from(url.to_string()), srgb, file: true, compressed, depth_or_array_layers: 0, useage: wgpu::TextureUsages::TEXTURE_BINDING | wgpu::TextureUsages::COPY_DST },
                     TextureViewDesc {
-                        // aspect: wgpu::TextureAspect::All,
+                        aspect: wgpu::TextureAspect::All,
                         base_mip_level: 0,
                         mip_level_count: None,
                         base_array_layer: 0,
