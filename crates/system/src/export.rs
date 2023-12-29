@@ -10,7 +10,7 @@ use std::sync::atomic::Ordering;
 
 #[cfg(feature = "pi_js_export")]
 pub fn on_resumed(app: &mut Engine, window: &Arc<Window>) {
-	pi_base_export::await_last_frame(app);
+	pi_export_base::export::await_last_frame(app);
     println!("----------on_resumed222222");
     // android 某些设备在某些情况下不会触发on_suspended再触发on_resumed
     app.world.resource_mut::<PiScreenTexture>().0.take();
@@ -24,7 +24,7 @@ pub fn on_resumed(app: &mut Engine, window: &Arc<Window>) {
 
 #[cfg(feature = "pi_js_export")]
 pub fn on_suspended(app: &mut Engine) {
-	pi_base_export::await_last_frame(app);
+	pi_export_base::export::await_last_frame(app);
     println!("----------on_suspended222222");
     app.world.resource_mut::<PiScreenTexture>().0.take();
 }

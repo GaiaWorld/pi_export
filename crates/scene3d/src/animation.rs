@@ -283,6 +283,7 @@ pub fn p3d_animation_group(
     scene: f64,
     group_target: f64,
 ) -> Option<f64> {
+	pi_export_base::export::await_last_frame(app);
     let scene: Entity = as_entity(scene);
     let group_target: Entity = as_entity(group_target);
 
@@ -317,6 +318,7 @@ pub fn p3d_animation_group_weight(
     group_key: f64,
     weight: f64,
 ) {
+	pi_export_base::export::await_last_frame(app);
     let scene: Entity = as_entity(scene);
     let group_key = as_dk(&group_key);
 
@@ -356,6 +358,7 @@ pub fn p3d_anime_group_start(
     amount_param2: f64,
     amount_param3: f64,
 ) {
+	pi_export_base::export::await_last_frame(app);
     let scene: Entity = as_entity(scene);
     let group_key = as_dk(&group_key);
 
@@ -421,6 +424,7 @@ pub fn p3d_anime_group_pause(
     scene: f64,
     group_key: f64,
 ) {
+	pi_export_base::export::await_last_frame(app);
     let scene: Entity = as_entity(scene);
     let group_key = as_dk(&group_key);
 
@@ -437,6 +441,7 @@ pub fn p3d_anime_group_stop(
     scene: f64,
     group_key: f64,
 ) {
+	pi_export_base::export::await_last_frame(app);
     let scene: Entity = as_entity(scene);
     let group_key = as_dk(&group_key);
 
@@ -453,6 +458,7 @@ pub fn p3d_animation_group_listen(
     group: f64,
     mode: EAnimationGroupListen,
 ) {
+	pi_export_base::export::await_last_frame(app);
     let id_group: DefaultKey = as_dk(&group);
 
     let mut resource = param.resource.get_mut(&mut app.world);
@@ -482,6 +488,7 @@ pub fn p3d_animation_group_add_frame_event(
     percent: f64,
     data: f64
 ) {
+	pi_export_base::export::await_last_frame(app);
     let id_group: DefaultKey = as_dk(&group);
 
     let mut resource = param.resource.get_mut(&mut app.world);
@@ -496,6 +503,7 @@ pub fn p3d_animation_group_delete(
     scene: f64,
     group: f64,
 ) {
+	pi_export_base::export::await_last_frame(app);
     let id_scene: Entity = as_entity(scene);
     let id_group: DefaultKey = as_dk(&group);
 
@@ -659,6 +667,7 @@ fn curve<const N: usize, T: TValue<N> + FrameDataValue + Debug>(
 /// * `CubicBezierCurve` data: [design_frame_per_second, total_frame, (x, y, ..), (x, y, ..), (x1, y1, x2, y2)]
 /// * `GLTFCubicSpline` data: [design_frame_per_second, (frame, (x, y, ..), (x, y, ..), (x, y, ..)), ...]
 pub fn p3d_anime_curve_query(app: &mut Engine, param: &mut ActionSetScene3D, key: f64, property: EAnimePropertyID) -> bool {
+	pi_export_base::export::await_last_frame(app);
     let resource = param.resource.get_mut(&mut app.world);
 
     let key = unsafe { transmute(key) };
@@ -670,7 +679,7 @@ pub fn p3d_anime_curve_query(app: &mut Engine, param: &mut ActionSetScene3D, key
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_anime_curve_create(app: &mut Engine, param: &mut ActionSetScene3D, key: f64, property: EAnimePropertyID, data: &[f32], mode: EAnimeCurve) -> bool {
-    
+    pi_export_base::export::await_last_frame(app);
     let resource = param.resource.get_mut(&mut app.world);
     let key: u64 = unsafe { transmute(key) };
 
@@ -801,6 +810,7 @@ pub fn p3d_target_animation(
     group: f64,
     curve_target: f64,
 ) -> bool {
+	pi_export_base::export::await_last_frame(app);
     let id_scene = as_entity(id_scene);
     let group = as_dk(&group);
     let anime_target = as_entity(curve_target);

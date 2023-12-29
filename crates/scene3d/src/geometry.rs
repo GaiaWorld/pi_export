@@ -111,7 +111,7 @@ pub fn p3d_geo_set_indice(geo: &mut GeometryMeta, name: String, start: Option<f6
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_create_vertex_buffer(app: &mut Engine, param: &mut ActionSetScene3D, key: String, data: &[f32], length: f64) {
-	pi_base_export::await_last_frame(app);
+	pi_export_base::export::await_last_frame(app);
     let length = length as usize;
 
     let queue = app.world.get_resource::<PiRenderQueue>().unwrap().clone();
@@ -131,7 +131,7 @@ pub fn p3d_create_vertex_buffer(app: &mut Engine, param: &mut ActionSetScene3D, 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_create_indices_buffer(app: &mut Engine, param: &mut ActionSetScene3D, key: String, data: &[u16], length: f64) {
-	pi_base_export::await_last_frame(app);
+	pi_export_base::export::await_last_frame(app);
     let length = length as usize;
 
     let queue = app.world.get_resource::<PiRenderQueue>().unwrap().clone();

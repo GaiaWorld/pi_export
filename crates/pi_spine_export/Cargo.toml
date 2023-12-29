@@ -20,7 +20,6 @@ pi_bevy_ecs_extend = {version = "0.1", registry = "yn"}
 pi_window_renderer = {version = "0.1", registry = "yn"}
 wgpu = {version = "0.1", registry = "yn", package="pi_wgpu"}
 js_proxy_gen_macro = { registry = "yn", version = "0.2" }
-pi_base_export = { path = "../base" }
 
 pi_hash = "0.1"
 pi_atom = "0.2"

@@ -103,6 +103,7 @@ impl ActionSetScene3D {
     #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
     #[pi_js_export]
     pub fn create(app: &mut Engine) -> Self {
+		pi_export_base::export::await_last_frame(app);
         Self {
             acts: SystemState::<pi_3d::ActionSets>::new(&mut app.world),
             resource: SystemState::<pi_3d::ResourceSets>::new(&mut app.world),
@@ -166,7 +167,7 @@ pub fn p3d_lighting_shadow_limit(app: &mut Engine, param: &mut ActionSetScene3D,
     model_max_hemi_light_count: f64,
 ) {
 
-	pi_base_export::await_last_frame(app);
+	pi_export_base::export::await_last_frame(app);
     
     let mut resource = param.resource.get_mut(&mut app.world);
 
@@ -434,7 +435,7 @@ pub fn p3d_mesh_state(app: &mut Engine, param: &mut ActionSetScene3D, scene: Opt
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_transform_state(app: &mut Engine, param: &mut ActionSetScene3D, scene: Option<f64>, result: &mut [f32]) {
-	pi_base_export::await_last_frame(app);
+	pi_export_base::export::await_last_frame(app);
     let mut state = StateTransform::default();
     if let Some(scene) = scene {
         let scene = as_entity(scene);
@@ -484,7 +485,7 @@ pub fn p3d_camera_state(app: &mut Engine, param: &mut ActionSetScene3D, camera: 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_texture_loader_state(app: &mut Engine, param: &mut ActionSetScene3D, result: &mut [f32]) {
-	pi_base_export::await_last_frame(app);
+	pi_export_base::export::await_last_frame(app);
     let resource = param.resource.get_mut(&mut app.world);
 
     result[ 0] = resource.imgtex_loader_state.image_count as f32;
@@ -673,7 +674,7 @@ pub fn p3d_query_gltf_load(app: &mut Engine, param: &mut ActionSetScene3D, succe
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_get_gltf(app: &mut Engine, param: &mut ActionSetScene3D, entity: f64) -> Option<GLTFRes> {
-	pi_base_export::await_last_frame(app);
+	pi_export_base::export::await_last_frame(app);
     let mut resource = param.resource.get_mut(&mut app.world);
     let entity: Entity = as_entity(entity);
     if let Some(val) = resource.gltf2_loader.get_success(entity) {
@@ -686,7 +687,7 @@ pub fn p3d_get_gltf(app: &mut Engine, param: &mut ActionSetScene3D, entity: f64)
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_get_gltf_fail_reason(app: &mut Engine, param: &mut ActionSetScene3D, entity: f64) -> Option<String> {
-	pi_base_export::await_last_frame(app);
+	pi_export_base::export::await_last_frame(app);
     let mut resource = param.resource.get_mut(&mut app.world);
     let entity: Entity = as_entity(entity);
     resource.gltf2_loader.get_fail_reason(entity)
@@ -695,7 +696,7 @@ pub fn p3d_get_gltf_fail_reason(app: &mut Engine, param: &mut ActionSetScene3D, 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_create_image_load(app: &mut Engine, param: &mut ActionSetScene3D, url: &Atom, srgb: bool, compressed: bool, depth_or_array_layers: f64) -> f64 {
-	pi_base_export::await_last_frame(app);
+	pi_export_base::export::await_last_frame(app);
     let mut resource = param.resource.get_mut(&mut app.world);
 
     let id = resource.imgtex_loader.create_load(KeyImageTexture { 
@@ -750,7 +751,7 @@ pub fn p3d_query_image_load(app: &mut Engine, param: &mut ActionSetScene3D, succ
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_get_image(app: &mut Engine, param: &mut ActionSetScene3D, id: f64) -> Option<ImageRes> {
-	pi_base_export::await_last_frame(app);
+	pi_export_base::export::await_last_frame(app);
     let mut resource = param.resource.get_mut(&mut app.world);
     let id: IDImageTextureLoad = unsafe { transmute(id) };
     if let Some(img) = resource.imgtex_loader.query_success(id) {
@@ -763,7 +764,7 @@ pub fn p3d_get_image(app: &mut Engine, param: &mut ActionSetScene3D, id: f64) ->
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_get_image_fail_reason(app: &mut Engine, param: &mut ActionSetScene3D, id: f64) -> Option<String> {
-	pi_base_export::await_last_frame(app);
+	pi_export_base::export::await_last_frame(app);
     let mut resource = param.resource.get_mut(&mut app.world);
     let id: IDImageTextureLoad = unsafe { transmute(id) };
     resource.imgtex_loader.query_failed_reason(id)

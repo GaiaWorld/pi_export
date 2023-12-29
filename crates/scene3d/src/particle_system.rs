@@ -22,7 +22,7 @@ pub fn p3d_particle_system(
     trailgeo: f64,
     key: &Atom,
 ) {
-	pi_base_export::await_last_frame(app);
+	pi_export_base::export::await_last_frame(app);
     let scene = as_entity(scene);
     let entity = as_entity(entity);
     let trailmesh = as_entity(trailmesh);

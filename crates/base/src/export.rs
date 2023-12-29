@@ -1,7 +1,8 @@
 
 
-use std::{sync::{Arc, OnceLock}, cell::RefCell};
+use std::{sync::{Arc, OnceLock}, cell::RefCell, mem::transmute};
 
+use bevy_ecs::entity::Entity;
 use derive_deref_rs::Deref;
 use pi_assets::{allocator::Allocator, asset::{Asset, Handle, Size}, mgr::AssetMgr};
 use pi_bevy_asset::{PiAssetPlugin, AssetConfig, AssetDesc};
@@ -457,6 +458,7 @@ pub fn fram_call(engine: &mut Engine, _cur_time: u32) {
 		let engine: &'static mut Engine = unsafe { transmute(engine) };
 		let sender = engine.sender.clone();
 		let _ = sender.send(Box::new(|| {
+			// bevy_ecs::system::CommandQueue::default().apply(&mut engine.world);
 			engine.update();
 			*engine.world.get_resource_mut::<FrameState>().unwrap() = FrameState::UnActive;
 			// log::warn!("fram_call end=====");
@@ -465,6 +467,7 @@ pub fn fram_call(engine: &mut Engine, _cur_time: u32) {
 	
 	#[cfg(target_arch="wasm32")]
 	{
+		// bevy_ecs::system::CommandQueue::default().apply(&mut engine.world);
 		engine.update();
 		*engine.world.get_resource_mut::<FrameState>().unwrap() = FrameState::UnActive;
 	}
@@ -544,4 +547,10 @@ impl bevy_app::Plugin for RuntimePlugin {
 			runtime_run.run_if(should_run)
 		);
     }
+}
+
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[cfg(feature = "pi_js_export")]
+pub fn entity_from_number(index: u32, version: u32) -> f64 {
+	unsafe { transmute::<_, f64>( (version as u64) << 32 | index as u64) }
 }

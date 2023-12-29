@@ -302,7 +302,7 @@ pub fn p3d_node_material_block_texture(block: &mut NodeMaterialBlock, key: &Atom
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_node_material_block_regist(app: &mut Engine, param: &mut ActionSetScene3D, block: &NodeMaterialBlock) {
-    pi_base_export::await_last_frame(app);
+    pi_export_base::export::await_last_frame(app);
     let mut resource = param.resource.get_mut(&mut app.world);
 
     resource.node_material_blocks.0.insert(block.0.deref().clone(), block.1.clone());
@@ -406,7 +406,7 @@ pub fn p3d_check_shader(
     app: &mut Engine, param: &mut ActionSetScene3D,
     key: &str
 ) -> bool {
-	pi_base_export::await_last_frame(app);
+	pi_export_base::export::await_last_frame(app);
     let resource = param.resource.get_mut(&mut app.world);
 
     resource.shader_metas.get(&KeyShaderMeta::from(key)).is_some()
@@ -427,7 +427,7 @@ pub fn p3d_regist_material(
     instance_state_check: f64,
     binds_defines_base: Option<f64>,
 ) {
-	pi_base_export::await_last_frame(app);
+	pi_export_base::export::await_last_frame(app);
     let resource = param.resource.get_mut(&mut app.world);
 
     let mut nodemat = NodeMaterialBuilder::new();
