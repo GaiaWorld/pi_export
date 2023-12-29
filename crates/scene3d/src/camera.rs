@@ -13,12 +13,12 @@ pub use crate::engine::ActionSetScene3D;
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
-pub fn p3d_camera(app: &mut Engine, cmds: &mut CommandsExchangeD3, scene: f64, toscreen: bool) -> f64 {
+pub fn p3d_camera(app: &mut Engine, cmds: &mut CommandsExchangeD3, scene: f64) -> f64 {
     let id: Entity = app.world.entities().reserve_entity();
     let scene: Entity = as_entity(scene);
 
     cmds.transform_tree.push(OpsTransformNodeParent::ops(id, scene));
-    cmds.camera_create.push(OpsCameraCreation::ops(scene, id,  toscreen));
+    cmds.camera_create.push(OpsCameraCreation::ops(scene, id));
 
     as_f64(&id)
 }
