@@ -1,5 +1,5 @@
 
-use std::ops::Deref;
+use std::{ops::Deref, mem::transmute};
 use pi_engine_shell::prelude::*;
 use pi_export_base::constants::ContextConstants;
 use pi_scene_context::prelude::*;
@@ -160,4 +160,19 @@ pub fn p3d_material_uniform_tex_from_render_target(
     // let border_color = EngineConstants::border_color(border_color);
     let mat: Entity = as_entity(mat);
     let key = as_dk(&url);    cmds.material_texturefromtarget.push(OpsUniformTextureFromRenderTarget::ops(mat, texparam, key, key_tilloff.deref().clone()));
+}
+
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
+pub fn p3d_uniform_target_animation(
+    cmds: &mut CommandsExchangeD3,
+    mat: f64,
+    group: f64,
+    key: &Atom,
+    curve_key: f64,
+) {
+    let target = as_entity(mat);
+    let group = as_entity(group);
+    let curve: u64 = unsafe { transmute(curve_key) };
+    cmds.uniform_targetanime.push(OpsTargetAnimationUniform::ops(target, key.deref().clone(), group, curve));
 }

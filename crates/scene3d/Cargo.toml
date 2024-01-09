@@ -49,6 +49,7 @@ bytemuck                = { version = "1.4", features = [ "derive" ] }
 
 js_proxy_gen_macro      = { registry = "yn", version = "0.2" }
 pi_render 				= { version = "0.1", registry = "yn" }
+ahash = "=0.8.6"
 
 [target.'cfg(target_arch = "wasm32")'.dependencies]
 pi-async-rt 		    = { version = "0.1", features = ["serial"] }

@@ -6,7 +6,7 @@ use pi_assets::asset::Handle;
 use pi_engine_shell::prelude::*;
 pub use pi_export_base::export::Engine;
 use pi_export_base::export::await_last_frame;
-use pi_gltf2_load::{GLTF, PluginGLTF2Res, GLTFResLoader, KeyGLTF, TypeAnimeAssetMgrs, TypeAnimeContexts};
+use pi_gltf2_load::{GLTF, PluginGLTF2Res, KeyGLTF};
 use pi_mesh_builder::{cube::PluginCubeBuilder, quad::PluginQuadBuilder};
 use pi_node_materials::{PluginNodeMaterial, NodeMaterialBlocks, prelude::*};
 use pi_particle_system::{PluginParticleSystem, prelude::*};
@@ -79,7 +79,7 @@ pub struct ActionSetScene3D {
     pub(crate) resource: SystemState<pi_3d::ResourceSets<'static>>,
     pub(crate) state: SystemState<GlobalState<'static>>,
     pub(crate) tree: SystemState<EntityTree<'static, 'static>>,
-    pub(crate) world_transform: QueryState<&'static GlobalTransform>,
+    pub(crate) world_transform: QueryState<&'static GlobalMatrix>,
     pub(crate) local_transform: QueryState<&'static LocalMatrix>,
     pub(crate) view_matrix: QueryState<&'static ViewerViewMatrix>,
     pub(crate) project_matrix: QueryState<&'static ViewerProjectionMatrix>,
@@ -91,10 +91,19 @@ pub struct ActionSetScene3D {
     pub(crate) renderers: QueryState<(&'static ViewerID, &'static Renderer)>,
     pub(crate) viewers: QueryState<(&'static ViewerActive, &'static SceneID)>,
     pub(crate) particlesystems: QueryState<(&'static ParticleIDs, &'static SceneID)>,
+    pub(crate) animectxs: QueryState<&'static SceneAnimationContext>,
     pub(crate) trails: QueryState<(&'static pi_trail_renderer::TrailPoints, &'static SceneID)>,
     pub(crate) model: QueryState<(&'static RenderGeometryEable, &'static PassID01, &'static PassID02, &'static PassID03, &'static PassID04, &'static PassID05, &'static PassID06, &'static PassID07, &'static PassID08)>,
     pub(crate) pass: QueryState<(&'static PassViewerID, &'static PassRendererID, &'static PassMaterialID, Option<&'static PassBindGroupScene>, Option<&'static PassBindGroupModel>, Option<&'static PassBindGroupTextureSamplers>, Option<&'static PassBindGroupLightingShadow>, Option<&'static PassBindGroups>, Option<&'static PassShader>, Option<&'static PassDraw>)>,
     pub(crate) nodes: QueryState<(&'static SceneID, &'static Enable, &'static GlobalEnable, &'static Layer, Option<&'static InstanceMesh>, Option<&'static Mesh>, Option<&'static Camera>, Option<&'static DirectLight>, Option<&'static PointLight>)>, // StateTransformQuery,
+    
+    // pub(crate) uniforms: QueryState<&'static BindEffect>,
+    // pub(crate) animatorablefloat: QueryState<&'static AnimatorableFloat>,
+    // pub(crate) animatorablevec2s: QueryState<&'static AnimatorableVec2>,
+    // pub(crate) animatorablevec3s: QueryState<&'static AnimatorableVec3>,
+    // pub(crate) animatorablevec4s: QueryState<&'static AnimatorableVec4>,
+    // pub(crate) animatorableuints: QueryState<&'static AnimatorableUint>,
+    // pub(crate) animatorablesints: QueryState<&'static AnimatorableSint>,
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
@@ -125,6 +134,15 @@ impl ActionSetScene3D {
             model: app.world.query(),
             pass: app.world.query(),
             nodes: app.world.query(),
+            animectxs: app.world.query(),
+            
+            // uniforms: app.world.query(),
+            // animatorablefloat: app.world.query(),
+            // animatorablevec2s: app.world.query(),
+            // animatorablevec3s: app.world.query(),
+            // animatorablevec4s: app.world.query(),
+            // animatorableuints: app.world.query(),
+            // animatorablesints: app.world.query(),
         }
     }
 }
@@ -247,12 +265,9 @@ pub fn p3d_query_scene_state(app: &mut Engine, param: &mut ActionSetScene3D, ent
     });
 
     let mut count_animegroup = 0;
-    let resource = param.resource.get_mut(&mut app.world);
-    resource.anime_scene_ctxs.iter().for_each(|(idscene, ctx)| {
-        if entity == *idscene {
-            count_animegroup += ctx.0.group_mgr.groups.len();
-        }
-    });
+    if let Ok(ctx) = param.animectxs.get(&app.world, entity) {
+        count_animegroup += ctx.0.group_mgr.groups.len();
+    }
     
     result[0] = drawcalls as f32;
     result[1] = count_vertex as f32;
@@ -458,6 +473,25 @@ pub fn p3d_transform_state(app: &mut Engine, param: &mut ActionSetScene3D, scene
     result[3] = state.calc_local_time as f32;
     result[4] = state.calc_world_time as f32;
     result[5] = state.max_level as f32;
+}
+
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
+pub fn p3d_query_transform_state(app: &mut Engine, param: &mut ActionSetScene3D, transform: Option<f64>, result: &mut [f32]) -> bool {
+	pi_export_base::export::await_last_frame(app);
+    let mut state = StateTransform::default();
+    if let Some(transform) = transform {
+        let transform = as_entity(transform);
+        if let Ok((idscene, enable, globalenable)) = param.transforms.get(&app.world, transform) {
+            result[0] = enable.0;
+            result[1] = if globalenable.0 { 1. } else { 0. };
+            true
+        } else {
+            false
+        }
+    } else {
+        false
+    }
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
@@ -905,6 +939,41 @@ pub fn p3d_query_material_info(app: &mut Engine, param: &mut ActionSetScene3D, i
         false
     }
 }
+
+// pub fn p3d_query_uniforms(app: &mut Engine, param: &mut ActionSetScene3D, material: f64, key: &Atom, info: &mut [f64]) -> bool {
+// 	pi_export_base::export::await_last_frame(app);
+//     let material = as_entity(material);
+
+//     if let Ok(bindeffect) = param.uniforms.get(&app.world, material) {
+//         if let Some(info) = &bindeffect.0 {
+//             if let Some(offset) = info.offset(key.deref()) {
+//                 if let Some(entity) = offset.entity() {
+//                     info[0] = 1.; info[1] = as_f64(&entity);
+//                 } else {
+//                     info[0] = 0.;
+//                 }
+//                 true
+//             } else {
+//                 false
+//             }
+//         } else {
+//             false
+//         }
+//     } else {
+//         false
+//     }
+// }
+
+// pub fn p3d_query_animator_value(app: &mut Engine, param: &mut ActionSetScene3D, target: f64, info: &mut [f64]) -> bool {
+// 	pi_export_base::export::await_last_frame(app);
+//     let target = as_entity(target);
+
+//     if let Ok(value) = param.animatorablefloat.get(&app.world, target) {
+//        true
+//     } else {
+//         false
+//     }
+// }
 
 fn texture_view_usage_info(key: &KeyTextureViewUsage) {
     match key {

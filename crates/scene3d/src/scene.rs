@@ -5,7 +5,7 @@ use pi_engine_shell::prelude::*;
 pub use pi_export_base::{export::{Engine, Atom}, constants::*};
 use pi_scene_context::prelude::*;
 
-use crate::as_dk;
+use crate::{as_dk, constants::EngineConstants};
 pub use crate::commands::CommandsExchangeD3;
 pub use crate::{engine::ActionSetScene3D, as_entity, as_f64};
 #[cfg(target_arch = "wasm32")]
@@ -29,7 +29,7 @@ use js_proxy_gen_macro::pi_js_export;
 /// Pass 配置使用默认值
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
-pub fn p3d_scene(app: &mut Engine, param: &mut ActionSetScene3D, cmds: &mut CommandsExchangeD3, cullingmode: f64, vals: &[i32]) -> f64 {
+pub fn p3d_scene(app: &mut Engine, cmds: &mut CommandsExchangeD3, cullingmode: f64, vals: &[i32]) -> f64 {
     let scene: Entity = app.world.entities().reserve_entity();
 
     let mut values = [0, 0, 0, 0, 0, 0, 0, 0, 0];
@@ -41,8 +41,6 @@ pub fn p3d_scene(app: &mut Engine, param: &mut ActionSetScene3D, cmds: &mut Comm
         idx += 1;
     });
 
-    let mut resource = param.resource.get_mut(&mut app.world);
-    resource.anime_scene_ctxs.init_scene(scene);
     cmds.scene_create.push(OpsSceneCreation::ops(
         scene,
         cullingmode as u8,
@@ -156,4 +154,14 @@ pub fn p3d_scene_shadowmap(cmds: &mut CommandsExchangeD3, scene: f64, url: Optio
     } else {
         cmds.scene_shadowmap.push(OpsSceneShadowMap::ops(scene, None));
     }
+}
+
+///
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
+pub fn p3d_scene_boundingbox(cmds: &mut CommandsExchangeD3, scene: f64, display: bool, pass: f64) {
+    let scene: Entity = as_entity(scene);
+    let pass = EngineConstants::passtag(pass);
+
+    cmds.scene_boundingbox.push(OpsBoundingBoxDisplay::ops(scene, display, pass));
 }
