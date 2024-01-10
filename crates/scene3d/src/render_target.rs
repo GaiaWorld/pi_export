@@ -1,6 +1,6 @@
 
 use js_proxy_gen_macro::pi_js_export;
-use pi_engine_shell::prelude::*;
+use pi_scene_shell::prelude::*;
 use pi_export_base::constants::ContextConstants;
 pub use pi_export_base::constants::*;
 

@@ -1,4 +1,4 @@
-use pi_engine_shell::prelude::AssetTypeFrameCurve;
+use pi_scene_shell::prelude::AssetTypeFrameCurve;
 use pi_gltf2_load::GLTF;
 use pi_hash::XHashMap;
 use pi_node_materials::prelude::*;

@@ -3,7 +3,7 @@ use std::{mem::transmute, ops::Deref};
 // use default_render::SingleIDBaseDefaultMaterial;
 use pi_3d::PluginBundleDefault;
 use pi_assets::asset::Handle;
-use pi_engine_shell::prelude::*;
+use pi_scene_shell::prelude::*;
 pub use pi_export_base::export::Engine;
 use pi_export_base::export::await_last_frame;
 use pi_gltf2_load::{GLTF, PluginGLTF2Res, KeyGLTF};
@@ -31,7 +31,7 @@ use pi_hal::*;
 #[pi_js_export]
 pub fn p3d_init_engine(app: &mut Engine) {
 	await_last_frame(app);
-    // use pi_engine_shell::frame_time::PluginFrameTime;
+    // use pi_scene_shell::frame_time::PluginFrameTime;
     println!("======== p3d_init_engine");
 
     if app.world.get_resource::<AssetMgrConfigs>().is_none() {
@@ -43,7 +43,6 @@ pub fn p3d_init_engine(app: &mut Engine) {
         // .add_plugins(PluginNodeMaterial)
         .add_plugins(PluginCubeBuilder)
         .add_plugins(PluginQuadBuilder)
-        .add_plugins(PluginGroupNodeMaterialAnime)
         .add_plugins(PluginParticleSystem)
         .add_plugins(PluginGLTF2Res)
         .add_plugins(PluginTrail)
@@ -59,8 +58,8 @@ pub fn p3d_init_engine(app: &mut Engine) {
 
 #[derive(SystemParam)]
 pub struct GlobalState<'w> {
-    pub resource: Res<'w, pi_3d_state::StateResource>,
-    pub performance: Res<'w, pi_engine_shell::prelude::Performance>,
+    pub resource: Res<'w, pi_3d::StateResource>,
+    pub performance: Res<'w, pi_scene_shell::prelude::Performance>,
     pub psperformance: Res<'w, pi_particle_system::prelude::ParticleSystemPerformance>,
     // pub statemesh: ResMut<'w, pi_scene_context::prelude::StateMesh>,
     pub statetransform: Res<'w, pi_scene_context::prelude::StateTransform>,

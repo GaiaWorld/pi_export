@@ -3,7 +3,7 @@
 use std::ops::Deref;
 
 use pi_assets::asset::Handle;
-use pi_engine_shell::prelude::*;
+use pi_scene_shell::prelude::*;
 use pi_scene_context::prelude::*;
 use pi_node_materials::prelude::*;
 use crate::constants::EngineConstants;
