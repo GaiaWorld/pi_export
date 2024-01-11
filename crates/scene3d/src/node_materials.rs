@@ -270,6 +270,11 @@ pub fn p3d_node_material_block_vec4(block: &mut NodeMaterialBlock, key: &Atom, x
 }
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
+pub fn p3d_node_material_block_vec3(block: &mut NodeMaterialBlock, key: &Atom, x: f64, y: f64, z: f64, caninstance: bool) {
+    block.1.vec3.push(UniformPropertyVec3(key.deref().clone(), [x as f32, y as f32, z as f32], caninstance))
+}
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
 pub fn p3d_node_material_block_vec2(block: &mut NodeMaterialBlock, key: &Atom, x: f64, y: f64, caninstance: bool) {
     block.1.vec2.push(UniformPropertyVec2(key.deref().clone(), [x as f32, y as f32], caninstance))
 }
