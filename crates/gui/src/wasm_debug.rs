@@ -41,6 +41,8 @@ use smallvec::SmallVec;
 use pi_bevy_ecs_extend::prelude::Layer;
 use pi_ui_render::components::pass_2d::Camera;
 use pi_ui_render::components::calc::View;
+use pi_ui_render::resource::RenderContextMarkType;
+use pi_ui_render::components::calc::RenderContextMark;
 
 #[derive(Serialize, Deserialize, Debug)]
 struct Quad {
@@ -121,6 +123,7 @@ struct Info {
 	pub view: String,
 	pub text_overflow_data: String,
 	pub archetype_count: usize,
+	pub context_mark: String,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -340,6 +343,16 @@ pub fn node_info(engine: &mut Engine, node_id: f64) -> JsValue {
     let view_port =  engine.world.query::<&Camera>().get(&engine.world, node_id).map(|r| {r.view_port.clone()});
 	let view =  engine.world.query::<&View>().get(&engine.world, node_id).map(|r| {r.clone()});
 
+	let mark_type_as_image = engine.world.get_resource::<RenderContextMarkType<AsImage>>().unwrap().clone();
+	let mark_type_overflow = engine.world.get_resource::<RenderContextMarkType<Overflow>>().unwrap().clone();
+	let mark_type_blur = engine.world.get_resource::<RenderContextMarkType<Blur>>().unwrap().clone();
+	let mark_type_hsi = engine.world.get_resource::<RenderContextMarkType<Hsi>>().unwrap().clone();
+	let mark_type_opacity = engine.world.get_resource::<RenderContextMarkType<Opacity>>().unwrap().clone();
+	let mark_type_radial_wave = engine.world.get_resource::<RenderContextMarkType<RadialWave>>().unwrap().clone();
+	let mark_type_clippath = engine.world.get_resource::<RenderContextMarkType<ClipPath>>().unwrap().clone();
+	let mark_type_transform_willchange = engine.world.get_resource::<RenderContextMarkType<TransformWillChange>>().unwrap().clone();
+	
+
     // let draw_list =  engine.world.query::<&DrawList>();
 
     // let mask_image =  engine.world.query::<&MaskImage>();
@@ -490,6 +503,7 @@ pub fn node_info(engine: &mut Engine, node_id: f64) -> JsValue {
 			Option<&Canvas>,
 			Option<&Layer>,
 			Option<&TextOverflowData>,
+			&RenderContextMark,
 		)
     )>();
     let (
@@ -533,9 +547,36 @@ pub fn node_info(engine: &mut Engine, node_id: f64) -> JsValue {
 			as_image,
 			canvas,
 			layer,
-			text_overflow_data
+			text_overflow_data,
+			context_mark,
 		)
     ) = query.get(&engine.world, node_id).unwrap();
+
+	let mut mark_str = Vec::new();
+	if context_mark.get(*mark_type_as_image).as_deref() == Some(&true) {
+		mark_str.push("AsImage");
+	}
+	if context_mark.get(*mark_type_overflow).as_deref() == Some(&true) {
+		mark_str.push("Overflow");
+	}
+	if context_mark.get(*mark_type_blur).as_deref() == Some(&true) {
+		mark_str.push("Blur");
+	}
+	if context_mark.get(*mark_type_hsi).as_deref() == Some(&true) {
+		mark_str.push("Hsi");
+	}
+	if context_mark.get(*mark_type_opacity).as_deref() == Some(&true) {
+		mark_str.push("Opacity");
+	}
+	if context_mark.get(*mark_type_radial_wave).as_deref() == Some(&true) {
+		mark_str.push("RadialWave");
+	}
+	if context_mark.get(*mark_type_clippath).as_deref() == Some(&true) {
+		mark_str.push("ClipPath");
+	}
+	if context_mark.get(*mark_type_transform_willchange).as_deref() == Some(&true) {
+		mark_str.push("TransformWillChange");
+	}
 	
     let mut info = Info {
         // char_block: char_block,
@@ -598,6 +639,7 @@ pub fn node_info(engine: &mut Engine, node_id: f64) -> JsValue {
 		view: format!("{:?}", view),
 		text_overflow_data: format!("{:?}", text_overflow_data),
 		archetype_count,
+		context_mark: mark_str.join("|"),
     };
 	let canvas = canvas.map(|r| {r.clone()});
 	let canvas_graph_id = if let Some(canvas) = canvas.clone() {

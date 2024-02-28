@@ -929,6 +929,7 @@ fn calc_text_pos(char: &CharNode, text: &Vec<CharNode>) -> (f32, f32, f32, f32) 
 
 /// aabb的ab查询函数, aabb的oct查询函数应该使用intersects
 fn ab_query_func(arg: &mut AbQueryArgs, id: EntityKey, aabb: &Aabb2, _bind: &()) {
+	// log::warn!("ab_query_func======={:?}", id);
     let (_layer, _is_show, z_range, inpass) = match arg.query.get(*id) {
         // 如果enable false 表示不接收事件, visibility为false， 也无法接收事件、不在树上也不能接收事件
         Ok(r) if (r.0.layer() != 0 && r.1.get_enable() && r.1.get_visibility()) => r,
