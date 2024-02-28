@@ -1,8 +1,10 @@
 
 
-use pi_engine_shell::prelude::*;
+use std::{ops::Deref, mem::transmute};
+
+use pi_scene_shell::prelude::*;
 use pi_export_base::constants::ContextConstants;
-pub use pi_export_base::{export::Engine, constants::*};
+pub use pi_export_base::{export::{Engine, Atom}, constants::*};
 use pi_scene_context::prelude::*;
 
 use crate::{constants::EngineConstants};
@@ -24,12 +26,34 @@ use js_proxy_gen_macro::pi_js_export;
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
-pub fn p3d_mesh(app: &mut Engine, cmds: &mut CommandsExchangeD3, scene: f64, instancestate: f64, instance_use_single_buffer: bool) -> f64 {
+pub struct VInstanceAttributes(bool, Vec<CustomVertexAttribute>);
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
+impl VInstanceAttributes {
+    #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+    #[pi_js_export]
+    pub fn create(instane_matrix: bool) -> Self {
+        VInstanceAttributes(instane_matrix, vec![])
+    }
+}
+
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
+pub fn p3d_instance_attribute(item: &mut VInstanceAttributes, key: &Atom, code: &Atom, foruniform: &Atom, vtype: f64) {
+    let foruniform = if foruniform.as_str() != "" {
+        Some(foruniform.deref().clone())
+    } else { None };
+    item.1.push(CustomVertexAttribute::new(key.deref().clone(), code.deref().clone(), EngineConstants::instance_attribute_vtype(vtype), foruniform))
+}
+
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
+pub fn p3d_mesh(app: &mut Engine, cmds: &mut CommandsExchangeD3, scene: f64, instancestate: &VInstanceAttributes, instance_use_single_buffer: bool) -> f64 {
     let id: Entity = app.world.entities().reserve_entity();
     let scene: Entity = as_entity(scene);
 
     cmds.transform_tree.push(OpsTransformNodeParent::ops(id, scene));
-    let state = MeshInstanceState { state: instancestate as u32, use_single_instancebuffer: instance_use_single_buffer };
+    let state = MeshInstanceState { instances: instancestate.1.clone(), instance_matrix: instancestate.0, use_single_instancebuffer: instance_use_single_buffer };
     // log::error!("Mesh: {:?}", instancestate);
     cmds.mesh_create.push(OpsMeshCreation::ops(scene, id, state));
 
@@ -72,62 +96,62 @@ pub fn p3d_mesh_vertexrange(cmds: &mut CommandsExchangeD3, mesh: f64, vertex_sta
     }
 }
 
-#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
-#[pi_js_export]
-pub fn p3d_mesh_instance_world_matrixs(
-    cmds: &mut CommandsExchangeD3, geo: f64,
-    data: &[f32], offset: f64, length: f64
-) {
-    let geo: Entity = as_entity(geo);
-    let start = offset as usize;
-    let length = length as usize;
-    let end = length + start;
-    // let mut values: Vec<f32> = Vec::with_capacity(length);
-    // data[start..end].iter().for_each(|val| {
-    //     values.push(*val);
-    // });
-    let values = bytemuck::cast_slice(&data[start..end]).to_vec();
+// #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+// #[pi_js_export]
+// pub fn p3d_mesh_instance_world_matrixs(
+//     cmds: &mut CommandsExchangeD3, geo: f64,
+//     data: &[f32], offset: f64, length: f64
+// ) {
+//     let geo: Entity = as_entity(geo);
+//     let start = offset as usize;
+//     let length = length as usize;
+//     let end = length + start;
+//     // let mut values: Vec<f32> = Vec::with_capacity(length);
+//     // data[start..end].iter().for_each(|val| {
+//     //     values.push(*val);
+//     // });
+//     let values = bytemuck::cast_slice(&data[start..end]).to_vec();
 
-    cmds.instance_ins_world_matrixs.push(OpsInstanceWorldMatrixs::ops(geo, values));
-}
+//     cmds.instance_ins_world_matrixs.push(OpsInstanceWorldMatrixs::ops(geo, values));
+// }
 
-#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
-#[pi_js_export]
-pub fn p3d_mesh_instance_colors(
-    cmds: &mut CommandsExchangeD3, geo: f64,
-    data: &[f32], offset: f64, length: f64
-) {
-    let geo: Entity = as_entity(geo);
-    let start = offset as usize;
-    let length = length as usize;
-    let end = length + start;
-    // let mut values: Vec<f32> = Vec::with_capacity(length);
-    // data[start..end].iter().for_each(|val| {
-    //     values.push(*val);
-    // });
-    let values = bytemuck::cast_slice(&data[start..end]).to_vec();
+// #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+// #[pi_js_export]
+// pub fn p3d_mesh_instance_colors(
+//     cmds: &mut CommandsExchangeD3, geo: f64,
+//     data: &[f32], offset: f64, length: f64
+// ) {
+//     let geo: Entity = as_entity(geo);
+//     let start = offset as usize;
+//     let length = length as usize;
+//     let end = length + start;
+//     // let mut values: Vec<f32> = Vec::with_capacity(length);
+//     // data[start..end].iter().for_each(|val| {
+//     //     values.push(*val);
+//     // });
+//     let values = bytemuck::cast_slice(&data[start..end]).to_vec();
 
-    cmds.instance_ins_colors.push(OpsInstanceColors::ops(geo, values));
-}
+//     cmds.instance_ins_colors.push(OpsInstanceColors::ops(geo, values));
+// }
 
-#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
-#[pi_js_export]
-pub fn p3d_mesh_instance_tilloffs(
-    cmds: &mut CommandsExchangeD3, geo: f64,
-    data: &[f32], offset: f64, length: f64
-) {
-    let geo: Entity = as_entity(geo);
-    let start = offset as usize;
-    let length = length as usize;
-    let end = length + start;
-    // let mut values: Vec<f32> = Vec::with_capacity(length);
-    // data[start..end].iter().for_each(|val| {
-    //     values.push(*val);
-    // });
-    let values = bytemuck::cast_slice(&data[start..end]).to_vec();
+// #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+// #[pi_js_export]
+// pub fn p3d_mesh_instance_tilloffs(
+//     cmds: &mut CommandsExchangeD3, geo: f64,
+//     data: &[f32], offset: f64, length: f64
+// ) {
+//     let geo: Entity = as_entity(geo);
+//     let start = offset as usize;
+//     let length = length as usize;
+//     let end = length + start;
+//     // let mut values: Vec<f32> = Vec::with_capacity(length);
+//     // data[start..end].iter().for_each(|val| {
+//     //     values.push(*val);
+//     // });
+//     let values = bytemuck::cast_slice(&data[start..end]).to_vec();
 
-    cmds.instance_ins_tilloffs.push(OpsInstanceTilloffs::ops(geo, values));
-}
+//     cmds.instance_ins_tilloffs.push(OpsInstanceTilloffs::ops(geo, values));
+// }
 
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
@@ -384,4 +408,19 @@ pub fn p3d_abstruct_mesh_velocity_arr(
         let z = data[i * size + 3];
         cmds.abstructmesh_velocity.push(OpsAbstructMeshVelocity::ops(mesh, x as f32, y as f32, z as f32));
     }
+}
+
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
+pub fn p3d_attribute_target_animation(
+    cmds: &mut CommandsExchangeD3,
+    abstructmesh: f64,
+    group: f64,
+    key: &Atom,
+    curve_key: f64,
+) {
+    let target = as_entity(abstructmesh);
+    let group = as_entity(group);
+    let curve: u64 = unsafe { transmute(curve_key) };
+    cmds.instance_targetanime.push(OpsTargetAnimationAttribute::ops(target, key.deref().clone(), group, curve));
 }

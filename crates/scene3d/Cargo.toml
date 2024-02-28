@@ -30,25 +30,24 @@ pi_export_base 			= { path = "../base" }
 pi_hal 					= { version = "0.1", registry = "yn" }
 log						= "0.4"
 
-pi_scene_math           = { git = "https://github.com/GaiaWorld/pi_scene" }
+pi_scene_math           = { version = "0.0.3", registry = "yn" }
 pi_animation            = { version = "0.1", registry = "yn" }
 pi_curves               = { version = "0.1", registry = "yn" }
 
-pi_3d 		            = { git = "https://github.com/GaiaWorld/pi_3d.git" }
-pi_engine_shell 		= { git = "https://github.com/GaiaWorld/pi_3d.git" }
-pi_node_materials 		= { git = "https://github.com/GaiaWorld/pi_3d.git" }
-default_render 			= { git = "https://github.com/GaiaWorld/pi_3d.git" }
-pi_scene_context 		= { git = "https://github.com/GaiaWorld/pi_3d.git" }
-pi_mesh_builder 		= { git = "https://github.com/GaiaWorld/pi_3d.git" }
-pi_gltf2_load           = { git = "https://github.com/GaiaWorld/pi_3d.git" }
-pi_particle_system      = { git = "https://github.com/GaiaWorld/pi_3d.git" }
-pi_trail_renderer       = { git = "https://github.com/GaiaWorld/pi_3d.git" }
-pi_3d_state             = { git = "https://github.com/GaiaWorld/pi_3d.git" }
+pi_3d 		            = { version = "0.0.1", registry = "yn" }
+pi_scene_shell 		    = { version = "0.0.1", registry = "yn" }
+pi_node_materials 		= { version = "0.0.1", registry = "yn" }
+pi_scene_context 		= { version = "0.0.1", registry = "yn" }
+pi_mesh_builder 		= { version = "0.0.1", registry = "yn" }
+pi_gltf2_load           = { version = "0.0.1", registry = "yn" }
+pi_particle_system      = { version = "0.0.1", registry = "yn" }
+pi_trail_renderer       = { version = "0.0.1", registry = "yn" }
 
 bytemuck                = { version = "1.4", features = [ "derive" ] }
 
 js_proxy_gen_macro      = { registry = "yn", version = "0.2" }
 pi_render 				= { version = "0.1", registry = "yn" }
+ahash = "=0.8.6"
 
 [target.'cfg(target_arch = "wasm32")'.dependencies]
 pi-async-rt 		    = { version = "0.1", features = ["serial"] }

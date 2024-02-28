@@ -1,4 +1,4 @@
-use pi_engine_shell::prelude::*;
+use pi_scene_shell::prelude::*;
 pub use pi_export_base::export::Engine;
 use pi_particle_system::prelude::*;
 use pi_scene_context::prelude::*;
@@ -25,6 +25,7 @@ pub struct CommandsExchangeD3 {
     pub(crate) scene_env: ActionListSceneEnvTexture,
     pub(crate) scene_shadowmap: ActionListSceneShadowMap,
     pub(crate) scene_dispose: ActionListSceneDispose,
+    pub(crate) scene_boundingbox: ActionListBoundingBoxDisplay,
 
     pub(crate) obj_dispose: ActionListDispose,
     
@@ -69,16 +70,27 @@ pub struct CommandsExchangeD3 {
     pub(crate) mesh_bounding: ActionListMeshBounding,
     pub(crate) mesh_boundingculling: ActionListMeshBoundingCullingMode,
 
+    pub(crate) skin_create: ActionListSkinCreate,
+    pub(crate) skin_use: ActionListSkinUse,
+    pub(crate) skin_bonecreate: ActionListBoneCreate,
+    pub(crate) skin_bonepose: ActionListBonePose,
+
     pub(crate) mesh_layermask: ActionListLayerMask,
     
     pub(crate) instance_create: ActionListInstanceMeshCreate,
-    pub(crate) instance_color: ActionListInstanceColor,
-    pub(crate) instance_alpha: ActionListInstanceAlpha,
-    pub(crate) instance_tilloff: ActionListInstanceTillOff,
-    pub(crate) instance_ins_world_matrixs: ActionListInstanceWorldMatrixs,
-    pub(crate) instance_ins_colors: ActionListInstanceColors,
-    pub(crate) instance_ins_tilloffs: ActionListInstanceTilloffs,
-    pub(crate) instance_floats: ActionListInstanceFloat,
+    // pub(crate) instance_color: ActionListInstanceColor,
+    // pub(crate) instance_alpha: ActionListInstanceAlpha,
+    // pub(crate) instance_tilloff: ActionListInstanceTillOff,
+    // pub(crate) instance_ins_world_matrixs: ActionListInstanceWorldMatrixs,
+    // pub(crate) instance_ins_colors: ActionListInstanceColors,
+    // pub(crate) instance_ins_tilloffs: ActionListInstanceTilloffs,
+    pub(crate) instance_float: ActionListInstanceFloat,
+    pub(crate) instance_vec4s: ActionListInstanceVec4,
+    pub(crate) instance_vec3s: ActionListInstanceVec3,
+    pub(crate) instance_vec2s: ActionListInstanceVec2,
+    pub(crate) instance_uints: ActionListInstanceUint,
+    pub(crate) instance_sints: ActionListInstanceSint,
+    pub(crate) instance_targetanime: ActionListTargetAnimationAttribute,
     
     pub(crate) abstructmesh_scaling_mode: ActionListAbstructMeshScalingMode,
     pub(crate) abstructmesh_velocity: ActionListAbstructMeshVelocity,
@@ -100,6 +112,7 @@ pub struct CommandsExchangeD3 {
     pub(crate) material_mat4: ActionListUniformMat4,
     pub(crate) material_texture: ActionListUniformTexture,
     pub(crate) material_texturefromtarget: ActionListUniformTextureFromRenderTarget,
+    pub(crate) uniform_targetanime: ActionListTargetAnimationUniform,
     
     pub(crate) light_create: ActionListLightCreate,
     pub(crate) light_param: ActionListLightParam,
@@ -116,8 +129,14 @@ pub struct CommandsExchangeD3 {
     pub(crate) renderer_modify: ActionListRendererModify,
     pub(crate) renderer_target: ActionListRendererTarget,
     
-    pub(crate) anime_attach: ActionListAnimeGroupAttach,
+    pub(crate) anime_create: ActionListAnimeGroupCreate,
+    pub(crate) anime_action: ActionListAnimationGroupAction,
+    pub(crate) anime_dispose: ActionListAnimeGroupDispose,
     pub(crate) anime_reset_while_start: ActionListAnimeGroupStartReset,
+    pub(crate) anime_listen: ActionListAddAnimationListen,
+    pub(crate) anime_frameevent: ActionListAddAnimationFrameEvent,
+    pub(crate) anime_weight: ActionListAnimationWeight,
+    pub(crate) anime_property_targetanime: ActionListPropertyTargetAnimation,
 
     pub(crate) trail_create: ActionListTrail,
     pub(crate) trail_age: ActionListTrailAge,
@@ -152,6 +171,7 @@ impl CommandsExchangeD3 {
         cmds.scene.env.push_some( self.scene_env.exchange(vec![]).drain(..) );
         cmds.scene.shadowmap.push_some( self.scene_shadowmap.exchange(vec![]).drain(..) );
         cmds.scene_dispose.push_some( self.scene_dispose.exchange(vec![]).drain(..) );
+        cmds.scene.boundingboxdisplay.push_some( self.scene_boundingbox.exchange(vec![]).drain(..) );
         cmds.obj_dispose.push_some( self.obj_dispose.exchange(vec![]).drain(..) );
         cmds.transform.create.push_some( self.transform_create.exchange(vec![]).drain(..) );
         cmds.transform.localpos.push_some( self.transform_localpos.exchange(vec![]).drain(..) );
@@ -192,17 +212,31 @@ impl CommandsExchangeD3 {
         cmds.mesh.bounding.push_some( self.mesh_bounding.exchange(vec![]).drain(..) );
         cmds.mesh.boundingculling.push_some( self.mesh_boundingculling.exchange(vec![]).drain(..) );
         cmds.mesh.layermask.push_some( self.mesh_layermask.exchange(vec![]).drain(..) );
+        cmds.mesh.boneoffset.push_some( self.abstructmesh_boneoffset.exchange(vec![]).drain(..) );
+        
+        cmds.skin.skin_create.push_some( self.skin_create.exchange(vec![]).drain(..) );
+        cmds.skin.bone_create.push_some( self.skin_bonecreate.exchange(vec![]).drain(..) );
+        cmds.skin.skin_use.push_some( self.skin_use.exchange(vec![]).drain(..) );
+        cmds.skin.bone_pose.push_some( self.skin_bonepose.exchange(vec![]).drain(..) );
+        
         cmds.instance.create.push_some( self.instance_create.exchange(vec![]).drain(..) );
-        cmds.instance.color.push_some( self.instance_color.exchange(vec![]).drain(..) );
-        cmds.instance.alpha.push_some( self.instance_alpha.exchange(vec![]).drain(..) );
-        cmds.instance.tilloff.push_some( self.instance_tilloff.exchange(vec![]).drain(..) );
-        cmds.instance.ins_world_matrixs.push_some( self.instance_ins_world_matrixs.exchange(vec![]).drain(..) );
-        cmds.instance.ins_colors.push_some( self.instance_ins_colors.exchange(vec![]).drain(..) );
-        cmds.instance.ins_tilloffs.push_some( self.instance_ins_tilloffs.exchange(vec![]).drain(..) );
-        cmds.instance.floats.push_some( self.instance_floats.exchange(vec![]).drain(..) );
+        // cmds.instance.color.push_some( self.instance_color.exchange(vec![]).drain(..) );
+        // cmds.instance.alpha.push_some( self.instance_alpha.exchange(vec![]).drain(..) );
+        // cmds.instance.tilloff.push_some( self.instance_tilloff.exchange(vec![]).drain(..) );
+        // cmds.instance.ins_world_matrixs.push_some( self.instance_ins_world_matrixs.exchange(vec![]).drain(..) );
+        // cmds.instance.ins_colors.push_some( self.instance_ins_colors.exchange(vec![]).drain(..) );
+        // cmds.instance.ins_tilloffs.push_some( self.instance_ins_tilloffs.exchange(vec![]).drain(..) );
+        cmds.instance.floats.push_some( self.instance_float.exchange(vec![]).drain(..) );
+        cmds.instance.vec4s.push_some( self.instance_vec4s.exchange(vec![]).drain(..) );
+        cmds.instance.vec3s.push_some( self.instance_vec3s.exchange(vec![]).drain(..) );
+        cmds.instance.vec2s.push_some( self.instance_vec2s.exchange(vec![]).drain(..) );
+        cmds.instance.uints.push_some( self.instance_uints.exchange(vec![]).drain(..) );
+        cmds.instance.sints.push_some( self.instance_sints.exchange(vec![]).drain(..) );
+
+        cmds.anime_instance.push_some( self.instance_targetanime.exchange(vec![]).drain(..) );
+
         cmds.abstructmesh.scaling_mode.push_some( self.abstructmesh_scaling_mode.exchange(vec![]).drain(..) );
         cmds.abstructmesh.velocity.push_some( self.abstructmesh_velocity.exchange(vec![]).drain(..) );
-        cmds.abstructmesh.boneoffset.push_some( self.abstructmesh_boneoffset.exchange(vec![]).drain(..) );
         cmds.abstructmesh.force_point_light.push_some( self.abstructmesh_force_point_light.exchange(vec![]).drain(..) );
         cmds.abstructmesh.force_spot_light.push_some( self.abstructmesh_force_spot_light.exchange(vec![]).drain(..) );
         cmds.abstructmesh.force_hemi_light.push_some( self.abstructmesh_force_hemi_light.exchange(vec![]).drain(..) );
@@ -218,6 +252,8 @@ impl CommandsExchangeD3 {
         cmds.material.mat4.push_some( self.material_mat4.exchange(vec![]).drain(..) );
         cmds.material.texture.push_some( self.material_texture.exchange(vec![]).drain(..) );
         cmds.material.texturefromtarget.push_some( self.material_texturefromtarget.exchange(vec![]).drain(..) );
+        cmds.anime_uniform.push_some( self.uniform_targetanime.exchange(vec![]).drain(..) );
+
         cmds.light.create.push_some( self.light_create.exchange(vec![]).drain(..) );
         cmds.light.param.push_some( self.light_param.exchange(vec![]).drain(..) );
         cmds.light.color.push_some( self.light_color.exchange(vec![]).drain(..) );
@@ -230,8 +266,16 @@ impl CommandsExchangeD3 {
         cmds.renderer.connect.push_some( self.renderer_connect.exchange(vec![]).drain(..) );
         cmds.renderer.modify.push_some( self.renderer_modify.exchange(vec![]).drain(..) );
         cmds.renderer.target.push_some( self.renderer_target.exchange(vec![]).drain(..) );
-        cmds.anime.attach.push_some( self.anime_attach.exchange(vec![]).drain(..) );
+
+        cmds.anime.create.push_some( self.anime_create.exchange(vec![]).drain(..) );
+        cmds.anime.action.push_some( self.anime_action.exchange(vec![]).drain(..) );
+        cmds.anime.dispose.push_some( self.anime_dispose.exchange(vec![]).drain(..) );
         cmds.anime.reset_while_start.push_some( self.anime_reset_while_start.exchange(vec![]).drain(..) );
+        cmds.anime.listens.push_some( self.anime_listen.exchange(vec![]).drain(..) );
+        cmds.anime.frameevents.push_some( self.anime_frameevent.exchange(vec![]).drain(..) );
+        cmds.anime.weight.push_some( self.anime_weight.exchange(vec![]).drain(..) );
+
+        cmds.property_targetanimation.push_some( self.anime_property_targetanime.exchange(vec![]).drain(..) );
         
         cmds.trail.create.push_some( self.trail_create.exchange(vec![]).drain(..) );
         cmds.trail.age.push_some( self.trail_age.exchange(vec![]).drain(..) );
@@ -248,5 +292,6 @@ impl CommandsExchangeD3 {
 pub fn p3d_commands_exchange(app: &mut Engine, param: &mut ActionSetScene3D, cmds: &mut CommandsExchangeD3) {
 	pi_export_base::export::await_last_frame(app);
     let mut sets = param.acts.get_mut(&mut app.world);
+
     cmds.exchange(&mut sets);
 }

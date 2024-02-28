@@ -1,8 +1,8 @@
 
-use std::ops::Range;
+use std::ops::{Range, Deref};
 
-use pi_engine_shell::prelude::*;
-pub use pi_export_base::export::Engine;
+use pi_scene_shell::prelude::*;
+pub use pi_export_base::export::{Engine, Atom};
 use pi_scene_context::prelude::*;
 use pi_mesh_builder::{
     cube::CubeBuilder,
@@ -20,7 +20,7 @@ use js_proxy_gen_macro::pi_js_export;
 pub struct VBMeta{
     pub(crate) key: KeyVertexBuffer,
     pub(crate) range: VertexBufferDescRange,
-    pub(crate) attrs: Vec<VertexAttribute>,
+    pub(crate) attrs: Vec<EVertexAttribute>,
     pub(crate) instance: bool,
 
 }
@@ -61,7 +61,17 @@ impl VBMeta {
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_vbmeta_attr(meta: &mut VBMeta, attr: f64, format: f64) {
-    meta.attrs.push(VertexAttribute { kind: EngineConstants::vertex_attr(attr), format: EngineConstants::vertex_format(format) });
+    meta.attrs.push(EVertexAttribute::Buildin(EngineConstants::vertex_attr(attr)));
+}
+
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
+pub fn p3d_vbmeta_custom_attr(meta: &mut VBMeta, key: &Atom, format: f64, code: &Atom, foruniform: &Atom) {
+    let vtype = EngineConstants::instance_attribute_vtype(format);
+    let foruniform = if foruniform.as_str() != "" {
+        Some(foruniform.deref().clone())
+    } else { None };
+    meta.attrs.push(EVertexAttribute::Custom(CustomVertexAttribute::new(key.deref().clone(), code.deref().clone(), vtype, foruniform)));
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]

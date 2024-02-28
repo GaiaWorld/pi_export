@@ -36,10 +36,13 @@ bevy_input = { path = "../bevy/crates/bevy_input" }
 bevy_reflect = { path = "../bevy/crates/bevy_reflect" }
 bevy_math = { path = "../bevy/crates/bevy_math" }
 
+pi_gltf             = { version = "0.1", registry = "yn", features = ["extras"] }
+
 [patch.yn]
 # pi_winit = { path = "../winit", package = "winit" }
 # pi_hal = { path = "../pi_hal" }
 # pi_wgpu = { path = "../pi_wgpu" }
+pi_gltf         = { path = "../pi_gltf", features = ["extras"] }
 
 # pi_render
 pi_render = { path = "../pi_render" }

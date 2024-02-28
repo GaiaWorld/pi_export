@@ -2,7 +2,8 @@
 
 use std::ops::Deref;
 
-use pi_engine_shell::prelude::*;
+use pi_assets::asset::Handle;
+use pi_scene_shell::prelude::*;
 use pi_scene_context::prelude::*;
 use pi_node_materials::prelude::*;
 use crate::constants::EngineConstants;
@@ -260,32 +261,39 @@ pub fn p3d_node_material_block_extend_bind_define(block: &mut NodeMaterialBlock,
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_node_material_block_mat4(block: &mut NodeMaterialBlock, key: &Atom, m11: f64, m12: f64, m13: f64, m14: f64, m21: f64, m22: f64, m23: f64, m24: f64, m31: f64, m32: f64, m33: f64, m34: f64, m41: f64, m42: f64, m43: f64, m44: f64) {
-    block.1.mat4.push(UniformPropertyMat4(key.deref().clone(), [m11 as f32, m12 as f32, m13 as f32, m14 as f32, m21 as f32, m22 as f32, m23 as f32, m24 as f32, m31 as f32, m32 as f32, m33 as f32, m34 as f32, m41 as f32, m42 as f32, m43 as f32, m44 as f32]))
+    block.1.mat4.push(UniformPropertyMat4(key.deref().clone(), [m11 as f32, m12 as f32, m13 as f32, m14 as f32, m21 as f32, m22 as f32, m23 as f32, m24 as f32, m31 as f32, m32 as f32, m33 as f32, m34 as f32, m41 as f32, m42 as f32, m43 as f32, m44 as f32], false))
 }
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
-pub fn p3d_node_material_block_vec4(block: &mut NodeMaterialBlock, key: &Atom, x: f64, y: f64, z: f64, w: f64) {
-    block.1.vec4.push(UniformPropertyVec4(key.deref().clone(), [x as f32, y as f32, z as f32, w as f32]))
+pub fn p3d_node_material_block_vec4(block: &mut NodeMaterialBlock, key: &Atom, x: f64, y: f64, z: f64, w: f64, caninstance: bool) {
+    block.1.vec4.push(UniformPropertyVec4(key.deref().clone(), [x as f32, y as f32, z as f32, w as f32], caninstance))
 }
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
-pub fn p3d_node_material_block_vec2(block: &mut NodeMaterialBlock, key: &Atom, x: f64, y: f64) {
-    block.1.vec2.push(UniformPropertyVec2(key.deref().clone(), [x as f32, y as f32]))
+pub fn p3d_node_material_block_vec3(block: &mut NodeMaterialBlock, key: &Atom, x: f64, y: f64, z: f64, caninstance: bool) {
+    block.1.vec3.push(UniformPropertyVec3(key.deref().clone(), [x as f32, y as f32, z as f32], caninstance))
 }
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
-pub fn p3d_node_material_block_float(block: &mut NodeMaterialBlock, key: &Atom, x: f64) {
-    block.1.float.push(UniformPropertyFloat(key.deref().clone(), x as f32))
+pub fn p3d_node_material_block_vec2(block: &mut NodeMaterialBlock, key: &Atom, x: f64, y: f64, caninstance: bool) {
+    block.1.vec2.push(UniformPropertyVec2(key.deref().clone(), [x as f32, y as f32], caninstance))
 }
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
-pub fn p3d_node_material_block_uint(block: &mut NodeMaterialBlock, key: &Atom, x: f64) {
-    block.1.uint.push(UniformPropertyUint(key.deref().clone(), x as u32))
+pub fn p3d_node_material_block_float(block: &mut NodeMaterialBlock, key: &Atom, x: f64, caninstance: bool) {
+    block.1.float.push(UniformPropertyFloat(key.deref().clone(), x as f32, caninstance))
 }
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
-pub fn p3d_node_material_block_varying(block: &mut NodeMaterialBlock, varying: f64) {
-    block.1.varyings = to_varyings(varying as u32);
+pub fn p3d_node_material_block_uint(block: &mut NodeMaterialBlock, key: &Atom, x: f64, caninstance: bool) {
+    block.1.uint.push(UniformPropertyUint(key.deref().clone(), x as u32, caninstance))
+}
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
+pub fn p3d_node_material_block_varying(block: &mut NodeMaterialBlock, name: &Atom, format: &Atom) {
+    block.1.varyings.push(
+        Varying { format: format.deref().clone(), name: name.deref().clone() }
+    );
 }
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
@@ -362,23 +370,23 @@ impl MaterialUniformDefines {
 // }
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
-pub fn p3d_shader_uniform_float(uniforms: &mut MaterialUniformDefines, key: &str, val: f64) {
-    uniforms.0.float_list.push(UniformPropertyFloat(pi_atom::Atom::from(key), val as f32));
+pub fn p3d_shader_uniform_float(uniforms: &mut MaterialUniformDefines, key: &str, val: f64, caninstance: bool) {
+    uniforms.0.float_list.push(UniformPropertyFloat(pi_atom::Atom::from(key), val as f32, caninstance));
 }
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
-pub fn p3d_shader_uniform_vec2(uniforms: &mut MaterialUniformDefines, key: &str, x: f64, y: f64) {
-    uniforms.0.vec2_list.push(UniformPropertyVec2(pi_atom::Atom::from(key), [x as f32, y as f32]));
+pub fn p3d_shader_uniform_vec2(uniforms: &mut MaterialUniformDefines, key: &str, x: f64, y: f64, caninstance: bool) {
+    uniforms.0.vec2_list.push(UniformPropertyVec2(pi_atom::Atom::from(key), [x as f32, y as f32], caninstance));
 }
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
-pub fn p3d_shader_uniform_vec4(uniforms: &mut MaterialUniformDefines, key: &str, x: f64, y: f64, z: f64, w: f64) {
-    uniforms.0.vec4_list.push(UniformPropertyVec4(pi_atom::Atom::from(key), [x as f32, y as f32, z as f32, w as f32]));
+pub fn p3d_shader_uniform_vec4(uniforms: &mut MaterialUniformDefines, key: &str, x: f64, y: f64, z: f64, w: f64, caninstance: bool) {
+    uniforms.0.vec4_list.push(UniformPropertyVec4(pi_atom::Atom::from(key), [x as f32, y as f32, z as f32, w as f32], caninstance));
 }
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
-pub fn p3d_shader_uniform_uint(uniforms: &mut MaterialUniformDefines, key: &str, val: f64) {
-    uniforms.0.uint_list.push(UniformPropertyUint(pi_atom::Atom::from(key), val as u32));
+pub fn p3d_shader_uniform_uint(uniforms: &mut MaterialUniformDefines, key: &str, val: f64, caninstance: bool) {
+    uniforms.0.uint_list.push(UniformPropertyUint(pi_atom::Atom::from(key), val as u32, caninstance));
 }
 // #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 // #[pi_js_export]
@@ -414,8 +422,37 @@ pub fn p3d_check_shader(
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
+pub struct P3DShaderMeta(Handle<ShaderEffectMeta>);
+
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
+pub struct P3DShaderVaryings(Vec<Varying>);
+
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
+impl P3DShaderVaryings {
+    #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+    #[pi_js_export]
+    pub fn create() -> Self {
+        P3DShaderVaryings(vec![])
+    }
+
+}
+
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
+pub fn p3d_varying(block: &mut P3DShaderVaryings, name: &Atom, format: &Atom) {
+    block.0.push(
+        Varying { format: format.deref().clone(), name: name.deref().clone() }
+    );
+}
+
+
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
 pub fn p3d_regist_material(
-    app: &mut Engine, param: &mut ActionSetScene3D,
+    app: &mut Engine,
+    param: &mut ActionSetScene3D,
     key: &str,
     uniforms: &MaterialUniformDefines,
     vs_define_code: &str,
@@ -424,15 +461,16 @@ pub fn p3d_regist_material(
     fs_code: &str,
     includes: &NodematerialIncludes,
     instance_code: &str,
-    instance_state_check: f64,
+    varyings: &P3DShaderVaryings,
     binds_defines_base: Option<f64>,
-) {
+) -> Option<P3DShaderMeta> {
 	pi_export_base::export::await_last_frame(app);
     let resource = param.resource.get_mut(&mut app.world);
 
     let mut nodemat = NodeMaterialBuilder::new();
     nodemat.vs_define = String::from(vs_define_code);
     nodemat.fs_define = String::from(fs_define_code);
+    varyings.0.iter().for_each(|v| { nodemat.varyings.0.push(v.clone()) });
     
     nodemat.vs = String::from(vs_code);
     nodemat.fs = String::from(fs_code);
@@ -441,8 +479,8 @@ pub fn p3d_regist_material(
         nodemat.binddefines = binds_defines_base as BindDefine;
         // log::error!("binds_defines_base {:?}", binds_defines_base);
     }
-    nodemat.effect_varying_while_instance = String::from(instance_code);
-    nodemat.check_instance = EVerticeExtendCode(instance_state_check as u32);
+    nodemat.material_instance_code = String::from(instance_code);
+    // nodemat.check_instance = EVerticeExtendCode(instance_state_check as u32);
 
     nodemat.values = uniforms.0.clone();
     nodemat.textures = uniforms.1.clone();
@@ -461,32 +499,8 @@ pub fn p3d_regist_material(
     // log::warn!("Material {:?}", key);
 
     ActionMaterial::regist_material_meta(&resource.shader_metas, KeyShaderMeta::from(key), nodemat.meta());
-}
 
-fn to_varyings(varying: u32) -> Vec<Varying> {
-    let mut result = vec![];
-    if varying & VARYING_POSITION_WS  ==  VARYING_POSITION_WS   { result.push(Varying { format: pi_atom::Atom::from("vec3"), name: pi_atom::Atom::from("v_pos") }); }
-    if varying & VARYING_POSITION_OS  ==  VARYING_POSITION_OS   { result.push(Varying { format: pi_atom::Atom::from("vec3"), name: pi_atom::Atom::from("v_pos_os") }); }
-    if varying & VARYING_POSITION_SS  ==  VARYING_POSITION_SS   { result.push(Varying { format: pi_atom::Atom::from("vec3"), name: pi_atom::Atom::from("v_pos_ss") }); }
-    if varying & VARYING_NORMAL_WS    ==  VARYING_NORMAL_WS     { result.push(Varying { format: pi_atom::Atom::from("vec3"), name: pi_atom::Atom::from("v_normal")    }); }
-    if varying & VARYING_NORMAL_OS    ==  VARYING_NORMAL_OS     { result.push(Varying { format: pi_atom::Atom::from("vec3"), name: pi_atom::Atom::from("v_normal_os") }); }
-    if varying & VARYING_UV           ==  VARYING_UV            { result.push(Varying { format: pi_atom::Atom::from("vec2"), name: pi_atom::Atom::from("v_uv")  }); }
-    if varying & VARYING_UV2          ==  VARYING_UV2           { result.push(Varying { format: pi_atom::Atom::from("vec2"), name: pi_atom::Atom::from("v_uv2") }); }
-    if varying & VARYING_UV3          ==  VARYING_UV3           { result.push(Varying { format: pi_atom::Atom::from("vec2"), name: pi_atom::Atom::from("v_uv3") }); }
-    if varying & VARYING_UV4          ==  VARYING_UV4           { result.push(Varying { format: pi_atom::Atom::from("vec2"), name: pi_atom::Atom::from("v_uv4") }); }
-    if varying & VARYING_UV5          ==  VARYING_UV5           { result.push(Varying { format: pi_atom::Atom::from("vec2"), name: pi_atom::Atom::from("v_uv5") }); }
-    if varying & VARYING_UV6          ==  VARYING_UV6           { result.push(Varying { format: pi_atom::Atom::from("vec2"), name: pi_atom::Atom::from("v_uv6") }); }
-    if varying & VARYING_UV7          ==  VARYING_UV7           { result.push(Varying { format: pi_atom::Atom::from("vec2"), name: pi_atom::Atom::from("v_uv7") }); }
-    if varying & VARYING_UV8          ==  VARYING_UV8           { result.push(Varying { format: pi_atom::Atom::from("vec2"), name: pi_atom::Atom::from("v_uv8") }); }
-    if varying & VARYING_COLOR        ==  VARYING_COLOR         { result.push(Varying { format: pi_atom::Atom::from("vec4"), name: pi_atom::Atom::from("v_color") }); }
-    if varying & VARYING_V4A          ==  VARYING_V4A           { result.push(Varying { format: pi_atom::Atom::from(""), name: pi_atom::Atom::from("") }); }
-    if varying & VARYING_V4B          ==  VARYING_V4B           { result.push(Varying { format: pi_atom::Atom::from(""), name: pi_atom::Atom::from("") }); }
-    if varying & VARYING_V4C          ==  VARYING_V4C           { result.push(Varying { format: pi_atom::Atom::from(""), name: pi_atom::Atom::from("") }); }
-    if varying & VARYING_V4D          ==  VARYING_V4D           { result.push(Varying { format: pi_atom::Atom::from(""), name: pi_atom::Atom::from("") }); }
-    if varying & VARYING_V4E          ==  VARYING_V4E           { result.push(Varying { format: pi_atom::Atom::from(""), name: pi_atom::Atom::from("") }); }
-    if varying & VARYING_V4F          ==  VARYING_V4F           { result.push(Varying { format: pi_atom::Atom::from(""), name: pi_atom::Atom::from("") }); }
-    if varying & VARYING_V4G          ==  VARYING_V4G           { result.push(Varying { format: pi_atom::Atom::from(""), name: pi_atom::Atom::from("") }); }
-    if varying & VARYING_V4H          ==  VARYING_V4H           { result.push(Varying { format: pi_atom::Atom::from(""), name: pi_atom::Atom::from("") }); }
-
-    return result;
+    if let Some(data) = resource.shader_metas.get(&KeyShaderMeta::from(key)) {
+        Some(P3DShaderMeta(data))
+    } else { None }
 }

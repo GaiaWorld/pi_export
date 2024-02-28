@@ -1,6 +1,6 @@
 use std::ops::Deref;
 use pi_assets::asset::{Handle, Size};
-use pi_engine_shell::prelude::{ImageTexture, KeyImageTexture};
+use pi_scene_shell::prelude::{ImageTexture, KeyImageTexture};
 pub use pi_export_base::{export::{Engine, Atom}, constants::*};
 // use pi_render::asset::TAssetKeyU64;
 

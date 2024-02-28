@@ -1,5 +1,5 @@
 
-use pi_engine_shell::prelude::*;
+use pi_scene_shell::prelude::*;
 use pi_export_base::constants::ContextConstants;
 use pi_render::rhi::sampler::{EAddressMode, EAnisotropyClamp};
 use pi_scene_context::prelude::*;
@@ -198,6 +198,24 @@ impl EngineConstants {
     pub const INSTANCE_ATTR_F13: u8 = 13 + 1;
     pub const INSTANCE_ATTR_F14: u8 = 14 + 1;
     pub const INSTANCE_ATTR_F15: u8 = 15 + 1;
+    
+    pub const INSTANCE_ATTR_VEC4: u8    = 1;
+    pub const INSTANCE_ATTR_VEC3: u8    = 2;
+    pub const INSTANCE_ATTR_VEC2: u8    = 3;
+    pub const INSTANCE_ATTR_FLOAT: u8   = 4;
+    pub const INSTANCE_ATTR_UINT: u8    = 5;
+    pub const INSTANCE_ATTR_SINT: u8    = 6;
+
+    pub fn instance_attribute_vtype(val: f64) -> ECustomVertexType {
+        match val as u8 {
+            Self::INSTANCE_ATTR_VEC4 => { ECustomVertexType::Vec4 }
+            Self::INSTANCE_ATTR_VEC3 => { ECustomVertexType::Vec3 }
+            Self::INSTANCE_ATTR_VEC2 => { ECustomVertexType::Vec2 }
+            Self::INSTANCE_ATTR_UINT => { ECustomVertexType::Uint }
+            Self::INSTANCE_ATTR_SINT => { ECustomVertexType::Int }
+            _ => { ECustomVertexType::Float }
+        }
+    }
 
     pub fn render_alignment(val: f64) -> ERenderAlignment {
         match val as u8 {
@@ -367,72 +385,51 @@ impl EngineConstants {
             _ => wgpu::TextureViewDimension::D1,
         }
     }
-    pub fn vertex_attr(attr: f64) -> EVertexDataKind {
+    pub fn vertex_attr(attr: f64) -> EBuildinVertexAtribute {
         match attr as u8 {
-            Self::VERTEX_ATTR_POSITION               => EVertexDataKind::Position,
-            Self::VERTEX_ATTR_POSITION_D2            => EVertexDataKind::Position2D,
-            Self::VERTEX_ATTR_COLOR4                 => EVertexDataKind::Color4,
-            Self::VERTEX_ATTR_UV                     => EVertexDataKind::UV,
-            Self::VERTEX_ATTR_NORMAL                 => EVertexDataKind::Normal,
-            Self::VERTEX_ATTR_TANGENT                => EVertexDataKind::Tangent,
-            Self::VERTEX_ATTR_MATRICESINDICES        => EVertexDataKind::MatricesIndices,
-            Self::VERTEX_ATTR_MATRICESWEIGHTS        => EVertexDataKind::MatricesWeights,
-            Self::VERTEX_ATTR_MATRICESINDICESEXTRA   => EVertexDataKind::MatricesIndicesExtra,
-            Self::VERTEX_ATTR_MATRICESWEIGHTSEXTRA   => EVertexDataKind::MatricesWeightsExtra,
-            Self::VERTEX_ATTR_UV2                    => EVertexDataKind::UV2,
-            Self::VERTEX_ATTR_UV3                    => EVertexDataKind::UV3,
-            Self::VERTEX_ATTR_UV4                    => EVertexDataKind::UV4,
-            Self::VERTEX_ATTR_UV5                    => EVertexDataKind::UV5,
-            Self::VERTEX_ATTR_UV6                    => EVertexDataKind::UV6,
-            Self::VERTEX_ATTR_CUSTOMVEC4A            => EVertexDataKind::CustomVec4A,
-            Self::VERTEX_ATTR_CUSTOMVEC4B            => EVertexDataKind::CustomVec4B,
-            Self::VERTEX_ATTR_CUSTOMVEC4C            => EVertexDataKind::CustomVec4C,
-            Self::VERTEX_ATTR_CUSTOMVEC4D            => EVertexDataKind::CustomVec4D,
-            Self::VERTEX_ATTR_INSWORLDROW1           => EVertexDataKind::InsWorldRow1,
-            Self::VERTEX_ATTR_INSWORLDROW2           => EVertexDataKind::InsWorldRow2,
-            Self::VERTEX_ATTR_INSWORLDROW3           => EVertexDataKind::InsWorldRow3,
-            Self::VERTEX_ATTR_INSWORLDROW4           => EVertexDataKind::InsWorldRow4,
-            Self::VERTEX_ATTR_INSCOLOR               => EVertexDataKind::InsColor,
-            Self::VERTEX_ATTR_INSTILLOFFSET1         => EVertexDataKind::InsTillOffset1,
-            Self::VERTEX_ATTR_INSTILLOFFSET2         => EVertexDataKind::InsTillOffset2,
-            Self::VERTEX_ATTR_INSCUSTOMVEC4A         => EVertexDataKind::InsCustomVec4A,
-            Self::VERTEX_ATTR_INSCUSTOMVEC4B         => EVertexDataKind::InsCustomVec4B,
-            Self::VERTEX_ATTR_INSCUSTOMVEC4C         => EVertexDataKind::InsCustomVec4C,
-            Self::VERTEX_ATTR_INSCUSTOMVEC4D         => EVertexDataKind::InsCustomVec4D,
-            Self::VERTEX_ATTR_MATRICESINDICES1       => EVertexDataKind::MatricesIndices1,
-            Self::VERTEX_ATTR_MATRICESWEIGHTS1       => EVertexDataKind::MatricesWeights1,
-            Self::VERTEX_ATTR_MATRICESINDICES2       => EVertexDataKind::MatricesIndices2,
-            Self::VERTEX_ATTR_MATRICESWEIGHTS2       => EVertexDataKind::MatricesWeights2,
-            Self::VERTEX_ATTR_MATRICESINDICESEXTRA2  => EVertexDataKind::MatricesIndicesExtra2,
-            Self::VERTEX_ATTR_MATRICESWEIGHTSEXTRA2  => EVertexDataKind::MatricesWeightsExtra2,
-            Self::VERTEX_ATTR_MATRICESINDICES3       => EVertexDataKind::MatricesIndices3,
-            Self::VERTEX_ATTR_MATRICESWEIGHTS3       => EVertexDataKind::MatricesWeights3,
-            Self::VERTEX_ATTR_MATRICESINDICESEXTRA3  => EVertexDataKind::MatricesIndicesExtra3,
-            Self::VERTEX_ATTR_MATRICESWEIGHTSEXTRA3  => EVertexDataKind::MatricesWeightsExtra3,
-            _  => EVertexDataKind::MatricesWeightsExtra3,
+            Self::VERTEX_ATTR_POSITION               => EBuildinVertexAtribute::Position,
+            Self::VERTEX_ATTR_POSITION_D2            => EBuildinVertexAtribute::Position2D,
+            Self::VERTEX_ATTR_COLOR4                 => EBuildinVertexAtribute::Color4,
+            Self::VERTEX_ATTR_UV                     => EBuildinVertexAtribute::UV,
+            Self::VERTEX_ATTR_NORMAL                 => EBuildinVertexAtribute::Normal,
+            Self::VERTEX_ATTR_TANGENT                => EBuildinVertexAtribute::Tangent,
+            Self::VERTEX_ATTR_MATRICESINDICES        => EBuildinVertexAtribute::MatricesIndices,
+            Self::VERTEX_ATTR_MATRICESWEIGHTS        => EBuildinVertexAtribute::MatricesWeights,
+            Self::VERTEX_ATTR_MATRICESINDICESEXTRA   => EBuildinVertexAtribute::MatricesIndicesExtra,
+            Self::VERTEX_ATTR_MATRICESWEIGHTSEXTRA   => EBuildinVertexAtribute::MatricesWeightsExtra,
+            Self::VERTEX_ATTR_UV2                    => EBuildinVertexAtribute::UV2,
+            Self::VERTEX_ATTR_UV3                    => EBuildinVertexAtribute::UV3,
+            Self::VERTEX_ATTR_UV4                    => EBuildinVertexAtribute::UV4,
+            Self::VERTEX_ATTR_UV5                    => EBuildinVertexAtribute::UV5,
+            Self::VERTEX_ATTR_UV6                    => EBuildinVertexAtribute::UV6,
+            Self::VERTEX_ATTR_INSWORLDROW1           => EBuildinVertexAtribute::InsWorldRow1,
+            Self::VERTEX_ATTR_INSWORLDROW2           => EBuildinVertexAtribute::InsWorldRow2,
+            Self::VERTEX_ATTR_INSWORLDROW3           => EBuildinVertexAtribute::InsWorldRow3,
+            Self::VERTEX_ATTR_INSWORLDROW4           => EBuildinVertexAtribute::InsWorldRow4,
+            _  => EBuildinVertexAtribute::MatricesWeightsExtra,
         }
     }
-    pub fn instance_attr_float(val: f64) -> InstanceFloatType {
-        match val as u8 {
-            Self::INSTANCE_ATTR_F00 => EInstanceFloatType::F00 ,
-            Self::INSTANCE_ATTR_F01 => EInstanceFloatType::F01 ,
-            Self::INSTANCE_ATTR_F02 => EInstanceFloatType::F02 ,
-            Self::INSTANCE_ATTR_F03 => EInstanceFloatType::F03 ,
-            Self::INSTANCE_ATTR_F04 => EInstanceFloatType::F04 ,
-            Self::INSTANCE_ATTR_F05 => EInstanceFloatType::F05 ,
-            Self::INSTANCE_ATTR_F06 => EInstanceFloatType::F06 ,
-            Self::INSTANCE_ATTR_F07 => EInstanceFloatType::F07 ,
-            Self::INSTANCE_ATTR_F08 => EInstanceFloatType::F08 ,
-            Self::INSTANCE_ATTR_F09 => EInstanceFloatType::F09 ,
-            Self::INSTANCE_ATTR_F10 => EInstanceFloatType::F10 ,
-            Self::INSTANCE_ATTR_F11 => EInstanceFloatType::F11 ,
-            Self::INSTANCE_ATTR_F12 => EInstanceFloatType::F12 ,
-            Self::INSTANCE_ATTR_F13 => EInstanceFloatType::F13 ,
-            Self::INSTANCE_ATTR_F14 => EInstanceFloatType::F14 ,
-            Self::INSTANCE_ATTR_F15 => EInstanceFloatType::F15 ,
-            _ => EInstanceFloatType::F15,
-        }
-    }
+    // pub fn instance_attr_float(val: f64) -> InstanceFloatType {
+    //     match val as u8 {
+    //         Self::INSTANCE_ATTR_F00 => EInstanceFloatType::F00 ,
+    //         Self::INSTANCE_ATTR_F01 => EInstanceFloatType::F01 ,
+    //         Self::INSTANCE_ATTR_F02 => EInstanceFloatType::F02 ,
+    //         Self::INSTANCE_ATTR_F03 => EInstanceFloatType::F03 ,
+    //         Self::INSTANCE_ATTR_F04 => EInstanceFloatType::F04 ,
+    //         Self::INSTANCE_ATTR_F05 => EInstanceFloatType::F05 ,
+    //         Self::INSTANCE_ATTR_F06 => EInstanceFloatType::F06 ,
+    //         Self::INSTANCE_ATTR_F07 => EInstanceFloatType::F07 ,
+    //         Self::INSTANCE_ATTR_F08 => EInstanceFloatType::F08 ,
+    //         Self::INSTANCE_ATTR_F09 => EInstanceFloatType::F09 ,
+    //         Self::INSTANCE_ATTR_F10 => EInstanceFloatType::F10 ,
+    //         Self::INSTANCE_ATTR_F11 => EInstanceFloatType::F11 ,
+    //         Self::INSTANCE_ATTR_F12 => EInstanceFloatType::F12 ,
+    //         Self::INSTANCE_ATTR_F13 => EInstanceFloatType::F13 ,
+    //         Self::INSTANCE_ATTR_F14 => EInstanceFloatType::F14 ,
+    //         Self::INSTANCE_ATTR_F15 => EInstanceFloatType::F15 ,
+    //         _ => EInstanceFloatType::F15,
+    //     }
+    // }
     pub fn vertex_format(val: f64) -> wgpu::VertexFormat {
         match val as u16 {
             // Self::VERTEX_FORMAT_BYTE                        => wgpu::VertexFormat::Uint8,
