@@ -66,6 +66,7 @@ use winit::event_loop::EventLoop;
 pub use winit::platform::web::WindowBuilderExtWebSys;
 pub use winit::window::{Window, WindowBuilder};
 use pi_ui_render::resource::{animation_sheet::KeyFramesSheet, FragmentCommand};
+use pi_render::font::FontType;
 
 #[derive(Debug, Clone, Copy)]
 #[wasm_bindgen]
@@ -93,19 +94,19 @@ pub fn create_gui(
     #[cfg(feature="record")]
 	{
 		let debug: pi_ui_render::system::cmd_play::TraceOption = unsafe { transmute(debug) };
-		engine.add_plugin(UiPlugin {cmd_trace: debug.clone(), use_sdf: match &load_sdf_fun {Some(r) => true, _ => false}});
+		engine.add_plugin(UiPlugin {cmd_trace: debug.clone(), font_type: FontType::Sdf2});
 		gui.record_option = debug;
 	}
 
 	#[cfg(not(feature="record"))]
-    engine.add_plugin(UiPlugin {use_sdf: match &load_sdf_fun {Some(r) => true, _ => false}});
+    engine.add_plugin(UiPlugin {font_type: FontType::Sdf2});
 
-	if let Some(fun) = load_sdf_fun {
-		pi_hal::font::sdf_brush::init_load_cb(std::rc::Rc::new(move|key: DefaultKey, font_family: usize, chars: &[char]| {
-			let chars1 = js_sys::Uint32Array::from(unsafe {transmute::<_, &[u32]>(chars)});
-			fun.call3(&JsValue::from(0), &unsafe {transmute::<_, f64>(key)}.into(), &(font_family as u32).into(), chars1.as_ref()); 
-		}));
-	}
+	// if let Some(fun) = load_sdf_fun {
+	// 	pi_hal::font::sdf_brush::init_load_cb(std::rc::Rc::new(move|key: DefaultKey, font_family: usize, chars: &[char]| {
+	// 		let chars1 = js_sys::Uint32Array::from(unsafe {transmute::<_, &[u32]>(chars)});
+	// 		fun.call3(&JsValue::from(0), &unsafe {transmute::<_, f64>(key)}.into(), &(font_family as u32).into(), chars1.as_ref()); 
+	// 	}));
+	// }
 
     gui
 }

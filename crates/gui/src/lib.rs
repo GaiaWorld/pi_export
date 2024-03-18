@@ -1,13 +1,10 @@
 #![feature(proc_macro_hygiene)]
 #![feature(stmt_expr_attributes)]
-#![feature(type_name_of_val)]
 #![feature(box_into_inner)]
 #![feature(if_let_guard)]
-#![feature(core_panic)]
-#![feature(fmt_internals)]
 #![feature(fmt_helpers_for_derive)]
-#![feature(print_internals)]
 #![feature(can_vector)]
+#![feature(panic_internals)]
 
 
 use bevy_ecs::prelude::Resource;

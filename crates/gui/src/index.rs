@@ -8,6 +8,7 @@ use pi_export_base::export::await_last_frame;
 use pi_flex_layout::{prelude::CharNode, style::{PositionType, FlexWrap, FlexDirection, AlignContent, AlignItems, AlignSelf, JustifyContent, Display, Dimension}};
 use pi_render::rhi::asset::TextureRes;
 use pi_slotmap::DefaultKey;
+use pi_render::font::FontType;
 #[cfg(debug_assertions)]
 use pi_ui_render::resource::DebugEntity;
 pub use pi_export_base::export::Engine;
@@ -442,11 +443,11 @@ pub fn set_debug_entity(engine: &mut Engine, node_id: f64) {
 #[cfg(target_arch="wasm32")]
 #[wasm_bindgen]
 pub fn sdf_on_load(key: f64, buffer: js_sys::Array) {
-	let mut v = Vec::new();
-	for i in buffer.iter() {
-		v.push(js_sys::Uint8Array::from(i).to_vec());
-	}
-	pi_hal::font::sdf_brush::on_load(unsafe {transmute::<_, DefaultKey>(key)}, v);
+	// let mut v = Vec::new();
+	// for i in buffer.iter() {
+	// 	v.push(js_sys::Uint8Array::from(i).to_vec());
+	// }
+	// pi_hal::font::sdf_brush::on_load(unsafe {transmute::<_, DefaultKey>(key)}, v);
 }
 
 #[pi_js_export]
@@ -466,14 +467,14 @@ pub fn sdf_push(vec: &mut SdfVec, buffer: Vec<u8>) {
 #[pi_js_export]
 pub fn sdf_on_load(key: f64, buffer: &mut SdfVec) {
 	let r = std::mem::replace(&mut buffer.0, Vec::new());
-	pi_hal::font::sdf_brush::on_load(unsafe {transmute::<_, DefaultKey>(key)}, r);
+	pi_hal::font::sdf_table::on_load(unsafe {transmute::<_, DefaultKey>(key)}, r);
 }
 
 // 添加sdf字体
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn add_sdf_font(gui: &mut Gui, bin: &[u8]) {
-	let cfg = match postcard::from_bytes::<pi_hal::font::sdf_brush::FontCfg>(bin) {
+	let cfg = match postcard::from_bytes::<pi_hal::font::sdf_table::FontCfg>(bin) {
 		Ok(r) => r,
 		Err(e) => {
 			log::info!("parse sdf cfg fail, {:?}", e);
@@ -481,6 +482,19 @@ pub fn add_sdf_font(gui: &mut Gui, bin: &[u8]) {
 		}
 	};
 	gui.commands.add_sdf_font(cfg);
+	// font_sheet = 
+	// let mut v = Vec::new();
+	// for i in buffer.iter() {
+	// 	v.push(js_sys::Uint8Array::from(i).to_vec());
+	// }
+	// pi_hal::font::sdf_brush::on_load(unsafe {transmute::<_, DefaultKey>(key)}, v);
+}
+
+// 添加sdf2字体
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
+pub fn add_sdf2_font(gui: &mut Gui, font_name: &Atom1, bin: Vec<u8>) {
+	gui.commands.add_sdf2_font((**font_name).clone(), bin);
 	// font_sheet = 
 	// let mut v = Vec::new();
 	// for i in buffer.iter() {
@@ -565,7 +579,7 @@ pub fn has_res(engine: &mut Engine, path: &Atom1) -> bool {
 	// 暂时只支持纹理资源访问
 	if path.ends_with(".png") || path.ends_with(".jpg") || path.ends_with(".jpeg") || path.ends_with(".ktx") || path.ends_with(".ktx2") {
 		let reses = engine.world.get_resource_mut::<ShareAssetMgr<TextureRes>>().unwrap();
-		return reses.get(&(path.get_hash() as u64)).is_some()
+		return reses.get(&(path.str_hash() as u64)).is_some()
 	}
 	false
 }
@@ -598,13 +612,13 @@ pub fn get_success_res_len(engine: &mut Engine) -> u32 {
 // 	let mut i = 0;
 // 	while let Some(r) = res_success.async_list.pop() {
 // 		result[i] = ResHandle(r.1);
-// 		result_keys[i] = r.0.get_hash() as u32;
+// 		result_keys[i] = r.0.str_hash() as u32;
 // 		i += 1;
 // 	}
 
 // 	for r in res_success.sync_list.drain(..) {
 // 		result[i] = ResHandle(r.1);
-// 		result_keys[i] = r.0.get_hash() as u32;
+// 		result_keys[i] = r.0.str_hash() as u32;
 // 		i += 1;
 // 	}
 // }
@@ -671,7 +685,7 @@ pub fn get_success_res(
 	while let Some(r) = res_success.async_list.pop() {
 		let o = vm_builtin::NativeObjectValue::NatObj(vm_builtin::external::NativeObject::new_owned(ResHandle(r.1))).into_native_object(scope);
 		result.set_index(scope, i, o.into());
-		let n = v8::Number::new(scope,  r.0.get_hash() as f64).into();
+		let n = v8::Number::new(scope,  r.0.str_hash() as f64).into();
 		result_keys.set_index(scope, i, n);
 		i += 1;
 	}
@@ -679,7 +693,7 @@ pub fn get_success_res(
 	for r in res_success.sync_list.drain(..) {
 		let o = vm_builtin::NativeObjectValue::NatObj(vm_builtin::external::NativeObject::new_owned(ResHandle(r.1))).into_native_object(scope);
 		result.set_index(scope, i, o.into());
-		let n = v8::Number::new(scope,  r.0.get_hash() as f64).into();
+		let n = v8::Number::new(scope,  r.0.str_hash() as f64).into();
 		result_keys.set_index(scope, i, n);
 		i += 1;
 	}
@@ -693,13 +707,13 @@ pub fn get_success_res(engine: &mut Engine, result: js_sys::Array, result_keys: 
 	let mut i = 0;
 	while let Some(r) = res_success.async_list.pop() {
 		result.set(i, ResHandle(r.1).into());
-		result_keys[i as usize] = r.0.get_hash() as u32;
+		result_keys[i as usize] = r.0.str_hash() as u32;
 		i += 1;
 	}
 
 	for r in res_success.sync_list.drain(..) {
 		result.set(i, ResHandle(r.1).into());
-		result_keys[i as usize] = r.0.get_hash() as u32;
+		result_keys[i as usize] = r.0.str_hash() as u32;
 		i += 1;
 	}
 }
@@ -932,7 +946,7 @@ fn ab_query_func(arg: &mut AbQueryArgs, id: EntityKey, aabb: &Aabb2, _bind: &())
 	// log::warn!("ab_query_func======={:?}", id);
     let (_layer, _is_show, z_range, inpass) = match arg.query.get(*id) {
         // 如果enable false 表示不接收事件, visibility为false， 也无法接收事件、不在树上也不能接收事件
-        Ok(r) if (r.0.layer() != 0 && r.1.get_enable() && r.1.get_visibility()) => r,
+        Ok(r) if (r.0.layer() != 0 && r.1.get_enable() && r.1.get_visibility() && r.1.get_display()) => r,
         _ => return,
     };
 
@@ -1423,7 +1437,6 @@ pub fn to_css_str(attr: &Attribute) -> (&'static str, String) {
         }),
 
         Attribute::BorderRadius(_r) => ("", "".to_string()),    // TODO
-        Attribute::TransformFunc(_r) => ("", "".to_string()),   // TODO
         Attribute::TransformOrigin(_r) => ("", "".to_string()), // TODO
         Attribute::Hsi(_r) => ("", "".to_string()),
         Attribute::BorderImageRepeat(r) => ("border-image-repeat", format!("{:?}", r.x) + " " + format!("{:?}", r.y).as_str()),
@@ -1458,7 +1471,11 @@ pub fn to_css_str(attr: &Attribute) -> (&'static str, String) {
             pi_flex_layout::style::OverflowWrap::Normal => "normal".to_string(),
             pi_flex_layout::style::OverflowWrap::Anywhere => "anywhere".to_string(),
             pi_flex_layout::style::OverflowWrap::BreakWord => "break-word".to_string(),
-        }),      // TODO
+        }),
+        Attribute::TransitionProperty(_) => ("", "".to_string()), // TODO
+        Attribute::TransitionDuration(_) => ("", "".to_string()), // TODO
+        Attribute::TransitionTimingFunction(_) => ("", "".to_string()), // TODO
+        Attribute::TransitionDelay(_) => ("", "".to_string()), // TODO
     }
 }
 

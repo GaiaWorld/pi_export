@@ -9,7 +9,7 @@ crate-type = ["cdylib"]
 
 [dependencies]
 # pi_ui_render= {git ="https://github.com/GaiaWorld/pi_ui_render.git"}
-wasm-bindgen = { version = "=0.2.87", features = ["serde-serialize"] }
+wasm-bindgen = { version = "0.2", features = ["serde-serialize"] }
 js-sys = "0.3"
 postcard = {version = "1.0", features = ["use-std"]}
 log = "0.4"
@@ -32,6 +32,7 @@ pi_hal = { version = "0.1", registry = "yn" }
 [target.'cfg(target_arch = "wasm32")'.dependencies]
 pi-async-rt = {version = "0.1", features = ["serial"]}
 uuid = { version = "1", features = ["js"] }
+wgpu1 = { version = "0.19", package = "wgpu", default-features = false, features = ["glsl", "webgl", "fragile-send-sync-non-atomic-wasm"] }
 
 [profile.release]
 # debug= true

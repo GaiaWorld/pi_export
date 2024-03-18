@@ -31,6 +31,7 @@ pub fn create_gui(
 	use_sdf: bool,
 ) -> Gui {
     use pi_export_base::export::await_last_frame;
+    use pi_render::font::FontType;
 
 	await_last_frame(engine);
 
@@ -39,22 +40,23 @@ pub fn create_gui(
 	#[cfg(feature="record")]
 	{
 		let debug: pi_ui_render::system::cmd_play::TraceOption = unsafe { transmute(debug as u8) };
-		engine.add_plugins(UiPlugin {cmd_trace: debug.clone(), use_sdf});
+		engine.add_plugins(UiPlugin {cmd_trace: debug.clone(), font_type: FontType::Sdf2});
 		gui.record_option = debug;
 	}
 
 	#[cfg(not(feature="record"))]
-    engine.add_plugins(UiPlugin{ use_sdf });
+    engine.add_plugins(UiPlugin{ font_type: FontType::Sdf2 });
 
-	let fun: Arc<dyn Fn(f64, f64, Vec<u8>, Option<Box<dyn FnOnce(Result<u32, String>) + Send + Sync + 'static>>) + Send + Sync + 'static>  = unsafe { transmute(load_sdf_fun)};
-	if use_sdf {
-		pi_hal::font::sdf_brush::init_load_cb(std::sync::Arc::new(move |key: DefaultKey, font_family: usize, chars: &[char]| {
-			let r: Vec<u8> = Vec::from(bytemuck::cast_slice::<_, u8>(unsafe {transmute::<_, &[u32]>(chars)}) );
-			fun(unsafe {transmute::<_, f64>(key)}, font_family as f64, r , None);
-			// let chars1 = js_sys::Uint32Array::from(unsafe {transmute::<_, &[u32]>(chars)});
-			// fun.call3(&JsValue::from(0), &unsafe {transmute::<_, f64>(key)}.into(), &(font_family as u32).into(), chars1.as_ref()); 
-		}));
-	}
+	// sdf
+	// let fun: Arc<dyn Fn(f64, f64, Vec<u8>, Option<Box<dyn FnOnce(Result<u32, String>) + Send + Sync + 'static>>) + Send + Sync + 'static>  = unsafe { transmute(load_sdf_fun)};
+	// if use_sdf {
+	// 	pi_hal::font::sdf_table::init_load_cb(std::sync::Arc::new(move |key: DefaultKey, font_family: usize, chars: &[char]| {
+	// 		let r: Vec<u8> = Vec::from(bytemuck::cast_slice::<_, u8>(unsafe {transmute::<_, &[u32]>(chars)}) );
+	// 		fun(unsafe {transmute::<_, f64>(key)}, font_family as f64, r , None);
+	// 		// let chars1 = js_sys::Uint32Array::from(unsafe {transmute::<_, &[u32]>(chars)});
+	// 		// fun.call3(&JsValue::from(0), &unsafe {transmute::<_, f64>(key)}.into(), &(font_family as u32).into(), chars1.as_ref()); 
+	// 	}));
+	// }
 
 	// // 设置动画的监听器
     // let a_callback = Share::new(move |list: &Vec<(AnimationGroupID, EAnimationEvent, u32)>, map: &SecondaryMap<AnimationGroupID, (ObjKey, pi_atom::Atom)>| {
@@ -63,7 +65,7 @@ pub fn create_gui(
     // 		match map.get(*group_id) {
     // 			Some(r) => {
 	// 				arr.push(unsafe { transmute::<_, f64>(r.0.to_bits()) }); // entity
-	// 				arr.push(r.1.get_hash() as f64); // name hash
+	// 				arr.push(r.1.str_hash() as f64); // name hash
     // 			},
     // 			None => continue,
     // 		};

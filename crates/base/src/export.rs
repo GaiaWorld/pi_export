@@ -112,14 +112,14 @@ impl Atom {
 
 	#[cfg(feature = "pi_js_export")]
 	pub fn get_string_by_hash(value: u32) -> Option<String> { 
-		match pi_atom::Atom::get(value as usize) {
+		match pi_atom::get_by_hash(value as usize) {
 			Some(r) => Some(r.as_ref().to_string()),
 			None => None,
 		} 
 	}
 
 	#[cfg(feature = "pi_js_export")]
-	pub fn get_hash(&self) -> u32 { self.0.get_hash() as u32 }
+	pub fn get_hash(&self) -> u32 { self.0.str_hash() as u32 }
 }
 
 pub static mut DESTROY_RES: Option<Arc<dyn Fn(u32) + Send + Sync>> = None;

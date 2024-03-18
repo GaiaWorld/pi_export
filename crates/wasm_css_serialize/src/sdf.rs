@@ -1,7 +1,7 @@
 
 use std::mem::transmute;
 
-use pi_hal::font::sdf_brush::{FontCfg, GlyphInfo, MetricsInfo};
+use pi_hal::font::sdf_table::{FontCfg, GlyphInfo, MetricsInfo};
 use pi_hash::XHashMap;
 use serde::Deserialize;
 use serde::Serialize;

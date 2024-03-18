@@ -736,7 +736,6 @@ fn to_css_str(attr: Attribute) -> String {
         }
 
         Attribute::BorderRadius(_r) => "".to_string(),    // TODO
-        Attribute::TransformFunc(_r) => "".to_string(),   // TODO
         Attribute::TransformOrigin(_r) => "".to_string(), // TODO
         Attribute::Hsi(_r) => "".to_string(),
         Attribute::BorderImageRepeat(r) => "border-image-repeat:".to_string() + format!("{:?}", r.x).as_str() + " " + format!("{:?}", r.y).as_str(),
@@ -771,7 +770,11 @@ fn to_css_str(attr: Attribute) -> String {
             pi_flex_layout::style::OverflowWrap::Normal => "normal",
             pi_flex_layout::style::OverflowWrap::Anywhere => "anywhere",
             pi_flex_layout::style::OverflowWrap::BreakWord => "break-word",
-        },  
+        },
+        Attribute::TransitionProperty(r) => "".to_string(), // TODO
+        Attribute::TransitionDuration(r) => "".to_string(), // TODO
+        Attribute::TransitionTimingFunction(r) => "".to_string(), // TODO
+        Attribute::TransitionDelay(r) => "".to_string(), // TODO  
     }
 }
 

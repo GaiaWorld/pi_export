@@ -7,79 +7,6 @@ members = ["crates/*"]
 resolver="2"
 exclude = ["crates/gui/exports_macro"]
 
-# [patch.crates-io]
-[patch.crates-io]
-probabilistic-collections = { git = "https://github.com/GaiaWorld/pi_probabilistic_collections.git" }
-# pi_time = { path = "../pi_time" }
-# pi_path_finding = { path = "../pi_path_finding" }
-# pi_flex_layout = { path = "../pi_flex_layout" }
-# bevy = { path = "../bevy" }
-# pi_slotmap = { path = "../pi_slotmap" }
-# pi_slotmap_tree = { path = "../pi_slotmap_tree" }
-# pi_map = { path = "../pi_map" }
-# wgpu = {path = "../wgpu/wgpu"}
-# smallvec = {path = "../smallvec"}
-# pi_cache = {path = "../pi_cache"}
-# pi_assets = {path = "../pi_assets"}
-# pi_graph = { path = "../pi_graph" }
-# pi_async_graph = { path = "../pi_async_graph" }
-# pi_spatial ={path="../pi_spatial"}
-# wasm-bindgen = { path = "../wasm-bindgen" }
-
-bevy_app = { path = "../bevy/crates/bevy_app" }
-bevy_ecs = { path = "../bevy/crates/bevy_ecs" }
-bevy_tasks = { path = "../bevy/crates/bevy_tasks" }
-bevy_window = { path = "../bevy/crates/bevy_window" }
-bevy_utils = { path = "../bevy/crates/bevy_utils" }
-bevy_a11y = { path = "../bevy/crates/bevy_a11y" }
-bevy_input = { path = "../bevy/crates/bevy_input" }
-bevy_reflect = { path = "../bevy/crates/bevy_reflect" }
-bevy_math = { path = "../bevy/crates/bevy_math" }
-
-pi_gltf             = { version = "0.1", registry = "yn", features = ["extras"] }
-
-[patch.yn]
-# pi_winit = { path = "../winit", package = "winit" }
-# pi_hal = { path = "../pi_hal" }
-# pi_wgpu = { path = "../pi_wgpu" }
-pi_gltf         = { path = "../pi_gltf", features = ["extras"] }
-
-# pi_render
-pi_render = { path = "../pi_render" }
-render_utils = { path = "../pi_render/crates/render_utils" }
-render_derive = { path = "../pi_render/crates/render_derive" }
-render_compile = { path = "../pi_render/crates/render_compile" }
-
-# pi_bevy
-# pi_bevy_render_plugin = { path="../pi_bevy/crates/render" }
-# pi_bevy_winit_window = { path="../pi_bevy/crates/winit_window" }
-# pi_bevy_ecs_extend = { path="../pi_bevy/crates/ecs_extend" }
-# pi_bevy_ecs_macro = { path="../pi_bevy/crates/ecs_extend/macro" }
-# pi_bevy_asset = { path="../pi_bevy/crates/asset" }
-# pi_window_renderer = { path="../pi_bevy/crates/window_renderer" }
-# pi_bevy_post_process= { path = "../pi_bevy/crates/post_process" }
-# pi_bevy_window= { path = "../pi_bevy/crates/window" }
-
-pi_ui_render = { path = "../pi_ui_render_new" }
-# pi_style = { path = "../pi_style" }
-# pi_postprocess ={path="../pi_post_process"}
-# pi_animation ={path="../pi_animation"}
-
-# [package.metadata.wasm-pack.profile.profiling]
-# wasm-opt = ['-O']
-
-# # `wasm-opt` is on by default in for the release profile, but it can be
-# # disabled by setting it to `false`
-# [package.metadata.wasm-pack.profile.release]
-# wasm-opt = ['-Os']
-# lto = true #这为LLVM提供了更多内联和修剪功能的机会。它不仅使.wasm尺寸更小，而且在运行时也更快！缺点是编译将花费更长的时间
-# opt-level = 's'  # 默认情况下，对LLVM的优化通道进行了调整，以提高速度，而不是大小。我们可以通过修改以下
-# # opt-level = "z" # 了更积极地优化尺寸，以进一步的潜在速度成本
-# # 请注意，令人惊讶的是，opt-level = "s"有时二进制文件的大小可能小于opt-level = "z"。总是测量！
-# panic = 'abort'
-# codegen-units = 1
-
-
 [profile.release]
 # debug= true
 # strip = true
@@ -109,30 +36,105 @@ debug = false
 # codegen-units = 16
 # rpath = false
 
-# [patch."https://github.com/GaiaWorld/pi_path_finding"]
+# [net]
+# git-fetch-with-cli = true
+# offline = true
+
+# [patch.crates-io]
+[patch.crates-io]
+probabilistic-collections = { git = "https://github.com/GaiaWorld/pi_probabilistic_collections.git" }
+# pi_time = { path = "../pi_time" }
 # pi_path_finding = { path = "../pi_path_finding" }
+# pi_flex_layout = { path = "../pi_flex_layout" }
+# bevy = { path = "../bevy" }
+# pi_slotmap = { path = "../pi_slotmap" }
+# pi_slotmap_tree = { path = "../pi_slotmap_tree" }
+# pi_map = { path = "../pi_map" }
+# wgpu = {path = "../wgpu/wgpu"}
+# smallvec = {path = "../smallvec"}
+# pi_cache = {path = "../pi_cache"}
+# pi_assets = {path = "../pi_assets"}
+# pi_graph = { path = "../pi_graph" }
+# pi_async_graph = { path = "../pi_async_graph" }
+# pi_spatial ={path="../pi_spatial"}
+wasm-bindgen = { path = "../wasm-bindgen" }
 
-# [patch."https://github.com/GaiaWorld/pi_spine_rs"]
-# pi_spine_rs = { path = "../pi_spine_rs" }
+bevy_app = { path = "../bevy/crates/bevy_app" }
+bevy_ecs = { path = "../bevy/crates/bevy_ecs" }
+bevy_tasks = { path = "../bevy/crates/bevy_tasks" }
+bevy_window = { path = "../bevy/crates/bevy_window" }
+bevy_utils = { path = "../bevy/crates/bevy_utils" }
+bevy_a11y = { path = "../bevy/crates/bevy_a11y" }
+bevy_input = { path = "../bevy/crates/bevy_input" }
+bevy_reflect = { path = "../bevy/crates/bevy_reflect" }
+bevy_math = { path = "../bevy/crates/bevy_math" }
 
+[patch.yn]
+# pi_sdf = { path = "../pi_sdf" }
+# pi_winit = { path = "../winit", package = "winit" }
+# pi_hal = { path = "../pi_hal" }
+# pi_wgpu = { path = "../pi_wgpu" }
+# pi_egl = {path = "../pi_egl"}
+# winit = {path = "../winit"}
 
-# [patch."https://github.com/GaiaWorld/pi_scene"]
-# pi_scene_math = { path = "../pi_scene/crates/pi_scene_math" }
-# pi_scene_math = { path = "../pi_scene/crates/pi_scene_math" }
+# pi_render
+# pi_render               = { version = "0.1", registry = "yn", path = "../pi_render" }
+# render_utils            = { version = "0.1", registry = "yn", path = "../pi_render/crates/render_utils" }
+# render_core             = { version = "0.1", registry = "yn", path = "../pi_render/crates/render_core" }
+# render_derive           = { version = "0.1", registry = "yn", path = "../pi_render/crates/render_derive" }
+# render_compile          = { version = "0.1", registry = "yn", path = "../pi_render/crates/render_compile" }
 
-[patch."https://github.com/GaiaWorld/pi_3d"]
+# pi_bevy
+# pi_bevy_ecs_extend = { path = "../pi_bevy/crates/ecs_extend" }
+# pi_bevy_render_plugin = { path = "../pi_bevy/crates/render" }
+# pi_bevy_asset = { path = "../pi_bevy/crates/asset" }
+# pi_bevy_winit_window = { path = "../pi_bevy/crates/winit_window" }
+# pi_bevy_log = { path = "../pi_bevy/crates/log" }
+# pi_bevy_ecs_macro = { path = "../pi_bevy/crates/ecs_extend/macro" }
+# pi_bevy_post_process = { path = "../pi_bevy/crates/post_process" }
+# pi_bevy_window = { path = "../pi_bevy/crates/window" }
+# pi_window_renderer = { path="../pi_bevy/crates/window_renderer" }
+
+# pi_ui_render = { path = "../pi_ui_render_new" }
+# pi_style = { path = "../pi_style" }
+
+# pi_postprocess ={path="../pi_post_process"}
+
 pi_3d               = { path = "../pi_3d" }
-pi_engine_shell     = { path = "../pi_3d/crates/pi_engine_shell" }
 pi_node_materials   = { path = "../pi_3d/crates/node_materials" }
-default_render      = { path = "../pi_3d/crates/default_render" }
 pi_scene_context    = { path = "../pi_3d/crates/pi_scene_context" }
 unlit_material      = { path = "../pi_3d/crates/unlit_material" }
 pi_mesh_builder     = { path = "../pi_3d/crates/pi_mesh_builder" }
 pi_trail_renderer   = { path = "../pi_3d/crates/trail" }
 pi_gltf2_load       = { path = "../pi_3d/crates/gltf2" }
 pi_particle_system  = { path = "../pi_3d/crates/particle_system" }
-pi_3d_state         = { path = "../pi_3d/crates/state" }
+pi_scene_shell      = { path = "../pi_3d/crates/pi_scene_shell" }
 
-# [net]
-# git-fetch-with-cli = true
-# offline = true
+pi_gltf                 = { path = "../pi_gltf" }
+# pi_animation ={path="../pi_animation"}
+
+# [package.metadata.wasm-pack.profile.profiling]
+# wasm-opt = ['-O']
+
+# # `wasm-opt` is on by default in for the release profile, but it can be
+# # disabled by setting it to `false`
+# [package.metadata.wasm-pack.profile.release]
+# wasm-opt = ['-Os']
+# lto = true #这为LLVM提供了更多内联和修剪功能的机会。它不仅使.wasm尺寸更小，而且在运行时也更快！缺点是编译将花费更长的时间
+# opt-level = 's'  # 默认情况下，对LLVM的优化通道进行了调整，以提高速度，而不是大小。我们可以通过修改以下
+# # opt-level = "z" # 了更积极地优化尺寸，以进一步的潜在速度成本
+# # 请注意，令人惊讶的是，opt-level = "s"有时二进制文件的大小可能小于opt-level = "z"。总是测量！
+# panic = 'abort'
+# codegen-units = 1
+
+# [patch."https://github.com/GaiaWorld/pi_path_finding"]
+# pi_path_finding = { path = "../pi_path_finding" }
+
+[patch."https://github.com/GaiaWorld/pi_spine_rs"]
+pi_spine_rs = { path = "../pi_spine_rs" }
+
+
+# [patch."https://github.com/GaiaWorld/pi_scene"]
+# pi_scene_math = { path = "../pi_scene/crates/pi_scene_math" }
+# pi_scene_math = { path = "../pi_scene/crates/pi_scene_math" }
+

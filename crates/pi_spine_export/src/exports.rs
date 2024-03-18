@@ -3,7 +3,7 @@ use std::{mem::transmute, ops::Deref};
 
 use bevy_ecs::{prelude::Commands, system::CommandQueue, query::QueryState};
 use pi_bevy_asset::ShareAssetMgr;
-use pi_bevy_render_plugin::{PiRenderGraph, PiRenderDevice, component::GraphId};
+use pi_bevy_render_plugin::{PiRenderGraph, PiRenderDevice, render_cross::GraphId};
 use pi_export_base::export::await_last_frame;
 pub use pi_export_base::{export::Engine, constants::*, asset::TextureDefaultView};
 // use pi_window_renderer::{WindowRenderer, PluginWindowRender};
@@ -177,12 +177,12 @@ impl SpineTextureLoadRecord {
     #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
     #[pi_js_export]
     pub fn success(&mut self, key: &Atom) -> Option<TextureDefaultView> {
-        self.success.remove(key)
+        self.success.remove(&**key)
     }
     #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
     #[pi_js_export]
     pub fn fail(&mut self, key: &Atom) -> Option<String> {
-        self.fail.remove(key)
+        self.fail.remove(&**key)
     }
     #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
     #[pi_js_export]

@@ -24,7 +24,7 @@ derive_deref            = "1.1"
 
 pi_hash 				= "0.1"
 pi_slotmap              = "0.1"
-pi_atom 				= "0.2"
+pi_atom 				= "0.5"
 pi_assets 				= "0.13"
 pi_export_base 			= { path = "../base" }
 pi_hal 					= { version = "0.1", registry = "yn" }
@@ -47,7 +47,7 @@ bytemuck                = { version = "1.4", features = [ "derive" ] }
 
 js_proxy_gen_macro      = { registry = "yn", version = "0.2" }
 pi_render 				= { version = "0.1", registry = "yn" }
-ahash = "=0.8.6"
+ahash = "0.8"
 
 [target.'cfg(target_arch = "wasm32")'.dependencies]
 pi-async-rt 		    = { version = "0.1", features = ["serial"] }

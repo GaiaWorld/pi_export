@@ -756,7 +756,7 @@ style_out_export!(@expr animation_name_str, AnimationNameType, {
 	let mut input = cssparser::ParserInput::new(value);
     let mut parse = cssparser::Parser::new(&mut input);
     let value = if let Ok(value) =
-        parse_comma_separated::<_, _, cssparser::ParseError<pi_style::style_parse::TokenParseError>>(&mut parse, |input| Ok(pi_atom::Atom::from(input.expect_ident()?.as_ref())))
+        parse_comma_separated::<_, _>(&mut parse, |input| Ok(pi_atom::Atom::from(input.expect_ident()?.as_ref())))
     {
         value
     } else {
@@ -980,11 +980,11 @@ other_out_export!(
 		let node = unsafe { Entity::from_bits(transmute::<f64, u64>(node)) };
 		let brush = unsafe { Entity::from_bits(transmute::<f64, u64>(brush)) };
 		gui.commands.push_cmd(ComponentCmd(
-			pi_ui_render::components::user::Canvas(brush),
+			pi_ui_render::components::user::Canvas{ id: brush, by_draw_list: by_draw_list.unwrap_or(false) },
 			node,
 		));
 	},;;
-	node: f64, brush: f64,
+	node: f64, brush: f64,by_draw_list: Option<bool>,
 );
 
 /// 设置水波纹效果
@@ -1521,8 +1521,12 @@ other_out_export!(
 				Some(r) => {
 					log::trace!(target: format!("animationevent_{}", &r.1.1.as_str()).as_str(), "ty: {:?}", ty);
 					arr[i] = r.0.index(); // entity
-					arr[i + 1] = r.0.generation();
-					arr[i + 2] = r.1.1.get_hash() as u32; // name hash
+					arr[i + 1] = r.0.generation(); 
+					// name hash
+					match &r.1 {
+						pi_ui_render::resource::animation_sheet::GroupType::Animation(r) => arr[i + 2] = r.1.str_hash() as u32,
+						pi_ui_render::resource::animation_sheet::GroupType::Transition(_) => arr[i + 2] = 0,
+					};
 				},
 				None => continue,
 			};

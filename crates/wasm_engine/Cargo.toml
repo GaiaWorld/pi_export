@@ -23,10 +23,10 @@ pi_spine_export = { path = "../pi_spine_export"}
 # pi_export_quad_tree = { path = "../quad_tree"}
 scene3d_export = { path = "../scene3d" }
 pi_web_logger = {git = "http://ser.yinengyun.com:10082/tech/pi_web_logger.git"}
-pi_share = "=0.4.7"
+pi_share = "0.4"
 
 # wasm-bindgen = { version = "0.2"}
-wasm-bindgen = { version = "=0.2.87" }
+wasm-bindgen = { version = "0.2" }
 bevy_ecs = "0.11"
 bevy_app = "0.11"
 
@@ -34,7 +34,7 @@ log = "0.4"
 tracing = "0.1"
 
 # 添加webgl feature
-# wgpu1 = { version = "0.16", package = "wgpu", default-features = false, features = ["glsl", "webgl"] }
+# wgpu1 = { version = "0.19", package = "wgpu", default-features = false, features = ["glsl", "webgl"] }
 pi_render = { version = "0.1", registry = "yn", features=["webgl"] }
 pi_bevy_render_plugin = { version = "0.1", registry = "yn", features=["webgl"]}
 pi_bevy_log = {version = "0.1", registry = "yn"}
@@ -43,17 +43,6 @@ pi_wgpu =  {version = "0.1", registry = "yn", features = ["single_thread"]}
 
 
 getrandom = { version = "0.2", features = ["js"] }
-
-# pi_3d 		            = { git = "https://github.com/GaiaWorld/pi_3d.git" }
-# pi_engine_shell 		= { git = "https://github.com/GaiaWorld/pi_3d.git", features = ["allow_not_run"] }
-# pi_node_materials 		= { git = "https://github.com/GaiaWorld/pi_3d.git", features = ["allow_not_run"] }
-# default_render 			= { git = "https://github.com/GaiaWorld/pi_3d.git" }
-# pi_scene_context 		= { git = "https://github.com/GaiaWorld/pi_3d.git", features = ["allow_not_run"] }
-# pi_mesh_builder 		= { git = "https://github.com/GaiaWorld/pi_3d.git" }
-# pi_gltf2_load           = { git = "https://github.com/GaiaWorld/pi_3d.git", features = ["allow_not_run"] }
-# pi_particle_system      = { git = "https://github.com/GaiaWorld/pi_3d.git", features = ["allow_not_run"] }
-# pi_trail_renderer       = { git = "https://github.com/GaiaWorld/pi_3d.git", features = ["allow_not_run"] }
-# pi_3d_state             = { git = "https://github.com/GaiaWorld/pi_3d.git", features = ["allow_not_run"] }
 
 [target.'cfg(target_arch = "wasm32")'.dependencies]
 pi-async-rt = {version = "0.1", features = ["serial"]}

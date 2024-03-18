@@ -14,15 +14,16 @@ allow_not_run = []
 [dependencies]
 crossbeam-channel = "0.5"
 paste = "1.0"
-pi_atom = "0.2"
+pi_atom = "0.5"
 pi_hash="0.1"
 log = "0.4"
 serde_json = "1.0"
 derive-deref-rs = "0.1"
 pi_export_macro = {path="../macro"}
-pi_share = {version="0.4"}
+pi_share = {version="=0.4.15"}
 pi_assets = "0.13"
 pi_hal = {version = "0.1", registry = "yn"}
+render_core = {version = "0.1", registry = "yn"}
 bevy_ecs = "0.11"
 bevy_app = {version = "0.11", default_features = false}
 bevy_a11y = "0.11"
@@ -47,11 +48,12 @@ pi_winit = {version = "0.27", registry="yn", package="winit"}
 [target.'cfg(target_arch = "wasm32")'.dependencies]
 wasm-bindgen = { version = "0.2", features = ["serde-serialize"]}
 js-sys = "0.3"
-web-sys = {version="0.3", features = [
+# 固定在0.3.67， 是因为0.3.68版本接口更改， 无法适配wgpu 0.19
+web-sys = {version="=0.3.67", features = [
 	"HtmlCanvasElement"
 ]}
-wgpu1 = { version = "0.16", package = "wgpu", default-features = false, features = ["glsl", "webgl"] }
+wgpu1 = { version = "0.19", package = "wgpu", default-features = false, features = ["glsl", "webgl", "fragile-send-sync-non-atomic-wasm"] }
 
 [target.'cfg(not(target_arch = "wasm32"))'.dependencies]
-wgpu1 = { version = "0.16", package = "wgpu", default-features = false, features = ["glsl"] }
+wgpu1 = { version = "0.19", package = "wgpu", default-features = false, features = ["glsl"] }
 

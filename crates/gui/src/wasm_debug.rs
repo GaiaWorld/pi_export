@@ -70,6 +70,7 @@ pub struct Rect<T> {
 #[derive(Serialize, Deserialize, Debug)]
 struct Info {
     pub overflow: bool,
+	pub blend_mode: Option<BlendMode>,
     // pub by_overflow: usize,
     pub visibility: bool,
     pub enable: bool,
@@ -504,6 +505,7 @@ pub fn node_info(engine: &mut Engine, node_id: f64) -> JsValue {
 			Option<&Layer>,
 			Option<&TextOverflowData>,
 			&RenderContextMark,
+			Option<&BlendMode>,
 		)
     )>();
     let (
@@ -549,6 +551,7 @@ pub fn node_info(engine: &mut Engine, node_id: f64) -> JsValue {
 			layer,
 			text_overflow_data,
 			context_mark,
+			blend_mode,
 		)
     ) = query.get(&engine.world, node_id).unwrap();
 
@@ -581,6 +584,7 @@ pub fn node_info(engine: &mut Engine, node_id: f64) -> JsValue {
     let mut info = Info {
         // char_block: char_block,
         overflow: overflow.map_or(false, |r| r.0),
+		blend_mode: blend_mode.map(|r| r.clone()),
         // by_overflow: by_overflow,
         visibility: is_show.map_or(false, |r| r.get_visibility()),
         enable: is_show.map_or(false, |r| r.get_enable()),
@@ -644,7 +648,7 @@ pub fn node_info(engine: &mut Engine, node_id: f64) -> JsValue {
 	let canvas = canvas.map(|r| {r.clone()});
 	let canvas_graph_id = if let Some(canvas) = canvas.clone() {
 		let mut q = engine.world.query::<Option<&GraphId>>();
-		q.get(&engine.world, *canvas).unwrap()
+		q.get(&engine.world, canvas.id).unwrap()
 	} else {
 		None
 	};

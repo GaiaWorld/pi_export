@@ -3975,7 +3975,6 @@ pub mod style_macro {
                         = parse_comma_separated::<
                             _,
                             _,
-                            cssparser::ParseError<pi_style::style_parse::TokenParseError>,
                         >(
                             &mut parse,
                             |input| Ok(
@@ -4013,7 +4012,6 @@ pub mod style_macro {
                         = parse_comma_separated::<
                             _,
                             _,
-                            cssparser::ParseError<pi_style::style_parse::TokenParseError>,
                         >(
                             &mut parse,
                             |input| Ok(
@@ -4441,25 +4439,37 @@ pub mod style_macro {
         }
     }
     #[cfg(feature = "pi_js_export")]
-    pub fn set_brush(gui: &mut Gui, node: f64, brush: f64) {
+    pub fn set_brush(gui: &mut Gui, node: f64, brush: f64, by_draw_list: Option<bool>) {
         {
             let node = unsafe { Entity::from_bits(transmute::<f64, u64>(node)) };
             let brush = unsafe { Entity::from_bits(transmute::<f64, u64>(brush)) };
             gui.commands
                 .push_cmd(
-                    ComponentCmd(pi_ui_render::components::user::Canvas(brush), node),
+                    ComponentCmd(
+                        pi_ui_render::components::user::Canvas {
+                            id: brush,
+                            by_draw_list: by_draw_list.unwrap_or(false),
+                        },
+                        node,
+                    ),
                 );
         }
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
-    pub fn set_brush(gui: &mut Gui, node: f64, brush: f64) {
+    pub fn set_brush(gui: &mut Gui, node: f64, brush: f64, by_draw_list: Option<bool>) {
         {
             let node = unsafe { Entity::from_bits(transmute::<f64, u64>(node)) };
             let brush = unsafe { Entity::from_bits(transmute::<f64, u64>(brush)) };
             gui.commands
                 .push_cmd(
-                    ComponentCmd(pi_ui_render::components::user::Canvas(brush), node),
+                    ComponentCmd(
+                        pi_ui_render::components::user::Canvas {
+                            id: brush,
+                            by_draw_list: by_draw_list.unwrap_or(false),
+                        },
+                        node,
+                    ),
                 );
         }
     }
@@ -5190,7 +5200,14 @@ pub mod style_macro {
                         ();
                         arr[i] = r.0.index();
                         arr[i + 1] = r.0.generation();
-                        arr[i + 2] = r.1.1.get_hash() as u32;
+                        match &r.1 {
+                            pi_ui_render::resource::animation_sheet::GroupType::Animation(
+                                r,
+                            ) => arr[i + 2] = r.1.str_hash() as u32,
+                            pi_ui_render::resource::animation_sheet::GroupType::Transition(
+                                _,
+                            ) => arr[i + 2] = 0,
+                        };
                     }
                     None => continue,
                 };
@@ -5215,7 +5232,14 @@ pub mod style_macro {
                         ();
                         arr[i] = r.0.index();
                         arr[i + 1] = r.0.generation();
-                        arr[i + 2] = r.1.1.get_hash() as u32;
+                        match &r.1 {
+                            pi_ui_render::resource::animation_sheet::GroupType::Animation(
+                                r,
+                            ) => arr[i + 2] = r.1.str_hash() as u32,
+                            pi_ui_render::resource::animation_sheet::GroupType::Transition(
+                                _,
+                            ) => arr[i + 2] = 0,
+                        };
                     }
                     None => continue,
                 };

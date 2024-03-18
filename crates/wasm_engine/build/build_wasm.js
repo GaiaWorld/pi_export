@@ -14,7 +14,10 @@ let cwd = process.cwd();
 
 var dir = process.argv[2] || "pkg";
 var name = process.argv[3] || "gui";
+var outDir = process.argv[3]; // 输出目录
 var wasmName = `${name}_bg`;
+
+outDir = "D://0_js/cdqxz_new_mult_gui_exe/libs/pi_sys/src/web/native";
 
 
 let in_wasm_path = `${dir}/${wasmName}.wasm`;
@@ -25,6 +28,7 @@ let out_wasm_js_path = `${dir}/${name}.wasm.ts`;
 fs.readFile(in_wasm_js_path, {encoding:"utf8"}, (err, data) => {
 	if(!err) {
 		data = data.replace(`import.meta.url`, '""');
+		data = data.replace(/pi_hal\-[a-z0-9]*/, 'pi_hal');
 		data = data.replace(/from\s+'(.+?)\.js'/g,  "from '$1'");
 		data = data.replace(/getObject\(arg0\)\sinstanceof\sWindow/g, "true");
 		data = data.replace(/getObject\(arg0\)\sinstanceof\sCanvasRenderingContext2D/g, "true");
@@ -55,28 +59,22 @@ fs.readFile(in_wasm_js_path, {encoding:"utf8"}, (err, data) => {
 }
 
 export { initSync }
-export default __wbg_init;`,  
+export default __wbg_init;`
 
-	`    const r = await __wbg_load(await input, imports);
+,`    const r = await __wbg_load(await input, imports);
 
-    __wbg_finalize_init(r.instance, r.module);
+    let ret = __wbg_finalize_init(r.instance, r.module);
+	
 	if(module.postRun) {
 		module.postRun();
 	}
 
-    return wasm;
+    return ret;
 }
 
-export { initSync }
-// 前后端适配
-if(!globalThis._$cwd){
-	Promise.resolve().then(() => {
-		__wbg_init(module.wasmModule).then((r) => {
-			window["_$wasm"] = r;
-		});
-	})
-}
-`);
+Promise.resolve().then(() => {
+	window["__wasm"] = __wbg_init(module.wasmModule);
+})`);
 		// data = data.replace(`Module["noExitRuntime"]=true;run();`, `Module["noExitRuntime"] = true;
 		// //PI_START
 		// run();
@@ -90,6 +88,14 @@ if(!globalThis._$cwd){
 				console.log("写文件失败！！", JSON.stringify(err));
 			}
 		});
+
+		if (outDir) {
+			fs.writeFile(`${outDir}/${name}.wasm.ts`, data, (err) => {
+				if(err) {
+					console.log("写文件失败！！", JSON.stringify(err));
+				}
+			})
+		}
 	} else {
 		console.log("读文件失败！！", JSON.stringify(err));
 	}
@@ -102,6 +108,14 @@ fs.readFile(in_wasm_path, (err, data) => {
 				console.log("写文件失败！！", JSON.stringify(err));
 			}
 		})
+
+		if (outDir) {
+			fs.writeFile(`${outDir}/${name}.wasm`, data, (err) => {
+				if(err) {
+					console.log("写文件失败！！", JSON.stringify(err));
+				}
+			})
+		}
 	} else {
 		console.log("读文件失败！！", JSON.stringify(err));
 	}
