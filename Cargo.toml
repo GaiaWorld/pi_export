@@ -95,22 +95,22 @@ bevy_math = { path = "../bevy/crates/bevy_math" }
 # pi_bevy_window = { path = "../pi_bevy/crates/window" }
 # pi_window_renderer = { path="../pi_bevy/crates/window_renderer" }
 
-pi_ui_render = { path = "../pi_ui_render_new" }
+pi_ui_render = { path = "../pi_ui_render" }
 # pi_style = { path = "../pi_style" }
 
 # pi_postprocess ={path="../pi_post_process"}
 
-pi_3d               = { path = "../pi_3d" }
-pi_node_materials   = { path = "../pi_3d/crates/node_materials" }
-pi_scene_context    = { path = "../pi_3d/crates/pi_scene_context" }
-unlit_material      = { path = "../pi_3d/crates/unlit_material" }
-pi_mesh_builder     = { path = "../pi_3d/crates/pi_mesh_builder" }
-pi_trail_renderer   = { path = "../pi_3d/crates/trail" }
-pi_gltf2_load       = { path = "../pi_3d/crates/gltf2" }
-pi_particle_system  = { path = "../pi_3d/crates/particle_system" }
-pi_scene_shell      = { path = "../pi_3d/crates/pi_scene_shell" }
+# pi_3d               = { path = "../pi_3d" }
+# pi_node_materials   = { path = "../pi_3d/crates/node_materials" }
+# pi_scene_context    = { path = "../pi_3d/crates/pi_scene_context" }
+# unlit_material      = { path = "../pi_3d/crates/unlit_material" }
+# pi_mesh_builder     = { path = "../pi_3d/crates/pi_mesh_builder" }
+# pi_trail_renderer   = { path = "../pi_3d/crates/trail" }
+# pi_gltf2_load       = { path = "../pi_3d/crates/gltf2" }
+# pi_particle_system  = { path = "../pi_3d/crates/particle_system" }
+# pi_scene_shell      = { path = "../pi_3d/crates/pi_scene_shell" }
 
-pi_gltf                 = { path = "../pi_gltf" }
+# pi_gltf                 = { path = "../pi_gltf" }
 # pi_animation ={path="../pi_animation"}
 
 # [package.metadata.wasm-pack.profile.profiling]

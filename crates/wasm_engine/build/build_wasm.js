@@ -17,7 +17,7 @@ var name = process.argv[3] || "gui";
 var outDir = process.argv[3]; // 输出目录
 var wasmName = `${name}_bg`;
 
-outDir = "D://0_js/cdqxz_new_mult_gui_exe/libs/pi_sys/src/web/native";
+outDir = "E:/game_project/pi_demo_gui/libs/pi_sys/src/web/native";
 
 
 let in_wasm_path = `${dir}/${wasmName}.wasm`;
