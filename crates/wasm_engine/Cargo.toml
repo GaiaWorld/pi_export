@@ -8,7 +8,7 @@ edition = "2018"
 crate-type = ["cdylib"]
 
 [features]
-default = ["pi_js_export", "release"]
+default = ["pi_js_export"]
 release = ["log/release_max_level_warn", "tracing/release_max_level_off"]
 trace = ["log/release_max_level_info", "tracing/release_max_level_info", "pi_bevy_log/tracing-chrome", "pi_bevy_render_plugin/trace", "bevy_app/trace", "bevy_ecs/trace"]
 pi_js_export = []
@@ -38,7 +38,7 @@ tracing = "0.1"
 pi_render = { version = "0.1", registry = "yn", features=["webgl"] }
 pi_bevy_render_plugin = { version = "0.1", registry = "yn", features=["webgl"]}
 pi_bevy_log = {version = "0.1", registry = "yn"}
-pi_wgpu =  {version = "0.1", registry = "yn", features = ["single_thread"]}
+pi_wgpu =  {version = "0.1", registry = "yn"}
 # pi_wgpu =  {version = "0.1", registry = "yn", features = ["single_thread", "use_wgpu"]}
 
 

@@ -268,8 +268,6 @@ pub fn render_gui(gui: &mut Gui, engine: &mut Engine) {
 	let _span = tracing::warn_span!("flush").entered();
 	bevy_ecs::system::CommandQueue::default().apply(&mut engine.world);
 	flush_data(gui, engine);
-	*engine.world.get_resource_mut::<RunState>().unwrap() = RunState::MATRIX;
-	
 }
 
 
@@ -285,6 +283,7 @@ pub fn calc(gui: &mut Gui, engine: &mut Engine) {
 	*engine.world.get_resource_mut::<RunState>().unwrap() = RunState::MATRIX;
 	*engine.world.get_resource_mut::<FrameState>().unwrap() = FrameState::UnActive;
 	engine.update();
+    *engine.world.get_resource_mut::<RunState>().unwrap() = RunState::NONE;
 }
 
 
@@ -299,6 +298,7 @@ pub fn calc_layout(gui: &mut Gui, engine: &mut Engine) {
 	*engine.world.get_resource_mut::<RunState>().unwrap() = RunState::LAYOUT;
 	*engine.world.get_resource_mut::<FrameState>().unwrap() = FrameState::UnActive;
 	engine.update();
+    *engine.world.get_resource_mut::<RunState>().unwrap() = RunState::NONE;
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
@@ -312,6 +312,7 @@ pub fn calc_geo(gui: &mut Gui, engine: &mut Engine) {
 	*engine.world.get_resource_mut::<RunState>().unwrap() = RunState::MATRIX;
 	*engine.world.get_resource_mut::<FrameState>().unwrap() = FrameState::UnActive;
 	engine.update();
+    *engine.world.get_resource_mut::<RunState>().unwrap() = RunState::NONE;
 }
 
 // 取到keyframes(应该在每帧开始前取上一帧产生的事件， 因为在本地平台帧推被异步出去，合适完成帧推目前没有设计回调， 因此事件总是延迟一帧，但应该问题不大)

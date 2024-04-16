@@ -8,9 +8,9 @@ resolver="2"
 exclude = ["crates/gui/exports_macro"]
 
 [profile.release]
-# debug= true
+debug= true
 # strip = true
-lto = true #这为LLVM提供了更多内联和修剪功能的机会。它不仅使.wasm尺寸更小，而且在运行时也更快！缺点是编译将花费更长的时间
+# lto = true #这为LLVM提供了更多内联和修剪功能的机会。它不仅使.wasm尺寸更小，而且在运行时也更快！缺点是编译将花费更长的时间
 opt-level = 's'  # 默认情况下，对LLVM的优化通道进行了调整，以提高速度，而不是大小。我们可以通过修改以下
 # opt-level = "z" # 了更积极地优化尺寸，以进一步的潜在速度成本
 # 请注意，令人惊讶的是，opt-level = "s"有时二进制文件的大小可能小于opt-level = "z"。总是测量！
@@ -57,7 +57,7 @@ probabilistic-collections = { git = "https://github.com/GaiaWorld/pi_probabilist
 # pi_graph = { path = "../pi_graph" }
 # pi_async_graph = { path = "../pi_async_graph" }
 # pi_spatial ={path="../pi_spatial"}
-wasm-bindgen = { path = "../wasm-bindgen" }
+# wasm-bindgen = { path = "../wasm-bindgen" }
 
 bevy_app = { path = "../bevy/crates/bevy_app" }
 bevy_ecs = { path = "../bevy/crates/bevy_ecs" }
@@ -68,6 +68,8 @@ bevy_a11y = { path = "../bevy/crates/bevy_a11y" }
 bevy_input = { path = "../bevy/crates/bevy_input" }
 bevy_reflect = { path = "../bevy/crates/bevy_reflect" }
 bevy_math = { path = "../bevy/crates/bevy_math" }
+
+# glow = {path = "../glow"}
 
 [patch.yn]
 # pi_sdf = { path = "../pi_sdf" }
@@ -95,7 +97,7 @@ bevy_math = { path = "../bevy/crates/bevy_math" }
 # pi_bevy_window = { path = "../pi_bevy/crates/window" }
 # pi_window_renderer = { path="../pi_bevy/crates/window_renderer" }
 
-pi_ui_render = { path = "../pi_ui_render" }
+# pi_ui_render = { path = "../pi_ui_render_new" }
 # pi_style = { path = "../pi_style" }
 
 # pi_postprocess ={path="../pi_post_process"}
@@ -130,8 +132,8 @@ pi_ui_render = { path = "../pi_ui_render" }
 # [patch."https://github.com/GaiaWorld/pi_path_finding"]
 # pi_path_finding = { path = "../pi_path_finding" }
 
-[patch."https://github.com/GaiaWorld/pi_spine_rs"]
-pi_spine_rs = { path = "../pi_spine_rs" }
+# [patch."https://github.com/GaiaWorld/pi_spine_rs"]
+# pi_spine_rs = { path = "../pi_spine_rs" }
 
 
 # [patch."https://github.com/GaiaWorld/pi_scene"]

@@ -1,5 +1,6 @@
 
 let fs = require("fs");
+let path = require("path");
 
 
 /**
@@ -14,11 +15,18 @@ let cwd = process.cwd();
 
 var dir = process.argv[2] || "pkg";
 var name = process.argv[3] || "gui";
-var outDir = process.argv[3]; // 输出目录
 var wasmName = `${name}_bg`;
 
-outDir = "E:/game_project/pi_demo_gui/libs/pi_sys/src/web/native";
-
+let outDir;
+let data = fs.readFileSync("temp/cfg.txt", {encoding:"utf8"});
+let datas = data.split("=");
+if (datas.length == 2) {
+	let d = datas[1].trim();
+	if (d !== "") {
+		outDir = path.join(d, "libs/pi_sys/src/web/native");
+	}
+	
+}
 
 let in_wasm_path = `${dir}/${wasmName}.wasm`;
 let in_wasm_js_path = `${dir}/${name}.js`;
@@ -109,6 +117,7 @@ fs.readFile(in_wasm_path, (err, data) => {
 			}
 		})
 
+		console.log("wasm拷贝到:", outDir);
 		if (outDir) {
 			fs.writeFile(`${outDir}/${name}.wasm`, data, (err) => {
 				if(err) {
