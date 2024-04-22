@@ -5,7 +5,7 @@ use pi_gltf2_load::TValue;
 pub use pi_export_base::export::Atom;
 
 use pi_animation::amount::AnimationAmountCalc;
-use pi_curves::{easing::EEasingMode, steps::EStepMode, curve::{frame_curve::{FrameCurve, frames::interplate_frame_values_step}, frame::{FrameDataValue, KeyFrameCurveValue}, FramePerSecond, FrameIndex}};
+use pi_curves::{curve::{curves::curve_frame_index, frame::{CurveFrameValue, FrameDataValue, KeyFrameCurveValue}, frame_curve::{frames::interplate_frame_values_step, FrameCurve}, FrameIndex, FramePerSecond}, easing::EEasingMode, steps::EStepMode};
 use pi_scene_shell::prelude::*;
 pub use pi_export_base::export::Engine;
 use pi_scene_context::prelude::*;
@@ -513,13 +513,17 @@ pub fn p3d_query_anime_events(
 }
 
 
-fn curve<const N: usize, T: TValue<N> + FrameDataValue + Debug>(
+fn curve<const N: usize, T: TValue<N> + FrameDataValue>(
     data: &[f32],
     mode: EAnimeCurve,
 ) -> FrameCurve<T> {
     let vs = N; let vs2 = N * 2; let vs3 = N * 3;
-    let design_frame_per_second = data[0] as FrameIndex;
-    let curve = match mode {
+    let design_frame_per_second = data[0] as FramePerSecond;
+
+    let mut minidx = 0;
+    let mut maxidx = 0;
+
+    let mut curve = match mode {
         EAnimeCurve::FrameValues => {
             let mut curve = FrameCurve::<T>::curve_frame_values(design_frame_per_second);
             let head = 1;
@@ -529,7 +533,11 @@ fn curve<const N: usize, T: TValue<N> + FrameDataValue + Debug>(
                 let index = head + i * step;
                 let frame = data[index + 0] as FrameIndex;
                 // log::warn!("Frame {:?}, data: {:?}", frame, T::newn(data, index + 1));
-                curve.curve_frame_values_frame(frame, T::newn(data, index + 1));
+
+                // curve.curve_frame_values_frame(frame, T::newn(data, index + 1));
+                let (index, min, max) = curve_frame_index(&mut curve.frames, frame);
+                curve.values.insert(index, T::newn(data, index + 1));
+                minidx = min; maxidx = max;
             }
             curve
         },
@@ -541,13 +549,16 @@ fn curve<const N: usize, T: TValue<N> + FrameDataValue + Debug>(
             for i in 0..frames {
                 let index = head + i * step;
                 let frame = data[index + 0] as FrameIndex;
-                curve.curve_frame_values_frame(frame, T::newn(data, index + 1));
+
+                // curve.curve_frame_values_frame(frame, T::newn(data, index + 1));
+                let (index, min, max) = curve_frame_index(&mut curve.frames, frame);
+                curve.values.insert(index, T::newn(data, index + 1));
+                minidx = min; maxidx = max;
             }
             curve.call = interplate_frame_values_step;
             curve
         },
         EAnimeCurve::EasingCurve => {
-            let design_frame_per_second = data[0] as FramePerSecond;
             let frame_count = data[1] as FrameIndex;
             let mode = number_to_easingmode(data[2] as u8);
             let head = 3;
@@ -562,7 +573,6 @@ fn curve<const N: usize, T: TValue<N> + FrameDataValue + Debug>(
             curve
         },
         EAnimeCurve::MinMaxCurve => {
-            let design_frame_per_second = data[0] as FramePerSecond;
             let from = T::newn(data, 1);
             let to = T::newn(data, 1 + vs);
             let head = 1 + vs2;
@@ -575,12 +585,16 @@ fn curve<const N: usize, T: TValue<N> + FrameDataValue + Debug>(
                 let intangent  = data[index + 1] as f32;
                 let value = data[index + 2] as f32;
                 let outtangent = data[index + 3] as f32;
-                curve.curve_minmax_curve_frame(frame, value, intangent, outtangent);
+
+                // curve.curve_minmax_curve_frame(frame, value, intangent, outtangent);
+                let (index, min, max) = curve_frame_index(&mut curve.frames, frame);
+                let keyframe = CurveFrameValue::new(value, [intangent, outtangent]);
+                curve.minmax_curve_values.insert(index, keyframe);
+                minidx = min; maxidx = max;
             }
             curve
         },
         EAnimeCurve::CubicBezierCurve => {
-            let design_frame_per_second = data[0] as FramePerSecond;
             let frame_count = data[1] as FrameIndex;
             let mut head = 2;
             let from = T::newn(data, head);
@@ -597,7 +611,6 @@ fn curve<const N: usize, T: TValue<N> + FrameDataValue + Debug>(
             curve
         },
         EAnimeCurve::GLTFCubicSpline => {
-            let design_frame_per_second = data[0] as FramePerSecond;
             let mut curve = FrameCurve::<T>::curve_cubic_spline(design_frame_per_second);
             let head = 1;
             let step = 1 + vs3;
@@ -608,11 +621,20 @@ fn curve<const N: usize, T: TValue<N> + FrameDataValue + Debug>(
                 let intangent = T::newn(data, index + 1);
                 let value = T::newn(data, index + 1 + vs);
                 let outtangent = T::newn(data, index + 1 + vs2);
-                curve.curve_cubic_splice_frame(frame, value, intangent, outtangent);
+
+                // curve.curve_cubic_splice_frame(frame, value, intangent, outtangent);
+                let (index, min, max) = curve_frame_index(&mut curve.frames, frame);
+                let keyframe = CurveFrameValue::new(value, [intangent, outtangent]);
+                curve.cubic_spline_values.insert(index, keyframe);
+                minidx = min; maxidx = max;
             }
             curve
         },
     };
+
+    curve.min_frame = minidx;
+    curve.max_frame = maxidx;
+    curve.frame_number = maxidx - minidx;
     curve
 }
 

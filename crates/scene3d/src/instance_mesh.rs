@@ -29,7 +29,7 @@ pub fn p3d_instance_mesh(app: &mut Engine, cmds: &mut CommandsExchangeD3, source
 #[pi_js_export]
 pub fn p3d_instance_mesh_vec4(cmds: &mut CommandsExchangeD3, instance: f64, uscale: f64, vscale: f64, uoffset: f64, voffset: f64, attr: &Atom) {
     let instance: Entity = as_entity(instance);
-    cmds.instance_vec4s.push(OpsInstanceVec4::ops(instance, uscale as f32, vscale as f32, uoffset as f32, voffset as f32, attr.deref().clone() ));
+    cmds.instance_attr.push(OpsInstanceAttr::ops(instance, EInstanceAttr::Vec4([uscale as f32, vscale as f32, uoffset as f32, voffset as f32]), attr.deref().clone() ));
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
@@ -37,7 +37,7 @@ pub fn p3d_instance_mesh_vec4(cmds: &mut CommandsExchangeD3, instance: f64, usca
 pub fn p3d_instance_mesh_vec3(cmds: &mut CommandsExchangeD3, instance: f64, r: f64, g: f64, b: f64, attr: &Atom) {
     let instance: Entity = as_entity(instance);
 
-    cmds.instance_vec3s.push(OpsInstanceVec3::ops(instance, r as f32, g as f32, b as f32, attr.deref().clone() ));
+    cmds.instance_attr.push(OpsInstanceAttr::ops(instance, EInstanceAttr::Vec3([r as f32, g as f32, b as f32]), attr.deref().clone() ));
 }
 
 // #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
@@ -61,7 +61,7 @@ pub fn p3d_instance_mesh_vec3(cmds: &mut CommandsExchangeD3, instance: f64, r: f
 #[pi_js_export]
 pub fn p3d_instance_mesh_vec2(cmds: &mut CommandsExchangeD3, instance: f64, x: f64, y: f64, attr: &Atom) {
     let instance: Entity = as_entity(instance);
-    cmds.instance_vec2s.push(OpsInstanceVec2::ops(instance, x as f32, y as f32, attr.deref().clone() ));
+    cmds.instance_attr.push(OpsInstanceAttr::ops(instance, EInstanceAttr::Vec2([x as f32, y as f32]), attr.deref().clone() ));
     // cmds.instance_alpha.push(OpsInstanceAlpha::ops(instance, val as f32));
 }
 
@@ -70,14 +70,14 @@ pub fn p3d_instance_mesh_vec2(cmds: &mut CommandsExchangeD3, instance: f64, x: f
 #[pi_js_export]
 pub fn p3d_instance_mesh_float(cmds: &mut CommandsExchangeD3, instance: f64, val: f64, attr: &Atom) {
     let instance: Entity = as_entity(instance);
-    cmds.instance_float.push(OpsInstanceFloat::ops(instance, val as f32, attr.deref().clone() ));
+    cmds.instance_attr.push(OpsInstanceAttr::ops(instance, EInstanceAttr::Float(val as f32), attr.deref().clone() ));
     // cmds.instance_alpha.push(OpsInstanceAlpha::ops(instance, val as f32));
 }
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_instance_mesh_sint(cmds: &mut CommandsExchangeD3, instance: f64, x: f64, attr: &Atom) {
     let instance: Entity = as_entity(instance);
-    cmds.instance_sints.push(OpsInstanceSint::ops(instance, x as i32, attr.deref().clone() ));
+    cmds.instance_attr.push(OpsInstanceAttr::ops(instance, EInstanceAttr::Int(x as i32), attr.deref().clone() ));
     // cmds.instance_alpha.push(OpsInstanceAlpha::ops(instance, val as f32));
 }
 
@@ -85,7 +85,7 @@ pub fn p3d_instance_mesh_sint(cmds: &mut CommandsExchangeD3, instance: f64, x: f
 #[pi_js_export]
 pub fn p3d_instance_mesh_uint(cmds: &mut CommandsExchangeD3, instance: f64, x: f64, attr: &Atom) {
     let instance: Entity = as_entity(instance);
-    cmds.instance_uints.push(OpsInstanceUint::ops(instance, x as u32, attr.deref().clone() ));
+    cmds.instance_attr.push(OpsInstanceAttr::ops(instance, EInstanceAttr::Uint(x as u32), attr.deref().clone() ));
     // cmds.instance_alpha.push(OpsInstanceAlpha::ops(instance, val as f32));
 }
 

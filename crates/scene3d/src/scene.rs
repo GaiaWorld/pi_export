@@ -71,7 +71,7 @@ pub fn p3d_scene_time(cmds: &mut CommandsExchangeD3, scene: f64, val: f64) {
 pub fn p3d_scene_fogcolor(cmds: &mut CommandsExchangeD3, scene: f64, r: f64, g: f64, b: f64) {
     let scene: Entity = as_entity(scene);
 
-    cmds.scene_fogcolor.push(OpsSceneFogColor::ops(scene, r as f32, g as f32, b as f32));
+    cmds.scene_fogparam.push(OpsSceneFogParam::ops(scene, EFogOps::Color(r as f32, g as f32, b as f32)));
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
@@ -91,7 +91,7 @@ pub fn p3d_scene_fogparam(cmds: &mut CommandsExchangeD3, scene: f64, mode: f64, 
     } else {
         FogParam::None
     };
-    cmds.scene_fogparam.push(OpsSceneFogParam::ops(scene, param));
+    cmds.scene_fogparam.push(OpsSceneFogParam::ops(scene, EFogOps::Param(param)));
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
@@ -99,7 +99,7 @@ pub fn p3d_scene_fogparam(cmds: &mut CommandsExchangeD3, scene: f64, mode: f64, 
 pub fn p3d_scene_ambientcolor(cmds: &mut CommandsExchangeD3, scene: f64, r: f64, g: f64, b: f64) {
     let scene: Entity = as_entity(scene);
 
-    cmds.scene_ambientcolor.push(OpsSceneAmbientColor::ops(scene, r as f32, g as f32, b as f32));
+    cmds.scene_ambient.push(OpsSceneAmbientColor::ops(scene, ESceneAmbientOps::Color(r as f32, g as f32, b as f32)));
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
@@ -107,7 +107,7 @@ pub fn p3d_scene_ambientcolor(cmds: &mut CommandsExchangeD3, scene: f64, r: f64,
 pub fn p3d_scene_ambientintensity(cmds: &mut CommandsExchangeD3, scene: f64, val: f64) {
     let scene: Entity = as_entity(scene);
 
-    cmds.scene_ambientintensity.push(OpsSceneAmbientIntensity::ops(scene, val as f32));
+    cmds.scene_ambient.push(OpsSceneAmbientColor::ops(scene, ESceneAmbientOps::Intensity(val as f32)));
 }
 
 ///

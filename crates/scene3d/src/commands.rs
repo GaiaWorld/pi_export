@@ -16,10 +16,8 @@ use js_proxy_gen_macro::pi_js_export;
 pub struct CommandsExchangeD3 {
     pub(crate) scene_create: ActionListSceneCreate,
     pub(crate) scene_time: ActionListSceneTime,
-    pub(crate) scene_fogcolor: ActionListSceneFogColor,
     pub(crate) scene_fogparam: ActionListSceneFogParam,
-    pub(crate) scene_ambientcolor: ActionListSceneAmbientColor,
-    pub(crate) scene_ambientintensity: ActionListSceneAmbientIntensity,
+    pub(crate) scene_ambient: ActionListSceneAmbientColor,
     pub(crate) scene_animeenable: ActionListSceneAnimationEnable,
     pub(crate) scene_brdf: ActionListSceneBRDF,
     pub(crate) scene_env: ActionListSceneEnvTexture,
@@ -30,9 +28,7 @@ pub struct CommandsExchangeD3 {
     pub(crate) obj_dispose: ActionListDispose,
     
     pub(crate) transform_create: ActionListTransformNodeCreate,
-    pub(crate) transform_localpos: ActionListTransformNodeLocalPosition,
-    pub(crate) transform_localscl: ActionListTransformNodeLocalScaling,
-    pub(crate) transform_localrot: ActionListTransformNodeLocalEuler,
+    pub(crate) transform_localsrt: ActionListTransformNodeLocal,
     pub(crate) transform_localrotq: ActionListTransformNodeLocalRotationQuaternion,
     pub(crate) transform_tree: ActionListTransformNodeParent,
     pub(crate) transform_enable: ActionListNodeEnable,
@@ -51,18 +47,23 @@ pub struct CommandsExchangeD3 {
     pub(crate) mesh_create: ActionListMeshCreate,
     pub(crate) mesh_shadow: ActionListMeshShadow,
     pub(crate) mesh_blend: ActionListBlend,
-    pub(crate) mesh_cullmode: ActionListCullMode,
-    pub(crate) mesh_polygonmode: ActionListPolyginMode,
-    pub(crate) mesh_frontface: ActionListFrontFace,
-    pub(crate) mesh_topology: ActionListTopology,
-    pub(crate) mesh_unclip_depth: ActionListUnClipDepth,
-    pub(crate) mesh_depth_write: ActionListDepthWrite,
-    pub(crate) mesh_depth_compare: ActionListDepthCompare,
-    pub(crate) mesh_depth_bias: ActionListDepthBias,
-    pub(crate) mesh_stencil_front: ActionListStencilFront,
-    pub(crate) mesh_stencil_back: ActionListStencilBack,
-    pub(crate) mesh_stencil_read: ActionListStencilRead,
-    pub(crate) mesh_stencil_write: ActionListStencilWrite,
+
+    // pub(crate) mesh_cullmode: ActionListCullMode,
+    // pub(crate) mesh_polygonmode: ActionListPolyginMode,
+    // pub(crate) mesh_frontface: ActionListFrontFace,
+    // pub(crate) mesh_topology: ActionListTopology,
+    // pub(crate) mesh_unclip_depth: ActionListUnClipDepth,
+    // pub(crate) mesh_depth_write: ActionListDepthWrite,
+    // pub(crate) mesh_depth_compare: ActionListDepthCompare,
+    // pub(crate) mesh_depth_bias: ActionListDepthBias,
+    // pub(crate) mesh_stencil_front: ActionListStencilFront,
+    // pub(crate) mesh_stencil_back: ActionListStencilBack,
+    // pub(crate) mesh_stencil_read: ActionListStencilRead,
+    // pub(crate) mesh_stencil_write: ActionListStencilWrite,
+    pub(crate) mesh_primitivestate: ActionListPrimitiveState,
+    pub(crate) mesh_depthstate: ActionListDepthState,
+    pub(crate) mesh_stencilstate: ActionListStencilState,
+
     pub(crate) mesh_render_queue: ActionListRenderQueue,
     pub(crate) mesh_render_alignment: ActionListMeshRenderAlignment,
     pub(crate) mesh_indexrange: ActionListMeshRenderIndiceRange,
@@ -84,12 +85,7 @@ pub struct CommandsExchangeD3 {
     // pub(crate) instance_ins_world_matrixs: ActionListInstanceWorldMatrixs,
     // pub(crate) instance_ins_colors: ActionListInstanceColors,
     // pub(crate) instance_ins_tilloffs: ActionListInstanceTilloffs,
-    pub(crate) instance_float: ActionListInstanceFloat,
-    pub(crate) instance_vec4s: ActionListInstanceVec4,
-    pub(crate) instance_vec3s: ActionListInstanceVec3,
-    pub(crate) instance_vec2s: ActionListInstanceVec2,
-    pub(crate) instance_uints: ActionListInstanceUint,
-    pub(crate) instance_sints: ActionListInstanceSint,
+    pub(crate) instance_attr: ActionListInstanceAttr,
     pub(crate) instance_targetanime: ActionListTargetAnimationAttribute,
     
     pub(crate) abstructmesh_scaling_mode: ActionListAbstructMeshScalingMode,
@@ -162,10 +158,8 @@ impl CommandsExchangeD3 {
     pub(crate) fn exchange(&mut self, cmds: &mut pi_3d::ActionSets) {
         cmds.scene.create.push_some( self.scene_create.exchange(vec![]).drain(..) );
         cmds.scene.time.push_some( self.scene_time.exchange(vec![]).drain(..) );
-        cmds.scene.fogcolor.push_some( self.scene_fogcolor.exchange(vec![]).drain(..) );
         cmds.scene.fogparam.push_some( self.scene_fogparam.exchange(vec![]).drain(..) );
-        cmds.scene.ambientcolor.push_some( self.scene_ambientcolor.exchange(vec![]).drain(..) );
-        cmds.scene.ambientintensity.push_some( self.scene_ambientintensity.exchange(vec![]).drain(..) );
+        cmds.scene.ambientcolor.push_some( self.scene_ambient.exchange(vec![]).drain(..) );
         cmds.scene.animeenable.push_some( self.scene_animeenable.exchange(vec![]).drain(..) );
         cmds.scene.brdf.push_some( self.scene_brdf.exchange(vec![]).drain(..) );
         cmds.scene.env.push_some( self.scene_env.exchange(vec![]).drain(..) );
@@ -174,9 +168,7 @@ impl CommandsExchangeD3 {
         cmds.scene.boundingboxdisplay.push_some( self.scene_boundingbox.exchange(vec![]).drain(..) );
         cmds.obj_dispose.push_some( self.obj_dispose.exchange(vec![]).drain(..) );
         cmds.transform.create.push_some( self.transform_create.exchange(vec![]).drain(..) );
-        cmds.transform.localpos.push_some( self.transform_localpos.exchange(vec![]).drain(..) );
-        cmds.transform.localscl.push_some( self.transform_localscl.exchange(vec![]).drain(..) );
-        cmds.transform.localrot.push_some( self.transform_localrot.exchange(vec![]).drain(..) );
+        cmds.transform.localsrt.push_some( self.transform_localsrt.exchange(vec![]).drain(..) );
         cmds.transform.localrotq.push_some( self.transform_localrotq.exchange(vec![]).drain(..) );
         cmds.transform.tree.push_some( self.transform_tree.exchange(vec![]).drain(..) );
         cmds.transform.enable.push_some( self.transform_enable.exchange(vec![]).drain(..) );
@@ -193,18 +185,23 @@ impl CommandsExchangeD3 {
         cmds.mesh.create.push_some( self.mesh_create.exchange(vec![]).drain(..) );
         cmds.mesh.shadow.push_some( self.mesh_shadow.exchange(vec![]).drain(..) );
         cmds.mesh.blend.push_some( self.mesh_blend.exchange(vec![]).drain(..) );
-        cmds.mesh.cullmode.push_some( self.mesh_cullmode.exchange(vec![]).drain(..) );
-        cmds.mesh.polygonmode.push_some( self.mesh_polygonmode.exchange(vec![]).drain(..) );
-        cmds.mesh.frontface.push_some( self.mesh_frontface.exchange(vec![]).drain(..) );
-        cmds.mesh.topology.push_some( self.mesh_topology.exchange(vec![]).drain(..) );
-        cmds.mesh.unclip_depth.push_some( self.mesh_unclip_depth.exchange(vec![]).drain(..) );
-        cmds.mesh.depth_write.push_some( self.mesh_depth_write.exchange(vec![]).drain(..) );
-        cmds.mesh.depth_compare.push_some( self.mesh_depth_compare.exchange(vec![]).drain(..) );
-        cmds.mesh.depth_bias.push_some( self.mesh_depth_bias.exchange(vec![]).drain(..) );
-        cmds.mesh.stencil_front.push_some( self.mesh_stencil_front.exchange(vec![]).drain(..) );
-        cmds.mesh.stencil_back.push_some( self.mesh_stencil_back.exchange(vec![]).drain(..) );
-        cmds.mesh.stencil_read.push_some( self.mesh_stencil_read.exchange(vec![]).drain(..) );
-        cmds.mesh.stencil_write.push_some( self.mesh_stencil_write.exchange(vec![]).drain(..) );
+
+        // cmds.mesh.cullmode.push_some( self.mesh_cullmode.exchange(vec![]).drain(..) );
+        // cmds.mesh.polygonmode.push_some( self.mesh_polygonmode.exchange(vec![]).drain(..) );
+        // cmds.mesh.frontface.push_some( self.mesh_frontface.exchange(vec![]).drain(..) );
+        // cmds.mesh.topology.push_some( self.mesh_topology.exchange(vec![]).drain(..) );
+        // cmds.mesh.unclip_depth.push_some( self.mesh_unclip_depth.exchange(vec![]).drain(..) );
+        // cmds.mesh.depth_write.push_some( self.mesh_depth_write.exchange(vec![]).drain(..) );
+        // cmds.mesh.depth_compare.push_some( self.mesh_depth_compare.exchange(vec![]).drain(..) );
+        // cmds.mesh.depth_bias.push_some( self.mesh_depth_bias.exchange(vec![]).drain(..) );
+        // cmds.mesh.stencil_front.push_some( self.mesh_stencil_front.exchange(vec![]).drain(..) );
+        // cmds.mesh.stencil_back.push_some( self.mesh_stencil_back.exchange(vec![]).drain(..) );
+        // cmds.mesh.stencil_read.push_some( self.mesh_stencil_read.exchange(vec![]).drain(..) );
+        // cmds.mesh.stencil_write.push_some( self.mesh_stencil_write.exchange(vec![]).drain(..) );
+        cmds.mesh.primitive_state.push_some( self.mesh_primitivestate.exchange(vec![]).drain(..) );
+        cmds.mesh.stencil_state.push_some( self.mesh_stencilstate.exchange(vec![]).drain(..) );
+        cmds.mesh.depth_state.push_some( self.mesh_depthstate.exchange(vec![]).drain(..) );
+    
         cmds.mesh.render_queue.push_some( self.mesh_render_queue.exchange(vec![]).drain(..) );
         cmds.mesh.render_alignment.push_some( self.mesh_render_alignment.exchange(vec![]).drain(..) );
         cmds.mesh.indexrange.push_some( self.mesh_indexrange.exchange(vec![]).drain(..) );
@@ -220,18 +217,7 @@ impl CommandsExchangeD3 {
         cmds.skin.bone_pose.push_some( self.skin_bonepose.exchange(vec![]).drain(..) );
         
         cmds.instance.create.push_some( self.instance_create.exchange(vec![]).drain(..) );
-        // cmds.instance.color.push_some( self.instance_color.exchange(vec![]).drain(..) );
-        // cmds.instance.alpha.push_some( self.instance_alpha.exchange(vec![]).drain(..) );
-        // cmds.instance.tilloff.push_some( self.instance_tilloff.exchange(vec![]).drain(..) );
-        // cmds.instance.ins_world_matrixs.push_some( self.instance_ins_world_matrixs.exchange(vec![]).drain(..) );
-        // cmds.instance.ins_colors.push_some( self.instance_ins_colors.exchange(vec![]).drain(..) );
-        // cmds.instance.ins_tilloffs.push_some( self.instance_ins_tilloffs.exchange(vec![]).drain(..) );
-        cmds.instance.floats.push_some( self.instance_float.exchange(vec![]).drain(..) );
-        cmds.instance.vec4s.push_some( self.instance_vec4s.exchange(vec![]).drain(..) );
-        cmds.instance.vec3s.push_some( self.instance_vec3s.exchange(vec![]).drain(..) );
-        cmds.instance.vec2s.push_some( self.instance_vec2s.exchange(vec![]).drain(..) );
-        cmds.instance.uints.push_some( self.instance_uints.exchange(vec![]).drain(..) );
-        cmds.instance.sints.push_some( self.instance_sints.exchange(vec![]).drain(..) );
+        cmds.instance.attr.push_some( self.instance_attr.exchange(vec![]).drain(..) );
 
         cmds.anime_instance.push_some( self.instance_targetanime.exchange(vec![]).drain(..) );
 

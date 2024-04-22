@@ -8,7 +8,7 @@ pub use pi_export_base::export::Engine;
 use pi_export_base::export::await_last_frame;
 use pi_gltf2_load::{GLTF, PluginGLTF2Res, KeyGLTF};
 use pi_mesh_builder::{cube::PluginCubeBuilder, quad::PluginQuadBuilder};
-use pi_node_materials::{PluginNodeMaterial, NodeMaterialBlocks, prelude::*};
+use pi_node_materials::{prelude::*, NodeMaterialBlocks, PluginNodeMaterial, PluginNodeMaterialSimple};
 use pi_particle_system::{PluginParticleSystem, prelude::*};
 use pi_scene_context::prelude::*;
 use pi_particle_system::prelude::*;
@@ -40,7 +40,7 @@ pub fn p3d_init_engine(app: &mut Engine) {
 
     app
         .add_plugins(PluginBundleDefault)
-        // .add_plugins(PluginNodeMaterial)
+        .add_plugins(PluginNodeMaterialSimple)
         .add_plugins(PluginCubeBuilder)
         .add_plugins(PluginQuadBuilder)
         .add_plugins(PluginParticleSystem)
@@ -92,7 +92,7 @@ pub struct ActionSetScene3D {
     pub(crate) particlesystems: QueryState<(&'static ParticleIDs, &'static SceneID)>,
     pub(crate) animectxs: QueryState<&'static SceneAnimationContext>,
     pub(crate) trails: QueryState<(&'static pi_trail_renderer::TrailPoints, &'static SceneID)>,
-    pub(crate) model: QueryState<(&'static RenderGeometryEable, &'static PassID01, &'static PassID02, &'static PassID03, &'static PassID04, &'static PassID05, &'static PassID06, &'static PassID07, &'static PassID08)>,
+    pub(crate) model: QueryState<(&'static RenderGeometryEable, &'static PassIDs)>,
     pub(crate) pass: QueryState<(&'static PassViewerID, &'static PassRendererID, &'static PassMaterialID, Option<&'static PassBindGroupScene>, Option<&'static PassBindGroupModel>, Option<&'static PassBindGroupTextureSamplers>, Option<&'static PassBindGroupLightingShadow>, Option<&'static PassBindGroups>, Option<&'static PassShader>, Option<&'static PassDraw>)>,
     pub(crate) nodes: QueryState<(&'static SceneID, &'static Enable, &'static GlobalEnable, &'static Layer, Option<&'static InstanceMesh>, Option<&'static Mesh>, Option<&'static Camera>, Option<&'static DirectLight>, Option<&'static PointLight>)>, // StateTransformQuery,
     
@@ -837,8 +837,8 @@ pub fn p3d_query_children(app: &mut Engine, param: &mut ActionSetScene3D, id: f6
 pub fn p3d_query_mesh_info(app: &mut Engine, param: &mut ActionSetScene3D, id: f64, info: &mut [u32]) -> bool {
 	pi_export_base::export::await_last_frame(app);
     let id = as_entity(id);
-    if let Ok((geoenable, pass01, pass02, pass03, pass04, pass05, pas06, pass07, pass08)) = param.model.get(&app.world, id) {
-        let temp = [pass01.0, pass02.0, pass03.0, pass04.0, pass05.0, pas06.0, pass07.0, pass08.0];
+    if let Ok((geoenable, passids)) = param.model.get(&app.world, id) {
+        let temp = passids.0;
         for i in 0..8 {
             if let Ok((idviewer, idrenderer, idrmaterial, set0, set1, set2, set3, bindgroups, shader, draw)) = param.pass.get(&app.world, temp[i]) {
                 info[i * 3 + 0] = idviewer.0.index();

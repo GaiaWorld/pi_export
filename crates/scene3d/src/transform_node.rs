@@ -73,7 +73,7 @@ pub fn p3d_node_enable_arr(cmds: &mut CommandsExchangeD3, data: &[f64], len: f64
 pub fn p3d_local_position(cmds: &mut CommandsExchangeD3, node: f64, x: f64, y: f64, z: f64) {
     let node: Entity = as_entity(node);
 
-    cmds.transform_localpos.push(OpsTransformNodeLocalPosition::ops(node, x as f32, y as f32, z as f32));
+    cmds.transform_localsrt.push(OpsTransformNodeLocal::ops(node, ETransformSRT::Translation(x as f32, y as f32, z as f32)));
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
@@ -89,7 +89,7 @@ pub fn p3d_local_position_arr(cmds: &mut CommandsExchangeD3, data: &[f64], len: 
         let x = data[i * size + 1] as f32;
         let y = data[i * size + 2] as f32;
         let z = data[i * size + 3] as f32;
-        cmds.transform_localpos.push(OpsTransformNodeLocalPosition::ops(node, x as f32, y as f32, z as f32));
+        cmds.transform_localsrt.push(OpsTransformNodeLocal::ops(node, ETransformSRT::Translation(x as f32, y as f32, z as f32)));
     }
 
 }
@@ -99,7 +99,7 @@ pub fn p3d_local_position_arr(cmds: &mut CommandsExchangeD3, data: &[f64], len: 
 pub fn p3d_local_scaling(cmds: &mut CommandsExchangeD3, node: f64, x: f64, y: f64, z: f64) {
     let node: Entity = as_entity(node);
 
-    cmds.transform_localscl.push(OpsTransformNodeLocalScaling::ops(node, x as f32, y as f32, z as f32));
+    cmds.transform_localsrt.push(OpsTransformNodeLocal::ops(node, ETransformSRT::Scaling(x as f32, y as f32, z as f32)));
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
@@ -115,7 +115,7 @@ pub fn p3d_local_scaling_arr(cmds: &mut CommandsExchangeD3, data: &[f64], len: f
         let x = data[i * size + 1] as f32;
         let y = data[i * size + 2] as f32;
         let z = data[i * size + 3] as f32;
-        cmds.transform_localscl.push(OpsTransformNodeLocalScaling::ops(node, x as f32, y as f32, z as f32));
+        cmds.transform_localsrt.push(OpsTransformNodeLocal::ops(node, ETransformSRT::Scaling(x as f32, y as f32, z as f32)));
     }
 }
 
@@ -124,7 +124,7 @@ pub fn p3d_local_scaling_arr(cmds: &mut CommandsExchangeD3, data: &[f64], len: f
 pub fn p3d_local_euler(cmds: &mut CommandsExchangeD3, node: f64, x: f64, y: f64, z: f64) {
     let node: Entity = as_entity(node);
 
-    cmds.transform_localrot.push(OpsTransformNodeLocalEuler::ops(node, x as f32, y as f32, z as f32));
+    cmds.transform_localsrt.push(OpsTransformNodeLocal::ops(node, ETransformSRT::Euler(x as f32, y as f32, z as f32)));
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
@@ -140,7 +140,7 @@ pub fn p3d_local_euler_arr(cmds: &mut CommandsExchangeD3, data: &[f64], len: f64
         let x = data[i * size + 1] as f32;
         let y = data[i * size + 2] as f32;
         let z = data[i * size + 3] as f32;
-        cmds.transform_localrot.push(OpsTransformNodeLocalEuler::ops(node, x as f32, y as f32, z as f32));
+        cmds.transform_localsrt.push(OpsTransformNodeLocal::ops(node, ETransformSRT::Euler(x as f32, y as f32, z as f32)));
     }
 }
 

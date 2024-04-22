@@ -164,6 +164,7 @@ pub fn p3d_mesh_blend(
     dst_alpha: f64,
     opt_color: f64,
     opt_alpha: f64,
+    pass: Option<f64>,
 ) {
     let mesh: Entity = as_entity(mesh);
 
@@ -176,60 +177,71 @@ pub fn p3d_mesh_blend(
         opt_color: ContextConstants::blend_operation(opt_color),
         opt_alpha: ContextConstants::blend_operation(opt_alpha),
     };
-    cmds.mesh_blend.push(OpsRenderBlend::ops(mesh, blend));
+    if let Some(pass) = pass {
+        cmds.mesh_blend.push(OpsRenderBlend::ops(mesh, EngineConstants::passtag(pass), blend));
+    } else {
+        cmds.mesh_blend.push(OpsRenderBlend::ops(mesh, PassTag::PASS_TAG_01, blend));
+        cmds.mesh_blend.push(OpsRenderBlend::ops(mesh, PassTag::PASS_TAG_02, blend));
+        cmds.mesh_blend.push(OpsRenderBlend::ops(mesh, PassTag::PASS_TAG_03, blend));
+        cmds.mesh_blend.push(OpsRenderBlend::ops(mesh, PassTag::PASS_TAG_04, blend));
+        cmds.mesh_blend.push(OpsRenderBlend::ops(mesh, PassTag::PASS_TAG_05, blend));
+        cmds.mesh_blend.push(OpsRenderBlend::ops(mesh, PassTag::PASS_TAG_06, blend));
+        cmds.mesh_blend.push(OpsRenderBlend::ops(mesh, PassTag::PASS_TAG_07, blend));
+        cmds.mesh_blend.push(OpsRenderBlend::ops(mesh, PassTag::PASS_TAG_08, blend));
+    }
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_mesh_cull_mode(
-    cmds: &mut CommandsExchangeD3, mesh: f64, val: f64) {
+    cmds: &mut CommandsExchangeD3, mesh: f64, val: f64, pass: f64) {
     let mesh: Entity = as_entity(mesh);
-    cmds.mesh_cullmode.push(OpsCullMode::ops(mesh, ContextConstants::cull_mode(val) ));
+    cmds.mesh_primitivestate.push(OpsPrimitiveState::ops(mesh, EngineConstants::passtag(pass), EPrimitiveState::CCullMode( ContextConstants::cull_mode(val) )));
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_mesh_frontface(
-    cmds: &mut CommandsExchangeD3, mesh: f64, val: f64) {
+    cmds: &mut CommandsExchangeD3, mesh: f64, val: f64, pass: f64) {
     let mesh: Entity = as_entity(mesh);
-    cmds.mesh_frontface.push(OpsFrontFace::ops(mesh, ContextConstants::front_face(val) ));
+    cmds.mesh_primitivestate.push(OpsPrimitiveState::ops(mesh, EngineConstants::passtag(pass), EPrimitiveState::CFrontFace( ContextConstants::front_face(val) )));
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_mesh_topology(
-    cmds: &mut CommandsExchangeD3, mesh: f64, val: f64) {
+    cmds: &mut CommandsExchangeD3, mesh: f64, val: f64, pass: f64) {
     let mesh: Entity = as_entity(mesh);
-    cmds.mesh_topology.push(OpsTopology::ops(mesh, ContextConstants::topolygon(val) ));
+    cmds.mesh_primitivestate.push(OpsPrimitiveState::ops(mesh, EngineConstants::passtag(pass), EPrimitiveState::Topology( ContextConstants::topolygon(val) )));
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_mesh_polygon_mode(
-    cmds: &mut CommandsExchangeD3, mesh: f64, val: f64) {
+    cmds: &mut CommandsExchangeD3, mesh: f64, val: f64, pass: f64) {
     let mesh: Entity = as_entity(mesh);
-    cmds.mesh_polygonmode.push(OpsPolygonMode::ops(mesh, ContextConstants::polygon(val) ));
+    cmds.mesh_primitivestate.push(OpsPrimitiveState::ops(mesh, EngineConstants::passtag(pass), EPrimitiveState::CPolygonMode( ContextConstants::polygon(val) )));
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_mesh_unclip_depth(
-    cmds: &mut CommandsExchangeD3, mesh: f64, val: bool) {
+    cmds: &mut CommandsExchangeD3, mesh: f64, val: bool, pass: f64) {
     let mesh: Entity = as_entity(mesh);
-    cmds.mesh_unclip_depth.push(OpsUnClipDepth::ops(mesh, val));
+    cmds.mesh_primitivestate.push(OpsPrimitiveState::ops(mesh, EngineConstants::passtag(pass), EPrimitiveState::CUnClipDepth( val )));
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_mesh_cast_shadow(
-    cmds: &mut CommandsExchangeD3, mesh: f64, val: bool) {
+    cmds: &mut CommandsExchangeD3, mesh: f64, val: bool, pass: f64) {
     let mesh: Entity = as_entity(mesh);
     cmds.mesh_shadow.push(OpsMeshShadow::CastShadow(mesh, val));
 }
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_mesh_receive_shadow(
-    cmds: &mut CommandsExchangeD3, mesh: f64, val: bool) {
+    cmds: &mut CommandsExchangeD3, mesh: f64, val: bool, pass: f64) {
     let mesh: Entity = as_entity(mesh);
     cmds.mesh_shadow.push(OpsMeshShadow::ReceiveShadow(mesh, val));
 }
@@ -237,29 +249,29 @@ pub fn p3d_mesh_receive_shadow(
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_mesh_depth_write(
-    cmds: &mut CommandsExchangeD3, mesh: f64, val: bool) {
+    cmds: &mut CommandsExchangeD3, mesh: f64, val: bool, pass: f64) {
     let mesh: Entity = as_entity(mesh);
-    cmds.mesh_depth_write.push(OpsDepthWrite::ops(mesh, val));
+    cmds.mesh_depthstate.push(OpsDepthState::ops(mesh, EngineConstants::passtag(pass), EDepthState::Write(val)));
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_mesh_depth_compare(
-    cmds: &mut CommandsExchangeD3, mesh: f64, val: f64) {
+    cmds: &mut CommandsExchangeD3, mesh: f64, val: f64, pass: f64) {
     let mesh: Entity = as_entity(mesh);
-    cmds.mesh_depth_compare.push(OpsDepthCompare::ops(mesh, ContextConstants::compare_function(val) ));
+    cmds.mesh_depthstate.push(OpsDepthState::ops(mesh, EngineConstants::passtag(pass), EDepthState::Compare(ContextConstants::compare_function(val)) ));
 }
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_mesh_depth_bias(
-    cmds: &mut CommandsExchangeD3, mesh: f64, constant: f64, slope_scale: f64, clamp: f64) {
+    cmds: &mut CommandsExchangeD3, mesh: f64, constant: f64, slope_scale: f64, clamp: f64, pass: f64) {
     let mesh: Entity = as_entity(mesh);
 
     let constant = (constant as f32 / DepthBiasState::BASE_SLOPE_SCALE) as i32;
     let slope_scale = (slope_scale as f32 / DepthBiasState::BASE_SLOPE_SCALE) as i32;
     let clamp = (clamp as f32 / DepthBiasState::BASE_CLAMP) as i32;
 
-    cmds.mesh_depth_bias.push(OpsDepthBias::ops(mesh, constant, slope_scale, clamp));
+    cmds.mesh_depthstate.push(OpsDepthState::ops(mesh, EngineConstants::passtag(pass), EDepthState::Bias(DepthBiasState { constant, slope_scale, clamp } )));
 }
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
@@ -270,13 +282,14 @@ pub fn p3d_mesh_stencil_front(
     fail_op: f64,
     depth_fail_op: f64,
     pass_op: f64,
+    pass: f64
 ) {
     let mesh: Entity = as_entity(mesh);
     let compare = ContextConstants::compare_function(compare) ;
     let fail_op = ContextConstants::stencil_operation(fail_op) ;
     let depth_fail_op = ContextConstants::stencil_operation(depth_fail_op) ;
     let pass_op = ContextConstants::stencil_operation(pass_op) ;
-    cmds.mesh_stencil_front.push(OpsStencilFront::ops(mesh, compare, fail_op, depth_fail_op, pass_op));
+    cmds.mesh_stencilstate.push(OpsStencilState::ops(mesh, EngineConstants::passtag(pass), EStencilState::Front(StencilFaceState{compare, fail_op, depth_fail_op, pass_op})));
 }
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
@@ -287,28 +300,29 @@ pub fn p3d_mesh_stencil_back(
     fail_op: f64,
     depth_fail_op: f64,
     pass_op: f64,
+    pass: f64
 ) {
     let mesh: Entity = as_entity(mesh);
     let compare = ContextConstants::compare_function(compare) ;
     let fail_op = ContextConstants::stencil_operation(fail_op) ;
     let depth_fail_op = ContextConstants::stencil_operation(depth_fail_op) ;
     let pass_op = ContextConstants::stencil_operation(pass_op) ;
-    cmds.mesh_stencil_back.push(OpsStencilBack::ops(mesh, compare, fail_op, depth_fail_op, pass_op));
+    cmds.mesh_stencilstate.push(OpsStencilState::ops(mesh, EngineConstants::passtag(pass), EStencilState::Back(StencilFaceState{compare, fail_op, depth_fail_op, pass_op})));
 }
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_mesh_stencil_read(
-    cmds: &mut CommandsExchangeD3, mesh: f64, val: f64) {
+    cmds: &mut CommandsExchangeD3, mesh: f64, val: f64, pass: f64) {
     let mesh: Entity = as_entity(mesh);
-    cmds.mesh_stencil_read.push(OpsStencilRead::ops(mesh, val as u32));
+    cmds.mesh_stencilstate.push(OpsStencilState::ops(mesh, EngineConstants::passtag(pass), EStencilState::Read(val as u32)));
 }
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_mesh_stencil_write(
-    cmds: &mut CommandsExchangeD3, mesh: f64, val: f64
+    cmds: &mut CommandsExchangeD3, mesh: f64, val: f64, pass: f64
 ) {
     let mesh: Entity = as_entity(mesh);
-    cmds.mesh_stencil_write.push(OpsStencilWrite::ops(mesh, val as u32));
+    cmds.mesh_stencilstate.push(OpsStencilState::ops(mesh, EngineConstants::passtag(pass), EStencilState::Write(val as u32)));
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]

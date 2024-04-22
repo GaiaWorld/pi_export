@@ -29,24 +29,24 @@ pi_assets 				= "0.13"
 pi_export_base 			= { path = "../base" }
 pi_hal 					= { version = "0.1", registry = "yn" }
 log						= "0.4"
+pi_render               = { version = "0.1", registry = "yn", features=["webgl"] }
 
 pi_scene_math           = { version = "0.0.3", registry = "yn" }
 pi_animation            = { version = "0.1", registry = "yn" }
 pi_curves               = { version = "0.1", registry = "yn" }
 
-pi_3d 		            = { version = "=0.0.5", registry = "yn" }
-pi_scene_shell 		    = { version = "=0.0.5", registry = "yn" }
-pi_node_materials 		= { version = "=0.0.5", registry = "yn" }
-pi_scene_context 		= { version = "=0.0.5", registry = "yn" }
-pi_mesh_builder 		= { version = "=0.0.5", registry = "yn" }
-pi_gltf2_load           = { version = "=0.0.5", registry = "yn" }
-pi_particle_system      = { version = "=0.0.5", registry = "yn" }
-pi_trail_renderer       = { version = "=0.0.5", registry = "yn" }
+pi_3d 		            = { version = "=0.0.6", registry = "yn" }
+pi_scene_shell 		    = { version = "=0.0.6", registry = "yn" }
+pi_node_materials 		= { version = "=0.0.6", registry = "yn" }
+pi_scene_context 		= { version = "=0.0.6", registry = "yn" }
+pi_mesh_builder 		= { version = "=0.0.6", registry = "yn" }
+pi_gltf2_load           = { version = "=0.0.6", registry = "yn" }
+pi_particle_system      = { version = "=0.0.6", registry = "yn" }
+pi_trail_renderer       = { version = "=0.0.6", registry = "yn" }
 
 bytemuck                = { version = "1.4", features = [ "derive" ] }
 
 js_proxy_gen_macro      = { registry = "yn", version = "0.2" }
-pi_render 				= { version = "0.1", registry = "yn" }
 ahash = "0.8"
 
 [target.'cfg(target_arch = "wasm32")'.dependencies]
