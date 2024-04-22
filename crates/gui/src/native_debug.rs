@@ -775,6 +775,21 @@ fn to_css_str(attr: Attribute) -> String {
         Attribute::TransitionDuration(r) => "".to_string(), // TODO
         Attribute::TransitionTimingFunction(r) => "".to_string(), // TODO
         Attribute::TransitionDelay(r) => "".to_string(), // TODO  
+
+        Attribute::TextOuterGlow(r) => "text-outer-glow:".to_string() + 
+            "rgba("
+                + r.color.x.to_string().as_str()
+                + ","
+                + r.color.y.to_string().as_str()
+                + ","
+                + r.color.z.to_string().as_str()
+                + ","
+                + r.color.w.to_string().as_str()
+                + ") "
+                + r.distance.to_string().as_str()
+                + "px "
+                + r.intensity.to_string().as_str()
+        ,
     }
 }
 

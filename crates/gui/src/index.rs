@@ -1477,6 +1477,21 @@ pub fn to_css_str(attr: &Attribute) -> (&'static str, String) {
         Attribute::TransitionDuration(_) => ("", "".to_string()), // TODO
         Attribute::TransitionTimingFunction(_) => ("", "".to_string()), // TODO
         Attribute::TransitionDelay(_) => ("", "".to_string()), // TODO
+
+        Attribute::TextOuterGlow(r) => ("text-outer-glow", {
+            "rgba(".to_string()
+                + r.color.x.to_string().as_str()
+                + ","
+                + r.color.y.to_string().as_str()
+                + ","
+                + r.color.z.to_string().as_str()
+                + ","
+                + r.color.w.to_string().as_str()
+                + ") "
+                + r.distance.to_string().as_str()
+                + "px "
+                + r.intensity.to_string().as_str()
+        }),
     }
 }
 

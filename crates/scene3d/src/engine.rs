@@ -10,7 +10,7 @@ use pi_gltf2_load::{GLTF, PluginGLTF2Res, KeyGLTF};
 use pi_mesh_builder::{cube::PluginCubeBuilder, quad::PluginQuadBuilder};
 use pi_node_materials::{prelude::*, NodeMaterialBlocks, PluginNodeMaterial, PluginNodeMaterialSimple};
 use pi_particle_system::{PluginParticleSystem, prelude::*};
-use pi_scene_context::prelude::*;
+use pi_scene_context::{prelude::*, shadow::PluginShadowGenerator};
 use pi_particle_system::prelude::*;
 use pi_trail_renderer::{PluginTrail, ActionSetTrailRenderer, ResTrailBuffer};
 pub use pi_export_base::asset::Atom;
@@ -41,6 +41,8 @@ pub fn p3d_init_engine(app: &mut Engine) {
     app
         .add_plugins(PluginBundleDefault)
         .add_plugins(PluginNodeMaterialSimple)
+        .add_plugins(PluginShadowGenerator)
+        .add_plugins(PluginShadowMapping)
         .add_plugins(PluginCubeBuilder)
         .add_plugins(PluginQuadBuilder)
         .add_plugins(PluginParticleSystem)

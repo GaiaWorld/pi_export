@@ -18,7 +18,7 @@ use pi_style::style::*;
 use pi_style::style_type::*;
 use pi_ui_render::resource::NodeCmd;
 use pi_ui_render::components::user::RadialWave;
-use pi_style::style_parse::{parse_comma_separated, parse_text_shadow, parse_as_image, StyleParse};
+use pi_style::style_parse::{parse_comma_separated, parse_text_shadow, parse_outer_glow, parse_as_image, StyleParse};
 use smallvec::SmallVec;
 pub use pi_export_base::export::{Atom, Engine};
 pub use crate::index::{OffsetDocument, Size, Gui};
@@ -881,6 +881,16 @@ style_out_export!(@expr text_shadow, TextShadowType, {
 		Default::default()
 	}
 }, s: &str,;);
+style_out_export!(@expr text_outer_glow, TextOuterGlowType, {
+	let mut input = cssparser::ParserInput::new(value);
+    let mut parse = cssparser::Parser::new(&mut input);
+    if let Ok(value) = parse_outer_glow(&mut parse)
+    {
+        value
+    } else {
+        Default::default()
+    }
+},value: &str,;);
 style_out_export!(@atom font_family, FontFamilyType, (**name).clone(), name: &Atom,;);
 style_out_export!(@expr text_content, TextContentType,  TextContent(content, pi_atom::Atom::from("")), ;content: String,);
 style_out_export!(@expr animation_timing_function_str, AnimationTimingFunctionType, { 
