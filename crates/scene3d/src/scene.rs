@@ -1,5 +1,5 @@
 
-use std::ops::Deref;
+use std::{mem::transmute, ops::Deref};
 
 use pi_scene_shell::prelude::*;
 pub use pi_export_base::{export::{Engine, Atom}, constants::*};
@@ -149,7 +149,7 @@ pub fn p3d_scene_shadowmap(cmds: &mut CommandsExchangeD3, scene: f64, url: Optio
     let scene: Entity = as_entity(scene);
 
     if let Some(url) = url {
-        let key = as_dk(&url);
+        let key = unsafe { transmute(url) };
         cmds.scene_shadowmap.push(OpsSceneShadowMap::ops(scene, Some(key)));
     } else {
         cmds.scene_shadowmap.push(OpsSceneShadowMap::ops(scene, None));

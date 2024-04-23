@@ -35,14 +35,14 @@ pi_scene_math           = { version = "0.0.3", registry = "yn" }
 pi_animation            = { version = "0.1", registry = "yn" }
 pi_curves               = { version = "0.1", registry = "yn" }
 
-pi_3d 		            = { version = "=0.0.6", registry = "yn" }
-pi_scene_shell 		    = { version = "=0.0.6", registry = "yn" }
-pi_node_materials 		= { version = "=0.0.6", registry = "yn" }
-pi_scene_context 		= { version = "=0.0.6", registry = "yn" }
-pi_mesh_builder 		= { version = "=0.0.6", registry = "yn" }
-pi_gltf2_load           = { version = "=0.0.6", registry = "yn" }
-pi_particle_system      = { version = "=0.0.6", registry = "yn" }
-pi_trail_renderer       = { version = "=0.0.6", registry = "yn" }
+pi_3d 		            = { version = "=0.0.8", registry = "yn" }
+pi_scene_shell 		    = { version = "=0.0.8", registry = "yn" }
+pi_node_materials 		= { version = "=0.0.8", registry = "yn" }
+pi_scene_context 		= { version = "=0.0.8", registry = "yn" }
+pi_mesh_builder 		= { version = "=0.0.8", registry = "yn" }
+pi_gltf2_load           = { version = "=0.0.8", registry = "yn" }
+pi_particle_system      = { version = "=0.0.8", registry = "yn" }
+pi_trail_renderer       = { version = "=0.0.8", registry = "yn" }
 
 bytemuck                = { version = "1.4", features = [ "derive" ] }
 

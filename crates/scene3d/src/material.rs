@@ -159,7 +159,7 @@ pub fn p3d_material_uniform_tex_from_render_target(
     // let anisotropy_clamp = EngineConstants::anisotropy_clamp(anisotropy_clamp);
     // let border_color = EngineConstants::border_color(border_color);
     let mat: Entity = as_entity(mat);
-    let key = as_dk(&url);    cmds.material_texturefromtarget.push(OpsUniformTextureFromRenderTarget::ops(mat, texparam, key, key_tilloff.deref().clone()));
+    let key = unsafe { transmute(url) };    cmds.material_texturefromtarget.push(OpsUniformTextureFromRenderTarget::ops(mat, texparam, key, key_tilloff.deref().clone()));
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]

@@ -1,4 +1,6 @@
 
+use std::mem::transmute;
+
 use js_proxy_gen_macro::pi_js_export;
 use pi_scene_shell::prelude::*;
 use pi_export_base::constants::ContextConstants;
@@ -32,7 +34,7 @@ pub fn p3d_create_render_target(app: &mut Engine, param: &mut ActionSetScene3D, 
     if let Some(key) = resource.render_targets.create(
         &resource.device, sampler, &resource.asset_samp, &resource.asset_atlas, color_format, depth_stencil_format, width as u32, height as u32
     ) {
-        Some(as_f64_dk(&key))
+        Some(unsafe { transmute(key) })
     } else {
         None
     }
@@ -44,5 +46,5 @@ pub fn p3d_dispose_render_target(app: &mut Engine, param: &mut ActionSetScene3D,
     pi_export_base::export::await_last_frame(app);
     let mut resource = param.resource.get_mut(&mut app.world);
     
-    resource.render_targets.delete(as_dk(&key));
+    resource.render_targets.delete(unsafe { transmute(key) });
 }

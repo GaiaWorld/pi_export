@@ -1,4 +1,6 @@
 
+use std::mem::transmute;
+
 use js_proxy_gen_macro::pi_js_export;
 use pi_scene_shell::prelude::*;
 pub use pi_export_base::constants::*;
@@ -44,7 +46,7 @@ pub fn p3d_render_target_key(cmds: &mut CommandsExchangeD3, renderer: f64, keyta
 
     match keytarget {
         Some(keytarget) => {
-            let keytarget = as_dk(&keytarget);
+            let keytarget = unsafe { transmute(keytarget) };
             cmds.renderer_target.push(OpsRendererTarget::ops(renderer, KeyCustomRenderTarget::Custom(keytarget)));
         },
         None => {

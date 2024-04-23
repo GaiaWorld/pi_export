@@ -3,7 +3,7 @@ use std::{mem::transmute, ops::Deref};
 // use default_render::SingleIDBaseDefaultMaterial;
 use pi_3d::PluginBundleDefault;
 use pi_assets::asset::Handle;
-use pi_scene_shell::prelude::*;
+use pi_scene_shell::{assets::texture::TextureKeyList, prelude::*};
 pub use pi_export_base::export::Engine;
 use pi_export_base::export::await_last_frame;
 use pi_gltf2_load::{GLTF, PluginGLTF2Res, KeyGLTF};
@@ -41,8 +41,8 @@ pub fn p3d_init_engine(app: &mut Engine) {
     app
         .add_plugins(PluginBundleDefault)
         .add_plugins(PluginNodeMaterialSimple)
-        .add_plugins(PluginShadowGenerator)
-        .add_plugins(PluginShadowMapping)
+        // .add_plugins(PluginShadowGenerator)
+        // .add_plugins(PluginShadowMapping)
         .add_plugins(PluginCubeBuilder)
         .add_plugins(PluginQuadBuilder)
         .add_plugins(PluginParticleSystem)
@@ -86,7 +86,7 @@ pub struct ActionSetScene3D {
     pub(crate) project_matrix: QueryState<&'static ViewerProjectionMatrix>,
     pub(crate) vp_matrix: QueryState<&'static ViewerTransformMatrix>,
     pub(crate) meshes: QueryState<(&'static SceneID, &'static GlobalEnable, Option<&'static RenderGeometryEable>, Option<&'static InstanceMesh>, &'static AbstructMesh)>, // StateMeshQuery,
-    pub(crate) materials: QueryState<(&'static AssetResShaderEffectMeta, &'static EffectTextureSamplersComp, Option<&'static TextureSlot01>, Option<&'static TextureSlot02>, Option<&'static TextureSlot03>, Option<&'static TextureSlot04>)>, // StateMaterialQuery,
+    pub(crate) materials: QueryState<(&'static AssetResShaderEffectMeta, &'static EffectTextureSamplersComp, Option<&'static TextureKeyList>)>, // StateMaterialQuery,
     pub(crate) transforms: QueryState<(&'static SceneID, &'static Enable, &'static GlobalEnable)>, // StateTransformQuery,
     pub(crate) cameras: QueryState<(&'static Camera, &'static ModelList, &'static ModelListAfterCulling)>, // StateCameraQuery,
     pub(crate) renderers: QueryState<(&'static ViewerID, &'static Renderer)>,
@@ -359,7 +359,7 @@ pub fn p3d_material_state(app: &mut Engine, param: &mut ActionSetScene3D, result
     
     // let mut cmds = param.materials.get(&mut app.world);
     let mut state = StateMaterial::default();
-    param.materials.iter(&app.world).for_each(|(meta, texs, _, _, _, _)| {
+    param.materials.iter(&app.world).for_each(|(meta, texs, _)| {
         state.count += 1;
         let texcount = meta.textures.len();
         let mut isready = false;
@@ -886,42 +886,45 @@ pub fn p3d_query_material_info(app: &mut Engine, param: &mut ActionSetScene3D, i
     let id = as_entity(id);
     if let Ok((
         meta, textures
-        , slot01, slot02, slot03, slot04
+        , slots
     )) = param.materials.get(&app.world, id) {
 
         let mut idx = 0;
-        if let Some(slot) = slot01 {
-            match &slot.0.url {
-                EKeyTexture::Tex(key) => { info[idx * 2 + 0] = 1; info[idx * 2 + 1] = key.str_hash() as u32; },
-                EKeyTexture::Image(key) => { info[idx * 2 + 0] = 2; info[idx * 2 + 1] = key.url().url.str_hash() as u32; },
-                EKeyTexture::SRT(_) => { info[idx * 2 + 0] = 4; info[idx * 2 + 1] = 0 as u32; },
-            }
+        if let Some(slots) = slots {
+            slots.0.iter().for_each(|slot| {
+                match &slot.url {
+                    EKeyTexture::Tex(key) => { info[idx * 2 + 0] = 1; info[idx * 2 + 1] = key.str_hash() as u32; },
+                    EKeyTexture::Image(key) => { info[idx * 2 + 0] = 2; info[idx * 2 + 1] = key.url().url.str_hash() as u32; },
+                    EKeyTexture::SRT(key) => { info[idx * 2 + 0] = 4; info[idx * 2 + 1] = *key as u32; },
+                }
+                idx += 1;
+            })
         } else { info[idx * 2 + 0] = 0; info[idx * 2 + 1] = 0 as u32; }
-        idx += 1;
-        if let Some(slot) = slot02 {
-            match &slot.0.url {
-                EKeyTexture::Tex(key) => { info[idx * 2 + 0] = 1; info[idx * 2 + 1] = key.str_hash() as u32; },
-                EKeyTexture::Image(key) => { info[idx * 2 + 0] = 2; info[idx * 2 + 1] = key.url().url.str_hash() as u32; },
-                EKeyTexture::SRT(_) => { info[idx * 2 + 0] = 4; info[idx * 2 + 1] = 0 as u32; },
-            }
-        } else { info[idx * 2 + 0] = 0; info[idx * 2 + 1] = 0 as u32; }
-        idx += 1;
-        if let Some(slot) = slot03 {
-            match &slot.0.url {
-                EKeyTexture::Tex(key) => { info[idx * 2 + 0] = 1; info[idx * 2 + 1] = key.str_hash() as u32; },
-                EKeyTexture::Image(key) => { info[idx * 2 + 0] = 2; info[idx * 2 + 1] = key.url().url.str_hash() as u32; },
-                EKeyTexture::SRT(_) => { info[idx * 2 + 0] = 4; info[idx * 2 + 1] = 0 as u32; },
-            }
-        } else { info[idx * 2 + 0] = 0; info[idx * 2 + 1] = 0 as u32; }
-        idx += 1;
-        if let Some(slot) = slot04 {
-            match &slot.0.url {
-                EKeyTexture::Tex(key) => { info[idx * 2 + 0] = 1; info[idx * 2 + 1] = key.str_hash() as u32; },
-                EKeyTexture::Image(key) => { info[idx * 2 + 0] = 2; info[idx * 2 + 1] = key.url().url.str_hash() as u32; },
-                EKeyTexture::SRT(_) => { info[idx * 2 + 0] = 4; info[idx * 2 + 1] = 0 as u32; },
-            }
-        } else { info[idx * 2 + 0] = 0; info[idx * 2 + 1] = 0 as u32; }
-        idx += 1;
+        // idx += 1;
+        // if let Some(slot) = slot02 {
+        //     match &slot.0.url {
+        //         EKeyTexture::Tex(key) => { info[idx * 2 + 0] = 1; info[idx * 2 + 1] = key.str_hash() as u32; },
+        //         EKeyTexture::Image(key) => { info[idx * 2 + 0] = 2; info[idx * 2 + 1] = key.url().url.str_hash() as u32; },
+        //         EKeyTexture::SRT(_) => { info[idx * 2 + 0] = 4; info[idx * 2 + 1] = 0 as u32; },
+        //     }
+        // } else { info[idx * 2 + 0] = 0; info[idx * 2 + 1] = 0 as u32; }
+        // idx += 1;
+        // if let Some(slot) = slot03 {
+        //     match &slot.0.url {
+        //         EKeyTexture::Tex(key) => { info[idx * 2 + 0] = 1; info[idx * 2 + 1] = key.str_hash() as u32; },
+        //         EKeyTexture::Image(key) => { info[idx * 2 + 0] = 2; info[idx * 2 + 1] = key.url().url.str_hash() as u32; },
+        //         EKeyTexture::SRT(_) => { info[idx * 2 + 0] = 4; info[idx * 2 + 1] = 0 as u32; },
+        //     }
+        // } else { info[idx * 2 + 0] = 0; info[idx * 2 + 1] = 0 as u32; }
+        // idx += 1;
+        // if let Some(slot) = slot04 {
+        //     match &slot.0.url {
+        //         EKeyTexture::Tex(key) => { info[idx * 2 + 0] = 1; info[idx * 2 + 1] = key.str_hash() as u32; },
+        //         EKeyTexture::Image(key) => { info[idx * 2 + 0] = 2; info[idx * 2 + 1] = key.url().url.str_hash() as u32; },
+        //         EKeyTexture::SRT(_) => { info[idx * 2 + 0] = 4; info[idx * 2 + 1] = 0 as u32; },
+        //     }
+        // } else { info[idx * 2 + 0] = 0; info[idx * 2 + 1] = 0 as u32; }
+        // idx += 1;
 
         // if let Some(texs) = &textures.0 {
         //     if let Some(slot) = &texs.textures.0 {
