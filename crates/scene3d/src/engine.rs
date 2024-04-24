@@ -41,8 +41,8 @@ pub fn p3d_init_engine(app: &mut Engine) {
     app
         .add_plugins(PluginBundleDefault)
         .add_plugins(PluginNodeMaterialSimple)
-        // .add_plugins(PluginShadowGenerator)
-        // .add_plugins(PluginShadowMapping)
+        .add_plugins(PluginShadowGenerator)
+        .add_plugins(PluginShadowMapping)
         .add_plugins(PluginCubeBuilder)
         .add_plugins(PluginQuadBuilder)
         .add_plugins(PluginParticleSystem)
