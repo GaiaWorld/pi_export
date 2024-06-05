@@ -2486,7 +2486,7 @@ pub mod style_macro {
                     match parse_as_image(&mut parse) {
                         Ok(r) => r,
                         Err(e) => {
-                            ();
+                            (/*ERROR*/);
                             return;
                         }
                     }
@@ -2507,7 +2507,7 @@ pub mod style_macro {
                     match parse_as_image(&mut parse) {
                         Ok(r) => r,
                         Err(e) => {
-                            ();
+                            (/*ERROR*/);
                             return;
                         }
                     }
@@ -3688,7 +3688,7 @@ pub mod style_macro {
                     match BaseShape::parse(&mut parse) {
                         Ok(r) => r,
                         Err(e) => {
-                            ();
+                            (/*ERROR*/);
                             return;
                         }
                     }
@@ -3709,7 +3709,7 @@ pub mod style_macro {
                     match BaseShape::parse(&mut parse) {
                         Ok(r) => r,
                         Err(e) => {
-                            ();
+                            (/*ERROR*/);
                             return;
                         }
                     }
@@ -3972,16 +3972,13 @@ pub mod style_macro {
                 AnimationNameType({
                     let mut input = cssparser::ParserInput::new(value);
                     let mut parse = cssparser::Parser::new(&mut input);
-                    let value = if let Ok(value)
-                        = parse_comma_separated::<
-                            _,
-                            _,
-                        >(
-                            &mut parse,
-                            |input| Ok(
-                                pi_atom::Atom::from(input.expect_ident()?.as_ref()),
-                            ),
-                        ) {
+                    let value = if let Ok(value) = parse_comma_separated::<
+                        _,
+                        _,
+                    >(
+                        &mut parse,
+                        |input| Ok(pi_atom::Atom::from(input.expect_ident()?.as_ref())),
+                    ) {
                         value
                     } else {
                         Default::default()
@@ -4009,16 +4006,13 @@ pub mod style_macro {
                 AnimationNameType({
                     let mut input = cssparser::ParserInput::new(value);
                     let mut parse = cssparser::Parser::new(&mut input);
-                    let value = if let Ok(value)
-                        = parse_comma_separated::<
-                            _,
-                            _,
-                        >(
-                            &mut parse,
-                            |input| Ok(
-                                pi_atom::Atom::from(input.expect_ident()?.as_ref()),
-                            ),
-                        ) {
+                    let value = if let Ok(value) = parse_comma_separated::<
+                        _,
+                        _,
+                    >(
+                        &mut parse,
+                        |input| Ok(pi_atom::Atom::from(input.expect_ident()?.as_ref())),
+                    ) {
                         value
                     } else {
                         Default::default()
@@ -4345,11 +4339,10 @@ pub mod style_macro {
                 AnimationTimingFunctionType({
                     let mut input = cssparser::ParserInput::new(value);
                     let mut parse = cssparser::Parser::new(&mut input);
-                    if let Ok(value)
-                        = parse_comma_separated(
-                            &mut parse,
-                            <AnimationTimingFunction as StyleParse>::parse,
-                        ) {
+                    if let Ok(value) = parse_comma_separated(
+                        &mut parse,
+                        <AnimationTimingFunction as StyleParse>::parse,
+                    ) {
                         value
                     } else {
                         Default::default()
@@ -4368,11 +4361,10 @@ pub mod style_macro {
                 AnimationTimingFunctionType({
                     let mut input = cssparser::ParserInput::new(value);
                     let mut parse = cssparser::Parser::new(&mut input);
-                    if let Ok(value)
-                        = parse_comma_separated(
-                            &mut parse,
-                            <AnimationTimingFunction as StyleParse>::parse,
-                        ) {
+                    if let Ok(value) = parse_comma_separated(
+                        &mut parse,
+                        <AnimationTimingFunction as StyleParse>::parse,
+                    ) {
                         value
                     } else {
                         Default::default()
@@ -4640,7 +4632,7 @@ pub mod style_macro {
                 gui.commands.add_css_bin(pi_ui_render::resource::ExtendCssCmd(r));
             }
             Err(e) => {
-                ();
+                (/*ERROR*/);
                 return;
             }
         }
@@ -4653,7 +4645,7 @@ pub mod style_macro {
                 gui.commands.add_css_bin(pi_ui_render::resource::ExtendCssCmd(r));
             }
             Err(e) => {
-                ();
+                (/*ERROR*/);
                 return;
             }
         }
@@ -5248,7 +5240,7 @@ pub mod style_macro {
             for (group_id, ty, count) in events.iter() {
                 match map.get(*group_id) {
                     Some(r) => {
-                        ();
+                        (/*ERROR*/);
                         arr[i] = r.0.index();
                         arr[i + 1] = r.0.generation();
                         match &r.1 {
@@ -5280,7 +5272,7 @@ pub mod style_macro {
             for (group_id, ty, count) in events.iter() {
                 match map.get(*group_id) {
                     Some(r) => {
-                        ();
+                        (/*ERROR*/);
                         arr[i] = r.0.index();
                         arr[i + 1] = r.0.generation();
                         match &r.1 {
@@ -5390,12 +5382,12 @@ pub mod style_macro {
         let mut animations = match parse_animation(&mut parse) {
             Ok(r) => r,
             Err(e) => {
-                ();
+                (/*ERROR*/);
                 return;
             }
         };
         animations.name.scope_hash = scope_hash as usize;
-        ();
+        (/*ERROR*/);
         if animations.name.value.len() > 0 {
             gui.commands.set_style(node_id, AnimationNameType(animations.name));
             gui.commands.set_style(node_id, AnimationDurationType(animations.duration));

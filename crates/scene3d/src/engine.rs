@@ -38,16 +38,16 @@ pub fn p3d_init_engine(app: &mut Engine) {
         app.insert_resource(AssetMgrConfigs::default());
     }
 
+    PluginBundleDefault::add(app);
     app
-        .add_plugins(PluginBundleDefault)
         .add_plugins(PluginNodeMaterialSimple)
-        // .add_plugins(PluginShadowGenerator)
-        // .add_plugins(PluginShadowMapping)
+        .add_plugins(PluginShadowGenerator)
+        .add_plugins(PluginShadowMapping)
         .add_plugins(PluginCubeBuilder)
         .add_plugins(PluginQuadBuilder)
-        .add_plugins(PluginParticleSystem)
+        // .add_plugins(PluginParticleSystem)
         .add_plugins(PluginGLTF2Res)
-        .add_plugins(PluginTrail)
+        // .add_plugins(PluginTrail)
         ;
 
     app.add_systems(
@@ -361,7 +361,7 @@ pub fn p3d_material_state(app: &mut Engine, param: &mut ActionSetScene3D, result
     let mut state = StateMaterial::default();
     param.materials.iter(&app.world).for_each(|(meta, texs, _)| {
         state.count += 1;
-        let texcount = meta.textures.len();
+        let texcount = meta.0.as_ref().unwrap().textures.len();
         let mut isready = false;
         if let Some(texs) = &texs.0 {
             if texcount == texs.textures.len() {

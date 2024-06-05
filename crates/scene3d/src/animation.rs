@@ -512,6 +512,132 @@ pub fn p3d_query_anime_events(
     index as f64
 }
 
+// fn curve_create(
+//     data: &[f32],
+//     mode: EAnimeCurve,
+//     n: usize,
+//     create: &Fn(&[f32], usize) -> FrameDataValue,
+// ) -> FrameDataValue {
+//     let vs = N; let vs2 = N * 2; let vs3 = N * 3;
+//     let design_frame_per_second = data[0] as FramePerSecond;
+
+//     let mut minidx = 0;
+//     let mut maxidx = 0;
+
+//     let mut curve = match mode {
+//         EAnimeCurve::FrameValues => {
+//             let mut curve = FrameCurve::<T>::curve_frame_values(design_frame_per_second);
+//             let head = 1;
+//             let step = 1 + vs;
+//             let frames = (data.len() - head) / step;
+//             for i in 0..frames {
+//                 let index = head + i * step;
+//                 let frame = data[index + 0] as FrameIndex;
+//                 // log::warn!("Frame {:?}, data: {:?}", frame, T::newn(data, index + 1));
+
+//                 // curve.curve_frame_values_frame(frame, T::newn(data, index + 1));
+//                 let (index, min, max) = curve_frame_index(&mut curve.frames, frame);
+//                 curve.values.insert(index, T::newn(data, index + 1));
+//                 minidx = min; maxidx = max;
+//             }
+//             curve
+//         },
+//         EAnimeCurve::FrameValuesStep => {
+//             let mut curve = FrameCurve::<T>::curve_frame_values(design_frame_per_second);
+//             let head = 1;
+//             let step = 1 + vs;
+//             let frames = (data.len() - head) / step;
+//             for i in 0..frames {
+//                 let index = head + i * step;
+//                 let frame = data[index + 0] as FrameIndex;
+
+//                 // curve.curve_frame_values_frame(frame, T::newn(data, index + 1));
+//                 let (index, min, max) = curve_frame_index(&mut curve.frames, frame);
+//                 curve.values.insert(index, T::newn(data, index + 1));
+//                 minidx = min; maxidx = max;
+//             }
+//             curve.call = interplate_frame_values_step;
+//             curve
+//         },
+//         EAnimeCurve::EasingCurve => {
+//             let frame_count = data[1] as FrameIndex;
+//             let mode = number_to_easingmode(data[2] as u8);
+//             let head = 3;
+//             let from = T::newn(data, head + 0);
+//             let scalar = T::newn(data, head + vs);
+//             let curve = FrameCurve::<T>::curve_easing(
+//                 from,
+//                 scalar,
+//                 frame_count,
+//                 design_frame_per_second, mode
+//             );
+//             curve
+//         },
+//         EAnimeCurve::MinMaxCurve => {
+//             let from = T::newn(data, 1);
+//             let to = T::newn(data, 1 + vs);
+//             let head = 1 + vs2;
+//             let mut curve = FrameCurve::<T>::curve_minmax_curve(from, to, design_frame_per_second);
+//             let step = 4;
+//             let frames = (data.len() - head) / step;
+//             for i in 0..frames {
+//                 let index = head + i * step;
+//                 let frame = data[index + 0] as FrameIndex;
+//                 let intangent  = data[index + 1] as f32;
+//                 let value = data[index + 2] as f32;
+//                 let outtangent = data[index + 3] as f32;
+
+//                 // curve.curve_minmax_curve_frame(frame, value, intangent, outtangent);
+//                 let (index, min, max) = curve_frame_index(&mut curve.frames, frame);
+//                 let keyframe = CurveFrameValue::new(value, [intangent, outtangent]);
+//                 curve.minmax_curve_values.insert(index, keyframe);
+//                 minidx = min; maxidx = max;
+//             }
+//             curve
+//         },
+//         EAnimeCurve::CubicBezierCurve => {
+//             let frame_count = data[1] as FrameIndex;
+//             let mut head = 2;
+//             let from = T::newn(data, head);
+//             let scalar = T::newn(data, head + vs);
+//             head = head + vs2;
+//             let x1 = data[head] as f32; let y1 = data[head + 1] as f32; let x2 = data[head + 2] as f32; let y2 = data[head + 3] as f32; 
+//             let curve = FrameCurve::<T>::curve_cubic_bezier(
+//                 from,
+//                 scalar,
+//                 frame_count,
+//                 design_frame_per_second,
+//                 x1 as f32, y1 as f32, x2 as f32, y2 as f32
+//             );
+//             curve
+//         },
+//         EAnimeCurve::GLTFCubicSpline => {
+//             let mut curve = FrameCurve::<T>::curve_cubic_spline(design_frame_per_second);
+//             let head = 1;
+//             let step = 1 + vs3;
+//             let frames = (data.len() - head) / step;
+//             for i in 0..frames {
+//                 let index = head + i * step;
+//                 let frame = data[index + 0] as FrameIndex;
+//                 let intangent = T::newn(data, index + 1);
+//                 let value = T::newn(data, index + 1 + vs);
+//                 let outtangent = T::newn(data, index + 1 + vs2);
+
+//                 // curve.curve_cubic_splice_frame(frame, value, intangent, outtangent);
+//                 let (index, min, max) = curve_frame_index(&mut curve.frames, frame);
+//                 let keyframe = CurveFrameValue::new(value, [intangent, outtangent]);
+//                 curve.cubic_spline_values.insert(index, keyframe);
+//                 minidx = min; maxidx = max;
+//             }
+//             curve
+//         },
+//     };
+
+//     curve.min_frame = minidx;
+//     curve.max_frame = maxidx;
+//     curve.frame_number = maxidx - minidx;
+//     curve
+// }
 
 fn curve<const N: usize, T: TValue<N> + FrameDataValue>(
     data: &[f32],

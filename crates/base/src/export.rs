@@ -275,11 +275,11 @@ impl std::ops::Drop for JsRes {
 #[cfg_attr(target_arch = "wasm32", wasm_bindgen)]
 #[cfg(feature = "pi_js_export")]
 pub fn set_log_filter(engine: &mut Engine, filter: &str) {
-	if let Some(handle) = engine.app_mut().world.get_resource_mut::<pi_bevy_log::LogFilterHandle>() {
-		if let Ok(filter_layer) = tracing_subscriber::EnvFilter::try_new(filter) {
-			let _ = handle.0.modify(|filter| *filter = filter_layer);
-		}
-	}
+	// if let Some(handle) = engine.app_mut().world.get_resource_mut::<pi_bevy_log::LogFilterHandle>() {
+	// 	if let Ok(filter_layer) = tracing_subscriber::EnvFilter::try_new(filter) {
+	// 		let _ = handle.0.modify(|filter| *filter = filter_layer);
+	// 	}
+	// }
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
@@ -323,14 +323,14 @@ pub fn create_engine(canvas: web_sys::HtmlCanvasElement, width: u32, height: u32
 		log.filter = log_filter;
 	}
 
-	log.level= match log_level {
-		0 => tracing::Level::TRACE,
-		1 => tracing::Level::DEBUG,
-		2 => tracing::Level::INFO,
-		3 => tracing::Level::WARN,
-		4 => tracing::Level::ERROR,
-		_ => tracing::Level::WARN,
-	};
+	// log.level= match log_level {
+	// 	0 => tracing::Level::TRACE,
+	// 	1 => tracing::Level::DEBUG,
+	// 	2 => tracing::Level::INFO,
+	// 	3 => tracing::Level::WARN,
+	// 	4 => tracing::Level::ERROR,
+	// 	_ => tracing::Level::WARN,
+	// };
 	// let chrome_write = ShareChromeWrite::new();
 	// log.chrome_write = None;
 	let window ={

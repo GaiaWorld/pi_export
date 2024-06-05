@@ -34,18 +34,18 @@ pub struct CommandsExchangeD3 {
     pub(crate) transform_enable: ActionListNodeEnable,
 
     pub(crate) camera_create: ActionListCameraCreate,
-    pub(crate) camera_mode: ActionListCameraMode,
+    pub(crate) camera_param: ActionListCameraModify,
     pub(crate) camera_target: ActionListCameraTarget,
-    pub(crate) camera_active: ActionListCameraActive,
-    pub(crate) camera_fixmode: ActionListCameraFixedMode,
-    pub(crate) camera_fov: ActionListCameraFov,
-    pub(crate) camera_size: ActionListCameraOrthSize,
-    pub(crate) camera_nearfar: ActionListCameraNearFar,
-    pub(crate) camera_aspect: ActionListCameraAspect,
+    // pub(crate) camera_active: ActionListCameraActive,
+    // pub(crate) camera_fixmode: ActionListCameraFixedMode,
+    // pub(crate) camera_fov: ActionListCameraFov,
+    // pub(crate) camera_size: ActionListCameraOrthSize,
+    // pub(crate) camera_nearfar: ActionListCameraNearFar,
+    // pub(crate) camera_aspect: ActionListCameraAspect,
     pub(crate) camera_forceinclude: ActionListViewerForceInclude,
     
     pub(crate) mesh_create: ActionListMeshCreate,
-    pub(crate) mesh_shadow: ActionListMeshShadow,
+    // pub(crate) mesh_shadow: ActionListMeshShadow,
     pub(crate) mesh_blend: ActionListBlend,
 
     // pub(crate) mesh_cullmode: ActionListCullMode,
@@ -65,11 +65,13 @@ pub struct CommandsExchangeD3 {
     pub(crate) mesh_stencilstate: ActionListStencilState,
 
     pub(crate) mesh_render_queue: ActionListRenderQueue,
-    pub(crate) mesh_render_alignment: ActionListMeshRenderAlignment,
-    pub(crate) mesh_indexrange: ActionListMeshRenderIndiceRange,
-    pub(crate) mesh_vertexrange: ActionListMeshRenderVertexRange,
+    pub(crate) mesh_state: ActionListMeshStateModify,
+    pub(crate) mesh_valuestate: ActionListAbstructMeshValueStateModify,
+    // pub(crate) mesh_indexrange: ActionListMeshRenderIndiceRange,
+    // pub(crate) mesh_vertexrange: ActionListMeshRenderVertexRange,
     pub(crate) mesh_bounding: ActionListMeshBounding,
-    pub(crate) mesh_boundingculling: ActionListMeshBoundingCullingMode,
+    // pub(crate) mesh_boundingculling: ActionListMeshBoundingCullingMode,
+    pub(crate) forcelighting: ActionListMeshForceLighting,
 
     pub(crate) skin_create: ActionListSkinCreate,
     pub(crate) skin_use: ActionListSkinUse,
@@ -88,12 +90,12 @@ pub struct CommandsExchangeD3 {
     pub(crate) instance_attr: ActionListInstanceAttr,
     pub(crate) instance_targetanime: ActionListTargetAnimationAttribute,
     
-    pub(crate) abstructmesh_scaling_mode: ActionListAbstructMeshScalingMode,
-    pub(crate) abstructmesh_velocity: ActionListAbstructMeshVelocity,
-    pub(crate) abstructmesh_boneoffset: ActionListBoneOffset,
-    pub(crate) abstructmesh_force_point_light: ActionListMeshForcePointLighting,
-    pub(crate) abstructmesh_force_spot_light: ActionListMeshForceSpotLighting,
-    pub(crate) abstructmesh_force_hemi_light: ActionListMeshForceHemiLighting,
+    // pub(crate) abstructmesh_scaling_mode: ActionListAbstructMeshScalingMode,
+    // pub(crate) abstructmesh_velocity: ActionListAbstructMeshVelocity,
+    // pub(crate) abstructmesh_boneoffset: ActionListBoneOffset,
+    // pub(crate) abstructmesh_force_point_light: ActionListMeshForcePointLighting,
+    // pub(crate) abstructmesh_force_spot_light: ActionListMeshForceSpotLighting,
+    // pub(crate) abstructmesh_force_hemi_light: ActionListMeshForceHemiLighting,
 
     pub(crate) geometry_create: ActionListGeometryCreate,
     
@@ -112,10 +114,10 @@ pub struct CommandsExchangeD3 {
     
     pub(crate) light_create: ActionListLightCreate,
     pub(crate) light_param: ActionListLightParam,
-    pub(crate) light_color: ActionListLightColor,
-    pub(crate) light_strength: ActionListLightStrength,
-    pub(crate) light_radius: ActionListLightRadius,
-    pub(crate) light_spotangle: ActionListSpotLightAngle,
+    // pub(crate) light_color: ActionListLightColor,
+    // pub(crate) light_strength: ActionListLightStrength,
+    // pub(crate) light_radius: ActionListLightRadius,
+    // pub(crate) light_spotangle: ActionListSpotLightAngle,
     
     pub(crate) shadow_param: ActionListShadowGeneratorParam,
     pub(crate) shadow_create: ActionListShadowGenerator,
@@ -173,18 +175,20 @@ impl CommandsExchangeD3 {
         cmds.transform.tree.push_some( self.transform_tree.exchange(vec![]).drain(..) );
         cmds.transform.enable.push_some( self.transform_enable.exchange(vec![]).drain(..) );
         cmds.camera.create.push_some( self.camera_create.exchange(vec![]).drain(..) );
-        cmds.camera.mode.push_some( self.camera_mode.exchange(vec![]).drain(..) );
+        cmds.camera.param.push_some( self.camera_param.exchange(vec![]).drain(..) );
         cmds.camera.target.push_some( self.camera_target.exchange(vec![]).drain(..) );
-        cmds.camera.active.push_some( self.camera_active.exchange(vec![]).drain(..) );
-        cmds.camera.fixmode.push_some( self.camera_fixmode.exchange(vec![]).drain(..) );
-        cmds.camera.fov.push_some( self.camera_fov.exchange(vec![]).drain(..) );
-        cmds.camera.size.push_some( self.camera_size.exchange(vec![]).drain(..) );
-        cmds.camera.nearfar.push_some( self.camera_nearfar.exchange(vec![]).drain(..) );
-        cmds.camera.aspect.push_some( self.camera_aspect.exchange(vec![]).drain(..) );
+        // cmds.camera.active.push_some( self.camera_active.exchange(vec![]).drain(..) );
+        // cmds.camera.fixmode.push_some( self.camera_fixmode.exchange(vec![]).drain(..) );
+        // cmds.camera.fov.push_some( self.camera_fov.exchange(vec![]).drain(..) );
+        // cmds.camera.size.push_some( self.camera_size.exchange(vec![]).drain(..) );
+        // cmds.camera.nearfar.push_some( self.camera_nearfar.exchange(vec![]).drain(..) );
+        // cmds.camera.aspect.push_some( self.camera_aspect.exchange(vec![]).drain(..) );
         cmds.camera.forceinclude.push_some( self.camera_forceinclude.exchange(vec![]).drain(..) );
         cmds.mesh.create.push_some( self.mesh_create.exchange(vec![]).drain(..) );
-        cmds.mesh.shadow.push_some( self.mesh_shadow.exchange(vec![]).drain(..) );
+        cmds.mesh.state.push_some( self.mesh_state.exchange(vec![]).drain(..) );
+        cmds.mesh.value_state.push_some( self.mesh_valuestate.exchange(vec![]).drain(..) );
         cmds.mesh.blend.push_some( self.mesh_blend.exchange(vec![]).drain(..) );
+        cmds.mesh.forcelighting.push_some( self.forcelighting.exchange(vec![]).drain(..) );
 
         // cmds.mesh.cullmode.push_some( self.mesh_cullmode.exchange(vec![]).drain(..) );
         // cmds.mesh.polygonmode.push_some( self.mesh_polygonmode.exchange(vec![]).drain(..) );
@@ -203,13 +207,13 @@ impl CommandsExchangeD3 {
         cmds.mesh.depth_state.push_some( self.mesh_depthstate.exchange(vec![]).drain(..) );
     
         cmds.mesh.render_queue.push_some( self.mesh_render_queue.exchange(vec![]).drain(..) );
-        cmds.mesh.render_alignment.push_some( self.mesh_render_alignment.exchange(vec![]).drain(..) );
-        cmds.mesh.indexrange.push_some( self.mesh_indexrange.exchange(vec![]).drain(..) );
-        cmds.mesh.vertexrange.push_some( self.mesh_vertexrange.exchange(vec![]).drain(..) );
+        // cmds.mesh.render_alignment.push_some( self.mesh_render_alignment.exchange(vec![]).drain(..) );
+        // cmds.mesh.indexrange.push_some( self.mesh_indexrange.exchange(vec![]).drain(..) );
+        // cmds.mesh.vertexrange.push_some( self.mesh_vertexrange.exchange(vec![]).drain(..) );
         cmds.mesh.bounding.push_some( self.mesh_bounding.exchange(vec![]).drain(..) );
-        cmds.mesh.boundingculling.push_some( self.mesh_boundingculling.exchange(vec![]).drain(..) );
+        // cmds.mesh.boundingculling.push_some( self.mesh_boundingculling.exchange(vec![]).drain(..) );
         cmds.mesh.layermask.push_some( self.mesh_layermask.exchange(vec![]).drain(..) );
-        cmds.mesh.boneoffset.push_some( self.abstructmesh_boneoffset.exchange(vec![]).drain(..) );
+        // cmds.mesh.boneoffset.push_some( self.abstructmesh_boneoffset.exchange(vec![]).drain(..) );
         
         cmds.skin.skin_create.push_some( self.skin_create.exchange(vec![]).drain(..) );
         cmds.skin.bone_create.push_some( self.skin_bonecreate.exchange(vec![]).drain(..) );
@@ -221,11 +225,11 @@ impl CommandsExchangeD3 {
 
         cmds.anime_instance.push_some( self.instance_targetanime.exchange(vec![]).drain(..) );
 
-        cmds.abstructmesh.scaling_mode.push_some( self.abstructmesh_scaling_mode.exchange(vec![]).drain(..) );
-        cmds.abstructmesh.velocity.push_some( self.abstructmesh_velocity.exchange(vec![]).drain(..) );
-        cmds.abstructmesh.force_point_light.push_some( self.abstructmesh_force_point_light.exchange(vec![]).drain(..) );
-        cmds.abstructmesh.force_spot_light.push_some( self.abstructmesh_force_spot_light.exchange(vec![]).drain(..) );
-        cmds.abstructmesh.force_hemi_light.push_some( self.abstructmesh_force_hemi_light.exchange(vec![]).drain(..) );
+        // cmds.abstructmesh.scaling_mode.push_some( self.abstructmesh_scaling_mode.exchange(vec![]).drain(..) );
+        // cmds.abstructmesh.velocity.push_some( self.abstructmesh_velocity.exchange(vec![]).drain(..) );
+        // cmds.abstructmesh.force_point_light.push_some( self.abstructmesh_force_point_light.exchange(vec![]).drain(..) );
+        // cmds.abstructmesh.force_spot_light.push_some( self.abstructmesh_force_spot_light.exchange(vec![]).drain(..) );
+        // cmds.abstructmesh.force_hemi_light.push_some( self.abstructmesh_force_hemi_light.exchange(vec![]).drain(..) );
         cmds.geometry.create.push_some( self.geometry_create.exchange(vec![]).drain(..) );
         cmds.material.usemat.push_some( self.material_usemat.exchange(vec![]).drain(..) );
         cmds.material.create.push_some( self.material_create.exchange(vec![]).drain(..) );
@@ -242,10 +246,10 @@ impl CommandsExchangeD3 {
 
         cmds.light.create.push_some( self.light_create.exchange(vec![]).drain(..) );
         cmds.light.param.push_some( self.light_param.exchange(vec![]).drain(..) );
-        cmds.light.color.push_some( self.light_color.exchange(vec![]).drain(..) );
-        cmds.light.strength.push_some( self.light_strength.exchange(vec![]).drain(..) );
-        cmds.light.radius.push_some( self.light_radius.exchange(vec![]).drain(..) );
-        cmds.light.spotangle.push_some( self.light_spotangle.exchange(vec![]).drain(..) );
+        // cmds.light.color.push_some( self.light_color.exchange(vec![]).drain(..) );
+        // cmds.light.strength.push_some( self.light_strength.exchange(vec![]).drain(..) );
+        // cmds.light.radius.push_some( self.light_radius.exchange(vec![]).drain(..) );
+        // cmds.light.spotangle.push_some( self.light_spotangle.exchange(vec![]).drain(..) );
         cmds.shadow.param.push_some( self.shadow_param.exchange(vec![]).drain(..) );
         cmds.shadow.create.push_some( self.shadow_create.exchange(vec![]).drain(..) );
         cmds.renderer.create.push_some( self.renderer_create.exchange(vec![]).drain(..) );

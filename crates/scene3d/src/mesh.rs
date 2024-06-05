@@ -4,10 +4,10 @@ use std::{ops::Deref, mem::transmute};
 
 use pi_scene_shell::prelude::*;
 use pi_export_base::constants::ContextConstants;
-pub use pi_export_base::{export::{Engine, Atom}, constants::*};
+pub use pi_export_base::export::{Engine, Atom};
 use pi_scene_context::prelude::*;
 
-use crate::{constants::EngineConstants};
+use crate::constants::EngineConstants;
 pub use crate::commands::CommandsExchangeD3;
 pub use crate::{engine::ActionSetScene3D, as_entity, as_f64, geometry::GeometryMeta};
 #[cfg(target_arch = "wasm32")]
@@ -78,9 +78,9 @@ pub fn p3d_mesh_indexrange(cmds: &mut CommandsExchangeD3, mesh: f64, index_start
     let mesh: Entity = as_entity(mesh);
 
     if let (Some(index_start), Some(index_count)) = (index_start, index_end) {
-        cmds.mesh_indexrange.push(OpsMeshRenderIndiceRange::ops(mesh, Some(index_start as u32), Some(index_count as u32)));
+        cmds.mesh_valuestate.push(OpsAbstructMeshValueStateModify::ops(mesh, EMeshValueStateModify::IndiceRange( Some((index_start as u32, index_count as u32)) ) ));
     } else {
-        cmds.mesh_indexrange.push(OpsMeshRenderIndiceRange::ops(mesh, None, None));
+        cmds.mesh_valuestate.push(OpsAbstructMeshValueStateModify::ops(mesh, EMeshValueStateModify::IndiceRange(None)));
     }
 }
 
@@ -90,9 +90,9 @@ pub fn p3d_mesh_vertexrange(cmds: &mut CommandsExchangeD3, mesh: f64, vertex_sta
     let mesh: Entity = as_entity(mesh);
 
     if let (Some(vertex_start), Some(vertex_count)) = (vertex_start, vertex_count) {
-        cmds.mesh_vertexrange.push(OpsMeshRenderVertexRange::ops(mesh, Some(vertex_start as u32), Some(vertex_count as u32)));
+        cmds.mesh_valuestate.push(OpsAbstructMeshValueStateModify::ops(mesh, EMeshValueStateModify::VertexRange( Some((vertex_start as u32, vertex_count as u32)) ) ));
     } else {
-        cmds.mesh_vertexrange.push(OpsMeshRenderVertexRange::ops(mesh, None, None));
+        cmds.mesh_valuestate.push(OpsAbstructMeshValueStateModify::ops(mesh, EMeshValueStateModify::VertexRange(None)));
     }
 }
 
@@ -236,14 +236,14 @@ pub fn p3d_mesh_unclip_depth(
 pub fn p3d_mesh_cast_shadow(
     cmds: &mut CommandsExchangeD3, mesh: f64, val: bool, pass: f64) {
     let mesh: Entity = as_entity(mesh);
-    cmds.mesh_shadow.push(OpsMeshShadow::CastShadow(mesh, val));
+    cmds.mesh_state.push(OpsMeshStateModify::ops(mesh, EMeshStateModify::CastShadow(val)));
 }
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_mesh_receive_shadow(
     cmds: &mut CommandsExchangeD3, mesh: f64, val: bool, pass: f64) {
     let mesh: Entity = as_entity(mesh);
-    cmds.mesh_shadow.push(OpsMeshShadow::ReceiveShadow(mesh, val));
+    cmds.mesh_state.push(OpsMeshStateModify::ops(mesh, EMeshStateModify::ReceiveShadow(val)));
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
@@ -358,7 +358,7 @@ pub fn p3d_mesh_bounding_cullingmode(
             ECullingStrategy::None
         }
     };
-    cmds.mesh_boundingculling.push(OpsMeshBoundingCullingMode::ops(mesh, mode));
+    cmds.mesh_state.push(OpsMeshStateModify::ops(mesh, EMeshStateModify::BoundingCullingMode(mode)));
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
@@ -391,21 +391,21 @@ pub fn p3d_mesh_render_queue_arr(
 pub fn p3d_mesh_render_alignment(
     cmds: &mut CommandsExchangeD3, mesh: f64, val: f64) {
     let mesh: Entity = as_entity(mesh);
-    cmds.mesh_render_alignment.push(OpsMeshRenderAlignment::ops(mesh, EngineConstants::render_alignment(val) ));
+    cmds.mesh_state.push(OpsMeshStateModify::ops(mesh, EMeshStateModify::Alignment(EngineConstants::render_alignment(val)) ));
 }
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_abstruct_mesh_scaling_mode(
     cmds: &mut CommandsExchangeD3, mesh: f64, val: f64) {
     let mesh: Entity = as_entity(mesh);
-    cmds.abstructmesh_scaling_mode.push(OpsAbstructMeshScalingMode::ops(mesh, EngineConstants::scaling_mode(val) ));
+    cmds.mesh_state.push(OpsMeshStateModify::ops(mesh, EMeshStateModify::ScalingMode(EngineConstants::scaling_mode(val)) ));
 }
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_abstruct_mesh_velocity(
     cmds: &mut CommandsExchangeD3, mesh: f64, x: f64, y: f64, z: f64) {
     let mesh: Entity = as_entity(mesh);
-    cmds.abstructmesh_velocity.push(OpsAbstructMeshVelocity::ops(mesh, x as f32, y as f32, z as f32));
+    cmds.mesh_valuestate.push(OpsAbstructMeshValueStateModify::ops(mesh, EMeshValueStateModify::Velocity(x as f32, y as f32, z as f32)));
 }
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
@@ -420,7 +420,7 @@ pub fn p3d_abstruct_mesh_velocity_arr(
         let x = data[i * size + 1];
         let y = data[i * size + 2];
         let z = data[i * size + 3];
-        cmds.abstructmesh_velocity.push(OpsAbstructMeshVelocity::ops(mesh, x as f32, y as f32, z as f32));
+        cmds.mesh_valuestate.push(OpsAbstructMeshValueStateModify::ops(mesh, EMeshValueStateModify::Velocity(x as f32, y as f32, z as f32)));
     }
 }
 

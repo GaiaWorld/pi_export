@@ -108,7 +108,7 @@ pub fn p3d_instance_mesh_uint(cmds: &mut CommandsExchangeD3, instance: f64, x: f
 #[pi_js_export]
 pub fn p3d_mesh_bone_offset(cmds: &mut CommandsExchangeD3, instance: f64, val: f64) {
     let instance: Entity = as_entity(instance);
-    cmds.abstructmesh_boneoffset.push(OpsBoneOffset::ops(instance, val as u32));
+    cmds.mesh_valuestate.push(OpsAbstructMeshValueStateModify::ops(instance, EMeshValueStateModify::BoneOffset(val as u32)));
 }
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
@@ -121,7 +121,7 @@ pub fn p3d_mesh_bone_offset_arr(cmds: &mut CommandsExchangeD3, data: &[f64], len
     for i in 0..count {
         let instance: Entity = as_entity(data[i * size + 0]);
         let val = data[i * size + 1];
-        cmds.abstructmesh_boneoffset.push(OpsBoneOffset::ops(instance, val as u32));
+        cmds.mesh_valuestate.push(OpsAbstructMeshValueStateModify::ops(instance, EMeshValueStateModify::BoneOffset(val as u32)));
     }
 }
 

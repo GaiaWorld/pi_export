@@ -28,7 +28,7 @@ pub fn p3d_camera(app: &mut Engine, cmds: &mut CommandsExchangeD3, scene: f64) -
 pub fn p3d_camera_size(cmds: &mut CommandsExchangeD3, camera: f64, size: f64) {
     let camera: Entity = as_entity(camera);
 
-    cmds.camera_size.push(OpsCameraOrthSize::ops(camera, size as f32));
+    cmds.camera_param.push(OpsCameraModify::ops(camera, ECameraModify::OrthSize(size as f32)));
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
@@ -36,7 +36,7 @@ pub fn p3d_camera_size(cmds: &mut CommandsExchangeD3, camera: f64, size: f64) {
 pub fn p3d_camera_fov(cmds: &mut CommandsExchangeD3, camera: f64, fov: f64) {
     let camera: Entity = as_entity(camera);
 
-    cmds.camera_fov.push(OpsCameraFov::ops(camera, fov as f32));
+    cmds.camera_param.push(OpsCameraModify::ops(camera, ECameraModify::Fov(fov as f32)));
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
@@ -44,7 +44,7 @@ pub fn p3d_camera_fov(cmds: &mut CommandsExchangeD3, camera: f64, fov: f64) {
 pub fn p3d_camera_active(cmds: &mut CommandsExchangeD3, camera: f64, active: bool) {
     let camera: Entity = as_entity(camera);
 
-    cmds.camera_active.push(OpsCameraActive::ops(camera, active));
+    cmds.camera_param.push(OpsCameraModify::ops(camera, ECameraModify::Active(active)));
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
@@ -52,7 +52,8 @@ pub fn p3d_camera_active(cmds: &mut CommandsExchangeD3, camera: f64, active: boo
 pub fn p3d_camera_mode(cmds: &mut CommandsExchangeD3, camera: f64, as_orthographic: bool) {
     let camera: Entity = as_entity(camera);
 
-    cmds.camera_mode.push(OpsCameraMode::ops(camera, as_orthographic));
+    let mode = if as_orthographic { EFreeCameraMode::Orthograhic } else { EFreeCameraMode::Perspective };
+    cmds.camera_param.push(OpsCameraModify::ops(camera, ECameraModify::FreeMode(mode)));
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
@@ -60,7 +61,8 @@ pub fn p3d_camera_mode(cmds: &mut CommandsExchangeD3, camera: f64, as_orthograph
 pub fn p3d_camera_fixed_mode(cmds: &mut CommandsExchangeD3, camera: f64, as_horizontal: bool) {
     let camera: Entity = as_entity(camera);
 
-    cmds.camera_fixmode.push(OpsCameraFixedMode::ops(camera, as_horizontal));
+    let mode = if as_horizontal { EFixedMode::HorizontalFixed } else { EFixedMode::VerticalFixed };
+    cmds.camera_param.push(OpsCameraModify::ops(camera, ECameraModify::FixMode(mode)));
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
@@ -78,7 +80,7 @@ pub fn p3d_camera_target(cmds: &mut CommandsExchangeD3, camera: f64, x: f64, y: 
 pub fn p3d_camera_nearfar(cmds: &mut CommandsExchangeD3, camera: f64, near: f64, far: f64) {
     let camera: Entity = as_entity(camera);
 
-    cmds.camera_nearfar.push(OpsCameraNearFar::ops(camera, near as f32, far as f32));
+    cmds.camera_param.push(OpsCameraModify::ops(camera, ECameraModify::NearFar(near as f32, far as f32)));
 }
 
 ///
@@ -94,9 +96,9 @@ pub fn p3d_camera_aspect(cmds: &mut CommandsExchangeD3, camera: f64, val: Option
 
 
     if let Some(aspect) = val {
-        cmds.camera_aspect.push(OpsCameraAspect::ops(camera, aspect as f32));
+        cmds.camera_param.push(OpsCameraModify::ops(camera, ECameraModify::Aspect(aspect as f32)));
     } else {
-        cmds.camera_aspect.push(OpsCameraAspect::ops(camera, 1.0));
+        cmds.camera_param.push(OpsCameraModify::ops(camera, ECameraModify::Aspect(1.0)));
     }
 }
 
