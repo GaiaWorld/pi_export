@@ -11,17 +11,13 @@ use pi_ui_render::{
     },
     prelude::{UiPlugin, UserCommands},
     resource::{ExtendCssCmd, NodeCmd, QuadTree},
-    system::node::user_setting::user_setting,
     utils::cmd::SingleCmd,
 };
-use bevy_ecs::{
-    prelude::Entity,
-    system::{CommandQueue, Query, SystemState},
-    world::WorldCell,
-};
+use pi_world::prelude::{Entity, App, OrDefault};
+use pi_world::prelude::WorldPluginExtent;
 use pi_animation::{animation_group::AnimationGroupID, animation_listener::EAnimationEvent};
 use pi_async_rt::prelude::AsyncRuntime;
-use pi_bevy_ecs_extend::prelude::{Layer, OrDefault};
+use pi_bevy_ecs_extend::prelude::Layer;
 use pi_bevy_post_process::PiPostProcessPlugin;
 use pi_bevy_render_plugin::{PiRenderPlugin, FrameState};
 use pi_bevy_asset::PiAssetPlugin;
@@ -41,7 +37,6 @@ pub use super::{index::Gui, ShareChromeWrite};
 use pi_export_play::as_value;
 // pub use pi_ui_render::gui::Gui;
 pub use pi_export_base::export::{Engine, Atom};
-use bevy_app::prelude::App;
 use cssparser::ParseError;
 use js_proxy_gen_macro::pi_js_export;
 use js_sys::{Array, Function, Float64Array};
@@ -94,12 +89,12 @@ pub fn create_gui(
     #[cfg(feature="record")]
 	{
 		let debug: pi_ui_render::system::cmd_play::TraceOption = unsafe { transmute(debug) };
-		engine.add_plugin(UiPlugin {cmd_trace: debug.clone(), font_type: FontType::Sdf2});
+		engine.app_mut().add_plugins(UiPlugin {cmd_trace: debug.clone(), font_type: FontType::Sdf2});
 		gui.record_option = debug;
 	}
 
 	#[cfg(not(feature="record"))]
-    engine.add_plugin(UiPlugin {font_type: FontType::Sdf2});
+    engine.app_mut().add_plugins(UiPlugin {font_type: FontType::Sdf2});
 
 	// if let Some(fun) = load_sdf_fun {
 	// 	pi_hal::font::sdf_brush::init_load_cb(std::rc::Rc::new(move|key: DefaultKey, font_family: usize, chars: &[char]| {
@@ -116,11 +111,11 @@ pub fn create_fragment(gui: &mut Gui, mut arr: Float64Array, count: u32, key: u3
 	let mut index = 0;
 	let mut entitys = Vec::with_capacity(count as usize);
 	while index < count {
-		let entity = gui.entitys.reserve_entity();
+		let entity = gui.entitys.alloc_entity();
 		#[cfg(feature="record")]
 		gui.node_cmd.0.push(entity);
 
-		arr.set_index(index, unsafe { transmute(entity.to_bits()) });
+		arr.set_index(index, unsafe { transmute(entity) });
 		entitys.push(entity);
 		index = index + 1;
 	}
@@ -134,7 +129,7 @@ pub fn create_fragment(gui: &mut Gui, mut arr: Float64Array, count: u32, key: u3
 pub fn log_animation(
     engine: &Engine,
 ) {
-	let key_frames = engine.world.get_resource::<KeyFramesSheet>().unwrap();
+	let key_frames = engine.world.get_single_res::<KeyFramesSheet>().unwrap();
 	key_frames.log();
 }
 

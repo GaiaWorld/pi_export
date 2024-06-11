@@ -75,8 +75,9 @@ pi_bevy_ecs_extend = {version = "0.1", registry = "yn"}
 pi_bevy_render_plugin = {version = "0.1", registry = "yn"}
 pi_bevy_asset = {version = "0.1", registry = "yn"}
 pi_bevy_winit_window = {version = "0.1", registry = "yn"}
-bevy_ecs = "0.11"
-bevy_app = {version = "0.11", default_features = false}
+# bevy_ecs = "0.11"
+# bevy_app = {version = "0.11", default_features = false}
+pi_world = "0.1.20"
 wgpu = {version = "0.1", registry = "yn", package="pi_wgpu"}
 
 [target.'cfg(target_arch = "wasm32")'.dependencies]
@@ -105,5 +106,5 @@ vm_builtin = { git = "http://ser.yinengyun.com:10082/tech/pi_v8.git", branch = "
 v8 = { git = "http://ser.yinengyun.com:10082/tech/v8.git" }
 
 [dev-dependencies]
-font_kit = { registry = "yn", version = "0.1" }
+font_kit = { registry = "yn", version = "=0.1.0" }
 

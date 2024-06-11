@@ -7,7 +7,6 @@
 #![feature(panic_internals)]
 
 
-use bevy_ecs::prelude::Resource;
 use std::{mem::replace, io};
 use pi_share::Share;
 use std::cell::RefCell;
@@ -17,7 +16,7 @@ pub struct ChromeWrite {
 	pub buf: Vec<u8>,
 }
 
-#[derive(Resource, Clone)]
+#[derive(Clone)]
 pub struct ShareChromeWrite {
 	value: Share<RefCell<ChromeWrite>>,
 }
@@ -85,11 +84,10 @@ use wasm_bindgen::prelude::wasm_bindgen;
 
 #[cfg(not(target_arch = "wasm32"))]
 pub mod native_index;
-#[cfg(not(target_arch = "wasm32"))]
-pub mod native_debug;
+pub mod debug;
 pub mod rr;
-#[cfg(target_arch = "wasm32")]
-pub mod wasm_debug;
+// #[cfg(target_arch = "wasm32")]
+// pub mod wasm_debug;
 #[cfg(target_arch = "wasm32")]
 pub mod wasm_index;
 

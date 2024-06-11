@@ -5,7 +5,7 @@ pub use pi_export_base::export::{Engine, Atom};
 use std::intrinsics::transmute;
 pub use winit::window::Window;
 use std::sync::Arc;
-use pi_slotmap::DefaultKey;
+use pi_world::prelude::WorldPluginExtent;
 
 // #[derive(Debug, Clone)]
 // #[cfg(feature="pi_js_export")]
@@ -86,8 +86,8 @@ pub fn create_fragment(gui: &mut Gui, arr: &mut [f64], count: u32, key: u32) {
 	let mut index: usize = 0;
 	let mut entitys = Vec::with_capacity(count as usize);
 	while index < count as usize {
-		let entity = gui.entitys.reserve_entity();
-		arr[index] = unsafe { transmute(entity.to_bits()) };
+		let entity = gui.entitys.alloc_entity();
+		arr[index] = unsafe { transmute(entity) };
 		entitys.push(entity);
 		index = index + 1;
 	}

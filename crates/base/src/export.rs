@@ -2,7 +2,7 @@
 
 use std::{sync::{Arc, OnceLock}, cell::RefCell, mem::transmute};
 
-use bevy_ecs::entity::Entity;
+use pi_world::prelude::{App, WorldPluginExtent};
 use derive_deref_rs::Deref;
 use pi_assets::{allocator::Allocator, asset::{Asset, Handle, Size}, mgr::AssetMgr};
 use pi_bevy_asset::{PiAssetPlugin, AssetConfig, AssetDesc};
@@ -10,7 +10,6 @@ use pi_bevy_post_process::PiPostProcessPlugin;
 use pi_hash::XHashMap;
 use pi_render::{rhi::{asset::{RenderRes, TextureRes}, bind_group::BindGroup, pipeline::RenderPipeline}, renderer::sampler::SamplerRes};
 use pi_share::Share;
-use bevy_app::prelude::App;
 use pi_bevy_render_plugin::{FrameState, PiRenderPlugin};
 use pi_window_renderer::PluginWindowRender;
 #[cfg(target_arch = "wasm32")]
@@ -38,7 +37,7 @@ pub fn init_frame_end_cb<F: FnMut() + Send + Sync + 'static>(f: F) {
 }
 
 #[cfg(all(feature="pi_js_export", not(target_arch="wasm32")))]
-#[derive(Debug, Deref)]
+#[derive(Deref)]
 pub struct Engine {
 	#[deref]
 	pub app: App,
@@ -81,7 +80,7 @@ impl Engine {
 
 #[cfg(target_arch="wasm32")]
 #[wasm_bindgen]
-#[derive(Debug, Deref)]
+#[derive(Deref)]
 pub struct Engine {
 	#[deref]
 	pub(crate) app: App,
@@ -152,6 +151,7 @@ pub fn set_destroy_callback(f: Arc<dyn Fn(u32, Option<Box<dyn FnOnce(Result<u32,
 	}))};
 }
 
+#[allow(dead_code)]
 #[cfg_attr(target_arch = "wasm32", wasm_bindgen)]
 #[cfg(feature = "pi_js_export")]
 /// 资源包装
@@ -275,11 +275,11 @@ impl std::ops::Drop for JsRes {
 #[cfg_attr(target_arch = "wasm32", wasm_bindgen)]
 #[cfg(feature = "pi_js_export")]
 pub fn set_log_filter(engine: &mut Engine, filter: &str) {
-	// if let Some(handle) = engine.app_mut().world.get_resource_mut::<pi_bevy_log::LogFilterHandle>() {
-	// 	if let Ok(filter_layer) = tracing_subscriber::EnvFilter::try_new(filter) {
-	// 		let _ = handle.0.modify(|filter| *filter = filter_layer);
-	// 	}
-	// }
+	if let Some(handle) = engine.app_mut().world.get_single_res_mut::<pi_bevy_log::LogFilterHandle>() {
+		if let Ok(filter_layer) = tracing_subscriber::EnvFilter::try_new(filter) {
+			let _ = handle.0.modify(|filter| *filter = filter_layer);
+		}
+	}
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
@@ -287,7 +287,7 @@ pub fn set_log_filter(engine: &mut Engine, filter: &str) {
 pub fn set_is_not_run(app: &mut Engine, value: bool) {
 	#[cfg(feature = "allow_not_run")]
 	{
-		let mut is_not_run = app.app_mut().world.get_resource_mut::<pi_bevy_ecs_extend::IsNotRun>().unwrap();
+		let mut is_not_run = app.app_mut().world.get_single_res_mut::<pi_bevy_ecs_extend::IsNotRun>().unwrap();
 		is_not_run.0 = value;
 	}
 }
@@ -313,24 +313,24 @@ pub fn create_engine(canvas: web_sys::HtmlCanvasElement, width: u32, height: u32
 	// static mut RUNNER_RENDER: OnceCell<LocalTaskRunner<()>> = OnceCell::new();
 
 
-    let mut app = App::default();
+    let mut app = App::new();
 
-    let mut window_plugin = bevy_window::WindowPlugin::default();
-	window_plugin.primary_window = None;
+    // let mut window_plugin = bevy_window::WindowPlugin::default();
+	// window_plugin.primary_window = None;
 
 	let mut log = pi_bevy_log::LogPlugin::<Vec<u8>>::default();
 	if let Some(log_filter) = log_filter {
 		log.filter = log_filter;
 	}
 
-	// log.level= match log_level {
-	// 	0 => tracing::Level::TRACE,
-	// 	1 => tracing::Level::DEBUG,
-	// 	2 => tracing::Level::INFO,
-	// 	3 => tracing::Level::WARN,
-	// 	4 => tracing::Level::ERROR,
-	// 	_ => tracing::Level::WARN,
-	// };
+	log.level= match log_level {
+		0 => tracing::Level::TRACE,
+		1 => tracing::Level::DEBUG,
+		2 => tracing::Level::INFO,
+		3 => tracing::Level::WARN,
+		4 => tracing::Level::ERROR,
+		_ => tracing::Level::WARN,
+	};
 	// let chrome_write = ShareChromeWrite::new();
 	// log.chrome_write = None;
 	let window ={
@@ -364,7 +364,7 @@ pub fn create_engine(window: &Arc<Window>, width: u32, height: u32, asset_total_
     use wgpu::Backend;
 
 
-    let mut app = App::default();
+    let mut app = App::new();
     // window_plugin.add_primary_window = false;
 	// window_plugin.window.width = width as f32;
     // window_plugin.window.height = height as f32;
@@ -375,7 +375,7 @@ pub fn create_engine(window: &Arc<Window>, width: u32, height: u32, asset_total_
 		options.0.backends = Backend::Gl.into();
 		options.0.present_mode = wgpu::PresentMode::Fifo;
 		// options.0.backends = Backend::Vulkan.into();
-		app.insert_resource(options);
+		app.world.insert_single_res(options);
 	// }
 	
 	create_engine_inner(
@@ -394,17 +394,17 @@ fn create_engine_inner(
 	asset_total_capacity: u32,
 	asset_config: &str,
 ) {
-	let mut window_plugin = bevy_window::WindowPlugin::default();
-	window_plugin.primary_window = None;
+	// let mut window_plugin = bevy_window::WindowPlugin::default();
+	// window_plugin.primary_window = None;
 
 	app
 		// .add_plugins(bevy::log::LogPlugin {
 		// 	filter: "wgpu=debug".to_string(),
 		// 	level: bevy::log::Level::DEBUG,
 		// })
-		.add_plugins(bevy_a11y::AccessibilityPlugin)
+		// .add_plugins(bevy_a11y::AccessibilityPlugin)
 		// .add_plugins(bevy::input::InputPlugin::default())
-		.add_plugins(window_plugin)
+		// .add_plugins(window_plugin)
 		.add_plugins(winit_plugin)
 		// .add_plugins(WorldInspectorPlugin::new())
 		.add_plugins(PiAssetPlugin {total_capacity: asset_total_capacity as usize, asset_config: parse_asset_config(asset_config)})
@@ -416,7 +416,7 @@ fn create_engine_inner(
 // 在wasm目标上,返回渲染图的topo图
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 pub fn dump_graphviz(engine: &Engine) -> String  {
-	let g = engine.world.get_resource::<pi_bevy_render_plugin::PiRenderGraph>().unwrap();
+	let g = engine.world.get_single_res::<pi_bevy_render_plugin::PiRenderGraph>().unwrap();
 	g.dump_graphviz()
 }
 
@@ -442,12 +442,9 @@ pub fn dump_graphviz(engine: &Engine) -> String  {
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[cfg(feature = "pi_js_export")]
 pub fn fram_call(engine: &mut Engine, _cur_time: u32) {
-    use std::mem::transmute;
-
-
 	#[cfg(feature = "trace")]
 	let _span = tracing::warn_span!("frame_call").entered();
-	*engine.world.get_resource_mut::<FrameState>().unwrap() = FrameState::Active;
+	// *engine.world.get_single_res_mut::<FrameState>().unwrap() = FrameState::Active;
 
 	// log::warn!("fram_call start=====");
 	await_last_frame(engine);
@@ -459,8 +456,8 @@ pub fn fram_call(engine: &mut Engine, _cur_time: u32) {
 		let sender = engine.sender.clone();
 		let _ = sender.send(Box::new(|| {
 			// bevy_ecs::system::CommandQueue::default().apply(&mut engine.world);
-			engine.update();
-			*engine.world.get_resource_mut::<FrameState>().unwrap() = FrameState::UnActive;
+			engine.run();
+			// *engine.world.get_single_res_mut::<FrameState>().unwrap() = FrameState::UnActive;
 			// log::warn!("fram_call end=====");
 		}));
 	}
@@ -468,8 +465,8 @@ pub fn fram_call(engine: &mut Engine, _cur_time: u32) {
 	#[cfg(target_arch="wasm32")]
 	{
 		// bevy_ecs::system::CommandQueue::default().apply(&mut engine.world);
-		engine.update();
-		*engine.world.get_resource_mut::<FrameState>().unwrap() = FrameState::UnActive;
+		engine.run();
+		// *engine.world.get_single_res_mut::<FrameState>().unwrap() = FrameState::UnActive;
 	}
 }
 
@@ -538,14 +535,11 @@ fn runtime_run() {
 }
 
 #[cfg(target_arch = "wasm32")]
-impl bevy_app::Plugin for RuntimePlugin {
+impl pi_world::prelude::Plugin for RuntimePlugin {
     fn build(&self, app: &mut App) {
-		use bevy_app::prelude::First;
-		use bevy_ecs::prelude::IntoSystemConfigs;
-		use pi_bevy_render_plugin::should_run;
-        app.add_systems(First,
-			runtime_run.run_if(should_run)
-		);
+		use pi_world::prelude::First;
+		use pi_world::prelude::IntoSystemConfigs;
+        app.add_system(First,runtime_run);
     }
 }
 

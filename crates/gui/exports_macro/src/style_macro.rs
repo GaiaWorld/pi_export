@@ -7,17 +7,19 @@ use std::mem::transmute;
 //     BorderImageSlice, BorderRadius, CgColor, ClassName, Color, ColorAndPosition, FontSize, Hsi, ImageRepeat, LengthUnit, LineHeight,
 //     LinearGradientColor, MaskImage, Stroke, TextContent, TransformFunc, TransformOrigin,
 // };
-use pi_ui_render::components::calc::EntityKey;
+use pi_ui_render::components::calc::{EntityKey, IsShow, LayoutResult, Quad};
 use pi_ui_render::resource::ComponentCmd;
 use pi_null::Null;
 use pi_ui_render::components::user::ClassName;
-use bevy_ecs::prelude::Entity;
+use pi_slotmap::Key;
+use pi_world::prelude::Entity;
 use ordered_float::NotNan;
 use pi_flex_layout::prelude::*;
 use pi_style::style::*;
 use pi_style::style_type::*;
 use pi_ui_render::resource::NodeCmd;
 use pi_ui_render::components::user::RadialWave;
+use pi_bevy_ecs_extend::prelude::{Down, Layer, Up};
 use pi_style::style_parse::{parse_comma_separated, parse_text_shadow, parse_outer_glow, parse_as_image, StyleParse};
 use smallvec::SmallVec;
 pub use pi_export_base::export::{Atom, Engine};
@@ -44,14 +46,14 @@ macro_rules! other_out_export {
 		#[cfg(feature="pi_js_export")]
 		
 		pub fn $func_name($context: &mut Gui, $node: f64, $($mut_name_ref: &mut $mut_ty_ref,)* $($name_ref: &$ty_ref,)* $($name: $ty,)*) {
-			let $node = unsafe {Entity::from_bits(transmute::<f64, u64>($node))};
+			let $node = unsafe {unsafe { transmute::<f64, Entity>($node) }};
 			$expr
 		}
 
 		#[cfg(target_arch="wasm32")]
 		#[wasm_bindgen]
 		pub fn $func_name($context: &mut Gui, $node: f64, $($mut_name_ref: &mut $mut_ty_ref,)* $($name_ref: &$ty_ref,)* $($name: $ty,)*) {
-			let $node = unsafe {Entity::from_bits(transmute::<f64, u64>($node))};
+			let $node = unsafe {unsafe { transmute::<f64, Entity>($node) }};
 			$expr
 		}
 	};
@@ -104,14 +106,14 @@ macro_rules! other_out_export {
 		#[cfg(feature="pi_js_export")]
 		
 		pub fn $func_name($($context: $context_ty,)* $node: f64, $($name_ref: &$ty_ref,)* $($name: $ty,)*) -> $return_ty {
-			let $node = unsafe {Entity::from_bits(transmute::<f64, u64>($node))};
+			let $node = unsafe {unsafe { transmute::<f64, Entity>($node) }};
 			$expr
 		}
 
 		#[cfg(target_arch="wasm32")]
 		#[wasm_bindgen]
 		pub fn $func_name($($context: $context_ty,)* $node: f64, $($name_ref: &$ty_ref,)* $($name: $ty,)*) -> $return_ty {
-			let $node = unsafe {Entity::from_bits(transmute::<f64, u64>($node))};
+			let $node = unsafe {unsafe { transmute::<f64, Entity>($node) }};
 			$expr
 		}
 	};
@@ -173,7 +175,7 @@ macro_rules! style_out_export {
 			
 			#[allow(unused_attributes)]
 			pub fn [<set_ $attr_name>](gui: &mut Gui, node_id: f64, $($name_ref: &$ty_ref,)* $($name: $ty,)*) {
-				let node_id = unsafe {Entity::from_bits(transmute::<f64, u64>(node_id))};
+				let node_id = unsafe { transmute::<f64, Entity>(node_id) };
 				gui.commands.set_style(node_id, $last_ty($expr));
 			}
 
@@ -181,7 +183,7 @@ macro_rules! style_out_export {
 			#[wasm_bindgen]
 			#[allow(unused_attributes)]
 			pub fn [<set_ $attr_name>](gui: &mut Gui, node_id: f64, $($name_ref: &$ty_ref,)* $($name: $ty,)*) {
-				let node_id = unsafe {Entity::from_bits(transmute::<f64, u64>(node_id))};
+				let node_id = unsafe { transmute::<f64, Entity>(node_id) };
 				gui.commands.set_style(node_id, $last_ty($expr));
 			}
 
@@ -189,7 +191,7 @@ macro_rules! style_out_export {
 			
 			#[allow(unused_attributes)]
 			pub fn [<reset_ $attr_name>](gui: &mut Gui, node_id: f64) {
-				let node_id = unsafe {Entity::from_bits(transmute::<f64, u64>(node_id))};
+				let node_id = unsafe { transmute::<f64, Entity>(node_id) };
 				gui.commands.set_style(node_id, [<Reset $last_ty>]);
 			}
 
@@ -197,7 +199,7 @@ macro_rules! style_out_export {
 			#[wasm_bindgen]
 			#[allow(unused_attributes)]
 			pub fn [<reset_ $attr_name>](gui: &mut Gui, node_id: f64) {
-				let node_id = unsafe {Entity::from_bits(transmute::<f64, u64>(node_id))};
+				let node_id = unsafe { transmute::<f64, Entity>(node_id) };
 				gui.commands.set_style(node_id, [<Reset $last_ty>]);
 			}
 
@@ -210,7 +212,7 @@ macro_rules! style_out_export {
 			
 			#[allow(unused_attributes)]
 			pub fn [<set_ $attr_name>](gui: &mut Gui, node_id: f64, $($name_ref: &$ty_ref,)* $($name: $ty,)*) {
-				let node_id = unsafe {Entity::from_bits(transmute::<f64, u64>(node_id))};
+				let node_id = unsafe { transmute::<f64, Entity>(node_id) };
 				$expr;
 			}
 
@@ -218,7 +220,7 @@ macro_rules! style_out_export {
 			#[wasm_bindgen]
 			#[allow(unused_attributes)]
 			pub fn [<set_ $attr_name>](gui: &mut Gui, node_id: f64, $($name_ref: &$ty_ref,)* $($name: $ty,)*) {
-				let node_id = unsafe {Entity::from_bits(transmute::<f64, u64>(node_id))};
+				let node_id = unsafe { transmute::<f64, Entity>(node_id) };
 				$expr;
 			}
 
@@ -226,7 +228,7 @@ macro_rules! style_out_export {
 			
 			#[allow(unused_attributes)]
 			pub fn [<reset_ $attr_name>](gui: &mut Gui, node_id: f64) {
-				let node_id = unsafe {Entity::from_bits(transmute::<f64, u64>(node_id))};
+				let node_id = unsafe { transmute::<f64, Entity>(node_id) };
 				$resetexpr;
 			}
 
@@ -234,7 +236,7 @@ macro_rules! style_out_export {
 			#[wasm_bindgen]
 			#[allow(unused_attributes)]
 			pub fn [<reset_ $attr_name>](gui: &mut Gui, node_id: f64) {
-				let node_id = unsafe {Entity::from_bits(transmute::<f64, u64>(node_id))};
+				let node_id = unsafe { transmute::<f64, Entity>(node_id) };
 				$resetexpr;
 			}
 		}
@@ -246,7 +248,7 @@ macro_rules! style_out_export {
 			
 			#[allow(unused_attributes)]
 			pub fn [<set_ $attr_name>](gui: &mut Gui, node_id: f64, edge: f64, $($name_ref: &$ty_ref,)* $($name: $ty,)*) {
-				let node_id = unsafe {Entity::from_bits(transmute::<f64, u64>(node_id))};
+				let node_id = unsafe { transmute::<f64, Entity>(node_id) };
 				match unsafe {transmute(edge as u8)} {
 					// Edge::All => gui.commands.set_style(node_id, [<$last_ty Type>]($last_ty(Rect {
 					// 	top: $expr,
@@ -266,7 +268,7 @@ macro_rules! style_out_export {
 			#[wasm_bindgen]
 			#[allow(unused_attributes)]
 			pub fn [<set_ $attr_name>](gui: &mut Gui, node_id: f64, edge: f64, $($name_ref: &$ty_ref,)* $($name: $ty,)*) {
-				let node_id = unsafe {Entity::from_bits(transmute::<f64, u64>(node_id))};
+				let node_id = unsafe { transmute::<f64, Entity>(node_id) };
 				match unsafe {transmute(edge as u8)} {
 					// Edge::All => gui.commands.set_style(node_id, [<$last_ty Type>]($last_ty(Rect {
 					// 	top: $expr,
@@ -286,7 +288,7 @@ macro_rules! style_out_export {
 			
 			#[allow(unused_attributes)]
 			pub fn [<reset_ $attr_name>](gui: &mut Gui, node_id: f64, edge: f64) {
-				let node_id = unsafe {Entity::from_bits(transmute::<f64, u64>(node_id))};
+				let node_id = unsafe { transmute::<f64, Entity>(node_id) };
 				match unsafe {transmute(edge as u8)} {
 					// Edge::All => gui.commands.set_style(node_id, [<Reset $last_ty Type>]),
 					Edge::Top => gui.commands.set_style(node_id, [<Reset $last_ty TopType>]),
@@ -301,7 +303,7 @@ macro_rules! style_out_export {
 			#[wasm_bindgen]
 			#[allow(unused_attributes)]
 			pub fn [<reset_ $attr_name>](gui: &mut Gui, node_id: f64, edge: f64) {
-				let node_id = unsafe {Entity::from_bits(transmute::<f64, u64>(node_id))};
+				let node_id = unsafe { transmute::<f64, Entity>(node_id) };
 				match unsafe {transmute(edge as u8)} {
 					// Edge::All => gui.commands.set_style(node_id, [<Reset $last_ty Type>]),
 					Edge::Top => gui.commands.set_style(node_id, [<Reset $last_ty TopType>]),
@@ -321,7 +323,7 @@ macro_rules! style_out_export {
 			
 			#[allow(unused_attributes)]
 			pub fn [<set_ $attr_name>](gui: &mut Gui, node_id: f64, $($name_ref: &$ty_ref,)* $($name: $ty,)*) {
-				let node_id = unsafe {Entity::from_bits(transmute::<f64, u64>(node_id))};
+				let node_id = unsafe { transmute::<f64, Entity>(node_id) };
 				gui.commands.set_style(node_id, $last_ty($expr));
 			}
 
@@ -329,7 +331,7 @@ macro_rules! style_out_export {
 			#[wasm_bindgen]
 			#[allow(unused_attributes)]
 			pub fn [<set_ $attr_name>](gui: &mut Gui, node_id: f64, $($name_ref: &$ty_ref,)* $($name: $ty,)*) {
-				let node_id = unsafe {Entity::from_bits(transmute::<f64, u64>(node_id))};
+				let node_id = unsafe { transmute::<f64, Entity>(node_id) };
 				gui.commands.set_style(node_id, $last_ty($expr));
 			}
 
@@ -337,7 +339,7 @@ macro_rules! style_out_export {
 			
 			#[allow(unused_attributes)]
 			pub fn [<reset_ $attr_name>](gui: &mut Gui, node_id: f64) {
-				let node_id = unsafe {Entity::from_bits(transmute::<f64, u64>(node_id))};
+				let node_id = unsafe { transmute::<f64, Entity>(node_id) };
 				gui.commands.set_style(node_id, [<Reset $last_ty>]);
 			}
 
@@ -345,7 +347,7 @@ macro_rules! style_out_export {
 			#[wasm_bindgen]
 			#[allow(unused_attributes)]
 			pub fn [<reset_ $attr_name>](gui: &mut Gui, node_id: f64) {
-				let node_id = unsafe {Entity::from_bits(transmute::<f64, u64>(node_id))};
+				let node_id = unsafe { transmute::<f64, Entity>(node_id) };
 				gui.commands.set_style(node_id, [<Reset $last_ty>]);
 			}
 		}
@@ -976,7 +978,7 @@ other_out_export!(
     set_view_port,
     gui,
     {
-		let root = unsafe { Entity::from_bits(transmute::<f64, u64>(root)) };
+		let root = unsafe { transmute::<f64, Entity>(root) };
 		gui.commands.set_view_port(root, pi_ui_render::components::user::Viewport(Aabb2::new(Point2::new(x as f32, y as f32), Point2::new(width as f32, height as f32))));
 	},;;
 	x: i32, y: i32, width: i32, height: i32, root: f64,
@@ -987,8 +989,8 @@ other_out_export!(
     set_brush,
     gui,
     {
-		let node = unsafe { Entity::from_bits(transmute::<f64, u64>(node)) };
-		let brush = unsafe { Entity::from_bits(transmute::<f64, u64>(brush)) };
+		let node = unsafe { transmute::<f64, Entity>(node) };
+		let brush = unsafe { transmute::<f64, Entity>(brush) };
 		gui.commands.push_cmd(ComponentCmd(
 			pi_ui_render::components::user::Canvas{ id: brush, by_draw_list: by_draw_list.unwrap_or(false) },
 			node,
@@ -1002,7 +1004,7 @@ other_out_export!(
 	set_radial_wave,
 	gui,
 	{
-		let node = unsafe { Entity::from_bits(transmute::<f64, u64>(node)) };
+		let node = unsafe { transmute::<f64, Entity>(node) };
 		gui.commands.push_cmd(NodeCmd(RadialWave(pi_postprocess::prelude::RadialWave {
 			aspect_ratio,
 			start,
@@ -1027,7 +1029,7 @@ other_out_export!(
     set_rendertarget_type,
     gui,
     {
-		let node = unsafe { Entity::from_bits(transmute::<f64, u64>(node)) };
+		let node = unsafe { transmute::<f64, Entity>(node) };
 		gui.commands.set_target_type(node, unsafe { transmute::<_, pi_ui_render::components::user::RenderTargetType>(target_ty) });
 	},;;
 	node: f64, target_ty: u8,
@@ -1065,7 +1067,7 @@ other_out_export!(
     set_render_dirty,
     gui,
     {
-		let node: Entity = Entity::from_bits(unsafe { transmute(root) });
+		let node: Entity = unsafe { transmute::<f64, Entity>(root) };
     	gui.commands.set_render_dirty(node, pi_ui_render::components::user::RenderDirty(true));
 	},;;
 	root: f64,
@@ -1294,7 +1296,7 @@ other_out_export!(
 	bool,
 	{
 		pi_export_base::export::await_last_frame(engine);
-		if let Ok(is_show) = gui.enable_query.get(&engine.world, node) {
+		if let Ok(is_show) = gui.entitys.get_component_by_index::<IsShow>(node, gui.is_show_component) {
 			is_show.get_enable()
 		} else {
 			false
@@ -1314,12 +1316,12 @@ other_out_export!(
 	u32,
     {
 		let mut r = 0.0;
-		if let Ok(parent) = gui.up_query.get(&engine.world, node) {
-			if let Ok(parent_layout) = gui.layout_query.get(&engine.world, node) {
+		if let Ok(parent) = gui.entitys.get_component_by_index::<Up>(node, gui.up_component) {
+			if let Ok(parent_layout) = gui.entitys.get_component_by_index::<LayoutResult>(node, gui.layout_component) {
 				r += parent_layout.padding.top + parent_layout.border.top;
 			}
 		}
-		if let Ok(layout) = gui.layout_query.get(&engine.world, node) {
+		if let Ok(layout) = gui.entitys.get_component_by_index::<LayoutResult>(node, gui.layout_component) {
 			r += layout.rect.top;
 		}
 		r.round() as u32
@@ -1337,12 +1339,12 @@ other_out_export!(
 	u32,
     {
 		let mut r = 0.0;
-		if let Ok(parent) = gui.up_query.get(&engine.world, node) {
-			if let Ok(parent_layout) = gui.layout_query.get(&engine.world, node) {
+		if let Ok(parent) = gui.entitys.get_component_by_index::<Up>(node, gui.up_component) {
+			if let Ok(parent_layout) = gui.entitys.get_component_by_index::<LayoutResult>(node, gui.layout_component) {
 				r += parent_layout.padding.left + parent_layout.border.left;
 			}
 		}
-		if let Ok(layout) = gui.layout_query.get(&engine.world, node) {
+		if let Ok(layout) = gui.entitys.get_component_by_index::<LayoutResult>(node, gui.layout_component) {
 			r += layout.rect.left;
 		}
 		r.round() as u32
@@ -1359,7 +1361,7 @@ other_out_export!(
 	node,
 	u32,
     {
-		let r = if let Ok(layout) = gui.layout_query.get(&engine.world, node) {
+		let r = if let Ok(layout) = gui.entitys.get_component_by_index::<LayoutResult>(node, gui.layout_component) {
 			layout.rect.right - layout.rect.left
 		} else {
 			0.0
@@ -1378,7 +1380,7 @@ other_out_export!(
 	node,
 	u32,
     {
-		let r = if let Ok(layout) = gui.layout_query.get(&engine.world, node) {
+		let r = if let Ok(layout) = gui.entitys.get_component_by_index::<LayoutResult>(node, gui.layout_component) {
 			layout.rect.bottom - layout.rect.top
 		} else {
 			0.0
@@ -1392,14 +1394,14 @@ other_out_export!(
 other_out_export!(
 	@with_return_node, 
     get_class_name,
-    _gui: &mut Gui,
+    gui: &mut Gui,
 	engine: &mut Engine,;
 	node,
 	String,
     {
 		pi_export_base::export::await_last_frame(engine);
-		let value = match engine.world.get::<ClassName>( node){
-			Some(r) => Some(&r.0),
+		let value = match gui.entitys.get_component_by_index::<ClassName>(node, gui.class_name_component){
+			Ok(r) => Some(&r.0),
 			_ => None,
 		};
 		serde_json::to_string(&value).unwrap()
@@ -1417,7 +1419,7 @@ other_out_export!(
 	node,
 	String,
     {
-		let value = match gui.quad_query.get(&engine.world, node) {
+		let value = match gui.entitys.get_component_by_index::<Quad>(node, gui.quad_component) {
 			Ok(quad) => OffsetDocument {
 				left: quad.mins.x,
 				top: quad.mins.y,
@@ -1443,14 +1445,14 @@ other_out_export!(
 	node,
 	String,
     {
-		let mut cur_child = match gui.down_query.get(&engine.world, node) {
+		let mut cur_child = match gui.entitys.get_component_by_index::<Down>(node, gui.down_component) {
 			Ok(down) => down.head(),
 			_ => return serde_json::to_string(&Size { width: 0.0, height: 0.0 }).unwrap(),
 		};
 	
 		let (mut left, mut right, mut top, mut bottom) = (std::f32::MAX, 0.0, std::f32::MAX, 0.0);
 		while !EntityKey(cur_child).is_null() {
-			let l = match gui.layout_query.get(&engine.world, cur_child) {
+			let l = match gui.entitys.get_component_by_index::<LayoutResult>(cur_child, gui.layout_component) {
 				Ok(r) => r,
 				_ => break,
 			};
@@ -1469,7 +1471,7 @@ other_out_export!(
 				top = l.rect.top;
 			}
 	
-			cur_child = match gui.up_query.get(&engine.world, cur_child) {
+			cur_child = match gui.entitys.get_component_by_index::<Up>(cur_child, gui.up_component) {
 				Ok(r) => r.next(),
 				_ => break,
 			};
@@ -1488,7 +1490,7 @@ other_out_export!(
 	u32,
     {
 		pi_export_base::export::await_last_frame(engine);
-		let key_frames = engine.world.get_resource::<KeyFramesSheet>().unwrap();
+		let key_frames = engine.world.get_single_res::<KeyFramesSheet>().unwrap();
 		let events = key_frames.get_animation_events();
 
 		return (events.len() * 5) as u32;
@@ -1502,7 +1504,7 @@ other_out_export!(
 // 	u32,
 //     {
 // 		pi_export_base::export::await_last_frame(engine);
-// 		let key_frames = engine.world.get_resource::<KeyFramesSheet>().unwrap();
+// 		let key_frames = engine.world.get_single_res::<KeyFramesSheet>().unwrap();
 // 		let events = key_frames.get_animation_events();
 
 // 		return (events.len() * 5) as u32;
@@ -1516,7 +1518,7 @@ other_out_export!(
     get_animation_events,
 	u32,
     {
-		let key_frames = engine.world.get_resource::<KeyFramesSheet>().unwrap();
+		let key_frames = engine.world.get_single_res::<KeyFramesSheet>().unwrap();
 		// log::warn!("get_animation_events=======");
 
 		let events = key_frames.get_animation_events();
@@ -1530,8 +1532,8 @@ other_out_export!(
 			match map.get(*group_id) {
 				Some(r) => {
 					log::trace!(target: format!("animationevent_{}", &r.1.1.as_str()).as_str(), "ty: {:?}", ty);
-					arr[i] = r.0.index(); // entity
-					arr[i + 1] = r.0.generation(); 
+					arr[i] = r.0.index() as u32; // entity
+					arr[i + 1] = r.0.data().version() as u32; 
 					// name hash
 					match &r.1 {
 						pi_ui_render::resource::animation_sheet::GroupType::Animation(r) => arr[i + 2] = r.1.str_hash() as u32,
@@ -1553,8 +1555,8 @@ other_out_export!(
     get_entity_offset,
 	u32,
     {
-		let r = unsafe {Entity::from_bits(transmute::<f64, u64>(value))};
-    	r.index()
+		let r = unsafe { transmute::<f64, Entity>(value)};
+    	r.index() as u32
 	},;;value: f64,
 );
 
@@ -1563,8 +1565,8 @@ other_out_export!(
     get_entity_version,
 	u32,
     {
-		let r = unsafe {Entity::from_bits(transmute::<f64, u64>(value))};
-    	r.generation()
+		let r = unsafe { transmute::<f64, Entity>(value)};
+    	r.data().version() as u32
 	},;;value: f64,
 );
 
@@ -1615,7 +1617,7 @@ pub enum LengthUnitType {
 fn set_animation_str_inner(gui: &mut Gui, node_id: f64, value: &str, scope_hash: u32) {
     use pi_style::style_parse::parse_animation;
 
-    let node_id = Entity::from_bits(unsafe { transmute(node_id) });
+    let node_id = unsafe { transmute::<f64, Entity>(node_id) };
     let mut input = cssparser::ParserInput::new(value);
     let mut parse = cssparser::Parser::new(&mut input);
 
@@ -1642,7 +1644,7 @@ fn set_animation_str_inner(gui: &mut Gui, node_id: f64, value: &str, scope_hash:
 
 #[inline]
 fn reset_animation_str_inner(gui: &mut Gui, node_id: f64) {
-    let node_id = Entity::from_bits(unsafe { transmute(node_id) });
+    let node_id = unsafe { transmute::<f64, Entity>(node_id) };
     gui.commands.set_style(node_id, ResetAnimationNameType);
     gui.commands.set_style(node_id, ResetAnimationDurationType);
     gui.commands.set_style(node_id, ResetAnimationIterationCountType);

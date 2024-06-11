@@ -47,7 +47,7 @@ impl From<Handle<pi_render::rhi::asset::TextureRes>> for TextureDefaultView {
 #[pi_js_export]
 pub fn query_texture_default_view(app: &mut Engine, path: &Atom) -> Option<TextureDefaultView> {
 	crate::export::await_last_frame(app);
-    if let Some(assets) = app.world.get_resource::<ShareAssetMgr<TextureRes>>() {
+    if let Some(assets) = app.world.get_single_res_mut::<ShareAssetMgr<TextureRes>>() {
         if let Some(tex) = assets.get(&path.asset_u64()) {
             Some(TextureDefaultView(tex))
         } else {
