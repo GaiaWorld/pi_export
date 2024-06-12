@@ -1,7 +1,6 @@
 
 use std::{mem::transmute, ops::Deref};
 
-use bevy_ecs::{prelude::Commands, system::CommandQueue, query::QueryState};
 use pi_bevy_asset::ShareAssetMgr;
 use pi_bevy_render_plugin::{PiRenderGraph, PiRenderDevice, render_cross::GraphId};
 use pi_export_base::export::await_last_frame;
@@ -9,6 +8,8 @@ pub use pi_export_base::{export::Engine, constants::*, asset::TextureDefaultView
 // use pi_window_renderer::{WindowRenderer, PluginWindowRender};
 use pi_hash::XHashMap;
 use pi_render::{renderer::sampler::SamplerRes, asset::TAssetKeyU64, rhi::sampler::EAnisotropyClamp};
+use pi_spine_rs::ecs::WorldResourceTemp;
+use pi_spine_rs::ecs::WorldPluginExtent;
 
 // pub use pi_export_base::constants::BlendFactor;
 use js_proxy_gen_macro::pi_js_export;
@@ -92,7 +93,7 @@ pub fn spine_renderer_create(app: &mut Engine, cmds: &mut CommandsExchangeSpine,
     // log::warn!("Spine To Screen: {:?}", rendersize.is_none());
 
     let id_renderer = {
-        let id = app.world.entities().reserve_entity();
+        let id = app.world.make_entity_editor().alloc_entity();
         let id_renderer = KeySpineRenderer(id);
     
         // // let final_render_format = app.world.get_resource::<WindowRenderer>().unwrap().format();
@@ -122,8 +123,8 @@ pub fn spine_renderer_create(app: &mut Engine, cmds: &mut CommandsExchangeSpine,
     //     unsafe { transmute(id_renderer.0.to_bits()) }
     
     // };
-
-    unsafe { transmute(id_renderer.0.to_bits()) }
+    
+    unsafe { transmute(id_renderer.0) }
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]

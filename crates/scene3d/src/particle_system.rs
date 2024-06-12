@@ -31,8 +31,8 @@ pub fn p3d_particle_system(
     let entity = as_entity(entity);
     let trailmesh = as_entity(trailmesh);
     let trailgeo = as_entity(trailgeo);
-    let reosurce = param.resource.get_mut(&mut app.world);
-    if let Some(calculator) = reosurce.particlesys.calcultors.get(&key.asset_u64()) {
+    let calcultors = param.get_calcultors(&mut app.world).unwrap();
+    if let Some(calculator) = calcultors.get(&key.asset_u64()) {
         let attrs = vec![
             ParticleAttribute { vtype: EParticleAttributeType::Matrix, attr: pi_atom::Atom::from("") },
             ParticleAttribute { vtype: EParticleAttributeType::Color, attr: color_attr_key.deref().clone() },

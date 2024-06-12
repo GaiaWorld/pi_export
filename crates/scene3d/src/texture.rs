@@ -71,13 +71,18 @@ pub fn p3d_create_data_texture(app: &mut Engine, param: &mut ActionSetScene3D, k
     let height = height as u32;
     let dimension = wgpu::TextureViewDimension::D2;
     let is_opacity = true;
-    let resource = param.resource.get_mut(&mut app.world);
+
+    let mut w1 = app.world.unsafe_world();
+    let imgtex_asset = param.get_imgtex_asset_mut(&mut w1).unwrap();
+    let device = param.get_device(&app.world).unwrap();
+    let queue = param.get_queue(&app.world).unwrap();
+
     let key = KeyImageTexture { url: key.deref().clone(), srgb: false, file: false, compressed: false, depth_or_array_layers: 0, useage: wgpu::TextureUsages::COPY_DST | wgpu::TextureUsages::TEXTURE_BINDING };
-    if let Some(data) = resource.imgtex_asset.get(&key) {
+    if let Some(data) = imgtex_asset.get(&key) {
         Some(DataTextureRes(data))
     } else {
-        let texture = ImageTexture::create_data_texture(&resource.device, &resource.queue, &key, data, width, height, format, dimension, size_per_pixel, is_opacity);
-        match resource.imgtex_asset.insert(key, texture) {
+        let texture = ImageTexture::create_data_texture(&device, &queue, &key, data, width, height, format, dimension, size_per_pixel, is_opacity);
+        match imgtex_asset.insert(key, texture) {
             Ok(data) => Some(DataTextureRes(data)),
             Err(_) => None,
         }
@@ -87,19 +92,19 @@ pub fn p3d_create_data_texture(app: &mut Engine, param: &mut ActionSetScene3D, k
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_update_data_texture(app: &mut Engine, param: &mut ActionSetScene3D, texture: &DataTextureRes, data:&[u8]) {
-    let resource = param.resource.get_mut(&mut app.world);
-    texture.0.update(&resource.queue, data, 0, 0, texture.0.width(), texture.0.height());
+    let queue = param.get_queue(&mut app.world).unwrap();
+    texture.0.update(&queue, data, 0, 0, texture.0.width(), texture.0.height());
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_query_texture(app: &mut Engine, param: &mut ActionSetScene3D, isfile: bool, url: &Atom, srgb: bool, compressed: bool, depth_or_array_layers: f64, useage: f64, info: &mut [f32]) -> bool {
 	
-    let resource = param.resource.get_mut(&mut app.world);
+    let imgtex_asset = param.get_imgtex_asset(&mut app.world).unwrap();
 
     let useage = EngineConstants::texture_usage(useage);
     let key = KeyImageTexture { url: url.deref().clone(), srgb, file: isfile, compressed, depth_or_array_layers: depth_or_array_layers as u8, useage };
-    if let Some(img) = resource.imgtex_asset.get(&key) {
+    if let Some(img) = imgtex_asset.get(&key) {
         info[0] = img.width() as f32;
         info[1] = img.height() as f32;
         info[2] = img.size() as f32;

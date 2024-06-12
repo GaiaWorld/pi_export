@@ -118,6 +118,9 @@ pi_scene_shell      = { path = "../pi_3d/crates/pi_scene_shell" }
 # pi_gltf                 = { path = "../pi_gltf" }
 # pi_animation ={path="../pi_animation"}
 
+pi_spine_rs = { path = "../pi_spine_rs" }
+pi_spine_render = { path = "../pi_spine_rs/crates/pi_spine_render" }
+
 # [package.metadata.wasm-pack.profile.profiling]
 # wasm-opt = ['-O']
 
@@ -134,9 +137,6 @@ pi_scene_shell      = { path = "../pi_3d/crates/pi_scene_shell" }
 
 # [patch."https://github.com/GaiaWorld/pi_path_finding"]
 # pi_path_finding = { path = "../pi_path_finding" }
-
-# [patch."https://github.com/GaiaWorld/pi_spine_rs"]
-# pi_spine_rs = { path = "../pi_spine_rs" }
 
 
 # [patch."https://github.com/GaiaWorld/pi_scene"]

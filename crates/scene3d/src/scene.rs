@@ -30,7 +30,7 @@ use js_proxy_gen_macro::pi_js_export;
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_scene(app: &mut Engine, cmds: &mut CommandsExchangeD3, cullingmode: f64, vals: &[i32]) -> f64 {
-    let scene: Entity = app.world.entities().reserve_entity();
+    let scene: Entity = app.world.make_entity_editor().alloc_entity();
 
     let mut values = [0, 0, 0, 0, 0, 0, 0, 0, 0];
     let mut idx = 0;

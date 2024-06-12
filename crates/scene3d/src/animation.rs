@@ -286,7 +286,7 @@ pub fn p3d_animation_group(
     scene: f64,
 ) -> f64 {
 	pi_export_base::export::await_last_frame(app);
-    let id: Entity = app.world.entities().reserve_entity();
+    let id: Entity = app.world.make_entity_editor().alloc_entity();
     let scene: Entity = as_entity(scene);
 
     cmds.anime_create.push(OpsAnimationGroupCreation::ops(scene, id));
@@ -481,12 +481,12 @@ pub fn p3d_query_anime_events(
 ) -> f64 {
 
 	pi_export_base::export::await_last_frame(app);
-    let mut resource = param.resource.get_mut(&mut app.world);
+    let anime_events = param.get_anime_events_mut(&mut app.world).unwrap();
 
     let size = receive_len as usize / 4;
 
-    let count = resource.anime_events.len();
-    let mut oldlist = replace(&mut resource.anime_events.0, vec![]);
+    let count = anime_events.len();
+    let mut oldlist = replace(&mut anime_events.0, vec![]);
     if count > size {
         let mut keeplist = vec![];
         let keepcount = count - size;
@@ -495,7 +495,7 @@ pub fn p3d_query_anime_events(
         }
 
         while let Some(item) = keeplist.pop() {
-            resource.anime_events.push(item);
+            anime_events.push(item);
         };
     };
 
@@ -775,147 +775,151 @@ fn curve<const N: usize, T: TValue<N> + FrameDataValue>(
 /// * `GLTFCubicSpline` data: [design_frame_per_second, (frame, (x, y, ..), (x, y, ..), (x, y, ..)), ...]
 pub fn p3d_anime_curve_query(app: &mut Engine, param: &mut ActionSetScene3D, key: f64, property: EAnimePropertyID) -> bool {
 	pi_export_base::export::await_last_frame(app);
-    let resource = param.resource.get_mut(&mut app.world);
+    // let resource = param.resource.get_mut(&mut app.world);
 
-    let key = unsafe { transmute(key) };
-    let property = unsafe { transmute(property) };
+    // let key = unsafe { transmute(key) };
+    // let property = unsafe { transmute(property) };
 
-    pi_gltf2_load::p3d_anime_curve_query(&resource.anime_assets, key, property)
+    // pi_gltf2_load::p3d_anime_curve_query(&resource.anime_assets, key, property)
+
+    false
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_anime_curve_create(app: &mut Engine, param: &mut ActionSetScene3D, key: f64, property: EAnimePropertyID, data: &[f32], mode: EAnimeCurve) -> bool {
     pi_export_base::export::await_last_frame(app);
-    let resource = param.resource.get_mut(&mut app.world);
-    let key: u64 = unsafe { transmute(key) };
+    // let resource = param.resource.get_mut(&mut app.world);
+    // let key: u64 = unsafe { transmute(key) };
 
-    let cmds = resource.anime_assets;
+    // let cmds = resource.anime_assets;
 
-    match property {
-        EAnimePropertyID::LocalPosition       => {
-            let v = curve::<3, LocalPosition>(data,  mode);
-            cmds.position.insert(key, TypeFrameCurve(v)).is_ok()
-        },
-        EAnimePropertyID::LocalScaling        => {
-            let v = curve::<3, LocalScaling>(data,  mode);
-            cmds.scaling.insert(key, TypeFrameCurve(v)).is_ok()
-        },
-        EAnimePropertyID::LocalRotation    => {
-            let v = curve::<4, LocalRotationQuaternion>(data,  mode);
-            cmds.quaternion.insert(key, TypeFrameCurve(v)).is_ok()
-        },
-        EAnimePropertyID::LocalEulerAngles    => {
-            let v = curve::<3, LocalEulerAngles>(data,  mode);
-            cmds.euler.insert(key, TypeFrameCurve(v)).is_ok()
-        },
-        EAnimePropertyID::Alpha               => {
-            let v = curve::<1, AnimatorableFloat>(data,  mode);
-            cmds.float.insert(key, TypeFrameCurve(v)).is_ok()
-        },
-        EAnimePropertyID::MainColor           => {
-            let v = curve::<3, AnimatorableVec3>(data,  mode);
-            cmds.vec3s.insert(key, TypeFrameCurve(v)).is_ok()
-        },
-        EAnimePropertyID::MainTexUScale       => {
-            let v = curve::<1, AnimatorableFloat>(data,  mode);
-            cmds.float.insert(key, TypeFrameCurve(v)).is_ok()
-        },
-        EAnimePropertyID::MainTexVScale       => {
-            let v = curve::<1, AnimatorableFloat>(data,  mode);
-            cmds.float.insert(key, TypeFrameCurve(v)).is_ok()
-        },
-        EAnimePropertyID::MainTexUOffset      => {
-            let v = curve::<1, AnimatorableFloat>(data,  mode);
-            cmds.float.insert(key, TypeFrameCurve(v)).is_ok()
-        },
-        EAnimePropertyID::MainTexVOffset      => {
-            let v = curve::<1, AnimatorableFloat>(data,  mode);
-            cmds.float.insert(key, TypeFrameCurve(v)).is_ok()
-        },
-        EAnimePropertyID::OpacityTexUScale    => {
-            let v = curve::<1, AnimatorableFloat>(data,  mode);
-            cmds.float.insert(key, TypeFrameCurve(v)).is_ok()
-        },
-        EAnimePropertyID::OpacityTexVScale    => {
-            let v = curve::<1, AnimatorableFloat>(data,  mode);
-            cmds.float.insert(key, TypeFrameCurve(v)).is_ok()
-        },
-        EAnimePropertyID::OpacityTexUOffset   => {
-            let v = curve::<1, AnimatorableFloat>(data,  mode);
-            cmds.float.insert(key, TypeFrameCurve(v)).is_ok()
-        },
-        EAnimePropertyID::OpacityTexVOffset   => {
-            let v = curve::<1, AnimatorableFloat>(data,  mode);
-            cmds.float.insert(key, TypeFrameCurve(v)).is_ok()
-        },
-        EAnimePropertyID::AlphaCutoff         => {
-            let v = curve::<1, AnimatorableFloat>(data,  mode);
-            cmds.float.insert(key, TypeFrameCurve(v)).is_ok()
-        },
-        EAnimePropertyID::CameraFov           => {
-            let v = curve::<1, CameraFov>(data,  mode);
-            cmds.camerafov.insert(key, TypeFrameCurve(v)).is_ok()
-        },
-        EAnimePropertyID::CameraOrthSize      => {
-            let v = curve::<1, CameraOrthSize>(data,  mode);
-            cmds.camerasize.insert(key, TypeFrameCurve(v)).is_ok()
-        },
-        EAnimePropertyID::LightDiffuse        => {
-            let v = curve::<3, AnimatorableVec3>(data,  mode);
-            cmds.vec3s.insert(key, TypeFrameCurve(v)).is_ok()
-        },
-        EAnimePropertyID::MaskTexUScale       => {
-            let v = curve::<1, AnimatorableFloat>(data,  mode);
-            cmds.float.insert(key, TypeFrameCurve(v)).is_ok()
-        },
-        EAnimePropertyID::MaskTexVScale       => {
-            let v = curve::<1, AnimatorableFloat>(data,  mode);
-            cmds.float.insert(key, TypeFrameCurve(v)).is_ok()
-        },
-        EAnimePropertyID::MaskTexUOffset      => {
-            let v = curve::<1, AnimatorableFloat>(data,  mode);
-            cmds.float.insert(key, TypeFrameCurve(v)).is_ok()
-        },
-        EAnimePropertyID::MaskTexVOffset      => {
-            let v = curve::<1, AnimatorableFloat>(data,  mode);
-            cmds.float.insert(key, TypeFrameCurve(v)).is_ok()
-        },
-        EAnimePropertyID::MaskCutoff          => {
-            let v = curve::<1, AnimatorableFloat>(data,  mode);
-            cmds.float.insert(key, TypeFrameCurve(v)).is_ok()
-        },
-        EAnimePropertyID::Enable            => {
-            let v = curve::<1, Enable>(data,  mode);
-            cmds.enable.insert(key, TypeFrameCurve(v)).is_ok()
-        },
-        EAnimePropertyID::BoneOffset          => {
-            let v = curve::<1, AnimatorableUint>(data,  mode);
-            cmds.uints.insert(key, TypeFrameCurve(v)).is_ok()
-        },
-        EAnimePropertyID::IndicesRange        => {
-            let v = curve::<2, IndiceRenderRange>(data,  mode);
-            cmds.indicerange_curves.insert(key, TypeFrameCurve(v)).is_ok()
-        },
-        EAnimePropertyID::Intensity => {
-            false
-        },
-        EAnimePropertyID::CellId => {
-            false
-        },
-        EAnimePropertyID::MainTexTilloff        => {
-            let v = curve::<4, AnimatorableVec4>(data,  mode);
-            cmds.vec4s.insert(key, TypeFrameCurve(v)).is_ok()
-        },
-        EAnimePropertyID::MaskTexTilloff        => {
-            let v = curve::<4, AnimatorableVec4>(data,  mode);
-            cmds.vec4s.insert(key, TypeFrameCurve(v)).is_ok()
-        },
-        EAnimePropertyID::OpacityTexTilloff        => {
-            let v = curve::<4, AnimatorableVec4>(data,  mode);
-            cmds.vec4s.insert(key, TypeFrameCurve(v)).is_ok()
-        },
-    }
+    // match property {
+    //     EAnimePropertyID::LocalPosition       => {
+    //         let v = curve::<3, LocalPosition>(data,  mode);
+    //         cmds.position.insert(key, TypeFrameCurve(v)).is_ok()
+    //     },
+    //     EAnimePropertyID::LocalScaling        => {
+    //         let v = curve::<3, LocalScaling>(data,  mode);
+    //         cmds.scaling.insert(key, TypeFrameCurve(v)).is_ok()
+    //     },
+    //     EAnimePropertyID::LocalRotation    => {
+    //         let v = curve::<4, LocalRotationQuaternion>(data,  mode);
+    //         cmds.quaternion.insert(key, TypeFrameCurve(v)).is_ok()
+    //     },
+    //     EAnimePropertyID::LocalEulerAngles    => {
+    //         let v = curve::<3, LocalEulerAngles>(data,  mode);
+    //         cmds.euler.insert(key, TypeFrameCurve(v)).is_ok()
+    //     },
+    //     EAnimePropertyID::Alpha               => {
+    //         let v = curve::<1, AnimatorableFloat>(data,  mode);
+    //         cmds.float.insert(key, TypeFrameCurve(v)).is_ok()
+    //     },
+    //     EAnimePropertyID::MainColor           => {
+    //         let v = curve::<3, AnimatorableVec3>(data,  mode);
+    //         cmds.vec3s.insert(key, TypeFrameCurve(v)).is_ok()
+    //     },
+    //     EAnimePropertyID::MainTexUScale       => {
+    //         let v = curve::<1, AnimatorableFloat>(data,  mode);
+    //         cmds.float.insert(key, TypeFrameCurve(v)).is_ok()
+    //     },
+    //     EAnimePropertyID::MainTexVScale       => {
+    //         let v = curve::<1, AnimatorableFloat>(data,  mode);
+    //         cmds.float.insert(key, TypeFrameCurve(v)).is_ok()
+    //     },
+    //     EAnimePropertyID::MainTexUOffset      => {
+    //         let v = curve::<1, AnimatorableFloat>(data,  mode);
+    //         cmds.float.insert(key, TypeFrameCurve(v)).is_ok()
+    //     },
+    //     EAnimePropertyID::MainTexVOffset      => {
+    //         let v = curve::<1, AnimatorableFloat>(data,  mode);
+    //         cmds.float.insert(key, TypeFrameCurve(v)).is_ok()
+    //     },
+    //     EAnimePropertyID::OpacityTexUScale    => {
+    //         let v = curve::<1, AnimatorableFloat>(data,  mode);
+    //         cmds.float.insert(key, TypeFrameCurve(v)).is_ok()
+    //     },
+    //     EAnimePropertyID::OpacityTexVScale    => {
+    //         let v = curve::<1, AnimatorableFloat>(data,  mode);
+    //         cmds.float.insert(key, TypeFrameCurve(v)).is_ok()
+    //     },
+    //     EAnimePropertyID::OpacityTexUOffset   => {
+    //         let v = curve::<1, AnimatorableFloat>(data,  mode);
+    //         cmds.float.insert(key, TypeFrameCurve(v)).is_ok()
+    //     },
+    //     EAnimePropertyID::OpacityTexVOffset   => {
+    //         let v = curve::<1, AnimatorableFloat>(data,  mode);
+    //         cmds.float.insert(key, TypeFrameCurve(v)).is_ok()
+    //     },
+    //     EAnimePropertyID::AlphaCutoff         => {
+    //         let v = curve::<1, AnimatorableFloat>(data,  mode);
+    //         cmds.float.insert(key, TypeFrameCurve(v)).is_ok()
+    //     },
+    //     EAnimePropertyID::CameraFov           => {
+    //         let v = curve::<1, CameraFov>(data,  mode);
+    //         cmds.camerafov.insert(key, TypeFrameCurve(v)).is_ok()
+    //     },
+    //     EAnimePropertyID::CameraOrthSize      => {
+    //         let v = curve::<1, CameraOrthSize>(data,  mode);
+    //         cmds.camerasize.insert(key, TypeFrameCurve(v)).is_ok()
+    //     },
+    //     EAnimePropertyID::LightDiffuse        => {
+    //         let v = curve::<3, AnimatorableVec3>(data,  mode);
+    //         cmds.vec3s.insert(key, TypeFrameCurve(v)).is_ok()
+    //     },
+    //     EAnimePropertyID::MaskTexUScale       => {
+    //         let v = curve::<1, AnimatorableFloat>(data,  mode);
+    //         cmds.float.insert(key, TypeFrameCurve(v)).is_ok()
+    //     },
+    //     EAnimePropertyID::MaskTexVScale       => {
+    //         let v = curve::<1, AnimatorableFloat>(data,  mode);
+    //         cmds.float.insert(key, TypeFrameCurve(v)).is_ok()
+    //     },
+    //     EAnimePropertyID::MaskTexUOffset      => {
+    //         let v = curve::<1, AnimatorableFloat>(data,  mode);
+    //         cmds.float.insert(key, TypeFrameCurve(v)).is_ok()
+    //     },
+    //     EAnimePropertyID::MaskTexVOffset      => {
+    //         let v = curve::<1, AnimatorableFloat>(data,  mode);
+    //         cmds.float.insert(key, TypeFrameCurve(v)).is_ok()
+    //     },
+    //     EAnimePropertyID::MaskCutoff          => {
+    //         let v = curve::<1, AnimatorableFloat>(data,  mode);
+    //         cmds.float.insert(key, TypeFrameCurve(v)).is_ok()
+    //     },
+    //     EAnimePropertyID::Enable            => {
+    //         let v = curve::<1, Enable>(data,  mode);
+    //         cmds.enable.insert(key, TypeFrameCurve(v)).is_ok()
+    //     },
+    //     EAnimePropertyID::BoneOffset          => {
+    //         let v = curve::<1, AnimatorableUint>(data,  mode);
+    //         cmds.uints.insert(key, TypeFrameCurve(v)).is_ok()
+    //     },
+    //     EAnimePropertyID::IndicesRange        => {
+    //         let v = curve::<2, IndiceRenderRange>(data,  mode);
+    //         cmds.indicerange_curves.insert(key, TypeFrameCurve(v)).is_ok()
+    //     },
+    //     EAnimePropertyID::Intensity => {
+    //         false
+    //     },
+    //     EAnimePropertyID::CellId => {
+    //         false
+    //     },
+    //     EAnimePropertyID::MainTexTilloff        => {
+    //         let v = curve::<4, AnimatorableVec4>(data,  mode);
+    //         cmds.vec4s.insert(key, TypeFrameCurve(v)).is_ok()
+    //     },
+    //     EAnimePropertyID::MaskTexTilloff        => {
+    //         let v = curve::<4, AnimatorableVec4>(data,  mode);
+    //         cmds.vec4s.insert(key, TypeFrameCurve(v)).is_ok()
+    //     },
+    //     EAnimePropertyID::OpacityTexTilloff        => {
+    //         let v = curve::<4, AnimatorableVec4>(data,  mode);
+    //         cmds.vec4s.insert(key, TypeFrameCurve(v)).is_ok()
+    //     },
+    // }
+
+    false
 }
 
 
