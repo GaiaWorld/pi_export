@@ -30,7 +30,7 @@ pub fn p3d_create_render(app: &mut Engine, cmds: &mut CommandsExchangeD3, viewer
 
     let viewer: Entity = as_entity(viewer);
 
-    let id_renderer: Entity = app.world.make_entity_editor().alloc_entity();
+    let id_renderer: Entity = app.world.entities().reserve_entity();
     
     cmds.renderer_create.push(OpsRendererCreate::ops(id_renderer, name.clone(), viewer, PassTag::new(pass_tag as u16), transparent));
 

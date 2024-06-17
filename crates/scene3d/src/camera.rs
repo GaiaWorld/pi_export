@@ -14,7 +14,7 @@ pub use crate::engine::ActionSetScene3D;
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_camera(app: &mut Engine, cmds: &mut CommandsExchangeD3, scene: f64) -> f64 {
-    let id: Entity = app.world.make_entity_editor().alloc_entity();
+    let id: Entity = app.world.spawn_empty().id();
     let scene: Entity = as_entity(scene);
 
     cmds.transform_tree.push(OpsTransformNodeParent::ops(id, scene));

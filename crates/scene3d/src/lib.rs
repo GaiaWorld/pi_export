@@ -1,5 +1,3 @@
-extern crate paste;
-
 use std::mem::transmute;
 
 use pi_scene_shell::prelude::Entity;
@@ -29,10 +27,12 @@ pub mod constants;
 pub mod commands;
 
 pub fn as_entity(val: f64) -> Entity {
+    // Entity::from_bits(val.to_bits())
     unsafe { transmute(val) }
 }
 
 pub fn as_f64(val: &Entity) -> f64 {
+    // unsafe { transmute(val.to_bits()) }
     unsafe { transmute(*val) }
 }
 

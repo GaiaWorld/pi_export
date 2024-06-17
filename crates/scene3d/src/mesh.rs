@@ -49,7 +49,7 @@ pub fn p3d_instance_attribute(item: &mut VInstanceAttributes, key: &Atom, code: 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_mesh(app: &mut Engine, cmds: &mut CommandsExchangeD3, scene: f64, instancestate: &VInstanceAttributes, instance_use_single_buffer: bool) -> f64 {
-    let id: Entity = app.world.make_entity_editor().alloc_entity();
+    let id: Entity = app.world.entities().reserve_entity();
     let scene: Entity = as_entity(scene);
 
     cmds.transform_tree.push(OpsTransformNodeParent::ops(id, scene));
@@ -63,7 +63,7 @@ pub fn p3d_mesh(app: &mut Engine, cmds: &mut CommandsExchangeD3, scene: f64, ins
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_mesh_geometry(app: &mut Engine, cmds: &mut CommandsExchangeD3, mesh: f64, geometa: &GeometryMeta) -> f64 {
-    let geo: Entity = app.world.make_entity_editor().alloc_entity();
+    let geo: Entity = app.world.entities().reserve_entity();
     let mesh: Entity = as_entity(mesh);
     // log::error!("MeshGeo: {:?}", geometa.0);
 

@@ -45,6 +45,16 @@ wgpu = {version = "0.1", registry = "yn", package="pi_wgpu"}
 tracing = "0.1"
 pi_winit = {version = "0.27", registry="yn", package="winit"}
 
+pi_3d 		            = { version = "=0.0.8", registry = "yn" }
+pi_scene_shell 		    = { version = "=0.0.8", registry = "yn" }
+pi_node_materials 		= { version = "=0.0.8", registry = "yn" }
+pi_scene_context 		= { version = "=0.0.8", registry = "yn" }
+pi_mesh_builder 		= { version = "=0.0.8", registry = "yn" }
+pi_gltf2_load           = { version = "=0.0.8", registry = "yn" }
+pi_particle_system      = { version = "=0.0.8", registry = "yn" }
+pi_trail_renderer       = { version = "=0.0.8", registry = "yn" }
+
+pi_spine_rs = {version = "0.0.6", registry = "yn"}
 
 [target.'cfg(target_arch = "wasm32")'.dependencies]
 wasm-bindgen = { version = "0.2", features = ["serde-serialize"]}

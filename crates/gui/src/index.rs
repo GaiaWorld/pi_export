@@ -965,10 +965,11 @@ fn ab_query_func(arg: &mut AbQueryArgs, id: EntityKey, aabb: &Aabb2, _bind: &())
             // 检查是否有裁剪，及是否在裁剪范围内
             let mut inpass = inpass.0;
             while !inpass.is_null() {
+                // log::warn!("inpass======={:?}", (inpass, id));
                 if let (Ok(parent), Ok(quad), Ok(oveflow)) = (
-                    arg.gui.entitys.get_component_by_index::<ParentPassId>(*id, arg.gui.parentpass_component),
-                    arg.gui.entitys.get_component_by_index::<Quad>(*id, arg.gui.quad_component),
-                    arg.gui.entitys.get_component_by_index::<Overflow>(*id, arg.gui.overflow_component),
+                    arg.gui.entitys.get_component_by_index::<ParentPassId>(*inpass, arg.gui.parentpass_component),
+                    arg.gui.entitys.get_component_by_index::<Quad>(*inpass, arg.gui.quad_component),
+                    arg.gui.entitys.get_component_by_index::<Overflow>(*inpass, arg.gui.overflow_component),
                 ){
                     inpass = parent.0;
                     if oveflow.0 {
