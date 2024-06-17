@@ -1,11 +1,13 @@
 use std::mem::transmute;
 
 use js_proxy_gen_macro::pi_js_export;
+use pi_bevy_asset::ShareAssetMgr;
 use pi_bevy_ecs_extend::prelude::Down;
 use pi_bevy_ecs_extend::prelude::Up;
 use pi_bevy_ecs_extend::system_param::tree::Layer;
 use pi_bevy_render_plugin::PiRenderGraph;
 use pi_null::Null;
+use pi_render::rhi::asset::TextureRes;
 use pi_ui_render::components::calc::DrawInfo;
 use pi_ui_render::components::calc::InPassId;
 use pi_ui_render::components::calc::RenderContextMark;
@@ -595,7 +597,33 @@ pub fn node_info(engine: &mut Engine, node_id: f64) -> String {
     serde_json::to_string(&info).unwrap()
 }
 
+#[allow(unused_attributes)]
+#[pi_js_export]
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+pub struct TexInfo {
+    pub name: String,
+    pub size: f64,
+    pub is_used: bool,
+    pub timeout: f64
+}
 
+#[allow(unused_attributes)]
+#[pi_js_export]
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+pub fn texture_info(engine: &mut Engine) -> Vec<TexInfo> {
+    use pi_render::rhi::asset::AssetWithId;
+    let mut res = Vec::new();
+    let info = engine.world.get_single_res::<ShareAssetMgr<AssetWithId<TextureRes>>>().unwrap();
+    for info in &info.account().used{
+        res.push(TexInfo{ name: info.name.clone(), size: info.size as f64, is_used: true,  timeout: info.remain_timeout as f64})
+    }
+
+    for info in &info.account().unused{
+        res.push(TexInfo{ name: info.name.clone(), size: info.size as f64, is_used: false,  timeout: info.remain_timeout as f64})
+    }
+
+    res
+}
 // #[allow(unused_attributes)]
 // #[pi_js_export]
 // pub fn overflow_clip(gui: &Gui) -> JsValue {

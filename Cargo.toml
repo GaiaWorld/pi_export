@@ -8,10 +8,10 @@ resolver="2"
 exclude = ["crates/gui/exports_macro"]
 
 [profile.release]
-debug= true
-# strip = true
-# lto = true #这为LLVM提供了更多内联和修剪功能的机会。它不仅使.wasm尺寸更小，而且在运行时也更快！缺点是编译将花费更长的时间
-opt-level = 's'  # 默认情况下，对LLVM的优化通道进行了调整，以提高速度，而不是大小。我们可以通过修改以下
+# debug= true
+strip = true
+lto = true #这为LLVM提供了更多内联和修剪功能的机会。它不仅使.wasm尺寸更小，而且在运行时也更快！缺点是编译将花费更长的时间
+opt-level = "z"  # 默认情况下，对LLVM的优化通道进行了调整，以提高速度，而不是大小。我们可以通过修改以下
 # opt-level = "z" # 了更积极地优化尺寸，以进一步的潜在速度成本
 # 请注意，令人惊讶的是，opt-level = "s"有时二进制文件的大小可能小于opt-level = "z"。总是测量！
 panic = 'abort'
@@ -100,7 +100,7 @@ pi_bevy_post_process = { path = "../pi_bevy/crates/post_process" }
 pi_bevy_window = { path = "../pi_bevy/crates/window" }
 pi_window_renderer = { path="../pi_bevy/crates/window_renderer" }
 
-pi_ui_render = { path = "../pi_ui_render_new" }
+pi_ui_render = { path = "../pi_ui_render" }
 pi_style = { path = "../pi_style" }
 
 # pi_postprocess ={path="../pi_post_process"}

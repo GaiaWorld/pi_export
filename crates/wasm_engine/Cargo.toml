@@ -52,6 +52,6 @@ uuid = { version = "1", features = ["js"] }
 # `wasm-opt` is on by default in for the release profile, but it can be
 # disabled by setting it to `false`
 [package.metadata.wasm-pack.profile.release]
-wasm-opt = ['-O4']
+wasm-opt = ['-Oz']
 
 
