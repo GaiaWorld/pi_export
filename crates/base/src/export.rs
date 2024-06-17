@@ -354,7 +354,12 @@ pub fn create_engine(canvas: web_sys::HtmlCanvasElement, width: u32, height: u32
 		asset_config,
 	);
     app.add_plugins(RuntimePlugin); // wasm需要主动推运行时
-    Engine::new(app)
+
+    let mut engine = Engine::new(app);
+
+	_init_engine_3d(&mut engine);
+
+	engine
 }
 
 #[cfg(feature="pi_js_export")]
@@ -385,10 +390,14 @@ pub fn create_engine(window: &Arc<Window>, width: u32, height: u32, asset_total_
 		asset_config,
 	);
 
-    Engine::new(app)
+    let mut engine = Engine::new(app);
+
+	_init_engine_3d(&mut engine);
+
+	engine
 }
 
-fn create_engine_inner(
+pub fn create_engine_inner(
 	app: &mut App, 
 	winit_plugin: pi_bevy_winit_window::WinitPlugin,
 	asset_total_capacity: u32,
@@ -547,4 +556,37 @@ impl pi_world::prelude::Plugin for RuntimePlugin {
 #[cfg(feature = "pi_js_export")]
 pub fn entity_from_number(index: u32, version: u32) -> f64 {
 	unsafe { transmute::<_, f64>( (version as u64) << 32 | index as u64) }
+}
+
+
+pub fn _init_engine_3d(app: &mut Engine) {
+	use pi_scene_shell::prelude::WorldResourceTemp;
+	use pi_scene_shell::prelude::AppResourceTemp;
+	use pi_world::prelude::IntoSystemConfigs;
+
+    if app.world.get_resource::<pi_scene_shell::prelude::AssetMgrConfigs>().is_none() {
+        app.insert_resource(pi_scene_shell::prelude::AssetMgrConfigs::default());
+    }
+
+    log::error!(">>>>> p3d_init_engine");
+
+    pi_3d::PluginBundleDefault::add(app);
+    app
+        .add_plugins(pi_node_materials::PluginNodeMaterialSimple)
+        .add_plugins(pi_scene_context::shadow::PluginShadowGenerator)
+        .add_plugins(pi_node_materials::prelude::PluginShadowMapping)
+        .add_plugins(pi_mesh_builder::cube::PluginCubeBuilder)
+        .add_plugins(pi_mesh_builder::quad::PluginQuadBuilder)
+        .add_plugins(pi_particle_system::PluginParticleSystem)
+        .add_plugins(pi_gltf2_load::PluginGLTF2Res)
+        .add_plugins(pi_trail_renderer::PluginTrail)
+        ;
+
+    app.add_systems(
+        pi_world::schedule::Update,
+        pi_scene_context::prelude::sys_state_transform.in_set(pi_scene_shell::prelude::ERunStageChap::StateCheck)
+    );
+	
+    app
+        .add_plugins(pi_spine_rs::PluginSpineRenderer);
 }

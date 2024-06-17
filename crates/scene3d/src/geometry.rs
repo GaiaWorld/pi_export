@@ -129,12 +129,12 @@ pub fn p3d_create_vertex_buffer(app: &mut Engine, param: &mut ActionSetScene3D, 
     let key = KeyVertexBuffer::from(key.as_str());
     let key_u64 = key.asset_u64();
     
-    let mut vb_mgr = param.get_vb_mgr(&mut app.world).unwrap();
-    if let Some(buffer) = vb_mgr.get(&key_u64) {
+    let mut resource = param.resource.get_mut(&mut app.world);
+    if let Some(buffer) = resource.vb_mgr.get(&key_u64) {
         queue.write_buffer(buffer.buffer(), 0, bytemuck::cast_slice(data));
     } else {
         let data = bytemuck::cast_slice::<f32, u8>(&data[0..length]).to_vec();
-        ActionVertexBuffer::create(&mut param.get_vb_wait_mut(&mut app.world).unwrap(), key, data);
+        ActionVertexBuffer::create(&mut resource.vb_wait, key, data);
     }
 }
 
@@ -149,12 +149,12 @@ pub fn p3d_create_indices_buffer(app: &mut Engine, param: &mut ActionSetScene3D,
     let key = KeyVertexBuffer::from(key.as_str());
     let key_u64 = key.asset_u64();
 
-    let mut vb_mgr = param.get_vb_mgr(&mut app.world).unwrap();
-    if let Some(buffer) = vb_mgr.get(&key_u64) {
+    let mut resource = param.resource.get_mut(&mut app.world);
+    if let Some(buffer) = resource.vb_mgr.get(&key_u64) {
         queue.write_buffer(buffer.buffer(), 0, bytemuck::cast_slice(data));
     } else {
         let data = bytemuck::cast_slice::<u16, u8>(&data[0..length]).to_vec();
-        ActionVertexBuffer::create_indices(&mut param.get_vb_wait_mut(&mut app.world).unwrap(), key, data);
+        ActionVertexBuffer::create_indices(&mut resource.vb_wait, key, data);
     }
 }
 

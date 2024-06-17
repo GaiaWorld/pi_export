@@ -311,9 +311,9 @@ pub fn p3d_node_material_block_texture(block: &mut NodeMaterialBlock, key: &Atom
 #[pi_js_export]
 pub fn p3d_node_material_block_regist(app: &mut Engine, param: &mut ActionSetScene3D, block: &NodeMaterialBlock) {
     pi_export_base::export::await_last_frame(app);
-    let mut node_material_blocks = param.get_node_material_blocks_mut(&mut app.world).unwrap();
+    let mut resource = param.resource.get_mut(&mut app.world);
 
-    node_material_blocks.0.insert(block.0.deref().clone(), block.1.clone());
+    resource.node_material_blocks.0.insert(block.0.deref().clone(), block.1.clone());
 }
 
 
@@ -415,9 +415,9 @@ pub fn p3d_check_shader(
     key: &str
 ) -> bool {
 	pi_export_base::export::await_last_frame(app);
-    let mut shader_metas = param.get_shader_metas_mut(&mut app.world).unwrap();
+    let resource = param.resource.get_mut(&mut app.world);
 
-    shader_metas.get(&KeyShaderMeta::from(key)).is_some()
+    resource.shader_metas.get(&KeyShaderMeta::from(key)).is_some()
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
@@ -465,7 +465,7 @@ pub fn p3d_regist_material(
     binds_defines_base: Option<f64>,
 ) -> Option<P3DShaderMeta> {
 	pi_export_base::export::await_last_frame(app);
-    let mut node_material_blocks = param.get_node_material_blocks(&mut app.world).unwrap();
+    let resource = param.resource.get_mut(&mut app.world);
 
     let mut nodemat = NodeMaterialBuilder::new();
     nodemat.vs_define = String::from(vs_define_code);
@@ -493,14 +493,14 @@ pub fn p3d_regist_material(
     // });
     
     includes.0.iter().for_each(|val| {
-        nodemat.include(val, &node_material_blocks);
+        nodemat.include(val, &resource.node_material_blocks);
     });
 
     // log::warn!("Material {:?}", key);
-    let shader_metas = param.get_shader_metas(&app.world).unwrap();
-    ActionMaterial::regist_material_meta(&shader_metas, KeyShaderMeta::from(key), nodemat.meta());
 
-    if let Some(data) = shader_metas.get(&KeyShaderMeta::from(key)) {
+    ActionMaterial::regist_material_meta(&resource.shader_metas, KeyShaderMeta::from(key), nodemat.meta());
+
+    if let Some(data) = resource.shader_metas.get(&KeyShaderMeta::from(key)) {
         Some(P3DShaderMeta(data))
     } else { None }
 }

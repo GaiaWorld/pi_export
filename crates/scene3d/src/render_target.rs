@@ -18,11 +18,7 @@ pub use crate::engine::ActionSetScene3D;
 #[pi_js_export]
 pub fn p3d_create_render_target(app: &mut Engine, param: &mut ActionSetScene3D, color_format: f64, depth_stencil_format: f64, width: f64, height: f64, filter: f64, address: f64, anisotropy_clamp: f64) -> Option<f64> {
     pi_export_base::export::await_last_frame(app);
-    let mut w1 = app.world.unsafe_world();
-    let render_targets = param.get_render_targets_mut(&mut w1).unwrap();
-    let device = param.get_device(&app.world).unwrap();
-    let asset_samp = param.get_asset_samp(&app.world).unwrap();
-    let asset_atlas = param.get_asset_atlas(&app.world).unwrap();
+    let mut resource = param.resource.get_mut(&mut app.world);
     
     let filter = ContextConstants::filter_mode(filter);
     let address = EngineConstants::address_mode(address);
@@ -35,8 +31,8 @@ pub fn p3d_create_render_target(app: &mut Engine, param: &mut ActionSetScene3D, 
     let color_format = EngineConstants::render_color_format(color_format);
     let depth_stencil_format = EngineConstants::render_depth_format(depth_stencil_format);
 
-    if let Some(key) = render_targets.create(
-        &device, sampler, &asset_samp, &asset_atlas, color_format, depth_stencil_format, width as u32, height as u32
+    if let Some(key) = resource.render_targets.create(
+        &resource.device, sampler, &resource.asset_samp, &resource.asset_atlas, color_format, depth_stencil_format, width as u32, height as u32
     ) {
         Some(unsafe { transmute(key) })
     } else {
@@ -48,7 +44,7 @@ pub fn p3d_create_render_target(app: &mut Engine, param: &mut ActionSetScene3D, 
 #[pi_js_export]
 pub fn p3d_dispose_render_target(app: &mut Engine, param: &mut ActionSetScene3D, key: f64) {
     pi_export_base::export::await_last_frame(app);
-    let render_targets = param.get_render_targets_mut(&mut app.world).unwrap();
+    let mut resource = param.resource.get_mut(&mut app.world);
     
-    render_targets.delete(unsafe { transmute(key) });
+    resource.render_targets.delete(unsafe { transmute(key) });
 }

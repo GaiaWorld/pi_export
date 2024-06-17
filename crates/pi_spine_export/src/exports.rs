@@ -78,9 +78,9 @@ pub fn spine_exchange_commands(
 pub fn init_spine_context(
     engine: &mut Engine,
 ) {
-	await_last_frame(engine);
-    engine
-        .add_plugins(PluginSpineRenderer);
+	// await_last_frame(engine);
+    // engine
+    //     .add_plugins(PluginSpineRenderer);
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
