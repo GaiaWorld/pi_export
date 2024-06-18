@@ -281,10 +281,10 @@ impl CommandsExchangeD3 {
 #[pi_js_export]
 pub fn p3d_commands_exchange(app: &mut Engine, param: &mut ActionSetScene3D, cmds: &mut CommandsExchangeD3) {
 	pi_export_base::export::await_last_frame(app);
-    log::error!(">>>>> p3d_commands_exchange");
+    // log::error!(">>>>> p3d_commands_exchange");
     let mut sets = param.acts.get_mut(&mut app.world);
-    log::error!(">>>>> p3d_commands_exchange 01");
+    // log::error!(">>>>> p3d_commands_exchange 01");
 
     cmds.exchange(&mut sets);
-    log::error!(">>>>> p3d_commands_exchange 02");
+    // log::error!(">>>>> p3d_commands_exchange 02");
 }

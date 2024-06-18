@@ -598,9 +598,7 @@ pub fn node_info(engine: &mut Engine, node_id: f64) -> String {
     serde_json::to_string(&info).unwrap()
 }
 
-#[allow(unused_attributes)]
-#[pi_js_export]
-#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct TexInfo {
     pub name: String,
     pub size: f64,
@@ -611,7 +609,7 @@ pub struct TexInfo {
 #[allow(unused_attributes)]
 #[pi_js_export]
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
-pub fn texture_info(engine: &mut Engine) -> Vec<TexInfo> {
+pub fn texture_info(engine: &mut Engine) -> String {
     use pi_render::rhi::asset::AssetWithId;
     let mut res = Vec::new();
     let info = engine.world.get_single_res::<ShareAssetMgr<AssetWithId<TextureRes>>>().unwrap();
@@ -623,7 +621,7 @@ pub fn texture_info(engine: &mut Engine) -> Vec<TexInfo> {
         res.push(TexInfo{ name: info.name.clone(), size: info.size as f64, is_used: false,  timeout: info.remain_timeout as f64})
     }
 
-    res
+    serde_json::to_string(&res).unwrap()
 }
 
 #[allow(unused_attributes)]
