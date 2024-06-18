@@ -14,6 +14,7 @@ use pi_ui_render::components::calc::RenderContextMark;
 use pi_ui_render::components::pass_2d::Camera;
 use pi_ui_render::components::pass_2d::GraphId;
 use pi_ui_render::components::pass_2d::ParentPassId;
+use pi_ui_render::resource::fragment::DebugInfo;
 use pi_ui_render::resource::RenderContextMarkType;
 use serde::{Deserialize, Serialize};
 
@@ -622,6 +623,18 @@ pub fn texture_info(engine: &mut Engine) -> Vec<TexInfo> {
         res.push(TexInfo{ name: info.name.clone(), size: info.size as f64, is_used: false,  timeout: info.remain_timeout as f64})
     }
 
+    res
+}
+
+#[allow(unused_attributes)]
+#[pi_js_export]
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+pub fn debug_info(engine: &mut Engine) -> Vec<f32> {
+
+    let mut res = Vec::new();
+    let info = engine.world.get_single_res::<DebugInfo>().unwrap();
+    res.push(info.font_size as f32);
+    res.push(info.draw_obj_count as f32);
     res
 }
 // #[allow(unused_attributes)]
