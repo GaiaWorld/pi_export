@@ -100,7 +100,7 @@ pi_bevy_post_process = { path = "../pi_bevy/crates/post_process" }
 pi_bevy_window = { path = "../pi_bevy/crates/window" }
 pi_window_renderer = { path="../pi_bevy/crates/window_renderer" }
 
-pi_ui_render = { path = "../pi_ui_render" }
+pi_ui_render = { path = "../pi_ui_render_new" }
 pi_style = { path = "../pi_style" }
 
 # pi_postprocess ={path="../pi_post_process"}

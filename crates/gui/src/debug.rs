@@ -620,8 +620,7 @@ pub fn texture_info(engine: &mut Engine) -> String {
     for info in &info.account().unused{
         res.push(TexInfo{ name: info.name.clone(), size: info.size as f64, is_used: false,  timeout: info.remain_timeout as f64})
     }
-
-    serde_json::to_string(&res).unwrap()
+serde_json::to_string(&res).unwrap()
 }
 
 #[allow(unused_attributes)]
