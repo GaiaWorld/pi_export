@@ -1,6 +1,8 @@
 use std::mem::transmute;
 
 use js_proxy_gen_macro::pi_js_export;
+use pi_atom::get_by_hash;
+use pi_atom::Atom;
 use pi_bevy_asset::ShareAssetMgr;
 use pi_bevy_ecs_extend::prelude::Down;
 use pi_bevy_ecs_extend::prelude::Up;
@@ -600,7 +602,7 @@ pub fn node_info(engine: &mut Engine, node_id: f64) -> String {
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct TexInfo {
-    pub name: String,
+    pub name: Option<Atom>,
     pub size: f64,
     pub is_used: bool,
     pub timeout: f64
@@ -613,14 +615,15 @@ pub fn texture_info(engine: &mut Engine) -> String {
     use pi_render::rhi::asset::AssetWithId;
     let mut res = Vec::new();
     let info = engine.world.get_single_res::<ShareAssetMgr<AssetWithId<TextureRes>>>().unwrap();
+    
     for info in &info.account().used{
-        res.push(TexInfo{ name: info.name.clone(), size: info.size as f64, is_used: true,  timeout: info.remain_timeout as f64})
+        res.push(TexInfo{ name: get_by_hash(info.name.clone().parse::<usize>().unwrap()), size: info.size as f64, is_used: true,  timeout: info.remain_timeout as f64})
     }
 
     for info in &info.account().unused{
-        res.push(TexInfo{ name: info.name.clone(), size: info.size as f64, is_used: false,  timeout: info.remain_timeout as f64})
+        res.push(TexInfo{ name: get_by_hash(info.name.clone().parse::<usize>().unwrap()), size: info.size as f64, is_used: false,  timeout: info.remain_timeout as f64})
     }
-serde_json::to_string(&res).unwrap()
+    serde_json::to_string(&res).unwrap()
 }
 
 #[allow(unused_attributes)]
@@ -632,6 +635,8 @@ pub fn debug_info(engine: &mut Engine) -> Vec<f32> {
     let info = engine.world.get_single_res::<DebugInfo>().unwrap();
     res.push(info.font_size as f32);
     res.push(info.draw_obj_count as f32);
+    res.push(engine.world.entities_iter().size_hint().0 as f32);
+    res.push(engine.world.mem_size() as f32);
     res
 }
 // #[allow(unused_attributes)]
