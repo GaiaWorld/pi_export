@@ -84,6 +84,7 @@ pub struct ActionSetScene3D {
     pub(crate) resource: SystemState<pi_3d::ResourceSets<'static>>,
     pub(crate) state: SystemState<GlobalState<'static>>,
     pub(crate) tree: SystemState<EntityTree<'static>>,
+    pub(crate) treedown: QueryState<&'static Down, (With<SceneID>)>,
     pub(crate) world_transform: QueryState<&'static GlobalMatrix, ()>,
     pub(crate) local_transform: QueryState<&'static LocalMatrix, ()>,
     pub(crate) view_matrix: QueryState<&'static ViewerViewMatrix, ()>,
@@ -129,6 +130,7 @@ impl ActionSetScene3D {
             resource: SystemState::<pi_3d::ResourceSets>::new(&mut app.world),
             state: SystemState::<GlobalState>::new(&mut app.world),
             tree: SystemState::<EntityTree<'static>>::new(&mut app.world),
+            treedown: app.world.query(),
             world_transform: app.world.query(),
             local_transform: app.world.query(),
             view_matrix: app.world.query(),
@@ -828,7 +830,7 @@ pub fn p3d_query_children(app: &mut Engine, param: &mut ActionSetScene3D, id: f6
     let id = as_entity(id);
     let tree = param.tree.get(&app.world);
     let mut idx = 0;
-    if let Some(down) = tree.get_down(id) {
+    if let Ok(down) = param.treedown.get(&app.world, id) {
         tree.iter(down.head()).for_each(|child| {
             if let Ok((idscene, enable, genable, layer)) = param.nodes.get(&app.world, child) {
                 let mut ntype = 1;

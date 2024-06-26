@@ -25,6 +25,7 @@ pub mod trail;
 pub mod pass;
 pub mod constants;
 pub mod commands;
+pub mod skin;
 
 pub fn as_entity(val: f64) -> Entity {
     // Entity::from_bits(val.to_bits())

@@ -61,7 +61,7 @@ impl VBMeta {
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_vbmeta_attr(meta: &mut VBMeta, attr: f64, format: f64) {
-    meta.attrs.push(EVertexAttribute::Buildin(EngineConstants::vertex_attr(attr)));
+    meta.attrs.push(EVertexAttribute::Buildin(EngineConstants::vertex_attr(attr), EngineConstants::vertex_format(format)));
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
