@@ -24,6 +24,7 @@ pub struct CommandsExchangeD3 {
     pub(crate) scene_shadowmap: ActionListSceneShadowMap,
     pub(crate) scene_dispose: ActionListSceneDispose,
     pub(crate) scene_boundingbox: ActionListBoundingBoxDisplay,
+    pub(crate) scene_collider: ActionListCollider,
 
     pub(crate) obj_dispose: ActionListDispose,
     
@@ -168,6 +169,7 @@ impl CommandsExchangeD3 {
         cmds.scene.shadowmap.push_some( self.scene_shadowmap.exchange(vec![]).drain(..) );
         cmds.scene_dispose.push_some( self.scene_dispose.exchange(vec![]).drain(..) );
         cmds.scene.boundingboxdisplay.push_some( self.scene_boundingbox.exchange(vec![]).drain(..) );
+        cmds.scene.collider.push_some( self.scene_collider.exchange(vec![]).drain(..) );
         cmds.obj_dispose.push_some( self.obj_dispose.exchange(vec![]).drain(..) );
         cmds.transform.create.push_some( self.transform_create.exchange(vec![]).drain(..) );
         cmds.transform.localsrt.push_some( self.transform_localsrt.exchange(vec![]).drain(..) );

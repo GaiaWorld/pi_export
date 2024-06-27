@@ -50,12 +50,12 @@ pub fn p3d_bone(app: &mut Engine, cmds: &mut CommandsExchangeD3, scene: f64) -> 
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
-pub fn p3d_bone_parent(cmds: &mut CommandsExchangeD3, bone: f64, parent: f64) {
+pub fn p3d_bone_link(cmds: &mut CommandsExchangeD3, bone: f64, link: f64) {
 
     let bone = as_entity(bone);
-    let parent = as_entity(parent);
+    let link = as_entity(link);
 
-    cmds.skin_use.push(OpsSkinUse::bone(bone, parent));
+    cmds.skin_use.push(OpsSkinUse::bone_link(bone, link));
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
@@ -64,12 +64,16 @@ pub fn p3d_bone_pose(cmds: &mut CommandsExchangeD3, bone: f64, data: &[f32]) {
 
     let bone = as_entity(bone);
 
+    let mut matrix = Matrix::new(
+        data[0], data[1], data[2], data[3], data[4], data[5], data[6], data[7],
+        data[8], data[9], data[10], data[11], data[12], data[13], data[14], data[15]
+    );
+    if matrix.is_invertible() {
+        matrix.try_inverse_mut();
+    }
     cmds.skin_bonepose.push(OpsBonePose::ops(
         bone, 
-        Matrix::new(
-            data[0], data[1], data[2], data[3], data[4], data[5], data[6], data[7],
-            data[8], data[9], data[10], data[11], data[12], data[13], data[14], data[15]
-        )
+        matrix
     ));
 }
 
