@@ -10,12 +10,16 @@ use pi_bevy_ecs_extend::system_param::tree::Layer;
 use pi_bevy_render_plugin::PiRenderGraph;
 use pi_null::Null;
 use pi_render::rhi::asset::TextureRes;
+use pi_style::style::ImageRepeat;
 use pi_ui_render::components::calc::DrawInfo;
 use pi_ui_render::components::calc::InPassId;
 use pi_ui_render::components::calc::RenderContextMark;
 use pi_ui_render::components::pass_2d::Camera;
 use pi_ui_render::components::pass_2d::GraphId;
 use pi_ui_render::components::pass_2d::ParentPassId;
+use pi_ui_render::components::user::{BorderRadius, BorderImageSlice, BorderImageRepeat, BorderImageClip, BorderImage, Border, Blur, BackgroundImageMod, BackgroundImageClip, BackgroundImage, AsImage, Animation};
+use pi_ui_render::components::user::{TextStyle, TextShadow, TextOverflowData, TextContent, Show, RadialWave, Position, Padding, Opacity, MaskImageClip, Margin, Hsi, FlexContainer, ClipPath, Canvas, BoxShadow};
+use pi_ui_render::components::user::{BorderColor, BackgroundColor, BlendMode, ClassName, FlexNormal, MaskImage, MinMax, NodeState, StyleAttribute, FitType, ZIndex, Vector2, TransformWillChange, Transform};
 use pi_ui_render::resource::fragment::DebugInfo;
 use pi_ui_render::resource::RenderContextMarkType;
 use serde::{Deserialize, Serialize};
@@ -29,7 +33,7 @@ use pi_ui_render::components::calc::WorldMatrix;
 use pi_ui_render::components::calc::{DrawList, EntityKey, ZRange};
 use pi_ui_render::components::user::serialize::StyleTypeReader;
 use pi_ui_render::components::user::Vector4;
-use pi_ui_render::components::user::*;
+// use pi_ui_render::components::user::*;
 use pi_ui_render::components::user::{Overflow, Size};
 pub use pi_export_base::export::Engine;
 use pi_ui_render::resource::ClassSheet;
@@ -629,14 +633,14 @@ pub fn texture_info(engine: &mut Engine) -> String {
 #[allow(unused_attributes)]
 #[pi_js_export]
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
-pub fn debug_info(engine: &mut Engine) -> Vec<f32> {
+pub fn debug_info(engine: &mut Engine) -> Vec<f64> {
 
     let mut res = Vec::new();
     let info = engine.world.get_single_res::<DebugInfo>().unwrap();
-    res.push(info.font_size as f32);
-    res.push(info.draw_obj_count as f32);
-    res.push(engine.world.entities_iter().size_hint().0 as f32);
-    res.push(engine.world.mem_size() as f32);
+    res.push(info.font_size as f64);
+    res.push(info.draw_obj_count as f64);
+    res.push(engine.world.entities_iter().size_hint().0 as f64);
+    res.push(engine.world.mem_size() as f64);
     res
 }
 // #[allow(unused_attributes)]
