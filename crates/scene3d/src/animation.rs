@@ -286,7 +286,7 @@ pub fn p3d_animation_group(
     scene: f64,
 ) -> f64 {
 	pi_export_base::export::await_last_frame(app);
-    let id: Entity = app.world.spawn_empty();
+    let id: Entity = app.world.spawn_empty().id();
     let scene: Entity = as_entity(scene);
 
     cmds.anime_create.push(OpsAnimationGroupCreation::ops(scene, id));
