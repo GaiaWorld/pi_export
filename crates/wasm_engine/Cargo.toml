@@ -20,7 +20,7 @@ pi_export_gui = { path = "../gui", default-features=false, features=["record"] }
 # pi_export_base = { path = "../base", features = ["allow_not_run"]}
 pi_export_base = { path = "../base"}
 pi_spine_export = { path = "../pi_spine_export"}
-# pi_export_quad_tree = { path = "../quad_tree"}
+pi_export_quad_tree = { path = "../quad_tree"}
 scene3d_export = { path = "../scene3d" }
 pi_web_logger = {git = "http://ser.yinengyun.com:10082/tech/pi_web_logger.git"}
 pi_share = "0.4"
@@ -42,7 +42,7 @@ pi_render = { version = "0.1", registry = "yn", features=["webgl"] }
 pi_bevy_winit_window = {version = "0.1", registry = "yn"}
 pi_bevy_render_plugin = { version = "0.1", registry = "yn", features=["webgl"]}
 pi_bevy_log = {version = "0.1", registry = "yn"}
-pi_wgpu =  {version = "0.1", registry = "yn"}
+pi_wgpu =  { version = "0.1", registry = "yn" }
 # pi_wgpu =  {version = "0.1", registry = "yn", features = ["single_thread", "use_wgpu"]}
 
 

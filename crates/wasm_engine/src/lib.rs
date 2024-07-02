@@ -3,7 +3,7 @@ use std::panic;
 pub use pi_export_gui::*;
 // pub use pi_export_astar::export:: *;
 pub use pi_export_base::export::*;
-// pub use pi_export_quad_tree::export::*;
+pub use pi_export_quad_tree::export::*;
 pub use pi_spine_export:: *;
 pub use scene3d_export::{
 	engine::*,
