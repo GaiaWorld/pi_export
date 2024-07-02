@@ -68,9 +68,9 @@ pub fn p3d_bone_pose(cmds: &mut CommandsExchangeD3, bone: f64, data: &[f32]) {
         data[0], data[1], data[2], data[3], data[4], data[5], data[6], data[7],
         data[8], data[9], data[10], data[11], data[12], data[13], data[14], data[15]
     );
-    if matrix.is_invertible() {
-        matrix.try_inverse_mut();
-    }
+    // if matrix.is_invertible() {
+    //     matrix.try_inverse_mut();
+    // }
     cmds.skin_bonepose.push(OpsBonePose::ops(
         bone, 
         matrix
