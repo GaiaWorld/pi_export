@@ -103,7 +103,7 @@ pi_world_macros = { path = "../pi_world/macros" }
 # pi_ui_render = { path = "../pi_ui_render_new" }
 # pi_style = { path = "../pi_style" }
 
-pi_postprocess ={path="../pi_post_process"}
+pi_postprocess ={path="../pi_postprocess"}
 
 pi_3d               = { path = "../pi_3d" }
 pi_node_materials   = { path = "../pi_3d/crates/node_materials" }
