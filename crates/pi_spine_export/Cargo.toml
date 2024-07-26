@@ -23,7 +23,7 @@ js_proxy_gen_macro = { registry = "yn", version = "0.2" }
 
 pi_hash = "0.1"
 pi_atom = "0.5"
-pi_assets = "0.13"
+pi_assets = "0.14"
 # pi_export_gui = { path = "../gui" }
 pi_export_base = { path = "../base" }
 pi_spine_rs = {version = "0.0.6", registry = "yn"}

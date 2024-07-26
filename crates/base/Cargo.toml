@@ -12,6 +12,7 @@ allow_not_run = []
 # system_graph = [] # 提供接口，返回system的日程图
 
 [dependencies]
+console_log = "1.0"
 crossbeam-channel = "0.5"
 paste = "1.0"
 pi_atom = "0.5"
@@ -21,7 +22,7 @@ serde_json = "1.0"
 derive-deref-rs = "0.1"
 pi_export_macro = {path="../macro"}
 pi_share = {version="=0.4.15"}
-pi_assets = "0.13"
+pi_assets = "0.14"
 pi_hal = {version = "0.1", registry = "yn"}
 render_core = {version = "0.1", registry = "yn"}
 # bevy_ecs = "0.11"

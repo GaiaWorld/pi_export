@@ -312,12 +312,6 @@ pub fn create_engine(canvas: web_sys::HtmlCanvasElement, width: u32, height: u32
 	// static mut RUNNER_MULTI: OnceCell<LocalTaskRunner<()>> = OnceCell::new();
 	// static mut RUNNER_RENDER: OnceCell<LocalTaskRunner<()>> = OnceCell::new();
 
-
-    let mut app = App::new();
-
-    // let mut window_plugin = bevy_window::WindowPlugin::default();
-	// window_plugin.primary_window = None;
-
 	let mut log = pi_bevy_log::LogPlugin::<Vec<u8>>::default();
 	if let Some(log_filter) = log_filter {
 		log.filter = log_filter;
@@ -331,6 +325,14 @@ pub fn create_engine(canvas: web_sys::HtmlCanvasElement, width: u32, height: u32
 		4 => tracing::Level::ERROR,
 		_ => tracing::Level::WARN,
 	};
+
+	console_log::init_with_level(log::Level::Error);
+
+    let mut app = App::new();
+
+    // let mut window_plugin = bevy_window::WindowPlugin::default();
+	// window_plugin.primary_window = None;
+	
 	// let chrome_write = ShareChromeWrite::new();
 	// log.chrome_write = None;
 	let window ={
@@ -346,7 +348,7 @@ pub fn create_engine(canvas: web_sys::HtmlCanvasElement, width: u32, height: u32
 	};
 	
 
-	app.add_plugins(log);
+	// app.add_plugins(log);
 	create_engine_inner(
 		&mut app, 
 		pi_bevy_winit_window::WinitPlugin::new(window).with_size(width, height),

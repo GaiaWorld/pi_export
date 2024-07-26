@@ -3,7 +3,7 @@ use std::{mem::transmute, ops::Deref};
 // use default_render::SingleIDBaseDefaultMaterial;
 use pi_3d::PluginBundleDefault;
 use pi_assets::asset::Handle;
-use pi_scene_shell::{assets::texture::TextureKeyList, prelude::*};
+use pi_scene_shell::prelude::*;
 pub use pi_export_base::export::Engine;
 use pi_export_base::export::await_last_frame;
 use pi_gltf2_load::{GLTF, PluginGLTF2Res, KeyGLTF};
