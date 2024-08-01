@@ -12,6 +12,7 @@ allow_not_run = []
 # system_graph = [] # 提供接口，返回system的日程图
 
 [dependencies]
+console_log = "1.0"
 crossbeam-channel = "0.5"
 paste = "1.0"
 pi_atom = "0.5"
