@@ -26,7 +26,7 @@ derive_deref            = "1.1"
 pi_hash 				= "0.1"
 pi_slotmap              = "0.1"
 pi_atom 				= "0.5"
-pi_assets 				= "0.13"
+pi_assets 				= "0.14"
 pi_export_base 			= { path = "../base" }
 pi_hal 					= { version = "0.1", registry = "yn" }
 log						= "0.4"
@@ -37,14 +37,14 @@ pi_scene_math           = { version = "0.0.3", registry = "yn" }
 pi_animation            = { version = "0.1", registry = "yn" }
 pi_curves               = { version = "0.1", registry = "yn" }
 
-pi_3d 		            = { version = "=0.0.8", registry = "yn" }
-pi_scene_shell 		    = { version = "=0.0.8", registry = "yn" }
-pi_node_materials 		= { version = "=0.0.8", registry = "yn" }
-pi_scene_context 		= { version = "=0.0.8", registry = "yn" }
-pi_mesh_builder 		= { version = "=0.0.8", registry = "yn" }
-pi_gltf2_load           = { version = "=0.0.8", registry = "yn" }
-pi_particle_system      = { version = "=0.0.8", registry = "yn" }
-pi_trail_renderer       = { version = "=0.0.8", registry = "yn" }
+pi_3d 		            = { version = "1.0.0", registry = "yn" }
+pi_scene_shell 		    = { version = "1.0.0", registry = "yn" }
+pi_node_materials 		= { version = "1.0.0", registry = "yn" }
+pi_scene_context 		= { version = "1.0.0", registry = "yn" }
+pi_mesh_builder 		= { version = "1.0.0", registry = "yn" }
+pi_gltf2_load           = { version = "1.0.0", registry = "yn" }
+pi_particle_system      = { version = "1.0.0", registry = "yn" }
+pi_trail_renderer       = { version = "1.0.0", registry = "yn" }
 
 bytemuck                = { version = "1.4", features = [ "derive" ] }
 

@@ -3,7 +3,7 @@ use std::{mem::transmute, ops::Deref};
 // use default_render::SingleIDBaseDefaultMaterial;
 use pi_3d::PluginBundleDefault;
 use pi_assets::asset::Handle;
-use pi_scene_shell::{assets::texture::TextureKeyList, prelude::*};
+use pi_scene_shell::prelude::*;
 pub use pi_export_base::export::Engine;
 use pi_export_base::export::await_last_frame;
 use pi_gltf2_load::{GLTF, PluginGLTF2Res, KeyGLTF};
@@ -907,22 +907,22 @@ pub fn p3d_query_mesh_info(app: &mut Engine, param: &mut ActionSetScene3D, id: f
                         if set0.val().is_some() { state |= 1 << 0; }
                     // }
                     // if let Some(set0) = set1 {
-                        if set0.val().is_some() { state |= 1 << 1; }
+                        if set1.val().is_some() { state |= 1 << 1; }
                     // }
                     // if let Some(set0) = set2 {
-                        if set0.val().is_some() { state |= 1 << 2; }
+                        if set2.val().is_some() { state |= 1 << 2; }
                     // }
                     // if let Some(set0) = bindgroups {
-                        if set0.val().is_some() { state |= 1 << 3; }
+                        if bindgroups.val().is_some() { state |= 1 << 3; }
                     // }
                     // if let Some(set0) = shader {
-                        if set0.val().is_some() { state |= 1 << 4; }
+                        if shader.val().is_some() { state |= 1 << 4; }
                     // }
                     // if let Some(set0) = draw {
-                        if set0.val().is_some() { state |= 1 << 5; }
+                        if draw.val().is_some() { state |= 1 << 5; }
                     // }
                     // if let Some(set0) = set3 {
-                        if set0.val().is_some() { state |= 1 << 6; }
+                        if set3.val().is_some() { state |= 1 << 6; }
                     // }
                 }
                 info[i * 3 + 2] = state;

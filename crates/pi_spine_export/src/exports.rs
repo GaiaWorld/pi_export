@@ -7,6 +7,7 @@ use pi_export_base::export::await_last_frame;
 pub use pi_export_base::{export::Engine, constants::*, asset::TextureDefaultView};
 // use pi_window_renderer::{WindowRenderer, PluginWindowRender};
 use pi_hash::XHashMap;
+use pi_render::renderer::texture::{ETextureViewUsage, KeyImageTexture, KeyImageTextureView, TextureViewDesc};
 use pi_render::{renderer::sampler::SamplerRes, asset::TAssetKeyU64, rhi::sampler::EAnisotropyClamp};
 use pi_spine_rs::ecs::WorldResourceTemp;
 use pi_spine_rs::ecs::WorldPluginExtent;
@@ -155,10 +156,18 @@ pub fn spine_renderer_dispose(cmds: &mut CommandsExchangeSpine, id_renderer: f64
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
-pub fn spine_texture_load(cmds: &mut CommandsExchangeSpine, key: &Atom) {
+pub fn spine_texture_load(cmds: &mut CommandsExchangeSpine, key: &Atom, srgb: bool, compressed: bool, file: bool) -> f64 {
+    let key = KeyImageTexture {
+        url: key.deref().clone(),
+        srgb, compressed,
+        file, depth_or_array_layers: 0, useage: wgpu::TextureUsages::COPY_SRC | wgpu::TextureUsages::TEXTURE_BINDING,
+    };
+    let key = KeyImageTextureView::new(key, TextureViewDesc::default());
     cmds.0.push(
-        pi_spine_rs::ESpineCommand::TextureLoad(key.deref().clone())
+        pi_spine_rs::ESpineCommand::TextureLoad(key.clone())
     );
+
+    return unsafe { transmute(key.asset_u64()) };
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
@@ -199,10 +208,10 @@ pub fn spine_texture_loaded_query(app: &mut Engine, record: &mut SpineTextureLoa
 	pi_export_base::export::await_last_frame(app);
     let loader = app.world.get_resource::<SpineTextureLoad>().unwrap();
     while let Some((key, res)) = loader.success.pop() {
-        record.success.insert(key, TextureDefaultView::from(res));
+        record.success.insert(key.url().url.clone(), TextureDefaultView::new(ETextureViewUsage::Image(res), key.asset_u64()));
     }
     while let Some((key, res)) = loader.fail.pop() {
-        record.fail.insert(key, res);
+        record.fail.insert(key.url().url.clone(), res);
     }
 }
 
@@ -212,16 +221,17 @@ pub fn spine_texture_record(cmds: &mut CommandsExchangeSpine, id_renderer: f64, 
     let id_renderer = KeySpineRenderer::from_f64(id_renderer);
     
     cmds.0.push(
-        pi_spine_rs::ESpineCommand::TextureRecord(id_renderer, texture.data().clone())
+        pi_spine_rs::ESpineCommand::TextureRecord(id_renderer, texture.key(), texture.data().clone())
     );
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
-pub fn spine_remove_texture(cmds: &mut CommandsExchangeSpine, id_renderer: f64, key: &Atom) {
+pub fn spine_remove_texture(cmds: &mut CommandsExchangeSpine, id_renderer: f64, key: f64) {
     let id_renderer = KeySpineRenderer::from_f64(id_renderer);
+    let key = unsafe { transmute(key) };
     cmds.0.push(
-        pi_spine_rs::ESpineCommand::RemoveTextureRecord(id_renderer, key.asset_u64())
+        pi_spine_rs::ESpineCommand::RemoveTextureRecord(id_renderer, key)
     );
 }
 

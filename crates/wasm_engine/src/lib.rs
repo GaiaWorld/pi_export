@@ -19,6 +19,7 @@ pub use scene3d_export::{
 	animation::*,
  	trail::*,
  	skin::*,
+ 	sprite::*,
 };
 
 use wasm_bindgen::prelude::*;

@@ -144,6 +144,9 @@ pub struct CommandsExchangeD3 {
     pub(crate) parsys_create: ActionListCPUParticleSystem,
     pub(crate) parsys_state: ActionListCPUParticleSystemState,
     pub(crate) parsys_trailmaterial: ActionListCPUParticleSystemTrailMaterial,
+    
+    pub(crate) sprite_create: ActionListSpriteCreate,
+    pub(crate) sprite_modify: ActionListSpriteModify,
 }
 
 
@@ -276,6 +279,9 @@ impl CommandsExchangeD3 {
         cmds.parsys.calculator.push_some( self.parsys_calculator.exchange(vec![]).drain(..) );
         cmds.parsys.state.push_some( self.parsys_state.exchange(vec![]).drain(..) );
         cmds.parsys.trailmaterial.push_some( self.parsys_trailmaterial.exchange(vec![]).drain(..) );
+        
+        cmds.spritecreate.push_some( self.sprite_create.exchange(vec![]).drain(..) );
+        cmds.spritemodify.push_some( self.sprite_modify.exchange(vec![]).drain(..) );
     }
 }
 
