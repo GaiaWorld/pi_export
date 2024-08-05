@@ -100,8 +100,8 @@ pub struct ActionSetScene3D {
     pub(crate) animectxs: QueryState<&'static SceneAnimationContext, ()>,
     pub(crate) trails: QueryState<(&'static pi_trail_renderer::TrailPoints, &'static SceneID), ()>,
     pub(crate) model: QueryState<(&'static RenderGeometryEable, &'static PassIDs), ()>,
-    pub(crate) pass: QueryState<(&'static PassViewerID, &'static PassRendererID, &'static PassMaterialID), ()>,
-    pub(crate) passactive: QueryState<(&'static PassBindGroupScene, &'static PassBindGroupModel, &'static PassBindGroupTextureSamplers, &'static PassBindGroupLightingShadow, &'static PassBindGroups, &'static PassShader, &'static PassDraw), ()>,
+    pub(crate) pass: QueryState<(&'static PassRendererID, &'static PassMaterialID), ()>,
+    pub(crate) passactive: QueryState<(&'static PassBindGroups, &'static PassShader, &'static PassDraw), ()>,
     pub(crate) nodes: QueryState<(&'static SceneID, &'static Enable, &'static GlobalEnable, &'static Layer), ()>, // StateTransformQuery,
     pub(crate) nodesinstance: QueryState<(&'static InstanceMesh), ()>,
     pub(crate) nodesmesh: QueryState<(&'static Mesh), ()>,
@@ -892,25 +892,29 @@ pub fn p3d_query_mesh_info(app: &mut Engine, param: &mut ActionSetScene3D, id: f
 	pi_export_base::export::await_last_frame(app);
     param.model.align(&app.world);
     param.pass.align(&app.world);
+    param.renderers.align(&app.world);
     param.passactive.align(&app.world);
 
     let id = as_entity(id);
     if let Ok((geoenable, passids)) = param.model.get(&app.world, id) {
         let temp = passids.0;
         for i in 0..8 {
-            if let Ok((idviewer, idrenderer, idrmaterial, )) = param.pass.get(&app.world, temp[i]) {
-                info[i * 3 + 0] = idviewer.0.index() as u32;
+            if let Ok((idrenderer, idrmaterial, )) = param.pass.get(&app.world, temp[i]) {
+                info[i * 3 + 0] = 0;
+                if let Ok((idviewer, _)) = param.renderers.get(&app.world, idrenderer.0) {
+                    info[i * 3 + 0] = idviewer.0.index() as u32;
+                }
                 info[i * 3 + 1] = idrenderer.0.index() as u32;
                 let mut state: u32 = 0;
-                if let Ok((set0, set1, set2, set3, bindgroups, shader, draw)) = param.passactive.get(&app.world, temp[i]) {
+                if let Ok((bindgroups, shader, draw)) = param.passactive.get(&app.world, temp[i]) {
                     // if let Some(set0) = set0 {
-                        if set0.val().is_some() { state |= 1 << 0; }
+                        // if set0.val().is_some() { state |= 1 << 0; }
                     // }
                     // if let Some(set0) = set1 {
-                        if set1.val().is_some() { state |= 1 << 1; }
+                        // if set1.val().is_some() { state |= 1 << 1; }
                     // }
                     // if let Some(set0) = set2 {
-                        if set2.val().is_some() { state |= 1 << 2; }
+                        // if set2.val().is_some() { state |= 1 << 2; }
                     // }
                     // if let Some(set0) = bindgroups {
                         if bindgroups.val().is_some() { state |= 1 << 3; }
@@ -922,7 +926,7 @@ pub fn p3d_query_mesh_info(app: &mut Engine, param: &mut ActionSetScene3D, id: f
                         if draw.val().is_some() { state |= 1 << 5; }
                     // }
                     // if let Some(set0) = set3 {
-                        if set3.val().is_some() { state |= 1 << 6; }
+                        // if set3.val().is_some() { state |= 1 << 6; }
                     // }
                 }
                 info[i * 3 + 2] = state;
