@@ -19,6 +19,7 @@ bytemuck = { version = "1.4", features = ["derive"] }
 pi_slotmap = "0.1"
 # a星相关模块
 pi_path_finding = "0.6"
+pi_orca = "0.4"
 
 [target.'cfg(target_arch = "wasm32")'.dependencies]
 wasm-bindgen = { version = "0.2", features = ["serde-serialize"]}
