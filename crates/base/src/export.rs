@@ -1,15 +1,14 @@
 
 
-use std::{sync::{Arc, OnceLock}, cell::RefCell, mem::transmute};
+use std::{cell::RefCell, mem::transmute, sync::{Arc, OnceLock}};
 
+use pi_share::{Share, ShareCell};
 use pi_world::prelude::{App, WorldPluginExtent};
 use derive_deref_rs::Deref;
-use pi_assets::{allocator::Allocator, asset::{Asset, Handle, Size}, mgr::AssetMgr};
 use pi_bevy_asset::{PiAssetPlugin, AssetConfig, AssetDesc};
 use pi_bevy_post_process::PiPostProcessPlugin;
 use pi_hash::XHashMap;
 use pi_render::{rhi::{asset::{RenderRes, TextureRes}, bind_group::BindGroup, pipeline::RenderPipeline}, renderer::sampler::SamplerRes};
-use pi_share::Share;
 use pi_bevy_render_plugin::{FrameState, PiRenderPlugin};
 use pi_window_renderer::PluginWindowRender;
 #[cfg(target_arch = "wasm32")]
@@ -121,155 +120,6 @@ impl Atom {
 	pub fn get_hash(&self) -> u32 { self.0.str_hash() as u32 }
 }
 
-pub static mut DESTROY_RES: Option<Arc<dyn Fn(u32) + Send + Sync>> = None;
-
-#[cfg(target_arch = "wasm32")]
-pub struct CanSyncFunction(Function);
-#[cfg(target_arch = "wasm32")]
-unsafe impl Sync for CanSyncFunction {}
-#[cfg(target_arch = "wasm32")]
-unsafe impl Send for CanSyncFunction {}
-#[cfg(target_arch = "wasm32")]
-impl CanSyncFunction {
-	fn call(&self, v: &JsValue, v1: &JsValue) {
-		self.0.call1(v, v1);
-	}
-}
-#[cfg_attr(target_arch = "wasm32", wasm_bindgen)]
-#[cfg(target_arch = "wasm32")]
-pub fn set_destroy_callback(f: Function) {
-	let f1 = CanSyncFunction(f);
-	unsafe {DESTROY_RES = Some(Arc::new(move |value: u32| {
-		f1.call(&JsValue::from_f64(0.0), &value.into());
-	}))};
-}
-#[cfg(feature = "pi_js_export")]
-#[cfg(not(target_arch = "wasm32"))]
-pub fn set_destroy_callback(f: Arc<dyn Fn(u32, Option<Box<dyn FnOnce(Result<u32, String>) + Send + 'static>>) + Send + Sync + 'static>) {
-	unsafe { DESTROY_RES = Some(Arc::new(move |value: u32| {
-		(f)(value, None);
-	}))};
-}
-
-#[allow(dead_code)]
-#[cfg_attr(target_arch = "wasm32", wasm_bindgen)]
-#[cfg(feature = "pi_js_export")]
-/// 资源包装
-pub struct ResRef(Handle<JsRes>);
-
-/// 资源管理器
-#[cfg_attr(target_arch = "wasm32", wasm_bindgen)]
-#[cfg(feature = "pi_js_export")]
-pub struct ResMgr {
-	inner: Share<AssetMgr<JsRes>>,
-}
-
-#[cfg_attr(target_arch = "wasm32", wasm_bindgen)]
-#[cfg(feature = "pi_js_export")]
-impl ResMgr {
-	/// 创建一个资源， 如果资源已经存在，旧的资源将被覆盖
-	/// 如果创建的资源类型未注册，将崩溃
-	#[cfg(feature = "pi_js_export")]
-	pub fn create_res(&mut self, key: u32, cost: u32) -> ResRef {
-		match self.inner.insert(key, JsRes {key, cost: cost as usize}) {
-			Ok(r) => ResRef(r),
-			_ => unreachable!()
-		}
-	}
-
-	/// 获取资源
-	#[cfg(feature = "pi_js_export")]
-	pub fn get_res(&mut self, key: u32) -> Option<ResRef> {
-		match self.inner.get(&key) {
-			Some(r) => Some(ResRef(r)),
-			None => None
-		}
-	}
-}
-
-/// 资源管理器
-#[cfg_attr(target_arch = "wasm32", wasm_bindgen)]
-#[cfg(feature = "pi_js_export")]
-pub struct ResAllocator {
-	inner: Share<RefCell<Allocator>>,
-}
-
-impl ResAllocator {
-	pub fn get_inner(&self) -> &Share<RefCell<Allocator>>{
-		&self.inner
-	}
-
-	pub fn get_inner_mut(&mut self) -> &mut Share<RefCell<Allocator>>{
-		&mut self.inner
-	}
-}
-
-#[cfg_attr(target_arch = "wasm32", wasm_bindgen)]
-#[cfg(feature = "pi_js_export")]
-impl ResAllocator {
-	/// 创建资源管理器的实例
-	#[cfg_attr(target_arch = "wasm32", wasm_bindgen)]
-	#[cfg(feature = "pi_js_export")]
-	pub fn new(total_capacity: u32) -> Self {
-		let r = if total_capacity > 0 {
-			Allocator::new(total_capacity as usize)
-		} else {
-			Allocator::new(16 * 1024 * 1024)
-		};
-		Self{inner: Share::new(RefCell::new(r))}
-	}
-
-	/// 整理方法， 将无人使用的资源放入到LruCache， 清理过时的资源
-	/// 就是LruMgr有总内存上限， 按权重分给其下的LRU。 如果有LRU有空闲， 则会减少其max_size, 按权重提高那些满的LRU的max_size
-	#[cfg(feature = "pi_js_export")]
-	pub fn collect(&mut self, now: u32) {
-		self.inner.borrow_mut().collect(now as u64);
-	}
-
-	// 10 * 1024 * 1024,
-	// 		50 * 1024 * 1024,
-	// 		5 * 60000,
-	/// 创建一个资源， 如果资源已经存在，则会修改资源的配置
-	#[cfg(feature = "pi_js_export")]
-	pub fn register_to_resmgr(&mut self, _ty: u32, min_capacity: u32, max_capacity: u32, time_out: u32) -> ResMgr {
-		let m = pi_assets::mgr::AssetMgr::<JsRes>::new(pi_assets::asset::GarbageEmpty(),
-		false,
-		max_capacity as usize,
-		time_out as usize,);
-		self.inner.borrow_mut().register(m.clone(), min_capacity as usize, max_capacity as usize);
-		ResMgr{
-			inner: m,
-		}
-	}
-}
-
-/// 资源包装
-pub struct JsRes {
-	key: u32,
-	cost: usize,
-}
-
-impl Asset for JsRes {
-    type Key = u32;
-}
-
-impl Size for JsRes {
-	/// 资产的大小
-	fn size(&self) -> usize {
-		self.cost
-	}
-}
-
-impl std::ops::Drop for JsRes {
-	fn drop(&mut self) {
-		unsafe { 
-			if let Some(r) = &DESTROY_RES {
-				(r)(self.key)
-			};
-		}
-    }
-}
-
 /// 设置日志过滤器
 /// 如果过滤器格式错误， 日志过滤器未初始化， 则设置将失败， 但不会panic
 #[cfg_attr(target_arch = "wasm32", wasm_bindgen)]
@@ -366,7 +216,7 @@ pub fn create_engine(canvas: web_sys::HtmlCanvasElement, width: u32, height: u32
 
 #[cfg(feature="pi_js_export")]
 #[cfg(not(target_arch = "wasm32"))]
-pub fn create_engine(window: &Arc<Window>, width: u32, height: u32, asset_total_capacity: u32, asset_config: &str) -> Engine {
+pub fn create_engine(window: &Arc<Window>, width: u32, height: u32, asset_mgr: Option<>,  asset_total_capacity: u32, asset_config: &str) -> Engine {
     use pi_bevy_render_plugin::PiRenderOptions;
     use wgpu::Backend;
 
@@ -404,6 +254,7 @@ pub fn create_engine_inner(
 	winit_plugin: pi_bevy_winit_window::WinitPlugin,
 	asset_total_capacity: u32,
 	asset_config: &str,
+	asset_allotor: Option<Share<ShareCell<pi_assets::allocator::Allocator>>>,
 ) {
 	// let mut window_plugin = bevy_window::WindowPlugin::default();
 	// window_plugin.primary_window = None;
@@ -418,7 +269,7 @@ pub fn create_engine_inner(
 		// .add_plugins(window_plugin)
 		.add_plugins(winit_plugin)
 		// .add_plugins(WorldInspectorPlugin::new())
-		.add_plugins(PiAssetPlugin {total_capacity: asset_total_capacity as usize, asset_config: parse_asset_config(asset_config)})
+		.add_plugins(PiAssetPlugin {total_capacity: asset_total_capacity as usize, asset_config: parse_asset_config(asset_config), allocator: asset_allotor})
 		.add_plugins(PiRenderPlugin {frame_init_state: FrameState::UnActive})
 		.add_plugins(PluginWindowRender)
 		.add_plugins(PiPostProcessPlugin);
