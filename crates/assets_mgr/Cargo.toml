@@ -1,0 +1,41 @@
+[package]
+name = "pi_export_assets_mgr"
+version = "0.1.0"
+authors = ["suncy <suncy@gmail.com>"]
+edition = "2021"
+
+# system_graph = [] # 提供接口，返回system的日程图
+
+# [lib]
+# crate-type = ["cdylib", "rlib", "dylib"]
+
+[dependencies]
+pi_assets = "0.14"
+pi_share = "0.4"
+serde = "1.0"
+serde_json = "1.0"
+pi_time = "0.3"
+
+wasm-bindgen = "*"
+js-sys = "0.3"
+js_proxy_gen_macro = { registry = "yn", version = "0.2" }
+
+
+[features]
+# default = ["wasm_bindgen"]
+wasm_bindgen = []
+# # default = ["no_debug", "no_define_js"]
+# # default = ["create_class_by_str"]
+# # default = ["no_debug", "share/rc"]
+# default = ["debug"]
+# # default = ["share/rc", "ecs/runtime"]
+# # default = ["debug", "no_debug"]
+# debug = ["share/rc", "ecs/runtime"]
+# no_debug = []
+# no_define_js = []
+# create_class_by_str = []
+
+
+# [patch.crates-io]
+# pi_share = {path = "../../pi_share"}
+# pi_assets = {path = "../../pi_assets"}
