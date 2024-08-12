@@ -148,7 +148,7 @@ pub static mut RUNNER: OnceCell<LocalTaskRunner<()>> = OnceCell::new();
 /// width、height为physical_size
 #[cfg(target_arch = "wasm32")]
 #[wasm_bindgen]
-pub fn create_engine(canvas: web_sys::HtmlCanvasElement, width: u32, height: u32, asset_total_capacity: u32, asset_config: &str, log_filter: Option<String>, log_level: u8) -> Engine {
+pub fn create_engine(canvas: web_sys::HtmlCanvasElement, width: u32, height: u32, asset_mgr: &pi_export_assets_mgr::ResAllocator, asset_total_capacity: u32, asset_config: &str, log_filter: Option<String>, log_level: u8) -> Engine {
 	// 初始化运行时（全局localRuntime需要初始化）
 	let runner = LocalTaskRunner::new();
     let rt = runner.get_runtime();
@@ -204,6 +204,7 @@ pub fn create_engine(canvas: web_sys::HtmlCanvasElement, width: u32, height: u32
 		pi_bevy_winit_window::WinitPlugin::new(window).with_size(width, height),
 		asset_total_capacity,
 		asset_config,
+		Some(asset_mgr.get_inner().clone()),
 	);
     app.add_plugins(RuntimePlugin); // wasm需要主动推运行时
 
@@ -216,7 +217,7 @@ pub fn create_engine(canvas: web_sys::HtmlCanvasElement, width: u32, height: u32
 
 #[cfg(feature="pi_js_export")]
 #[cfg(not(target_arch = "wasm32"))]
-pub fn create_engine(window: &Arc<Window>, width: u32, height: u32, asset_mgr: Option<>,  asset_total_capacity: u32, asset_config: &str) -> Engine {
+pub fn create_engine(window: &Arc<Window>, width: u32, height: u32, asset_mgr: &pi_export_assets_mgr::ResAllocator,  asset_total_capacity: u32, asset_config: &str) -> Engine {
     use pi_bevy_render_plugin::PiRenderOptions;
     use wgpu::Backend;
 
@@ -240,6 +241,7 @@ pub fn create_engine(window: &Arc<Window>, width: u32, height: u32, asset_mgr: O
 		pi_bevy_winit_window::WinitPlugin::new(window.clone()).with_size(width, height),
 		asset_total_capacity,
 		asset_config,
+		Some(asset_mgr.get_inner().clone()),
 	);
 
     let mut engine = Engine::new(app);
@@ -359,13 +361,12 @@ pub fn parse_asset_config(asset_config: &str) -> AssetConfig {
 	let mut asset_config = AssetConfig::default();
 	for (key, desc) in map.into_iter() {
 		match key.as_str() {
-			"texture_view" => asset_config.insert::<RenderRes<TextureView>>(desc),
-			"buffer" => asset_config.insert::<RenderRes<Buffer>>(desc),
-			"sampler" => asset_config.insert::<SamplerRes>(desc),
-			"bind_group" => asset_config.insert::<RenderRes<BindGroup>>(desc),
-			"texture" => asset_config.insert::<TextureRes>(desc),
-			"render_pipeline" => asset_config.insert::<RenderRes<RenderPipeline>>(desc),
-			
+			"TEXTURE_VIEW" => asset_config.insert::<RenderRes<TextureView>>(desc),
+			"BUFFER" => asset_config.insert::<RenderRes<Buffer>>(desc),
+			"SAMPLER" => asset_config.insert::<SamplerRes>(desc),
+			"BIND_GROUP" => asset_config.insert::<RenderRes<BindGroup>>(desc),
+			"TEXTURE_RES" => asset_config.insert::<TextureRes>(desc),
+			"RENDER_PIPELINE" => asset_config.insert::<RenderRes<RenderPipeline>>(desc),
 			_ => {},
 		}
 	}

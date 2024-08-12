@@ -10,7 +10,7 @@ use js_proxy_gen_macro::pi_js_export;
 pub static mut DESTROY_RES: Option<Arc<dyn Fn(u32) + Send + Sync>> = None;
 
 #[cfg(target_arch = "wasm32")]
-pub struct CanSyncFunction(Function);
+pub struct CanSyncFunction(js_sys::Function);
 #[cfg(target_arch = "wasm32")]
 unsafe impl Sync for CanSyncFunction {}
 #[cfg(target_arch = "wasm32")]

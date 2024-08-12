@@ -1,5 +1,6 @@
 use std::panic;
 
+pub use pi_export_assets_mgr::*;
 pub use pi_export_gui::*;
 // pub use pi_export_astar::export:: *;
 pub use pi_export_base::export::*;

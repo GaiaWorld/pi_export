@@ -19,6 +19,7 @@ pi_export_gui = { path = "../gui", default-features=false, features=["record"] }
 # pi_export_astar = { path = "../astar"}
 # pi_export_base = { path = "../base", features = ["allow_not_run"]}
 pi_export_base = { path = "../base"}
+pi_export_assets_mgr = { path = "../assets_mgr" }
 pi_spine_export = { path = "../pi_spine_export"}
 pi_export_quad_tree = { path = "../quad_tree"}
 scene3d_export = { path = "../scene3d" }
@@ -60,33 +61,34 @@ web-sys = {version="=0.3.67", features = [
 wgpu1 = { version = "0.19", package = "wgpu", default-features = false, features = ["glsl", "webgl", "fragile-send-sync-non-atomic-wasm"] }
 
 
-[profile.release]
-debug = false
-opt-level = "z"  # 默认情况下，对LLVM的优化通道进行了调整，以提高速度，而不是大小。我们可以通过修改以下
-panic = 'abort'
-# split-debuginfo = '...'  # Platform-specific.
-# strip = "all"
-debug-assertions = false
-overflow-checks = false
-# lto = true
-incremental = false
-codegen-units = 1
-rpath = false
+# [profile.release]
+# debug = false
+# opt-level = "z"  # 默认情况下，对LLVM的优化通道进行了调整，以提高速度，而不是大小。我们可以通过修改以下
+# panic = 'abort'
+# # split-debuginfo = '...'  # Platform-specific.
+# # strip = "all"
+# debug-assertions = false
+# overflow-checks = false
+# # lto = true
+# incremental = false
+# codegen-units = 1
+# rpath = false
 
-# `wasm-opt` is on by default in for the release profile, but it can be
-# disabled by setting it to `false`
-[package.metadata.wasm-pack.profile.release]
-wasm-opt = ['-Oz']
-debug = false
-debug-assertions = false
-overflow-checks = false
-# strip = true
-opt-level = "z"
-panic = 'abort'
-# lto = true
-[package.metadata.wasm-pack.profile.release.wasm-bindgen]
-debug-js-glue = false
-demangle-name-section = true
-dwarf-debug-info = false
-omit-default-module-path = false
+# # `wasm-opt` is on by default in for the release profile, but it can be
+# # disabled by setting it to `false`
+# [package.metadata.wasm-pack.profile.release]
+# # wasm-opt = ['-Oz']
+# wasm-opt = false
+# debug = false
+# debug-assertions = false
+# overflow-checks = false
+# # strip = true
+# opt-level = "z"
+# panic = 'abort'
+# # lto = true
+# [package.metadata.wasm-pack.profile.release.wasm-bindgen]
+# debug-js-glue = false
+# demangle-name-section = true
+# dwarf-debug-info = false
+# omit-default-module-path = false
 
