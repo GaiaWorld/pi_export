@@ -90,20 +90,20 @@ pi_world_macros = { path = "../pi_world/macros" }
 # render_compile          = { version = "0.1", registry = "yn", path = "../pi_render/crates/render_compile" }
 
 # pi_bevy
-# pi_bevy_ecs_extend = { path = "../pi_bevy/crates/ecs_extend" }
-# pi_bevy_render_plugin = { path = "../pi_bevy/crates/render" }
-# pi_bevy_asset = { path = "../pi_bevy/crates/asset" }
-# pi_bevy_winit_window = { path = "../pi_bevy/crates/winit_window" }
-# pi_bevy_log = { path = "../pi_bevy/crates/log" }
-# pi_bevy_ecs_macro = { path = "../pi_bevy/crates/ecs_extend/macro" }
-# pi_bevy_post_process = { path = "../pi_bevy/crates/post_process" }
-# pi_bevy_window = { path = "../pi_bevy/crates/window" }
-# pi_window_renderer = { path="../pi_bevy/crates/window_renderer" }
+pi_bevy_ecs_extend = { path = "../pi_bevy/crates/ecs_extend" }
+pi_bevy_render_plugin = { path = "../pi_bevy/crates/render" }
+pi_bevy_asset = { path = "../pi_bevy/crates/asset" }
+pi_bevy_winit_window = { path = "../pi_bevy/crates/winit_window" }
+pi_bevy_log = { path = "../pi_bevy/crates/log" }
+pi_bevy_ecs_macro = { path = "../pi_bevy/crates/ecs_extend/macro" }
+pi_bevy_post_process = { path = "../pi_bevy/crates/post_process" }
+pi_bevy_window = { path = "../pi_bevy/crates/window" }
+pi_window_renderer = { path="../pi_bevy/crates/window_renderer" }
 
-# pi_ui_render = { path = "../pi_ui_render_new" }
+pi_ui_render = { path = "../pi_ui_render" }
 # pi_style = { path = "../pi_style" }
 
-pi_postprocess ={path="../pi_postprocess"}
+pi_postprocess ={path="../pi_post_process"}
 
 pi_3d               = { path = "../pi_3d" }
 pi_node_materials   = { path = "../pi_3d/crates/node_materials" }
