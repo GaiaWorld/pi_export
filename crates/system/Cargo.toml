@@ -15,3 +15,4 @@ winit = { registry = "yn", version = "0.27"}
 js_proxy_gen_macro = { registry = "yn", version = "0.2" }
 pi_bevy_render_plugin = {version = "0.1", registry = "yn"}
 pi_bevy_winit_window = {version = "0.1", registry = "yn"}
+pi_share = {version="0.4" }

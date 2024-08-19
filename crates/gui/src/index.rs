@@ -12,6 +12,7 @@ use pi_ui_render::components::user::ClassName;
 #[cfg(debug_assertions)]
 use pi_ui_render::resource::DebugEntity;
 pub use pi_export_base::export::Engine;
+pub use pi_export_system::blob::Blob;
 use pi_null::Null;
 use pi_ui_render::system::system_set::UiSchedule;
 use pi_ui_render::{
@@ -37,6 +38,7 @@ use js_proxy_gen_macro::pi_js_export;
 use pi_ui_render::system::cmd_play::{Records, CmdNodeCreate, PlayState, TraceOption };
 pub use pi_export_base::export::Atom as Atom1;
 use pi_ui_render::system::res_load::ResSuccess;
+// pub use pi_export_system::blob::Blob;
 
 
 #[cfg(target_arch = "wasm32")]
@@ -499,8 +501,8 @@ pub fn add_sdf_font(gui: &mut Gui, bin: &[u8]) {
 // 添加sdf2字体
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
-pub fn add_sdf2_font(gui: &mut Gui, font_name: &Atom1, bin: Vec<u8>) {
-	gui.commands.add_sdf2_font((**font_name).clone(), bin);
+pub fn add_sdf2_font(gui: &mut Gui, font_name: &Atom1, blob: &Blob) {
+	gui.commands.add_sdf2_font((**font_name).clone(), blob.0.clone());
 	// font_sheet = 
 	// let mut v = Vec::new();
 	// for i in buffer.iter() {
