@@ -30,6 +30,7 @@ pub fn serde_fragment_as_bin(json: &str) -> Vec<u8> {
 	let mut map = XHashMap::default();
 	let mut fragments = Vec::new();
 	for (key, nodes) in value.into_iter() {
+		println!("key===={:?}", key);
 		let k = u32::from_str(key.as_str()).unwrap();
 		let index = fragments.len();
 		for json in nodes.value.iter() {
@@ -83,14 +84,14 @@ fn parse_node(node: &NodeFragmentJson, scope_hash: u32, fragments: &mut Vec<Node
 #[test]
 fn test() {
 	let _json = r#"{
-		"6546848": [{
+		"c6546848": [{
 			"style": "width: 10px;height: 10px;",
 			"tag": "div",
 			"class": [],
 			"parent": null
 		},
 		{
-			"style": "width: 100px;height: 10px;",
+			"style": "width:10px;",
 			"tag": "div",
 			"class": [],
 			"parent": 0
@@ -99,7 +100,23 @@ fn test() {
 	}"#;
 
 	let json = r#"
-	{"615477543":[{"tag":"div","style":"width: 100%;height: 100%;flex-wrap: wrap;","parent":null,"class":[1508762967]},{"tag":"div","style":"width: 100%;height: 20px;flex-wrap: wrap;","parent":0,"class":[1508762967]},{"tag":"span","style":"","parent":1,"class":[]},{"tag":"div","style":"","parent":1,"class":[]},{"tag":"span","style":"","parent":3,"class":[]},{"tag":"div","style":"width: 100%;height: 20px;flex-wrap: wrap;","parent":0,"class":[1508762967]},{"tag":"span","style":"","parent":5,"class":[]},{"tag":"div","style":"","parent":5,"class":[]},{"tag":"span","style":"","parent":7,"class":[]}],"1452801992":[{"tag":"div","style":"width: 100%;height: 100%;flex-wrap: wrap;","parent":null,"class":[1865427204]},{"tag":"div","style":"width: 100%;height: 100%;flex-wrap: wrap;","parent":0,"class":[1865427204]},{"tag":"span","style":"","parent":1,"class":[]},{"tag":"div","style":"","parent":1,"class":[]},{"tag":"span","style":"","parent":3,"class":[]},{"tag":"div","style":"width: 100%;height: 30px;flex-wrap: wrap;","parent":0,"class":[1865427204]},{"tag":"span","style":"","parent":5,"class":[]},{"tag":"div","style":"","parent":5,"class":[]},{"tag":"span","style":"","parent":7,"class":[]}]}
+	{"c615477543":[{"tag":"div","style":"width: 100%;height: 100%;flex-wrap: wrap;","parent":null,"class":[1508762967]},{"tag":"div","style":"width: 100%;height: 20px;flex-wrap: wrap;","parent":0,"class":[1508762967]},{"tag":"span","style":"","parent":1,"class":[]},{"tag":"div","style":"","parent":1,"class":[]},{"tag":"span","style":"","parent":3,"class":[]},{"tag":"div","style":"width: 100%;height: 20px;flex-wrap: wrap;","parent":0,"class":[1508762967]},{"tag":"span","style":"","parent":5,"class":[]},{"tag":"div","style":"","parent":5,"class":[]},{"tag":"span","style":"","parent":7,"class":[]}],"1452801992":[{"tag":"div","style":"width: 100%;height: 100%;flex-wrap: wrap;","parent":null,"class":[1865427204]},{"tag":"div","style":"width: 100%;height: 100%;flex-wrap: wrap;","parent":0,"class":[1865427204]},{"tag":"span","style":"","parent":1,"class":[]},{"tag":"div","style":"","parent":1,"class":[]},{"tag":"span","style":"","parent":3,"class":[]},{"tag":"div","style":"width: 100%;height: 30px;flex-wrap: wrap;","parent":0,"class":[1865427204]},{"tag":"span","style":"","parent":5,"class":[]},{"tag":"div","style":"","parent":5,"class":[]},{"tag":"span","style":"","parent":7,"class":[]}]}
+	"#;
+
+	let json = r#"
+	{
+		"1234": {
+			"value": [
+				{
+					"tag":"div",
+					"style":"text-overflow: ellipsis;",
+					"parent":null,
+					"class":[1508762967]
+				}
+			],
+			"scope": 0
+		}
+	}
 	"#;
 
 

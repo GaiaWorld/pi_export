@@ -176,7 +176,7 @@ pub fn create_engine(canvas: web_sys::HtmlCanvasElement, width: u32, height: u32
 		_ => tracing::Level::WARN,
 	};
 
-	console_log::init_with_level(log::Level::Error);
+	// console_log::init_with_level(log::Level::Error);
 
     let mut app = App::new();
 
@@ -198,7 +198,7 @@ pub fn create_engine(canvas: web_sys::HtmlCanvasElement, width: u32, height: u32
 	};
 	
 
-	// app.add_plugins(log);
+	app.add_plugins(log);
 	create_engine_inner(
 		&mut app, 
 		pi_bevy_winit_window::WinitPlugin::new(window).with_size(width, height),
