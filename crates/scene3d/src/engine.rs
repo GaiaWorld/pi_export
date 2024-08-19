@@ -27,6 +27,114 @@ use wasm_bindgen::prelude::wasm_bindgen;
 use js_proxy_gen_macro::pi_js_export;
 use pi_hal::*;
 
+fn bit_ok_u32(bits: wgpu::DownlevelFlags, bit: wgpu::DownlevelFlags) -> u32 {
+    if (bits & bit) == bit {
+        1
+    } else {
+        0
+    }
+}
+fn bit_ok(bits: wgpu::Features, bit: wgpu::Features) -> u32 {
+    if (bits & bit) == bit {
+        1
+    } else {
+        0
+    }
+}
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
+pub fn p3d_device_limis(app: &mut Engine, data: &mut [u32]) {
+	let device = app.world.get_resource::<PiRenderDevice>().unwrap();
+    let limits = device.limits();
+    let features = device.features();
+    // let downlevelflags = device.0.downlevel();
+    let mut i = 0;
+    data[i] = bit_ok(features, wgpu::Features::ADDRESS_MODE_CLAMP_TO_ZERO );
+    i += 1;   data[i] = bit_ok(features, wgpu::Features::BGRA8UNORM_STORAGE );
+    i += 1;   data[i] = bit_ok(features, wgpu::Features::BUFFER_BINDING_ARRAY );
+    i += 1;   data[i] = bit_ok(features, wgpu::Features::CLEAR_TEXTURE );
+    i += 1;   data[i] = bit_ok(features, wgpu::Features::CONSERVATIVE_RASTERIZATION );
+    i += 1;   data[i] = bit_ok(features, wgpu::Features::DEPTH32FLOAT_STENCIL8 );
+    i += 1;   data[i] = bit_ok(features, wgpu::Features::DEPTH_CLIP_CONTROL );
+    i += 1;   data[i] = bit_ok(features, wgpu::Features::DUAL_SOURCE_BLENDING );
+    i += 1;   data[i] = bit_ok(features, wgpu::Features::FLOAT32_FILTERABLE );
+    i += 1;   data[i] = bit_ok(features, wgpu::Features::INDIRECT_FIRST_INSTANCE );
+    i += 1;   data[i] = bit_ok(features, wgpu::Features::MAPPABLE_PRIMARY_BUFFERS );
+    i += 1;   data[i] = bit_ok(features, wgpu::Features::MULTIVIEW );
+    i += 1;   data[i] = bit_ok(features, wgpu::Features::MULTI_DRAW_INDIRECT );
+    i += 1;   data[i] = bit_ok(features, wgpu::Features::MULTI_DRAW_INDIRECT_COUNT );
+    i += 1;   data[i] = bit_ok(features, wgpu::Features::PARTIALLY_BOUND_BINDING_ARRAY );
+    i += 1;   data[i] = bit_ok(features, wgpu::Features::PIPELINE_STATISTICS_QUERY );
+    i += 1;   data[i] = bit_ok(features, wgpu::Features::POLYGON_MODE_LINE );
+    i += 1;   data[i] = bit_ok(features, wgpu::Features::POLYGON_MODE_POINT );
+    i += 1;   data[i] = bit_ok(features, wgpu::Features::PUSH_CONSTANTS );
+    i += 1;   data[i] = bit_ok(features, wgpu::Features::RAY_QUERY );
+    i += 1;   data[i] = bit_ok(features, wgpu::Features::RAY_TRACING_ACCELERATION_STRUCTURE );
+    i += 1;   data[i] = bit_ok(features, wgpu::Features::RG11B10UFLOAT_RENDERABLE );
+    i += 1;   data[i] = bit_ok(features, wgpu::Features::SAMPLED_TEXTURE_AND_STORAGE_BUFFER_ARRAY_NON_UNIFORM_INDEXING );
+    i += 1;   data[i] = bit_ok(features, wgpu::Features::SHADER_EARLY_DEPTH_TEST );
+    i += 1;   data[i] = bit_ok(features, wgpu::Features::SHADER_F16 );
+    i += 1;   data[i] = bit_ok(features, wgpu::Features::SHADER_F64 );
+    i += 1;   data[i] = bit_ok(features, wgpu::Features::SHADER_I16 );
+    i += 1;   data[i] = bit_ok(features, wgpu::Features::SHADER_PRIMITIVE_INDEX );
+    i += 1;   data[i] = bit_ok(features, wgpu::Features::SHADER_UNUSED_VERTEX_OUTPUT );
+    i += 1;   data[i] = bit_ok(features, wgpu::Features::SPIRV_SHADER_PASSTHROUGH );
+    i += 1;   data[i] = bit_ok(features, wgpu::Features::STORAGE_RESOURCE_BINDING_ARRAY );
+    i += 1;   data[i] = bit_ok(features, wgpu::Features::TEXTURE_ADAPTER_SPECIFIC_FORMAT_FEATURES );
+    i += 1;   data[i] = bit_ok(features, wgpu::Features::TEXTURE_BINDING_ARRAY );
+    i += 1;   data[i] = bit_ok(features, wgpu::Features::TEXTURE_COMPRESSION_ASTC );
+    i += 1;   data[i] = bit_ok(features, wgpu::Features::TEXTURE_COMPRESSION_ASTC_HDR );
+    i += 1;   data[i] = bit_ok(features, wgpu::Features::TEXTURE_COMPRESSION_BC );
+    i += 1;   data[i] = bit_ok(features, wgpu::Features::TEXTURE_COMPRESSION_ETC2 );
+    i += 1;   data[i] = bit_ok(features, wgpu::Features::TEXTURE_FORMAT_16BIT_NORM );
+    i += 1;   data[i] = bit_ok(features, wgpu::Features::TEXTURE_FORMAT_NV12 );
+    i += 1;   data[i] = bit_ok(features, wgpu::Features::TIMESTAMP_QUERY );
+    i += 1;   data[i] = bit_ok(features, wgpu::Features::TIMESTAMP_QUERY_INSIDE_PASSES );
+    i += 1;   data[i] = bit_ok(features, wgpu::Features::UNIFORM_BUFFER_AND_STORAGE_TEXTURE_ARRAY_NON_UNIFORM_INDEXING );
+    i += 1;   data[i] = bit_ok(features, wgpu::Features::VERTEX_ATTRIBUTE_64BIT );
+    i += 1;   data[i] = bit_ok(features, wgpu::Features::VERTEX_WRITABLE_STORAGE );
+
+    // i += 1;   data[i] = bit_ok_u32(downlevelflags.flags, wgpu::DownlevelFlags::ANISOTROPIC_FILTERING );
+    // i += 1;   data[i] = bit_ok_u32(downlevelflags.flags, wgpu::DownlevelFlags::BASE_VERTEX );
+    // i += 1;   data[i] = bit_ok_u32(downlevelflags.flags, wgpu::DownlevelFlags::BUFFER_BINDINGS_NOT_16_BYTE_ALIGNED );
+    // i += 1;   data[i] = bit_ok_u32(downlevelflags.flags, wgpu::DownlevelFlags::COMPARISON_SAMPLERS );
+    // i += 1;   data[i] = bit_ok_u32(downlevelflags.flags, wgpu::DownlevelFlags::COMPUTE_SHADERS );
+    // i += 1;   data[i] = bit_ok_u32(downlevelflags.flags, wgpu::DownlevelFlags::CUBE_ARRAY_TEXTURES );
+    // i += 1;   data[i] = bit_ok_u32(downlevelflags.flags, wgpu::DownlevelFlags::DEPTH_BIAS_CLAMP );
+    // i += 1;   data[i] = bit_ok_u32(downlevelflags.flags, wgpu::DownlevelFlags::DEPTH_TEXTURE_AND_BUFFER_COPIES );
+    // i += 1;   data[i] = bit_ok_u32(downlevelflags.flags, wgpu::DownlevelFlags::FRAGMENT_STORAGE );
+    // i += 1;   data[i] = bit_ok_u32(downlevelflags.flags, wgpu::DownlevelFlags::FRAGMENT_WRITABLE_STORAGE );
+    // i += 1;   data[i] = bit_ok_u32(downlevelflags.flags, wgpu::DownlevelFlags::FULL_DRAW_INDEX_UINT32 );
+    // i += 1;   data[i] = bit_ok_u32(downlevelflags.flags, wgpu::DownlevelFlags::INDEPENDENT_BLEND );
+    // i += 1;   data[i] = bit_ok_u32(downlevelflags.flags, wgpu::DownlevelFlags::INDIRECT_EXECUTION );
+    // i += 1;   data[i] = bit_ok_u32(downlevelflags.flags, wgpu::DownlevelFlags::MULTISAMPLED_SHADING );
+    // i += 1;   data[i] = bit_ok_u32(downlevelflags.flags, wgpu::DownlevelFlags::NON_POWER_OF_TWO_MIPMAPPED_TEXTURES );
+    // i += 1;   data[i] = bit_ok_u32(downlevelflags.flags, wgpu::DownlevelFlags::READ_ONLY_DEPTH_STENCIL );
+    // i += 1;   data[i] = bit_ok_u32(downlevelflags.flags, wgpu::DownlevelFlags::SURFACE_VIEW_FORMATS );
+    // i += 1;   data[i] = bit_ok_u32(downlevelflags.flags, wgpu::DownlevelFlags::UNRESTRICTED_EXTERNAL_TEXTURE_COPIES );
+    // i += 1;   data[i] = bit_ok_u32(downlevelflags.flags, wgpu::DownlevelFlags::UNRESTRICTED_INDEX_BUFFER );
+    // i += 1;   data[i] = bit_ok_u32(downlevelflags.flags, wgpu::DownlevelFlags::VERTEX_STORAGE );
+    // i += 1;   data[i] = bit_ok_u32(downlevelflags.flags, wgpu::DownlevelFlags::VIEW_FORMATS );
+    // i += 1;   data[i] = bit_ok_u32(downlevelflags.flags, wgpu::DownlevelFlags::WEBGPU_TEXTURE_FORMAT_SUPPORT );
+
+    i += 1;   data[i] = limits.max_bind_groups ;
+    i += 1;   data[i] = limits.max_bindings_per_bind_group ;
+    i += 1;   data[i] = limits.max_non_sampler_bindings ;
+    i += 1;   data[i] = limits.max_sampled_textures_per_shader_stage ;
+    i += 1;   data[i] = limits.max_samplers_per_shader_stage ;
+    i += 1;   data[i] = limits.max_storage_buffer_binding_size ;
+    i += 1;   data[i] = limits.max_texture_array_layers ;
+    i += 1;   data[i] = limits.max_texture_dimension_1d ;
+    i += 1;   data[i] = limits.max_texture_dimension_2d ;
+    i += 1;   data[i] = limits.max_texture_dimension_3d ;
+    i += 1;   data[i] = limits.max_uniform_buffer_binding_size ;
+    i += 1;   data[i] = limits.max_uniform_buffers_per_shader_stage ;
+    i += 1;   data[i] = limits.max_vertex_attributes ;
+    i += 1;   data[i] = limits.max_vertex_buffer_array_stride ;
+    i += 1;   data[i] = limits.max_vertex_buffers ;
+    i += 1;   data[i] = limits.min_storage_buffer_offset_alignment ;
+    i += 1;   data[i] = limits.min_uniform_buffer_offset_alignment ;
+}
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
@@ -345,7 +453,7 @@ pub fn p3d_query_performance_state(app: &mut Engine, param: &mut ActionSetScene3
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
-pub fn p3d_query_resource_state(app: &mut Engine, param: &mut ActionSetScene3D, result: &mut [f32]) {
+pub fn p3d_query_resource_state(app: &mut Engine, param: &mut ActionSetScene3D, commands: &mut CommandsExchangeD3, result: &mut [f32]) {
 	pi_export_base::export::await_last_frame(app);
     
     let cmds = param.state.get_mut(&mut app.world);
@@ -376,6 +484,12 @@ pub fn p3d_query_resource_state(app: &mut Engine, param: &mut ActionSetScene3D, 
     result[21] = cmds.resource.count_passmat as f32;
     result[22] = cmds.resource.count_passtexs as f32;
     result[23] = cmds.resource.count_vertex as f32;
+    result[24] = (app.world.mem_size() / 1024) as f32;
+    
+    result[25] = cmds.resource.capcity_inscommon as f32;
+    result[26] = cmds.resource.capcity_combindata as f32;
+    result[27] = cmds.resource.capcity_transformcalc as f32;
+    result[28] = commands.capacity(&param.acts.get(&app.world)) as f32;
 
 }
 
@@ -923,7 +1037,7 @@ pub fn p3d_query_mesh_info(app: &mut Engine, param: &mut ActionSetScene3D, id: f
                         if shader.val().is_some() { state |= 1 << 4; }
                     // }
                     // if let Some(set0) = draw {
-                        if draw.val().is_some() { state |= 1 << 5; }
+                        if draw.val() { state |= 1 << 5; }
                     // }
                     // if let Some(set0) = set3 {
                         // if set3.val().is_some() { state |= 1 << 6; }

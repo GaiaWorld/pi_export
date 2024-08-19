@@ -357,9 +357,7 @@ pub fn create_engine(canvas: web_sys::HtmlCanvasElement, width: u32, height: u32
 	);
     app.add_plugins(RuntimePlugin); // wasm需要主动推运行时
 
-    let mut engine = Engine::new(app);
-
-	_init_engine_3d(&mut engine);
+    let engine = Engine::new(app);
 
 	engine
 }
@@ -392,9 +390,7 @@ pub fn create_engine(window: &Arc<Window>, width: u32, height: u32, asset_total_
 		asset_config,
 	);
 
-    let mut engine = Engine::new(app);
-
-	_init_engine_3d(&mut engine);
+    let engine = Engine::new(app);
 
 	engine
 }
@@ -561,16 +557,24 @@ pub fn entity_from_number(index: u32, version: u32) -> f64 {
 }
 
 
-pub fn _init_engine_3d(app: &mut Engine) {
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[cfg(feature = "pi_js_export")]
+pub fn init_engine_3d(app: &mut Engine, particlesystem: bool, skeleton: bool, shadowmapping: bool, lighting: bool, spine: bool) {
 	use pi_scene_shell::prelude::WorldResourceTemp;
 	use pi_scene_shell::prelude::AppResourceTemp;
-	use pi_world::prelude::IntoSystemConfigs;
+	use pi_scene_shell::run_stage::EngineCustomPlugins;
+use pi_world::prelude::IntoSystemConfigs;
 
     if app.world.get_resource::<pi_scene_shell::prelude::AssetMgrConfigs>().is_none() {
         app.insert_resource(pi_scene_shell::prelude::AssetMgrConfigs::default());
     }
 
-    log::error!(">>>>> p3d_init_engine");
+	let mut engineplugins = EngineCustomPlugins::default();
+	engineplugins.particle_system = particlesystem;
+	engineplugins.skeleton = skeleton;
+	engineplugins.shadowmapping = shadowmapping;
+	engineplugins.lighting = lighting;
+	app.insert_resource(engineplugins);
 
     pi_3d::PluginBundleDefault::add(app);
     app
@@ -589,6 +593,8 @@ pub fn _init_engine_3d(app: &mut Engine) {
         pi_scene_context::prelude::sys_state_transform.in_set(pi_scene_shell::prelude::ERunStageChap::StateCheck)
     );
 	
-    app
-        .add_plugins(pi_spine_rs::PluginSpineRenderer);
+	if spine {
+		app
+			.add_plugins(pi_spine_rs::PluginSpineRenderer);
+	}
 }
