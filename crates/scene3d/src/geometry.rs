@@ -105,7 +105,7 @@ pub fn p3d_geo_set_vertex(geo: &mut GeometryMeta, vb: &VBMeta) {
 #[pi_js_export]
 pub fn p3d_geo_set_indice(geo: &mut GeometryMeta, name: String, start: Option<f64>, end: Option<f64>, as_u16: bool) {
     let range = if let (Some(start), Some(end)) = (start, end) {
-        Some(Range { start: start as u64, end: end as u64 })
+        Some(Range { start: start as u32, end: end as u32 })
     } else {
         None
     };
@@ -154,6 +154,26 @@ pub fn p3d_create_indices_buffer(app: &mut Engine, param: &mut ActionSetScene3D,
         queue.write_buffer(buffer.buffer(), 0, bytemuck::cast_slice(data));
     } else {
         let data = bytemuck::cast_slice::<u16, u8>(&data[0..length]).to_vec();
+        ActionVertexBuffer::create_indices(&mut resource.vb_wait, key, data);
+    }
+}
+
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
+pub fn p3d_create_indices_buffer_u32(app: &mut Engine, param: &mut ActionSetScene3D, key: String, data: &[u32], length: f64) {
+	pi_export_base::export::await_last_frame(app);
+    let length = length as usize;
+
+    let queue = app.world.get_resource::<PiRenderQueue>().unwrap().clone();
+    let queue = queue.0.clone();
+    let key = KeyVertexBuffer::from(key.as_str());
+    let key_u64 = key.asset_u64();
+
+    let mut resource = param.resource.get_mut(&mut app.world);
+    if let Some(buffer) = resource.vb_mgr.get(&key_u64) {
+        queue.write_buffer(buffer.buffer(), 0, bytemuck::cast_slice(data));
+    } else {
+        let data = bytemuck::cast_slice::<u32, u8>(&data[0..length]).to_vec();
         ActionVertexBuffer::create_indices(&mut resource.vb_wait, key, data);
     }
 }

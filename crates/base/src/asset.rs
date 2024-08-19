@@ -20,26 +20,22 @@ pub struct TextureDefaultView(pi_render::renderer::texture::ETextureViewUsage, u
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
-impl TextureDefaultView {
-    #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
-    #[pi_js_export]
-    pub fn width(&self) -> u32 {
-        match &self.0 {
-            ETextureViewUsage::Tex(tex) => tex.width,
-            ETextureViewUsage::TexWithId(_) => todo!(),
-            ETextureViewUsage::Image(tex) => tex.texture().width(),
-            ETextureViewUsage::SRT(_) => todo!(),
-        }
+pub fn p3d_texture_default_view_width(item: &TextureDefaultView) -> f64 {
+    match &item.0 {
+        ETextureViewUsage::Tex(tex) => tex.width as f64,
+        ETextureViewUsage::TexWithId(_) => todo!(),
+        ETextureViewUsage::Image(tex) => tex.texture().width() as f64,
+        ETextureViewUsage::SRT(_) => todo!(),
     }
-    #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
-    #[pi_js_export]
-    pub fn height(&self) -> u32 {
-        match &self.0 {
-            ETextureViewUsage::Tex(tex) => tex.height,
-            ETextureViewUsage::TexWithId(_) => todo!(),
-            ETextureViewUsage::Image(tex) => tex.texture().height(),
-            ETextureViewUsage::SRT(_) => todo!(),
-        }
+}
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
+pub fn p3d_texture_default_view_height(item: &TextureDefaultView) -> f64 {
+    match &item.0 {
+        ETextureViewUsage::Tex(tex) => tex.height as f64,
+        ETextureViewUsage::TexWithId(_) => todo!(),
+        ETextureViewUsage::Image(tex) => tex.texture().height() as f64,
+        ETextureViewUsage::SRT(_) => todo!(),
     }
 }
 

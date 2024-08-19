@@ -438,3 +438,11 @@ pub fn p3d_attribute_target_animation(
     let curve: u64 = unsafe { transmute(curve_key) };
     cmds.instance_targetanime.push(OpsTargetAnimationAttribute::ops(target, key.deref().clone(), group, curve));
 }
+
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
+pub fn p3d_abstruct_pose_matrix(
+    cmds: &mut CommandsExchangeD3, mesh: f64, data: &[f32]) {
+    let mesh: Entity = as_entity(mesh);
+    cmds.mesh_pose.push(OpsAbstractMeshPose::ops(mesh, Matrix::from_column_slice(data)));
+}
