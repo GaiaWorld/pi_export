@@ -77,7 +77,7 @@ pi_world_macros = { path = "../pi_world/macros" }
 [patch.yn]
 # pi_sdf = { path = "../pi_sdf" }
 # pi_winit = { path = "../winit", package = "winit" }
-pi_hal = { path = "../pi_hal" }
+# pi_hal = { path = "../pi_hal" }
 # pi_wgpu = { path = "../pi_wgpu" }
 # pi_egl = {path = "../pi_egl"}
 # winit = {path = "../winit"}
@@ -103,7 +103,7 @@ pi_window_renderer = { path="../pi_bevy/crates/window_renderer" }
 pi_ui_render = { path = "../pi_ui_render" }
 # pi_style = { path = "../pi_style" }
 
-pi_postprocess ={path="../pi_postprocess"}
+# pi_postprocess ={path="../pi_postprocess"}
 
 pi_3d               = { path = "../pi_3d" }
 pi_node_materials   = { path = "../pi_3d/crates/node_materials" }
