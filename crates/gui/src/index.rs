@@ -7,6 +7,7 @@ use pi_bevy_asset::ShareAssetMgr;
 use pi_export_base::export::await_last_frame;
 use pi_flex_layout::{prelude::CharNode, style::{PositionType, FlexWrap, FlexDirection, AlignContent, AlignItems, AlignSelf, JustifyContent, Display, Dimension}};
 use pi_render::rhi::asset::TextureRes;
+use pi_share::Share;
 use pi_slotmap::DefaultKey;
 use pi_ui_render::components::user::ClassName;
 #[cfg(debug_assertions)]
@@ -499,10 +500,23 @@ pub fn add_sdf_font(gui: &mut Gui, bin: &[u8]) {
 }
 
 // 添加sdf2字体
-#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[cfg(not(target_arch="wasm32"))]
 #[pi_js_export]
 pub fn add_sdf2_font(gui: &mut Gui, font_name: &Atom1, blob: &Blob) {
 	gui.commands.add_sdf2_font((**font_name).clone(), blob.0.clone());
+	// font_sheet = 
+	// let mut v = Vec::new();
+	// for i in buffer.iter() {
+	// 	v.push(js_sys::Uint8Array::from(i).to_vec());
+	// }
+	// pi_hal::font::sdf_brush::on_load(unsafe {transmute::<_, DefaultKey>(key)}, v);
+}
+
+// 添加sdf2字体
+#[cfg(target_arch="wasm32")]
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+pub fn add_sdf2_font(gui: &mut Gui, font_name: &Atom1, blob: Vec<u8>) {
+	gui.commands.add_sdf2_font((**font_name).clone(), Share::new(blob.clone()));
 	// font_sheet = 
 	// let mut v = Vec::new();
 	// for i in buffer.iter() {

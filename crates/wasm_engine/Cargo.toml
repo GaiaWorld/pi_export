@@ -14,6 +14,8 @@ trace = ["log/release_max_level_info", "tracing/release_max_level_info", "pi_bev
 pi_js_export = []
 
 [dependencies]
+pi_hal = {version = "=0.1.39", registry = "yn"}
+pi_sdf = {version = "=0.1.20", registry = "yn"}
 async-executor = "=1.6.0" #1.7.1bug
 pi_export_gui = { path = "../gui", default-features=false, features=["record"] }
 # pi_export_astar = { path = "../astar"}
@@ -27,12 +29,12 @@ pi_web_logger = {git = "http://ser.yinengyun.com:10082/tech/pi_web_logger.git"}
 pi_share = "0.4"
 
 # wasm-bindgen = { version = "0.2"}
-wasm-bindgen = { version = "0.2" }
+wasm-bindgen = { version = "=0.2.92" }
 bevy_ecs = "0.11"
 bevy_app = "0.11"
 pi_world = "0.1.20"
 # pi_hal = {version = "0.1", registry = "yn"}
-pi_hal = {version = "=0.1.37", registry = "yn"}
+# pi_hal = {version = "=0.1.37", registry = "yn"}
 pi_winit = {version = "0.27", registry="yn", package="winit"}
 
 log = "0.4"
