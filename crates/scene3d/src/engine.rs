@@ -442,7 +442,7 @@ pub fn p3d_query_performance_state(app: &mut Engine, param: &mut ActionSetScene3
     result[0] = cmds.performance.animation as f32;
     result[1] = cmds.performance.animationgroup as f32;
     result[2] = cmds.psperformance.total() as f32;
-    result[3] = cmds.statetransform.calc_world_time as f32;
+    result[3] = cmds.performance.worldmatrix as f32;
     result[4] = cmds.statecamera.culling_time as f32 + cmds.statelight.culling_time as f32;
     result[5] = cmds.performance.gltfanaly as f32;
     result[6] = cmds.performance.drawobjs as f32;
@@ -598,6 +598,8 @@ pub fn p3d_transform_state(app: &mut Engine, param: &mut ActionSetScene3D, scene
     param.transforms.align(&app.world);
 
     let mut state = StateTransform::default();
+    let mut calc_local_time = 0;
+    let mut calc_world_time = 0;
     if let Some(scene) = scene {
         let scene = as_entity(scene);
         param.transforms.iter(&app.world).for_each(|(idscene, enable, globalenable)| {
@@ -609,15 +611,15 @@ pub fn p3d_transform_state(app: &mut Engine, param: &mut ActionSetScene3D, scene
         });
 
         let cmds = param.state.get(&mut app.world);
-        state.calc_local_time   = cmds.statetransform.calc_local_time;
-        state.calc_world_time   = cmds.statetransform.calc_world_time;
+        // calc_local_time   = cmds.statetransform.calc_local_time;
+        calc_world_time         = cmds.performance.worldmatrix;
         state.max_level         = cmds.statetransform.max_level;
     }
     result[0] = state.count as f32;
     result[1] = state.enable as f32;
     result[2] = state.global_enable as f32;
-    result[3] = state.calc_local_time as f32;
-    result[4] = state.calc_world_time as f32;
+    result[3] = calc_local_time as f32;
+    result[4] = calc_world_time as f32;
     result[5] = state.max_level as f32;
 }
 
