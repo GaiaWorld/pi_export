@@ -435,9 +435,14 @@ pub fn p3d_commands_exchange(app: &mut Engine, param: &mut ActionSetScene3D, cmd
 	pi_export_base::export::await_last_frame(app);
     // log::error!(">>>>> p3d_commands_exchange");
     // log::error!("World Memory {:?}", app.world.mem_size());
-    let mut sets = param.acts.get_mut(&mut app.world);
-    // log::error!(">>>>> p3d_commands_exchange 01");
-
-    cmds.exchange(&mut sets);
-    // log::error!(">>>>> p3d_commands_exchange 02");
+    let state = param.state.get_mut(&mut app.world);
+    
+    // log::error!("p3d_commands_exchange {:?}", state.stateengine.active);
+    if state.stateengine.active {
+        let mut sets = param.acts.get_mut(&mut app.world);
+        // log::error!(">>>>> p3d_commands_exchange 01");
+    
+        cmds.exchange(&mut sets);
+        // log::error!(">>>>> p3d_commands_exchange 02");
+    }
 }

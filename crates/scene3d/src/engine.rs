@@ -174,8 +174,8 @@ pub fn _init_engine(app: &mut Engine) {
 #[derive(SystemParam)]
 pub struct GlobalState<'w> {
     pub resource: Res<'w, pi_3d::StateResource>,
-    pub performance: Res<'w, pi_scene_shell::prelude::Performance>,
-    pub psperformance: Res<'w, pi_particle_system::prelude::ParticleSystemPerformance>,
+    pub performance: ResMut<'w, pi_scene_shell::prelude::Performance>,
+    pub psperformance: ResMut<'w, pi_particle_system::prelude::ParticleSystemPerformance>,
     // pub statemesh: ResMut<'w, pi_scene_context::prelude::StateMesh>,
     pub statetransform: Res<'w, pi_scene_context::prelude::StateTransform>,
     pub statecamera: Res<'w, pi_scene_context::prelude::StateCamera>,
@@ -183,6 +183,7 @@ pub struct GlobalState<'w> {
     // pub statecamera: ResMut<'w, pi_scene_context::prelude::StateCamera>,
     // pub statematerial: ResMut<'w, pi_scene_context::prelude::StateMaterial>,
     pub statetrail: Res<'w, pi_trail_renderer::StateTrail>,
+    pub stateengine: ResMut<'w, pi_scene_shell::run_stage::EngineCustomPlugins>,
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
@@ -430,6 +431,26 @@ pub fn p3d_query_scene_state(app: &mut Engine, param: &mut ActionSetScene3D, ent
     //     false
     // }
     true
+}
+
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
+pub fn p3d_engine_state(app: &mut Engine, param: &mut ActionSetScene3D, active: bool) {
+	pi_export_base::export::await_last_frame(app);
+    
+    let mut cmds = param.state.get_mut(&mut app.world);
+    cmds.stateengine.active = active;
+    // log::error!("stateengine {:?}", cmds.stateengine.active);
+}
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
+pub fn p3d_engine_debug(app: &mut Engine, param: &mut ActionSetScene3D, debug: bool) {
+	pi_export_base::export::await_last_frame(app);
+    
+    let mut cmds = param.state.get_mut(&mut app.world);
+    cmds.performance.debug = debug;
+    cmds.psperformance.debug = debug;
+    // log::error!("stateengine {:?}", cmds.stateengine.active);
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
