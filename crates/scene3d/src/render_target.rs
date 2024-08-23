@@ -32,7 +32,7 @@ pub fn p3d_create_render_target(app: &mut Engine, param: &mut ActionSetScene3D, 
     let depth_stencil_format = EngineConstants::render_depth_format(depth_stencil_format);
 
     if let Some(key) = resource.render_targets.create(
-        &resource.device, sampler, &resource.asset_samp, &resource.asset_atlas, color_format, depth_stencil_format, width as u32, height as u32
+        sampler, color_format, depth_stencil_format, width as u32, height as u32
     ) {
         Some(unsafe { transmute(key) })
     } else {
