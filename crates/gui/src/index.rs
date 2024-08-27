@@ -13,7 +13,7 @@ use pi_ui_render::components::user::ClassName;
 #[cfg(debug_assertions)]
 use pi_ui_render::resource::DebugEntity;
 pub use pi_export_base::export::Engine;
-pub use pi_export_system::blob::Blob;
+// pub use pi_export_system::blob::Blob;
 use pi_null::Null;
 use pi_ui_render::system::system_set::UiSchedule;
 use pi_ui_render::{
