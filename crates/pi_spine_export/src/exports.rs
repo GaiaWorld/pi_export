@@ -2,6 +2,7 @@
 use std::{mem::transmute, ops::Deref};
 
 use pi_bevy_asset::ShareAssetMgr;
+use pi_bevy_ecs_extend::action::ActionList;
 use pi_bevy_render_plugin::{PiRenderGraph, PiRenderDevice, render_cross::GraphId};
 use pi_export_base::export::await_last_frame;
 pub use pi_export_base::{export::Engine, constants::*, asset::TextureDefaultView};
@@ -136,22 +137,6 @@ pub fn spine_renderer_dispose(cmds: &mut CommandsExchangeSpine, id_renderer: f64
     cmds.0.push(
         pi_spine_rs::ESpineCommand::Dispose(id_renderer)
     );
-    
-    // let mut nodequery: QueryState<&'static GraphId> = app.world.query();
-    
-    // if let Ok(nodeid) = nodequery.get(&app.world, id_renderer.0).cloned() {
-    //     let mut render_graph = app.world.get_resource_mut::<PiRenderGraph>().unwrap();
-    //     render_graph.remove_node(nodeid.0);
-    // }
-
-    // let mut queue = CommandQueue::default();
-    // let mut commands = Commands::new(&mut queue, &app.world);
-
-    // commands.entity(id_renderer.0).despawn();
-    // queue.apply(&mut app.world);
-
-    // let mut ctx = app.world.get_resource_mut::<SpineRenderContext>().unwrap();
-    // ActionSpine::dispose_spine_renderer(id_renderer, &mut ctx);
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
@@ -245,10 +230,7 @@ pub fn spine_use_texture(app: &mut Engine, cmds: &mut CommandsExchangeSpine, id_
     min_filter: f64,
     mipmap_filter: f64,
 ) {
-	pi_export_base::export::await_last_frame(app);
     let id_renderer = KeySpineRenderer::from_f64(id_renderer);
-    let device = app.world.get_resource::<PiRenderDevice>().unwrap().clone();
-    let asset_samplers = app.world.get_resource::<ShareAssetMgr<SamplerRes>>().unwrap();
 
     let samplerdesc = sampler_desc(
         ContextConstants::address_mode(address_mode_u),
@@ -261,23 +243,7 @@ pub fn spine_use_texture(app: &mut Engine, cmds: &mut CommandsExchangeSpine, id_
         EAnisotropyClamp::None,
         None,
     );
-    let sampler = if let Some(sampler) = asset_samplers.get(&samplerdesc) {
-        sampler
-    } else {
-        if let Ok(sampler) = asset_samplers.insert(samplerdesc.clone(), SamplerRes::new(&device, &samplerdesc)) {
-            sampler
-        } else {
-            // log::warn!("sampler Err");
-            return;
-        }
-    };
-    let mut renderers = app.world.get_resource_mut::<SpineRenderContext>().unwrap();
-    if let Some(renderer) = renderers.get_mut(id_renderer) {
-        // log::warn!("Cmd: Texture");
-        renderer.render_mut().record_sampler(samplerdesc, sampler.clone());
-    }
-
-    ActionSpine::spine_use_texture(&mut cmds.0, id_renderer, texture.data().clone(), sampler)
+    ActionSpine::spine_use_texture(&mut cmds.0, id_renderer, texture.data().clone(), samplerdesc)
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]

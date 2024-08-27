@@ -1,6 +1,7 @@
 
 use std::ops::{Range, Deref};
 
+use pi_export_base::export::VertexBufferRefs;
 use pi_scene_shell::prelude::*;
 pub use pi_export_base::export::{Engine, Atom};
 use pi_scene_context::prelude::*;
@@ -124,18 +125,21 @@ pub fn p3d_create_vertex_buffer(app: &mut Engine, param: &mut ActionSetScene3D, 
 	pi_export_base::export::await_last_frame(app);
     let length = length as usize;
 
-    let queue = app.world.get_resource::<PiRenderQueue>().unwrap().clone();
-    let queue = queue.0.clone();
+    // let queue = app.world.get_resource::<PiRenderQueue>().unwrap().clone();
+    // let queue = queue.0.clone();
     let key = KeyVertexBuffer::from(key.as_str());
     let key_u64 = key.asset_u64();
+
+    let refs = app.world.get_resource_mut::<VertexBufferRefs>().unwrap();
+    refs.vertexs.insert(key, bytemuck::cast_slice::<f32, u8>(&data[0..length]).to_vec());
     
-    let mut resource = param.resource.get_mut(&mut app.world);
-    if let Some(buffer) = resource.vb_mgr.get(&key_u64) {
-        queue.write_buffer(buffer.buffer(), 0, bytemuck::cast_slice(data));
-    } else {
-        let data = bytemuck::cast_slice::<f32, u8>(&data[0..length]).to_vec();
-        ActionVertexBuffer::create(&mut resource.vb_wait, key, data);
-    }
+    // let mut resource = param.resource.get_mut(&mut app.world);
+    // if let Some(buffer) = resource.vb_mgr.get(&key_u64) {
+    //     queue.write_buffer(buffer.buffer(), 0, bytemuck::cast_slice(data));
+    // } else {
+    //     let data = bytemuck::cast_slice::<f32, u8>(&data[0..length]).to_vec();
+    //     ActionVertexBuffer::create(&mut resource.vb_wait, key, data);
+    // }
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
@@ -144,18 +148,21 @@ pub fn p3d_create_indices_buffer(app: &mut Engine, param: &mut ActionSetScene3D,
 	pi_export_base::export::await_last_frame(app);
     let length = length as usize;
 
-    let queue = app.world.get_resource::<PiRenderQueue>().unwrap().clone();
-    let queue = queue.0.clone();
+    // let queue = app.world.get_resource::<PiRenderQueue>().unwrap().clone();
+    // let queue = queue.0.clone();
     let key = KeyVertexBuffer::from(key.as_str());
     let key_u64 = key.asset_u64();
+    
+    let refs = app.world.get_resource_mut::<VertexBufferRefs>().unwrap();
+    refs.indices.insert(key, bytemuck::cast_slice::<u16, u8>(&data[0..length]).to_vec());
 
-    let mut resource = param.resource.get_mut(&mut app.world);
-    if let Some(buffer) = resource.vb_mgr.get(&key_u64) {
-        queue.write_buffer(buffer.buffer(), 0, bytemuck::cast_slice(data));
-    } else {
-        let data = bytemuck::cast_slice::<u16, u8>(&data[0..length]).to_vec();
-        ActionVertexBuffer::create_indices(&mut resource.vb_wait, key, data);
-    }
+    // let mut resource = param.resource.get_mut(&mut app.world);
+    // if let Some(buffer) = resource.vb_mgr.get(&key_u64) {
+    //     queue.write_buffer(buffer.buffer(), 0, bytemuck::cast_slice(data));
+    // } else {
+    //     let data = bytemuck::cast_slice::<u16, u8>(&data[0..length]).to_vec();
+    //     ActionVertexBuffer::create_indices(&mut resource.vb_wait, key, data);
+    // }
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
@@ -164,18 +171,21 @@ pub fn p3d_create_indices_buffer_u32(app: &mut Engine, param: &mut ActionSetScen
 	pi_export_base::export::await_last_frame(app);
     let length = length as usize;
 
-    let queue = app.world.get_resource::<PiRenderQueue>().unwrap().clone();
-    let queue = queue.0.clone();
+    // let queue = app.world.get_resource::<PiRenderQueue>().unwrap().clone();
+    // let queue = queue.0.clone();
     let key = KeyVertexBuffer::from(key.as_str());
     let key_u64 = key.asset_u64();
 
-    let mut resource = param.resource.get_mut(&mut app.world);
-    if let Some(buffer) = resource.vb_mgr.get(&key_u64) {
-        queue.write_buffer(buffer.buffer(), 0, bytemuck::cast_slice(data));
-    } else {
-        let data = bytemuck::cast_slice::<u32, u8>(&data[0..length]).to_vec();
-        ActionVertexBuffer::create_indices(&mut resource.vb_wait, key, data);
-    }
+    let refs = app.world.get_resource_mut::<VertexBufferRefs>().unwrap();
+    refs.indicesu32.insert(key, bytemuck::cast_slice::<u32, u8>(&data[0..length]).to_vec());
+
+    // let mut resource = param.resource.get_mut(&mut app.world);
+    // if let Some(buffer) = resource.vb_mgr.get(&key_u64) {
+    //     queue.write_buffer(buffer.buffer(), 0, bytemuck::cast_slice(data));
+    // } else {
+    //     let data = bytemuck::cast_slice::<u32, u8>(&data[0..length]).to_vec();
+    //     ActionVertexBuffer::create_indices(&mut resource.vb_wait, key, data);
+    // }
 }
 
 // #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
