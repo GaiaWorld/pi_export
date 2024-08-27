@@ -1,6 +1,6 @@
 
 
-use std::{cell::RefCell, mem::transmute, sync::{Arc, OnceLock}};
+use std::{cell::RefCell, mem::transmute, sync::{atomic::AtomicBool, Arc, OnceLock}};
 
 use pi_share::{Share, ShareCell};
 use pi_world::prelude::{App, WorldPluginExtent};
@@ -298,11 +298,15 @@ pub fn dump_graphviz(engine: &Engine) -> String  {
 // 	// bevy_mod_debugdump::schedule_graph_dot(&mut engine.0, bevy::prelude::Update, &Default::default())
 // }
 
-
+static IS_FIRST: AtomicBool = AtomicBool::new(true);
 // 帧推
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[cfg(feature = "pi_js_export")]
 pub fn fram_call(engine: &mut Engine, _cur_time: u32) {
+    use std::sync::atomic::Ordering;
+
+    use pi_bevy_render_plugin::PiRenderDevice;
+
 	#[cfg(feature = "trace")]
 	let _span = tracing::warn_span!("frame_call").entered();
 	// *engine.world.get_single_res_mut::<FrameState>().unwrap() = FrameState::Active;
@@ -314,8 +318,21 @@ pub fn fram_call(engine: &mut Engine, _cur_time: u32) {
 	{
 		engine.last_frame_awaiting = true;
 		let engine: &'static mut Engine = unsafe { transmute(engine) };
+
+		if IS_FIRST.load(Ordering::Relaxed){
+			// IS_FIRST.store(false, Ordering::Relaxed);
+			let device = engine.world.get_single_res_mut::<PiRenderDevice>().unwrap();
+			device.unmake_current();
+		}
+		
 		let sender = engine.sender.clone();
 		let _ = sender.send(Box::new(|| {
+
+			if IS_FIRST.load(Ordering::Relaxed){
+				IS_FIRST.store(false, Ordering::Relaxed);
+				let device = engine.world.get_single_res_mut::<PiRenderDevice>().unwrap();
+				device.make_current();
+			}
 			// bevy_ecs::system::CommandQueue::default().apply(&mut engine.world);
 			engine.run();
 			// *engine.world.get_single_res_mut::<FrameState>().unwrap() = FrameState::UnActive;
