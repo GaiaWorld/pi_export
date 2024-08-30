@@ -15,13 +15,7 @@ use js_proxy_gen_macro::pi_js_export;
 #[derive(Default)]
 pub struct CommandsExchangeD3 {
     pub(crate) scene_create: ActionListSceneCreate,
-    pub(crate) scene_time: ActionListSceneTime,
-    pub(crate) scene_fogparam: ActionListSceneFogParam,
-    pub(crate) scene_ambient: ActionListSceneAmbientColor,
-    pub(crate) scene_animeenable: ActionListSceneAnimationEnable,
-    pub(crate) scene_brdf: ActionListSceneBRDF,
-    pub(crate) scene_env: ActionListSceneEnvTexture,
-    pub(crate) scene_shadowmap: ActionListSceneShadowMap,
+    pub(crate) scene_options: ActionListSceneOption,
     pub(crate) scene_dispose: ActionListSceneDispose,
     pub(crate) scene_boundingbox: ActionListBoundingBoxDisplay,
     pub(crate) scene_collider: ActionListCollider,
@@ -126,13 +120,7 @@ impl CommandsExchangeD3 {
 impl CommandsExchangeD3 {
     pub(crate) fn capacity(&self, cmds: & pi_3d::ActionSets) -> usize {
         self.scene_create               .capacity() +
-        self.scene_time                 .capacity() +
-        self.scene_fogparam             .capacity() +
-        self.scene_ambient              .capacity() +
-        self.scene_animeenable          .capacity() +
-        self.scene_brdf                 .capacity() +
-        self.scene_env                  .capacity() +
-        self.scene_shadowmap            .capacity() +
+        self.scene_options              .capacity() +
         self.scene_dispose              .capacity() +
         self.scene_boundingbox          .capacity() +
         self.scene_collider             .capacity() +
@@ -201,13 +189,7 @@ impl CommandsExchangeD3 {
         self.sprite_create              .capacity() +
         self.sprite_modify              .capacity() +
         cmds.scene.create               .capacity() +
-        cmds.scene.time                 .capacity() +
-        cmds.scene.fogparam             .capacity() +
-        cmds.scene.ambientcolor         .capacity() +
-        cmds.scene.animeenable          .capacity() +
-        cmds.scene.brdf                 .capacity() +
-        cmds.scene.env                  .capacity() +
-        cmds.scene.shadowmap            .capacity() +
+        cmds.scene.options              .capacity() +
         cmds.scene_dispose              .capacity() +
         cmds.scene.boundingboxdisplay   .capacity() +
         cmds.scene.collider             .capacity() +
@@ -277,13 +259,7 @@ impl CommandsExchangeD3 {
     }
     pub(crate) fn exchange(&mut self, cmds: &mut pi_3d::ActionSets) {
         cmds.scene.create.push_some( self.scene_create.drain() );
-        cmds.scene.time.push_some( self.scene_time.drain() );
-        cmds.scene.fogparam.push_some( self.scene_fogparam.drain() );
-        cmds.scene.ambientcolor.push_some( self.scene_ambient.drain() );
-        cmds.scene.animeenable.push_some( self.scene_animeenable.drain() );
-        cmds.scene.brdf.push_some( self.scene_brdf.drain() );
-        cmds.scene.env.push_some( self.scene_env.drain() );
-        cmds.scene.shadowmap.push_some( self.scene_shadowmap.drain() );
+        cmds.scene.options.push_some( self.scene_options.drain() );
         cmds.scene_dispose.push_some( self.scene_dispose.drain() );
         cmds.scene.boundingboxdisplay.push_some( self.scene_boundingbox.drain() );
         cmds.scene.collider.push_some( self.scene_collider.drain() );
@@ -353,13 +329,7 @@ impl CommandsExchangeD3 {
         cmds.spritemodify.push_some( self.sprite_modify.drain() );
         
         // cmds.scene.create.exchange( self.scene_create.exchange(vec![]) );
-        // cmds.scene.time.exchange( self.scene_time.exchange(vec![]) );
-        // cmds.scene.fogparam.exchange( self.scene_fogparam.exchange(vec![]) );
-        // cmds.scene.ambientcolor.exchange( self.scene_ambient.exchange(vec![]) );
-        // cmds.scene.animeenable.exchange( self.scene_animeenable.exchange(vec![]) );
-        // cmds.scene.brdf.exchange( self.scene_brdf.exchange(vec![]) );
-        // cmds.scene.env.exchange( self.scene_env.exchange(vec![]) );
-        // cmds.scene.shadowmap.exchange( self.scene_shadowmap.exchange(vec![]) );
+        // cmds.scene.options.exchange( self.scene_options.exchange(vec![]) );
         // cmds.scene_dispose.exchange( self.scene_dispose.exchange(vec![]) );
         // cmds.scene.boundingboxdisplay.exchange( self.scene_boundingbox.exchange(vec![]) );
         // cmds.scene.collider.exchange( self.scene_collider.exchange(vec![]) );
