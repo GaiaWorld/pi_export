@@ -56,7 +56,6 @@ image = "0.24"
 polygon2 = "0.3"
 json ="0.12"
 pi_slotmap_tree ="0.3"
-pi_export_system = {path = "../system"}
 
 pi_flex_layout = "0.2"
 pi_spatial = "0.5"
