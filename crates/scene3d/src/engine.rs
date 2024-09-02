@@ -842,7 +842,7 @@ pub fn p3d_create_gltf_load(app: &mut Engine, param: &mut ActionSetScene3D, enti
 
     let entity: Entity = as_entity(entity);
 
-    let param = KeyGLTF { base_url: baseurl.deref().clone(), dyn_desc: pi_atom::Atom::from(dyndesc) };
+    let param = baseurl.deref().clone();
 
     resource.gltf2_loader.create_load(entity, param);
 }
@@ -854,7 +854,7 @@ pub fn p3d_query_gltf_load(app: &mut Engine, param: &mut ActionSetScene3D, succe
     let resource = param.resource.get_mut(&mut app.world);
 
     let max = success.len();
-    let mut item = resource.gltf2_loader.success.pop();
+    let mut item = resource.gltf2_loader.successquerys.pop();
     let mut idx = 0;
     while let Some(entity) = item {
         success[idx] = as_f64(&entity);
@@ -863,12 +863,12 @@ pub fn p3d_query_gltf_load(app: &mut Engine, param: &mut ActionSetScene3D, succe
         if idx >= max {
             break;
         }
-        item = resource.gltf2_loader.success.pop();
+        item = resource.gltf2_loader.successquerys.pop();
     }
     success[idx] = 0.;
     
-    let max = success.len();
-    let mut item = resource.gltf2_loader.fails.pop();
+    let max = failed.len();
+    let mut item = resource.gltf2_loader.failquerys.pop();
     let mut idx = 0;
     while let Some(entity) = item {
         failed[idx] = as_f64(&entity);
@@ -877,7 +877,7 @@ pub fn p3d_query_gltf_load(app: &mut Engine, param: &mut ActionSetScene3D, succe
         if idx >= max {
             break;
         }
-        item = resource.gltf2_loader.fails.pop();
+        item = resource.gltf2_loader.failquerys.pop();
     }
     failed[idx] = 0.;
 }
