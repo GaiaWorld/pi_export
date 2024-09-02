@@ -3,20 +3,22 @@ use pi_bevy_render_plugin::PiRenderWindow;
 use pi_bevy_render_plugin::PiScreenTexture;
 use pi_bevy_render_plugin::IS_RESUMED;
 // use pi_bevy_winit_window::update_window_handle;
+use crate::export::await_last_frame;
 pub use crate::export::Engine;
+pub use pi_winit::window::Window;
 use std::sync::atomic::Ordering;
 use std::sync::Arc;
-pub use pi_winit::window::Window;
-use crate::export::await_last_frame;
+use pi_bevy_render_plugin::PiRenderDevice;
 
 #[cfg(feature = "pi_js_export")]
 pub fn on_resumed(engine: &mut Engine, window: &Arc<Window>) {
-    use pi_bevy_winit_window::WindowWrapper;
 
     await_last_frame(engine);
     println!("----------on_resumed222222");
     // android 某些设备在某些情况下不会触发on_suspended再触发on_resumed
     let world = &mut engine.app.world;
+    // let device = engine.world.get_single_res_mut::<PiRenderDevice>().unwrap();
+    // device.0.make_current();
     world
         .get_single_res_mut::<PiScreenTexture>()
         .unwrap()
@@ -35,12 +37,19 @@ pub fn on_resumed(engine: &mut Engine, window: &Arc<Window>) {
 }
 
 #[cfg(feature = "pi_js_export")]
-pub fn on_suspended(engine: &mut Engine) {
-    await_last_frame(engine);
-    println!("----------on_suspended222222");
-    let world = &mut engine.app.world;
+pub fn on_suspended(engine: &mut Engine, version: String) {
 
-    world
+    if version.contains("Android 13"){
+        
+    }
+    await_last_frame(engine);
+    let device = engine.world.get_single_res_mut::<PiRenderDevice>().unwrap();
+    device.0.unmake_current();
+
+    println!("----------on_suspended222222: {}", version);
+    // let world = &mut engine.app.world;
+
+    engine.world
         .get_single_res_mut::<PiScreenTexture>()
         .unwrap()
         .0
