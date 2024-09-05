@@ -18,7 +18,7 @@ use pi_slotmap::Key;
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
-pub struct ImageRes(Handle<pi_render::renderer::texture::ImageTexture>);
+pub struct ImageRes(Handle<pi_render::renderer::texture::ResImageTexture>);
 
 use crate::{as_entity, as_f64};
 pub use crate::commands::CommandsExchangeD3;

@@ -5,7 +5,7 @@ use pi_bevy_render_plugin::{PiRenderDevice, PiRenderQueue};
 use pi_export_base::export::{DataTextureRecord, DataTextureRefs};
 use pi_hash::{XHashMap, XHashSet};
 use pi_scene_context::pass::{Resource, WorldResourceTemp};
-use pi_scene_shell::prelude::{ImageTexture, KeyImageTexture, Res, ResMut};
+use pi_scene_shell::prelude::{ResImageTexture, KeyImageTexture, Res, ResMut};
 pub use pi_export_base::{export::{Engine, Atom}, constants::*};
 // use pi_render::asset::TAssetKeyU64;
 
@@ -17,55 +17,9 @@ use wgpu::TextureFormat;
 use crate::constants::EngineConstants;
 pub use crate::engine::ActionSetScene3D;
 
-// #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
-// #[pi_js_export]
-// pub struct P3DImageTexture(Handle<ImageTexture>);
-
-// #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
-// #[pi_js_export]
-// pub fn p3d_texture_load(app: &mut Engine, param: &mut ActionSetScene3D, key: String, srgb: bool) {
-//     let mut cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
-//     let key = KeyImageTexture::File(key.clone(), srgb);
-//     let image_assets_mgr = &cmds.imgtex_asset;
-//     let device = &cmds.device;
-//     let queue = &cmds.queue;
-//     cmds.imgtex_loader.load_imgtex(&key, image_assets_mgr, queue, device);
-// }
-
-// #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
-// #[pi_js_export]
-// pub fn p3d_query_texture_success(app: &mut Engine, param: &mut ActionSetScene3D, key: String, srgb: bool) -> Option<P3DImageTexture> {
-//     let mut cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
-//     let key = KeyImageTexture::File(key.clone(), srgb);
-//     let image_assets_mgr = &cmds.imgtex_asset;
-//     match cmds.imgtex_loader.query_imgtex(&key, image_assets_mgr) {
-//         Ok(val) => Some(P3DImageTexture(val)),
-//         Err(failed) => {
-//             None
-//         },
-//     }
-// }
-
-// #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
-// #[pi_js_export]
-// pub fn p3d_query_texture_failed(app: &mut Engine, param: &mut ActionSetScene3D, key: String, srgb: bool) -> bool {
-//     let mut cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
-//     let key = KeyImageTexture::File(key.clone(), srgb);
-//     cmds.imgtex_loader.query_failed(&key)
-// }
-
-// #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
-// #[pi_js_export]
-// pub fn p3d_reset_texture_loader_failed(app: &mut Engine, param: &mut ActionSetScene3D) {
-//     let mut cmds: crate::engine::ActionSets = param.acts.get_mut(&mut app.world);
-//     let key = KeyImageTexture::File(key.clone(), srgb);
-//     cmds.imgtex_loader.reset_failed();
-// }
-
-
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
-pub struct DataTextureRes(Handle<ImageTexture>);
+pub struct DataTextureRes(Handle<ResImageTexture>);
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]

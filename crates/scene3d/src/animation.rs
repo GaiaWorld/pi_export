@@ -315,7 +315,7 @@ pub fn p3d_animation_group_weight(
 ) {
     let group = as_entity(group);
 
-    cmds.anime_weight.push(OpsAnimationWeight::ops(group, weight as f32));
+    cmds.anime_action.push(OpsAnimationGroupAction::weight(group, weight as f32));
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
@@ -433,16 +433,16 @@ pub fn p3d_animation_group_listen(
 
     match mode {
         EAnimationGroupListen::Start    => {
-            cmds.anime_listen.push(OpsAddAnimationListen::Start(group_key));
+            cmds.anime_action.push(OpsAnimationGroupAction::listen_start(group_key));
         },
         EAnimationGroupListen::End      => {
-            cmds.anime_listen.push(OpsAddAnimationListen::End(group_key));
+            cmds.anime_action.push(OpsAnimationGroupAction::listen_end(group_key));
         },
         EAnimationGroupListen::Loop     => {
-            cmds.anime_listen.push(OpsAddAnimationListen::Loop(group_key));
+            cmds.anime_action.push(OpsAnimationGroupAction::listen_loop(group_key));
         },
         EAnimationGroupListen::Frame    => {
-            cmds.anime_listen.push(OpsAddAnimationListen::End(group_key));
+            cmds.anime_action.push(OpsAnimationGroupAction::listen_frame(group_key));
         },
     }
 }
@@ -457,7 +457,7 @@ pub fn p3d_animation_group_add_frame_event(
 ) {
     let group = as_entity(group);
 
-    cmds.anime_frameevent.push(OpsAddAnimationFrameEvent::ops(group, percent as f32, data as AnimeFrameEventData));
+    cmds.anime_action.push(OpsAnimationGroupAction::frameevent(group, percent as f32, data as AnimeFrameEventData));
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]

@@ -433,7 +433,7 @@ pub struct DataTextureRefs {
 }
 #[derive(pi_scene_shell::prelude::Resource, Default)]
 pub struct DataTextureRecord {
-    pub record: XHashMap<pi_atom::Atom, pi_scene_shell::prelude::Handle<pi_scene_shell::prelude::ImageTexture>>,
+    pub record: XHashMap<pi_atom::Atom, pi_scene_shell::prelude::Handle<pi_scene_shell::prelude::ResImageTexture>>,
     pub creation: XHashMap<pi_atom::Atom, (u32, u32, u32, wgpu::TextureFormat, wgpu::TextureViewDimension, pi_scene_shell::prelude::KeyImageTexture)>,
 }
 
@@ -442,7 +442,7 @@ pub fn sys_update_data_texture(
     mut record: pi_scene_shell::prelude::ResMut<DataTextureRecord>,
     device: pi_scene_shell::prelude::Res<pi_scene_shell::prelude::PiRenderDevice>,
     queue: pi_scene_shell::prelude::Res<pi_scene_shell::prelude::PiRenderQueue>,
-    imgtex_asset: pi_scene_shell::prelude::Res<pi_scene_shell::prelude::ShareAssetMgr<pi_scene_shell::prelude::ImageTexture>>,
+    imgtex_asset: pi_scene_shell::prelude::Res<pi_scene_shell::prelude::ShareAssetMgr<pi_scene_shell::prelude::ResImageTexture>>,
 ) {
     refs.data.drain().for_each(|(key, data)| {
         if let Some(res) = record.record.get(&key) {
@@ -452,7 +452,7 @@ pub fn sys_update_data_texture(
                 res.update(&queue, &data, 0, 0, res.width(), res.height());
                 record.record.insert(key, res);
             } else {
-                let texture = pi_scene_shell::prelude::ImageTexture::create_data_texture(&device, &queue, &texkey, &data, width, height, format, dimension, size_per_pixel, true);
+                let texture = pi_scene_shell::prelude::ResImageTexture::create_data_texture(&device, &queue, &texkey, &data, width, height, format, dimension, size_per_pixel, true);
                 match imgtex_asset.insert(texkey, texture) {
                     Ok(data) => record.record.insert(key, data),
                     Err(_) => None,

@@ -25,6 +25,7 @@ pub fn p3d_particle_system(
     key: &Atom,
     color_attr_key: &Atom,
     tilloff_attr_key: &Atom,
+    update_buffer_interval_frame: Option<f64>,
 ) {
 	pi_export_base::export::await_last_frame(app);
     let scene = as_entity(scene);
@@ -38,7 +39,10 @@ pub fn p3d_particle_system(
             ParticleAttribute { vtype: EParticleAttributeType::Color, attr: color_attr_key.deref().clone() },
             ParticleAttribute { vtype: EParticleAttributeType::Tilloff, attr: tilloff_attr_key.deref().clone() },
         ];
-        cmds.parsys_create.push(OpsCPUParticleSystem::ops(scene, entity, trailmesh, trailgeo, calculator, attrs));
+        let update_buffer_interval_frame = if let Some(update_buffer_interval_frame) = update_buffer_interval_frame {
+            (update_buffer_interval_frame as u8)
+        } else { 0 };
+        cmds.parsys_create.push(OpsCPUParticleSystem::ops(scene, entity, trailmesh, trailgeo, calculator, attrs, update_buffer_interval_frame));
     }
 }
 
@@ -54,6 +58,7 @@ pub fn p3d_particle_system_with_gltf(
     index_calculator: f64,
     color_attr_key: &Atom,
     tilloff_attr_key: &Atom,
+    update_buffer_interval_frame: Option<f64>,
 ) {
     if let Some(calculator) = gltf_particle_calculator(gltf, index_calculator) {
         let scene = as_entity(scene);
@@ -65,7 +70,10 @@ pub fn p3d_particle_system_with_gltf(
             ParticleAttribute { vtype: EParticleAttributeType::Color, attr: color_attr_key.deref().clone() },
             ParticleAttribute { vtype: EParticleAttributeType::Tilloff, attr: tilloff_attr_key.deref().clone() },
         ];
-        cmds.parsys_create.push(OpsCPUParticleSystem::ops(scene, entity, trailmesh, trailgeo, calculator.clone(), attrs));
+        let update_buffer_interval_frame = if let Some(update_buffer_interval_frame) = update_buffer_interval_frame {
+            (update_buffer_interval_frame as u8)
+        } else { 0 };
+        cmds.parsys_create.push(OpsCPUParticleSystem::ops(scene, entity, trailmesh, trailgeo, calculator.clone(), attrs, update_buffer_interval_frame));
     }
 }
 
