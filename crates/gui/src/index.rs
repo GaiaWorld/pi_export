@@ -36,7 +36,7 @@ use pi_world::world::ComponentIndex;
 use serde::{Serialize, Deserialize};
 use js_proxy_gen_macro::pi_js_export;
 #[cfg(feature="record")]
-use pi_ui_render::system::cmd_play::{Records, CmdNodeCreate, PlayState, TraceOption };
+use pi_ui_render::system::base::node::cmd_play::{Records, CmdNodeCreate, PlayState, TraceOption };
 pub use pi_export_base::export::Atom as Atom1;
 use pi_ui_render::system::res_load::ResSuccess;
 // pub use pi_export_system::blob::Blob;
@@ -203,8 +203,8 @@ pub fn remove_node(gui: &mut Gui, node: f64) {
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
-pub fn insert_as_root(gui: &mut Gui, node: f64) {
-	let node = unsafe {transmute::<f64, Entity>(node)};
+pub fn insert_as_root(gui: &mut Gui, node_id: f64) {
+	let node = unsafe {transmute::<f64, Entity>(node_id)};
 	gui.commands.append(node, unsafe { transmute(EntityKey::null())});
 }
 
@@ -354,7 +354,7 @@ pub fn get_keyframes(engine: &mut Engine, name: &Atom1, scope_hash: u32) -> Stri
 #[pi_js_export]
 pub fn set_is_run(engine: &mut Engine, value: bool) {
 	// #[cfg(feature = "debug")]
-	engine.world.get_single_res_mut::<pi_ui_render::system::draw_obj::calc_text::IsRun>().unwrap().0 = value;
+	engine.world.get_single_res_mut::<pi_ui_render::resource::IsRun>().unwrap().0 = value;
 }
 
 // 每帧取record
@@ -399,7 +399,7 @@ pub fn get_record_len(engine: &mut Engine) -> u32 {
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn set_next_record(engine: &mut Engine, bin: &[u8]) {
-    // use pi_ui_render::system::cmd_play::PlayState;
+    // use pi_ui_render::system::base::node::cmd_play::PlayState;
 	#[cfg(feature="record")]
 	{
 		match postcard::from_bytes::<Records>(bin) {
@@ -1014,7 +1014,7 @@ fn flush_data(gui: &mut Gui, engine: &mut Engine) {
 	
 	#[cfg(feature="record")]
 	if let TraceOption::Record = gui.record_option {
-		if let Some(node_cmd) =  engine.world.get_single_res_mut::<pi_ui_render::system::cmd_play::CmdNodeCreate>() {
+		if let Some(node_cmd) =  engine.world.get_single_res_mut::<pi_ui_render::system::base::node::cmd_play::CmdNodeCreate>() {
 			std::mem::swap(&mut gui.node_cmd, &mut *node_cmd);
 		}
 	}

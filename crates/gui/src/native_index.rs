@@ -39,7 +39,7 @@ pub fn create_gui(
 
 	#[cfg(feature="record")]
 	{
-		let debug: pi_ui_render::system::cmd_play::TraceOption = unsafe { transmute(debug as u8) };
+		let debug: pi_ui_render::system::base::node::cmd_play::TraceOption = unsafe { transmute(debug as u8) };
 		engine.add_plugins(UiPlugin {cmd_trace: debug.clone(), font_type: FontType::Sdf2});
 		gui.record_option = debug;
 	}
