@@ -18,7 +18,7 @@ use pi_slotmap::Key;
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
-pub struct ImageRes(Handle<pi_render::renderer::texture::ImageTexture>);
+pub struct ImageRes(Handle<pi_render::renderer::texture::ResImageTexture>);
 
 use crate::{as_entity, as_f64};
 pub use crate::commands::CommandsExchangeD3;
@@ -174,8 +174,8 @@ pub fn _init_engine(app: &mut Engine) {
 #[derive(SystemParam)]
 pub struct GlobalState<'w> {
     pub resource: Res<'w, pi_3d::StateResource>,
-    pub performance: Res<'w, pi_scene_shell::prelude::Performance>,
-    pub psperformance: Res<'w, pi_particle_system::prelude::ParticleSystemPerformance>,
+    pub performance: ResMut<'w, pi_scene_shell::prelude::Performance>,
+    pub psperformance: ResMut<'w, pi_particle_system::prelude::ParticleSystemPerformance>,
     // pub statemesh: ResMut<'w, pi_scene_context::prelude::StateMesh>,
     pub statetransform: Res<'w, pi_scene_context::prelude::StateTransform>,
     pub statecamera: Res<'w, pi_scene_context::prelude::StateCamera>,
@@ -183,6 +183,7 @@ pub struct GlobalState<'w> {
     // pub statecamera: ResMut<'w, pi_scene_context::prelude::StateCamera>,
     // pub statematerial: ResMut<'w, pi_scene_context::prelude::StateMaterial>,
     pub statetrail: Res<'w, pi_trail_renderer::StateTrail>,
+    pub stateengine: ResMut<'w, pi_scene_shell::run_stage::EngineCustomPlugins>,
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
@@ -430,6 +431,26 @@ pub fn p3d_query_scene_state(app: &mut Engine, param: &mut ActionSetScene3D, ent
     //     false
     // }
     true
+}
+
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
+pub fn p3d_engine_state(app: &mut Engine, param: &mut ActionSetScene3D, active: bool) {
+	pi_export_base::export::await_last_frame(app);
+    
+    let mut cmds = param.state.get_mut(&mut app.world);
+    cmds.stateengine.active = active;
+    // log::error!("stateengine {:?}", cmds.stateengine.active);
+}
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
+pub fn p3d_engine_debug(app: &mut Engine, param: &mut ActionSetScene3D, debug: bool) {
+	pi_export_base::export::await_last_frame(app);
+    
+    let mut cmds = param.state.get_mut(&mut app.world);
+    cmds.performance.debug = debug;
+    cmds.psperformance.debug = debug;
+    // log::error!("stateengine {:?}", cmds.stateengine.active);
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
@@ -821,7 +842,7 @@ pub fn p3d_create_gltf_load(app: &mut Engine, param: &mut ActionSetScene3D, enti
 
     let entity: Entity = as_entity(entity);
 
-    let param = KeyGLTF { base_url: baseurl.deref().clone(), dyn_desc: pi_atom::Atom::from(dyndesc) };
+    let param = baseurl.deref().clone();
 
     resource.gltf2_loader.create_load(entity, param);
 }
@@ -833,7 +854,7 @@ pub fn p3d_query_gltf_load(app: &mut Engine, param: &mut ActionSetScene3D, succe
     let resource = param.resource.get_mut(&mut app.world);
 
     let max = success.len();
-    let mut item = resource.gltf2_loader.success.pop();
+    let mut item = resource.gltf2_loader.successquerys.pop();
     let mut idx = 0;
     while let Some(entity) = item {
         success[idx] = as_f64(&entity);
@@ -842,12 +863,12 @@ pub fn p3d_query_gltf_load(app: &mut Engine, param: &mut ActionSetScene3D, succe
         if idx >= max {
             break;
         }
-        item = resource.gltf2_loader.success.pop();
+        item = resource.gltf2_loader.successquerys.pop();
     }
     success[idx] = 0.;
     
-    let max = success.len();
-    let mut item = resource.gltf2_loader.fails.pop();
+    let max = failed.len();
+    let mut item = resource.gltf2_loader.failquerys.pop();
     let mut idx = 0;
     while let Some(entity) = item {
         failed[idx] = as_f64(&entity);
@@ -856,7 +877,7 @@ pub fn p3d_query_gltf_load(app: &mut Engine, param: &mut ActionSetScene3D, succe
         if idx >= max {
             break;
         }
-        item = resource.gltf2_loader.fails.pop();
+        item = resource.gltf2_loader.failquerys.pop();
     }
     failed[idx] = 0.;
 }

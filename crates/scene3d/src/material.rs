@@ -49,7 +49,7 @@ pub fn p3d_material_apply(cmds: &mut CommandsExchangeD3, mat: f64, mesh: f64, pa
 pub fn p3d_material_uniform_mat4(cmds: &mut CommandsExchangeD3, mat: f64,  key: &Atom, m11: f64, m12: f64, m13: f64, m14: f64, m21: f64, m22: f64, m23: f64, m24: f64, m31: f64, m32: f64, m33: f64, m34: f64, m41: f64, m42: f64, m43: f64, m44: f64) {
     let mat: Entity = as_entity(mat);
     let val = [m11 as f32, m12 as f32, m13 as f32, m14 as f32, m21 as f32, m22 as f32, m23 as f32, m24 as f32, m31 as f32, m32 as f32, m33 as f32, m34 as f32, m41 as f32, m42 as f32, m43 as f32, m44 as f32];
-    cmds.material_mat4.push( OpsUniformMat4::ops(mat, key.deref().clone(), val) );
+    cmds.material_valb.push( OpsUniformValB::mat4(mat, key.deref().clone(), val) );
 }
 // #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 // #[pi_js_export]
@@ -61,17 +61,17 @@ pub fn p3d_material_uniform_mat4(cmds: &mut CommandsExchangeD3, mat: f64,  key: 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_material_uniform_vec2(cmds: &mut CommandsExchangeD3, mat: f64,  key: &Atom, x: f64, y: f64) {
-    let mat: Entity = as_entity(mat);    cmds.material_vec2.push( OpsUniformVec2::ops(mat, key.deref().clone(), x as f32, y as f32) );
+    let mat: Entity = as_entity(mat);    cmds.material_val.push( OpsUniformVal::vec2(mat, key.deref().clone(), x as f32, y as f32) );
 }
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_material_uniform_vec4(cmds: &mut CommandsExchangeD3, mat: f64,  key: &Atom, x: f64, y: f64, z: f64, w: f64) {
-    let mat: Entity = as_entity(mat);    cmds.material_vec4.push( OpsUniformVec4::ops(mat, key.deref().clone(), x as f32, y as f32, z as f32, w as f32) );
+    let mat: Entity = as_entity(mat);    cmds.material_val.push( OpsUniformVal::vec4(mat, key.deref().clone(), x as f32, y as f32, z as f32, w as f32) );
 }
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_material_uniform_float(cmds: &mut CommandsExchangeD3, mat: f64,  key: &Atom, val: f64) {
-    let mat: Entity = as_entity(mat);    cmds.material_float.push( OpsUniformFloat::ops(mat, key.deref().clone(), val as f32) );
+    let mat: Entity = as_entity(mat);    cmds.material_val.push( OpsUniformVal::float(mat, key.deref().clone(), val as f32) );
 }
 // #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 // #[pi_js_export]
@@ -82,7 +82,7 @@ pub fn p3d_material_uniform_float(cmds: &mut CommandsExchangeD3, mat: f64,  key:
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_material_uniform_uint(cmds: &mut CommandsExchangeD3, mat: f64,  key: &Atom, val: f64) {
-    let mat: Entity = as_entity(mat);    cmds.material_uint.push( OpsUniformUint::ops(mat, key.deref().clone(), val as u32) );
+    let mat: Entity = as_entity(mat);    cmds.material_val.push( OpsUniformVal::uint(mat, key.deref().clone(), val as u32) );
 }
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
@@ -111,8 +111,8 @@ pub fn p3d_material_uniform_tex(
     let compare = if let Some(compare) = compare { Some(ContextConstants::compare_function(compare).val2()) } else { None };
     let anisotropy_clamp = EngineConstants::anisotropy_clamp(anisotropy_clamp);
     let border_color = EngineConstants::border_color(border_color);
-    let mat: Entity = as_entity(mat);    cmds.material_texture.push(
-        OpsUniformTexture::ops(
+    let mat: Entity = as_entity(mat);    cmds.material_valb.push(
+        OpsUniformValB::texture(
             mat,
             UniformTextureWithSamplerParam {
                 slotname: key.deref().clone(),
@@ -159,7 +159,7 @@ pub fn p3d_material_uniform_tex_from_render_target(
     // let anisotropy_clamp = EngineConstants::anisotropy_clamp(anisotropy_clamp);
     // let border_color = EngineConstants::border_color(border_color);
     let mat: Entity = as_entity(mat);
-    let key = unsafe { transmute(url) };    cmds.material_texturefromtarget.push(OpsUniformTextureFromRenderTarget::ops(mat, texparam, key, key_tilloff.deref().clone()));
+    let key = unsafe { transmute(url) };    cmds.material_valb.push(OpsUniformValB::texture_from_target(mat, texparam, key, key_tilloff.deref().clone()));
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
@@ -174,5 +174,5 @@ pub fn p3d_uniform_target_animation(
     let target = as_entity(mat);
     let group = as_entity(group);
     let curve: u64 = unsafe { transmute(curve_key) };
-    cmds.uniform_targetanime.push(OpsTargetAnimationUniform::ops(target, key.deref().clone(), group, curve));
+    cmds.material_valb.push(OpsUniformValB::targetanim(target, key.deref().clone(), group, curve));
 }

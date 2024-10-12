@@ -13,7 +13,7 @@ use pi_ui_render::components::user::ClassName;
 #[cfg(debug_assertions)]
 use pi_ui_render::resource::DebugEntity;
 pub use pi_export_base::export::Engine;
-pub use pi_export_system::blob::Blob;
+// pub use pi_export_system::blob::Blob;
 use pi_null::Null;
 use pi_ui_render::system::system_set::UiSchedule;
 use pi_ui_render::{
@@ -502,8 +502,8 @@ pub fn add_sdf_font(gui: &mut Gui, bin: &[u8]) {
 // 添加sdf2字体
 #[cfg(not(target_arch="wasm32"))]
 #[pi_js_export]
-pub fn add_sdf2_font(gui: &mut Gui, font_name: &Atom1, blob: &Blob) {
-	gui.commands.add_sdf2_font((**font_name).clone(), blob.0.clone());
+pub fn add_sdf2_font(gui: &mut Gui, font_name: &Atom1, blob: &[u8]) {
+	gui.commands.add_sdf2_font((**font_name).clone(), Share::new(blob.to_vec()));
 	// font_sheet = 
 	// let mut v = Vec::new();
 	// for i in buffer.iter() {

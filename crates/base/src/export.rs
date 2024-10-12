@@ -1,6 +1,6 @@
 
 
-use std::{cell::RefCell, mem::transmute, sync::{Arc, OnceLock}};
+use std::{cell::RefCell, mem::transmute, sync::{atomic::AtomicBool, Arc, OnceLock}};
 
 use pi_share::{Share, ShareCell};
 use pi_world::prelude::{App, WorldPluginExtent};
@@ -8,7 +8,7 @@ use derive_deref_rs::Deref;
 use pi_bevy_asset::{PiAssetPlugin, AssetConfig, AssetDesc};
 use pi_bevy_post_process::PiPostProcessPlugin;
 use pi_hash::XHashMap;
-use pi_render::{rhi::{asset::{RenderRes, TextureRes}, bind_group::BindGroup, pipeline::RenderPipeline}, renderer::sampler::SamplerRes};
+use pi_render::{asset::TAssetKeyU64, renderer::sampler::SamplerRes, rhi::{asset::{RenderRes, TextureRes}, bind_group::BindGroup, pipeline::RenderPipeline}};
 use pi_bevy_render_plugin::{FrameState, PiRenderPlugin};
 use pi_window_renderer::PluginWindowRender;
 pub use pi_export_assets_mgr::exports::ResAllocator;
@@ -298,11 +298,15 @@ pub fn dump_graphviz(engine: &Engine) -> String  {
 // 	// bevy_mod_debugdump::schedule_graph_dot(&mut engine.0, bevy::prelude::Update, &Default::default())
 // }
 
-
+static IS_FIRST: AtomicBool = AtomicBool::new(true);
 // 帧推
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[cfg(feature = "pi_js_export")]
 pub fn fram_call(engine: &mut Engine, _cur_time: u32) {
+    use std::sync::atomic::Ordering;
+
+    use pi_bevy_render_plugin::PiRenderDevice;
+
 	#[cfg(feature = "trace")]
 	let _span = tracing::warn_span!("frame_call").entered();
 	// *engine.world.get_single_res_mut::<FrameState>().unwrap() = FrameState::Active;
@@ -314,8 +318,21 @@ pub fn fram_call(engine: &mut Engine, _cur_time: u32) {
 	{
 		engine.last_frame_awaiting = true;
 		let engine: &'static mut Engine = unsafe { transmute(engine) };
+
+		if IS_FIRST.load(Ordering::Relaxed){
+			// IS_FIRST.store(false, Ordering::Relaxed);
+			let device = engine.world.get_single_res_mut::<PiRenderDevice>().unwrap();
+			device.unmake_current();
+		}
+		
 		let sender = engine.sender.clone();
 		let _ = sender.send(Box::new(|| {
+
+			if IS_FIRST.load(Ordering::Relaxed){
+				IS_FIRST.store(false, Ordering::Relaxed);
+				let device = engine.world.get_single_res_mut::<PiRenderDevice>().unwrap();
+				device.make_current();
+			}
 			// bevy_ecs::system::CommandQueue::default().apply(&mut engine.world);
 			engine.run();
 			// *engine.world.get_single_res_mut::<FrameState>().unwrap() = FrameState::UnActive;
@@ -410,13 +427,89 @@ pub fn entity_from_number(index: u32, version: u32) -> f64 {
 }
 
 
+#[derive(pi_scene_shell::prelude::Resource, Default)]
+pub struct DataTextureRefs {
+    pub data: XHashMap<pi_atom::Atom, Vec<u8>>,
+}
+#[derive(pi_scene_shell::prelude::Resource, Default)]
+pub struct DataTextureRecord {
+    pub record: XHashMap<pi_atom::Atom, pi_scene_shell::prelude::Handle<pi_scene_shell::prelude::ResImageTexture>>,
+    pub creation: XHashMap<pi_atom::Atom, (u32, u32, u32, wgpu::TextureFormat, wgpu::TextureViewDimension, pi_scene_shell::prelude::KeyImageTexture)>,
+}
+
+pub fn sys_update_data_texture(
+    mut refs: pi_scene_shell::prelude::ResMut<DataTextureRefs>,
+    mut record: pi_scene_shell::prelude::ResMut<DataTextureRecord>,
+    device: pi_scene_shell::prelude::Res<pi_scene_shell::prelude::PiRenderDevice>,
+    queue: pi_scene_shell::prelude::Res<pi_scene_shell::prelude::PiRenderQueue>,
+    imgtex_asset: pi_scene_shell::prelude::Res<pi_scene_shell::prelude::ShareAssetMgr<pi_scene_shell::prelude::ResImageTexture>>,
+) {
+    refs.data.drain().for_each(|(key, data)| {
+        if let Some(res) = record.record.get(&key) {
+            res.update(&queue, &data, 0, 0, res.width(), res.height());
+        } else if let Some((width, height, size_per_pixel, format, dimension, texkey)) = record.creation.remove(&key) {
+            if let Some(res) = imgtex_asset.get(&texkey) {
+                res.update(&queue, &data, 0, 0, res.width(), res.height());
+                record.record.insert(key, res);
+            } else {
+                let texture = pi_scene_shell::prelude::ResImageTexture::create_data_texture(&device, &queue, &texkey, &data, width, height, format, dimension, size_per_pixel, true);
+                match imgtex_asset.insert(texkey, texture) {
+                    Ok(data) => record.record.insert(key, data),
+                    Err(_) => None,
+                };
+            }
+        }
+    });
+}
+
+#[derive(pi_scene_shell::prelude::Resource, Default)]
+pub struct VertexBufferRefs {
+	pub vertexs: XHashMap<pi_scene_shell::prelude::KeyVertexBuffer, Vec<u8>>,
+	pub indices: XHashMap<pi_scene_shell::prelude::KeyVertexBuffer, Vec<u8>>,
+	pub indicesu32: XHashMap<pi_scene_shell::prelude::KeyVertexBuffer, Vec<u8>>,
+}
+pub fn sys_vertex_buffer(
+	mut refs: pi_scene_shell::prelude::ResMut<VertexBufferRefs>,
+    device: pi_scene_shell::prelude::Res<pi_scene_shell::prelude::PiRenderDevice>,
+    queue: pi_scene_shell::prelude::Res<pi_scene_shell::prelude::PiRenderQueue>,
+    vb_mgr: pi_scene_shell::prelude::Res<pi_scene_shell::prelude::ShareAssetMgr<pi_scene_shell::prelude::EVertexBufferRange>>,
+    mut vb_wait: pi_scene_shell::prelude::ResMut<pi_scene_shell::prelude::VertexBufferDataMap3D>,
+) {
+	
+	refs.vertexs.drain().for_each(|(key, data)| {
+		let key_u64 = key.asset_u64();
+		if let Some(buffer) = vb_mgr.get(&key_u64) {
+			queue.write_buffer(buffer.buffer(), 0, &data);
+		} else {
+			pi_scene_context::prelude::ActionVertexBuffer::create(&mut vb_wait, key, data);
+		}
+	});
+	refs.indices.drain().for_each(|(key, data)| {
+		let key_u64 = key.asset_u64();
+		if let Some(buffer) = vb_mgr.get(&key_u64) {
+			queue.write_buffer(buffer.buffer(), 0, &data);
+		} else {
+			pi_scene_context::prelude::ActionVertexBuffer::create_indices(&mut vb_wait, key, data);
+		}
+	});
+	refs.indicesu32.drain().for_each(|(key, data)| {
+		let key_u64 = key.asset_u64();
+		if let Some(buffer) = vb_mgr.get(&key_u64) {
+			queue.write_buffer(buffer.buffer(), 0, &data);
+		} else {
+			pi_scene_context::prelude::ActionVertexBuffer::create_indices(&mut vb_wait, key, data);
+		}
+	});
+    
+}
+
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[cfg(feature = "pi_js_export")]
 pub fn init_engine_3d(app: &mut Engine, particlesystem: bool, skeleton: bool, shadowmapping: bool, lighting: bool, spine: bool) {
 	use pi_scene_shell::prelude::WorldResourceTemp;
 	use pi_scene_shell::prelude::AppResourceTemp;
 	use pi_scene_shell::run_stage::EngineCustomPlugins;
-use pi_world::prelude::IntoSystemConfigs;
+	use pi_world::prelude::IntoSystemConfigs;
 
     if app.world.get_resource::<pi_scene_shell::prelude::AssetMgrConfigs>().is_none() {
         app.insert_resource(pi_scene_shell::prelude::AssetMgrConfigs::default());
@@ -441,6 +534,17 @@ use pi_world::prelude::IntoSystemConfigs;
         .add_plugins(pi_trail_renderer::PluginTrail)
         ;
 
+	app.insert_resource(DataTextureRefs::default());
+	app.insert_resource(DataTextureRecord::default());
+	app.add_systems(
+        pi_world::schedule::Update,
+        sys_update_data_texture.in_set(pi_scene_shell::prelude::ERunStageChap::New)
+	);
+	app.insert_resource(VertexBufferRefs::default());
+	app.add_systems(
+        pi_world::schedule::Update,
+        sys_vertex_buffer.in_set(pi_scene_shell::prelude::ERunStageChap::New)
+	);
     app.add_systems(
         pi_world::schedule::Update,
         pi_scene_context::prelude::sys_state_transform.in_set(pi_scene_shell::prelude::ERunStageChap::StateCheck)
