@@ -94,7 +94,7 @@ impl GeometryMeta {
     #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
     #[pi_js_export]
     pub fn create_quad() -> Self {
-        Self(QuadBuilder::attrs_meta(), Some(QuadBuilder::indices_meta()))
+        Self(QuadBuilder::attrs_meta(), None)
     }
 }
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]

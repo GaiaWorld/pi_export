@@ -464,7 +464,7 @@ pub fn p3d_query_performance_state(app: &mut Engine, param: &mut ActionSetScene3
     result[1] = cmds.performance.animationgroup as f32;
     result[2] = cmds.psperformance.total() as f32;
     result[3] = cmds.performance.worldmatrix as f32;
-    result[4] = cmds.statecamera.culling_time as f32 + cmds.statelight.culling_time as f32;
+    result[4] = cmds.performance.culling as f32;
     result[5] = cmds.performance.gltfanaly as f32;
     result[6] = cmds.performance.drawobjs as f32;
     result[7] = cmds.performance.uniformupdate as f32;
@@ -505,7 +505,7 @@ pub fn p3d_query_resource_state(app: &mut Engine, param: &mut ActionSetScene3D, 
     result[21] = cmds.resource.count_passmat as f32;
     result[22] = cmds.resource.count_passtexs as f32;
     result[23] = cmds.resource.count_vertex as f32;
-    result[24] = (app.world.mem_size() / 1024) as f32;
+    // result[24] = (app.world.mem_size() / 1024) as f32;
     
     result[25] = cmds.resource.capcity_inscommon as f32;
     result[26] = cmds.resource.capcity_combindata as f32;

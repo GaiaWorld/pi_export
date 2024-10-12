@@ -146,6 +146,14 @@ pub fn p3d_local_euler_arr(cmds: &mut CommandsExchangeD3, data: &[f64], len: f64
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
+pub fn p3d_local_quaternion(cmds: &mut CommandsExchangeD3, node: f64, x: f64, y: f64, z: f64, w: f64) {
+    let node: Entity = as_entity(node);
+
+    cmds.transform_localrotq.push(OpsTransformNodeLocalRotationQuaternion::ops(node, x as f32, y as f32, z as f32, w as f32));
+}
+
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
 pub fn p3d_local_quaternion_arr(cmds: &mut CommandsExchangeD3, data: &[f64], len: f64) {
     // let node: Entity = as_entity(node);
     

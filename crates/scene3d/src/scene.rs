@@ -179,14 +179,18 @@ pub fn p3d_collider(cmds: &mut CommandsExchangeD3, node: f64,
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
-pub fn p3d_create_pickingray(app: &mut Engine, param: &mut ActionSetScene3D, camera: f64, x: f64, y: f64, result: &mut [f32]) -> bool {
+pub fn p3d_create_pickingray(app: &mut Engine, param: &mut ActionSetScene3D, camera: f64, projectx: f64, projecty: f64, result: &mut [f32]) -> bool {
 	pi_export_base::export::await_last_frame(app);
     let camera: Entity = as_entity(camera);
 
     if let Ok(tree) = param.vp_matrix.get(&app.world, camera) {
-        let (origin, direction) = tree.ray(x as f32, y as f32);
-        result[0] = origin.x; result[1] = origin.y; result[2] = origin.z;
-        result[3] = direction.x; result[4] = direction.y; result[5] = direction.z;
+        let ray = tree.ray(projectx as f32, projecty as f32);
+        result[0] = ray.origin.0;
+        result[1] = ray.origin.1;
+        result[2] = ray.origin.2;
+        result[3] = ray.direction.0;
+        result[4] = ray.direction.1;
+        result[5] = ray.direction.2;
         true
     } else {
         false
@@ -195,24 +199,38 @@ pub fn p3d_create_pickingray(app: &mut Engine, param: &mut ActionSetScene3D, cam
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
-pub fn p3d_scene_pick(app: &mut Engine, param: &mut ActionSetScene3D, scene: f64, ray: &[f32], not_ray_bounding: bool) -> Option<f64> {
+pub fn p3d_scene_pick(app: &mut Engine, param: &mut ActionSetScene3D, scene: f64, viewer: f64, projectx: f64, projecty: f64, not_ray_bounding: bool, result: &mut [f64]) -> bool {
 	pi_export_base::export::await_last_frame(app);
     let scene: Entity = as_entity(scene);
+    let camera: Entity = as_entity(viewer);
 
-    if let Ok((collider, bounding)) = param.collider.get(&app.world, scene) {
-        let origin = Vector3::new(ray[0], ray[1], ray[2]);
-        let direction = Vector3::new(ray[3], ray[4], ray[5]);
-        let mut result = None;
-        collider.ray_test(origin.clone(), direction.clone(), &mut result);
-        if result.is_none() && not_ray_bounding == false {
-            bounding.ray_test(origin.clone(), direction.clone(), &mut result);
-        }
-        if let Some(entity) = result {
-            Some(as_f64(&entity))
+    param.collider.align(&app.world);
+    param.vp_matrix.align(&app.world);
+    if let (Ok((collider, bounding)), Ok(vp)) = (param.collider.get(&app.world, scene), param.vp_matrix.get(&app.world, camera)) {
+        let ray = vp.ray(projectx as f32, projecty as f32);
+        let picked = ray_cast_scene((collider, bounding), &ray, !not_ray_bounding);
+        if let Some(picked) = picked {
+            result[ 0] = as_f64(&picked.target);
+            result[ 1] = if picked.bybounding { 1.0 } else { -1.0 };
+            result[ 2] = picked.min.0 as f64;
+            result[ 3] = picked.min.1 as f64;
+            result[ 4] = picked.min.2 as f64;
+            result[ 5] = picked.max.0 as f64;
+            result[ 6] = picked.max.1 as f64;
+            result[ 7] = picked.max.2 as f64;
+            result[ 8] = if picked.pickdetail.is_some() { 1.0 } else { -1.0 };
+            if let Some(pickdetail) = picked.pickdetail {
+                result[ 9] = pickdetail.0 as f64;
+                result[10] = pickdetail.1 as f64;
+                result[11] = pickdetail.2 as f64;
+            }
+            true
         } else {
-            None
+            log::error!("bbb {:?}", collider.size());
+            false
         }
     } else {
-        None
+        log::error!("aaa");
+        false
     }
 }

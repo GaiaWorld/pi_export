@@ -33,7 +33,7 @@ log						= "0.4"
 pi_render               = { version = "0.1", registry = "yn", features=["webgl"] }
 pi_world = "0.1"
 
-pi_scene_math           = { version = "0.0.3", registry = "yn" }
+pi_scene_math           = { version = "0.0.*", registry = "yn" }
 pi_animation            = { version = "0.1", registry = "yn" }
 pi_curves               = { version = "0.1", registry = "yn" }
 
