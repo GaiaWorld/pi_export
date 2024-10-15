@@ -59,7 +59,7 @@ debug = false
 # wasm-bindgen = { path = "../wasm-bindgen" }
 # pi_polygon = { path = "../pi_polygon" }
 
-
+# 使用最新的，不然有bug
 pi_world = { path = "../pi_world" }
 pi_world_macros = { path = "../pi_world/macros" }
 # once_cell = { path = "../once_cell" }
@@ -79,7 +79,7 @@ pi_world_macros = { path = "../pi_world/macros" }
 pi_sdf = { path = "../pi_sdf" }
 # pi_winit = { path = "../winit", package = "winit" }
 pi_hal = { path = "../pi_hal" }
-# pi_wgpu = { path = "../pi_wgpu" }
+pi_wgpu = { path = "../pi_wgpu" }
 # pi_glow = {path = "../pi_glow"}
 # pi_egl = {path = "../pi_egl"}
 # winit = {path = "../winit"}
@@ -105,7 +105,7 @@ pi_window_renderer = { path="../pi_bevy/crates/window_renderer" }
 pi_ui_render = { path = "../pi_ui_render" }
 # pi_style = { path = "../pi_style" }
 
-pi_postprocess ={path="../pi_postprocess"}
+pi_postprocess ={path="../pi_post_process"}
 
 pi_3d               = { path = "../pi_3d" }
 pi_node_materials   = { path = "../pi_3d/crates/node_materials" }
