@@ -4502,6 +4502,7 @@ pub mod style_macro {
                         pi_ui_render::components::user::Canvas {
                             id: brush,
                             by_draw_list: by_draw_list.unwrap_or(false),
+                            pre_graph_id: Default::default(),
                         },
                         node,
                     ),
@@ -4520,6 +4521,7 @@ pub mod style_macro {
                         pi_ui_render::components::user::Canvas {
                             id: brush,
                             by_draw_list: by_draw_list.unwrap_or(false),
+                            pre_graph_id: Default::default(),
                         },
                         node,
                     ),
@@ -4667,7 +4669,7 @@ pub mod style_macro {
             gui.commands
                 .set_render_dirty(
                     node,
-                    pi_ui_render::components::user::RenderDirty(true),
+                    pi_ui_render::resource::RenderDirty(true, true, true),
                 );
         }
     }
@@ -4679,7 +4681,7 @@ pub mod style_macro {
             gui.commands
                 .set_render_dirty(
                     node,
-                    pi_ui_render::components::user::RenderDirty(true),
+                    pi_ui_render::resource::RenderDirty(true, true, true),
                 );
         }
     }

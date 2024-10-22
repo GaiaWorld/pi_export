@@ -992,7 +992,7 @@ other_out_export!(
 		let node = unsafe { transmute::<f64, Entity>(node) };
 		let brush = unsafe { transmute::<f64, Entity>(brush) };
 		gui.commands.push_cmd(ComponentCmd(
-			pi_ui_render::components::user::Canvas{ id: brush, by_draw_list: by_draw_list.unwrap_or(false) },
+			pi_ui_render::components::user::Canvas{ id: brush, by_draw_list: by_draw_list.unwrap_or(false), pre_graph_id: Default::default() },
 			node,
 		));
 	},;;
@@ -1068,7 +1068,7 @@ other_out_export!(
     gui,
     {
 		let node: Entity = unsafe { transmute::<f64, Entity>(root) };
-    	gui.commands.set_render_dirty(node, pi_ui_render::components::user::RenderDirty(true));
+    	gui.commands.set_render_dirty(node, pi_ui_render::resource::RenderDirty(true, true, true));
 	},;;
 	root: f64,
 );
