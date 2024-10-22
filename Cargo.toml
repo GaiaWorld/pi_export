@@ -56,12 +56,11 @@ debug = false
 # pi_graph = { path = "../pi_graph" }
 # pi_async_graph = { path = "../pi_async_graph" }
 # pi_spatial ={path="../pi_spatial"}
-# wasm-bindgen = { path = "../wasm-bindgen" }
+wasm-bindgen = { path = "../wasm-bindgen" }
 # pi_polygon = { path = "../pi_polygon" }
 
-# 使用最新的，不然有bug
-pi_world = { path = "../pi_world" }
-pi_world_macros = { path = "../pi_world/macros" }
+# pi_world = { path = "../pi_world" }
+# pi_world_macros = { path = "../pi_world/macros" }
 # once_cell = { path = "../once_cell" }
 
 # bevy_app = { path = "../bevy/crates/bevy_app" }
