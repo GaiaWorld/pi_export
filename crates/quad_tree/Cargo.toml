@@ -10,16 +10,15 @@ pi_js_export = []
 
 
 [dependencies]
-# wee_alloc = { version = "0.4", optional = true }
 nalgebra = "0.32.0"
 parry2d = "0.13"
-num-traits = "0.2.14"
-pi_spatial = "0.5"
 bytemuck = { version = "1.4", features = ["derive"] }
+pi_spatial = "0.5"
 pi_slotmap = "0.1"
 # a星相关模块
 pi_path_finding = "0.6"
 pi_orca = "0.4"
+js_proxy_gen_macro = { registry = "yn", version = "0.2" }
 
 [target.'cfg(target_arch = "wasm32")'.dependencies]
 wasm-bindgen = { version = "0.2", features = ["serde-serialize"]}

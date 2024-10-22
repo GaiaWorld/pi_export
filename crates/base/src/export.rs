@@ -58,12 +58,21 @@ impl Engine {
 		log::warn!("create_engine=================================");
 		// let last_frame_awaiting = Share::new(std::sync::atomic::AtomicBool::new(false));
 		let _ = std::thread::Builder::new().name("ecs".to_string()).spawn(move || {
+			let mut begin = std::time::Instant::now();
+			let mut fps = 0;
 			loop {
 				let task: Box<dyn FnOnce() -> () + Send> = receiver.recv().unwrap();
+				
 				task();
 				let _ = back_sender.send(());
 				if let Some(cb) = unsafe { FRAME_END_CB.get_mut() } {
 					cb();
+				}
+				fps += 1;
+				if begin.elapsed().as_millis() >= 1000{
+					println!("fps: {}", fps);
+					fps = 0;
+					begin = std::time::Instant::now();
 				}
 			}
 		});
