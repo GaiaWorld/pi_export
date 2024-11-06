@@ -2,6 +2,7 @@
 
 use std::{ops::Deref, mem::transmute};
 
+use pi_scene_context::geometry::instance::EInstanceSortMode;
 use pi_scene_shell::prelude::*;
 use pi_export_base::constants::ContextConstants;
 pub use pi_export_base::export::{Engine, Atom};
@@ -392,6 +393,13 @@ pub fn p3d_mesh_render_alignment(
     cmds: &mut CommandsExchangeD3, mesh: f64, val: f64) {
     let mesh: Entity = as_entity(mesh);
     cmds.mesh_state.push(OpsMeshStateModify::ops(mesh, EMeshStateModify::Alignment(EngineConstants::render_alignment(val)) ));
+}
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
+pub fn p3d_mesh_instance_sort_mode(
+    cmds: &mut CommandsExchangeD3, mesh: f64, val: f64) {
+    let mesh: Entity = as_entity(mesh);
+    cmds.mesh_state.push(OpsMeshStateModify::ops(mesh, EMeshStateModify::InstanceSortMode(EInstanceSortMode::from_u8(val as u8)) ));
 }
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
