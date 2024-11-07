@@ -46,7 +46,7 @@ tracing-subscriber = "0.3"
 wgpu = {version = "0.1", registry = "yn", package="pi_wgpu"}
 tracing = "0.1"
 pi_winit = {version = "0.27", registry="yn", package="winit"}
-
+backtrace = "0.3"
 pi_3d 		            = { version = "1.0.0", registry = "yn" }
 pi_scene_shell 		    = { version = "1.0.0", registry = "yn" }
 pi_node_materials 		= { version = "1.0.0", registry = "yn" }
