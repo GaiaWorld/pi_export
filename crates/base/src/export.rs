@@ -341,10 +341,11 @@ pub fn dump_graphviz(engine: &Engine) -> String  {
 // }
 
 static IS_FIRST: AtomicBool = AtomicBool::new(true);
+
 // 帧推
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[cfg(feature = "pi_js_export")]
-pub fn fram_call(engine: &mut Engine, _cur_time: u32) {
+pub fn fram_call(engine: &mut Engine, reset_state: bool) {
     use std::sync::atomic::Ordering;
 
     use pi_bevy_render_plugin::PiRenderDevice;
@@ -368,15 +369,25 @@ pub fn fram_call(engine: &mut Engine, _cur_time: u32) {
 		}
 		
 		let sender = engine.sender.clone();
-		let _ = sender.send(Box::new(|| {
+		let _ = sender.send(Box::new(move || {
 
+			let device = engine.world.get_single_res_mut::<PiRenderDevice>().unwrap();
 			if IS_FIRST.load(Ordering::Relaxed){
 				IS_FIRST.store(false, Ordering::Relaxed);
-				let device = engine.world.get_single_res_mut::<PiRenderDevice>().unwrap();
 				device.make_current();
 			}
+
+			if reset_state {
+				device.reset_state();
+			}
+			
 			// bevy_ecs::system::CommandQueue::default().apply(&mut engine.world);
 			engine.run();
+
+			if reset_state {
+				let device = engine.world.get_single_res_mut::<PiRenderDevice>().unwrap();
+				device.reset_state();
+			}
 			// *engine.world.get_single_res_mut::<FrameState>().unwrap() = FrameState::UnActive;
 			// log::warn!("fram_call end=====");
 		}));
@@ -384,8 +395,19 @@ pub fn fram_call(engine: &mut Engine, _cur_time: u32) {
 	
 	#[cfg(target_arch="wasm32")]
 	{
+		if reset_state {
+			let device = engine.world.get_single_res_mut::<PiRenderDevice>().unwrap();
+			// log::warn!("reset_state==================");
+			device.reset_state();
+		}
 		// bevy_ecs::system::CommandQueue::default().apply(&mut engine.world);
 		engine.run();
+
+		if reset_state {
+			let device = engine.world.get_single_res_mut::<PiRenderDevice>().unwrap();
+			// log::warn!("reset_state==================");
+			device.reset_state();
+		}
 		// *engine.world.get_single_res_mut::<FrameState>().unwrap() = FrameState::UnActive;
 	}
 }

@@ -29,7 +29,7 @@ use js_proxy_gen_macro::pi_js_export;
 /// Pass 配置使用默认值
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
-pub fn p3d_scene(app: &mut Engine, cmds: &mut CommandsExchangeD3, cullingmode: f64, vals: &[i32]) -> f64 {
+pub fn p3d_scene(app: &mut Engine, cmds: &mut CommandsExchangeD3, cullingmode: f64, collidermode: f64, vals: &[i32]) -> f64 {
     let scene: Entity = app.world.entities().reserve_entity();
 
     let mut values = [0, 0, 0, 0, 0, 0, 0, 0, 0];
@@ -44,6 +44,7 @@ pub fn p3d_scene(app: &mut Engine, cmds: &mut CommandsExchangeD3, cullingmode: f
     cmds.scene_create.push(OpsSceneCreation::ops(
         scene,
         cullingmode as u8,
+        collidermode as u8,
         values
     ));
 
@@ -206,9 +207,10 @@ pub fn p3d_scene_pick(app: &mut Engine, param: &mut ActionSetScene3D, scene: f64
 
     param.collider.align(&app.world);
     param.vp_matrix.align(&app.world);
+    param.pickitems.align(&app.world);
     if let (Ok((collider, bounding)), Ok(vp)) = (param.collider.get(&app.world, scene), param.vp_matrix.get(&app.world, camera)) {
         let ray = vp.ray(projectx as f32, projecty as f32);
-        let picked = ray_cast_scene((collider, bounding), &ray, !not_ray_bounding);
+        let picked = ray_cast_scene((collider, bounding), &ray, !not_ray_bounding, &param.pickitems.get_param(&app.world));
         if let Some(picked) = picked {
             result[ 0] = as_f64(&picked.target);
             result[ 1] = if picked.bybounding { 1.0 } else { -1.0 };

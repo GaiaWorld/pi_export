@@ -218,6 +218,7 @@ pub struct ActionSetScene3D {
     pub(crate) nodesdirectlight: QueryState<(&'static DirectLight), ()>,
     pub(crate) nodespointlight: QueryState<(&'static PointLight), ()>,
     pub(crate) collider: QueryState<(&'static SceneColliderPool, &'static SceneBoundingPool), ()>,
+    pub(crate) pickitems: QueryState<(&'static RenderQueueSortParam, &'static GlobalEnable), ()>,
     
     // pub(crate) uniforms: QueryState<&'static BindEffect>,
     // pub(crate) animatorablefloat: QueryState<&'static AnimatorableFloat>,
@@ -265,6 +266,7 @@ impl ActionSetScene3D {
             nodesdirectlight: app.world.query(),
             nodespointlight: app.world.query(),
             collider: app.world.query(),
+            pickitems: app.world.query(),
             
             // uniforms: app.world.query(),
             // animatorablefloat: app.world.query(),
