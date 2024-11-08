@@ -1,6 +1,6 @@
 
 
-use std::{cell::RefCell, mem::transmute, sync::{atomic::AtomicBool, Arc, OnceLock}};
+use std::{cell::RefCell, mem::transmute, sync::{atomic::AtomicBool, Arc, OnceLock}, thread, time::Duration};
 
 use pi_share::{Share, ShareCell};
 use pi_world::prelude::{App, WorldPluginExtent};
@@ -94,6 +94,7 @@ impl Engine {
 			let mut begin = std::time::Instant::now();
 			let mut fps = 0;
 			loop {
+				let begin2 = std::time::Instant::now();
 				let task: Box<dyn FnOnce() -> () + Send> = receiver.recv().unwrap();
 				
 				task();
@@ -106,6 +107,10 @@ impl Engine {
 					println!("fps: {}", fps);
 					fps = 0;
 					begin = std::time::Instant::now();
+				}
+				let time = begin2.elapsed().as_millis();
+				if time < 16 {
+					thread::sleep(Duration::from_millis(16 - time as u64));
 				}
 			}
 		});
