@@ -50,6 +50,37 @@ pub struct Engine {
 	pub back_receiver: crossbeam_channel::Receiver<()>
 }
 
+#[cfg(target_os = "android")]
+fn panic_with_backtrace_rs() {
+    let args: Vec<String> = std::env::args().collect();
+    for arg in &args {
+        println!("====== arg = {}", arg);
+    }
+    
+    std::panic::set_hook(Box::new(|panic_info| {
+        print!(
+            "thread '{}' panicked",
+            std::thread::current().name().unwrap_or("unknown")
+        );
+
+        if let Some(location) = panic_info.location() {
+            println!(" at {}:{}:", location.file(), location.line(),);
+        } else {
+            println!("");
+        }
+
+        if let Some(msg) = panic_info.message(){
+            println!("{:?}", msg);
+        }
+
+        if let Some(payload) = panic_info.payload().downcast_ref::<&str>() {
+            println!("{}", payload);
+        }
+
+        println!("{:?}", backtrace::Backtrace::new());
+    }));
+}
+
 #[cfg(all(feature="pi_js_export", not(target_arch="wasm32")))]
 impl Engine {
 	pub fn new(app: App) -> Self { 
@@ -58,6 +89,8 @@ impl Engine {
 		log::warn!("create_engine=================================");
 		// let last_frame_awaiting = Share::new(std::sync::atomic::AtomicBool::new(false));
 		let _ = std::thread::Builder::new().name("ecs".to_string()).spawn(move || {
+			#[cfg(target_os = "android")]
+			panic_with_backtrace_rs();
 			let mut begin = std::time::Instant::now();
 			let mut fps = 0;
 			loop {
