@@ -264,7 +264,7 @@ pub fn create_engine(canvas: web_sys::HtmlCanvasElement, width: u32, height: u32
 
 #[cfg(feature="pi_js_export")]
 #[cfg(not(target_arch = "wasm32"))]
-pub fn create_engine(window: &Arc<Window>, width: u32, height: u32, asset_mgr: &ResAllocator, asset_total_capacity: u32, asset_config: &str, collect_interval: u64) -> Engine {
+pub fn create_engine(window: &Arc<Window>, width: u32, height: u32, asset_mgr: &ResAllocator, asset_total_capacity: u32, asset_config: &str, collect_interval: u32) -> Engine {
     use pi_bevy_render_plugin::PiRenderOptions;
     use wgpu::Backend;
 
@@ -288,7 +288,7 @@ pub fn create_engine(window: &Arc<Window>, width: u32, height: u32, asset_mgr: &
 		pi_bevy_winit_window::WinitPlugin::new(window.clone()).with_size(width, height),
 		asset_total_capacity,
 		asset_config,
-		collect_interval,
+		collect_interval as u64,
 		Some(asset_mgr.get_inner().clone()),
 	);
 
