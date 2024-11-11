@@ -1,4 +1,6 @@
 
+use std::ops::Deref;
+
 use pi_scene_context::pass::{ESkinBonesPerVertex, WorldResourceTemp};
 use pi_scene_context::prelude::*;
 use pi_scene_shell::prelude::*;
@@ -27,17 +29,17 @@ pub fn p3d_sprite(app: &mut Engine, cmds: &mut CommandsExchangeD3, source: f64, 
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
-pub fn p3d_sprite_frame(cmds: &mut CommandsExchangeD3, sprite: f64, idxframe: f64) {
-    cmds.sprite_modify.push(OpsSpriteModify::ops(as_entity(sprite), SpriteModify::Idx(idxframe as IdxTextureFrame)));
+pub fn p3d_sprite_frame(cmds: &mut CommandsExchangeD3, sprite: f64, tilloffkey: &Atom, idxframe: f64) {
+    cmds.sprite_modify.push(OpsSpriteModify::ops(as_entity(sprite), SpriteModify::Idx(idxframe as IdxTextureFrame), tilloffkey.deref().clone()));
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
-pub fn p3d_sprite_frame_data(cmds: &mut CommandsExchangeD3, sprite: f64, data: &[u16]) {
+pub fn p3d_sprite_frame_data(cmds: &mut CommandsExchangeD3, sprite: f64, tilloffkey: &Atom, data: &[u16]) {
     let data = [data[0], data[1], data[2], data[3], data[4], data[5], data[6], data[7], data[8], data[9],
         data[10], data[11], data[12], data[13],
     ];
-    cmds.sprite_modify.push(OpsSpriteModify::ops(as_entity(sprite), SpriteModify::Data(data)));
+    cmds.sprite_modify.push(OpsSpriteModify::ops(as_entity(sprite), SpriteModify::Data(data), tilloffkey.deref().clone()));
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
