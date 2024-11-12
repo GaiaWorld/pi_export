@@ -661,8 +661,8 @@ fn curve<const N: usize, T: TValue<N> + FrameDataValue>(
                 // log::warn!("Frame {:?}, data: {:?}", frame, T::newn(data, index + 1));
 
                 // curve.curve_frame_values_frame(frame, T::newn(data, index + 1));
-                let (index, min, max) = curve_frame_index(&mut curve.frames, frame);
-                curve.values.insert(index, T::newn(data, index + 1));
+                let (idx, min, max) = curve_frame_index(&mut curve.frames, frame);
+                curve.values.insert(idx, T::newn(data, index + 1));
                 minidx = min; maxidx = max;
             }
             curve
@@ -677,8 +677,8 @@ fn curve<const N: usize, T: TValue<N> + FrameDataValue>(
                 let frame = data[index + 0] as FrameIndex;
 
                 // curve.curve_frame_values_frame(frame, T::newn(data, index + 1));
-                let (index, min, max) = curve_frame_index(&mut curve.frames, frame);
-                curve.values.insert(index, T::newn(data, index + 1));
+                let (idx, min, max) = curve_frame_index(&mut curve.frames, frame);
+                curve.values.insert(idx, T::newn(data, index + 1));
                 minidx = min; maxidx = max;
             }
             curve.call = interplate_frame_values_step;
@@ -713,9 +713,9 @@ fn curve<const N: usize, T: TValue<N> + FrameDataValue>(
                 let outtangent = data[index + 3] as f32;
 
                 // curve.curve_minmax_curve_frame(frame, value, intangent, outtangent);
-                let (index, min, max) = curve_frame_index(&mut curve.frames, frame);
+                let (idx, min, max) = curve_frame_index(&mut curve.frames, frame);
                 let keyframe = CurveFrameValue::new(value, [intangent, outtangent]);
-                curve.minmax_curve_values.insert(index, keyframe);
+                curve.minmax_curve_values.insert(idx, keyframe);
                 minidx = min; maxidx = max;
             }
             curve
@@ -749,9 +749,9 @@ fn curve<const N: usize, T: TValue<N> + FrameDataValue>(
                 let outtangent = T::newn(data, index + 1 + vs2);
 
                 // curve.curve_cubic_splice_frame(frame, value, intangent, outtangent);
-                let (index, min, max) = curve_frame_index(&mut curve.frames, frame);
+                let (idx, min, max) = curve_frame_index(&mut curve.frames, frame);
                 let keyframe = CurveFrameValue::new(value, [intangent, outtangent]);
-                curve.cubic_spline_values.insert(index, keyframe);
+                curve.cubic_spline_values.insert(idx, keyframe);
                 minidx = min; maxidx = max;
             }
             curve
