@@ -205,6 +205,13 @@ impl EngineConstants {
     pub const INSTANCE_ATTR_FLOAT: u8   = 4;
     pub const INSTANCE_ATTR_UINT: u8    = 5;
     pub const INSTANCE_ATTR_SINT: u8    = 6;
+    pub const INSTANCE_ATTR_U16X2: u8       = 7;
+    pub const INSTANCE_ATTR_U16X4: u8       = 8;
+    pub const INSTANCE_ATTR_U8X4: u8        = 9;
+    pub const INSTANCE_ATTR_IVEC4: u8       = 10;
+    pub const INSTANCE_ATTR_UNORM16X2: u8   = 11;
+    pub const INSTANCE_ATTR_UNORM16X4: u8   = 12;
+    pub const INSTANCE_ATTR_UNORM8X4: u8    = 13;
 
     pub fn instance_attribute_vtype(val: f64) -> ECustomVertexType {
         match val as u8 {
@@ -213,6 +220,13 @@ impl EngineConstants {
             Self::INSTANCE_ATTR_VEC2 => { ECustomVertexType::Vec2 }
             Self::INSTANCE_ATTR_UINT => { ECustomVertexType::Uint }
             Self::INSTANCE_ATTR_SINT => { ECustomVertexType::Int }
+            Self::INSTANCE_ATTR_U16X2 => { ECustomVertexType::U16x2 }
+            Self::INSTANCE_ATTR_U16X4 => { ECustomVertexType::U16x4 }
+            Self::INSTANCE_ATTR_U8X4 => { ECustomVertexType::U8x4 }
+            Self::INSTANCE_ATTR_IVEC4 => { ECustomVertexType::IVec4 }
+            Self::INSTANCE_ATTR_UNORM16X2 => { ECustomVertexType::Unorm16x2 }
+            Self::INSTANCE_ATTR_UNORM16X4 => { ECustomVertexType::Unorm16x4 }
+            Self::INSTANCE_ATTR_UNORM8X4 => { ECustomVertexType::Unorm8x4 }
             _ => { ECustomVertexType::Float }
         }
     }

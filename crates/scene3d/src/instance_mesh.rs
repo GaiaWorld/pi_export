@@ -89,6 +89,37 @@ pub fn p3d_instance_mesh_uint(cmds: &mut CommandsExchangeD3, instance: f64, x: f
     // cmds.instance_alpha.push(OpsInstanceAlpha::ops(instance, val as f32));
 }
 
+
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
+pub fn p3d_instance_mesh_ivec4(cmds: &mut CommandsExchangeD3, instance: f64, x: f64, y: f64, z: f64, w: f64, attr: &Atom) {
+    let instance: Entity = as_entity(instance);
+    cmds.instance_attr.push(OpsInstanceAttr::ops(instance, EInstanceAttr::IVec4([x as i32, y as i32, z as i32, w as i32]), attr.deref().clone() ));
+    // cmds.instance_alpha.push(OpsInstanceAlpha::ops(instance, val as f32));
+}
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
+pub fn p3d_instance_mesh_u16x2(cmds: &mut CommandsExchangeD3, instance: f64, x: f64, y: f64, attr: &Atom) {
+    let instance: Entity = as_entity(instance);
+    cmds.instance_attr.push(OpsInstanceAttr::ops(instance, EInstanceAttr::U16x2([x as u16, y as u16]), attr.deref().clone() ));
+    // cmds.instance_alpha.push(OpsInstanceAlpha::ops(instance, val as f32));
+}
+
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
+pub fn p3d_instance_mesh_u16x4(cmds: &mut CommandsExchangeD3, instance: f64, x: f64, y: f64, z: f64, w: f64, attr: &Atom) {
+    let instance: Entity = as_entity(instance);
+    cmds.instance_attr.push(OpsInstanceAttr::ops(instance, EInstanceAttr::U16x4([x as u16, y as u16, z as u16, w as u16]), attr.deref().clone() ));
+    // cmds.instance_alpha.push(OpsInstanceAlpha::ops(instance, val as f32));
+}
+
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
+pub fn p3d_instance_mesh_u8x4(cmds: &mut CommandsExchangeD3, instance: f64, x: f64, y: f64, z: f64, w: f64, attr: &Atom) {
+    let instance: Entity = as_entity(instance);
+    cmds.instance_attr.push(OpsInstanceAttr::ops(instance, EInstanceAttr::U8x4([x as u8, y as u8, z as u8, w as u8]), attr.deref().clone() ));
+    // cmds.instance_alpha.push(OpsInstanceAlpha::ops(instance, val as f32));
+}
 // #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 // #[pi_js_export]
 // pub fn p3d_instance_mesh_alpha_arr(cmds: &mut CommandsExchangeD3, data: &[f64], len: f64) {
