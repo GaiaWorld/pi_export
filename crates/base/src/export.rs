@@ -83,44 +83,53 @@ fn panic_with_backtrace_rs() {
 
 #[cfg(all(feature="pi_js_export", not(target_arch="wasm32")))]
 impl Engine {
-	pub fn new(app: App) -> Self { 
+    pub fn new(app: App) -> Self {
 		let (sender, receiver) = crossbeam_channel::bounded(1);
 		let (back_sender, back_receiver) = crossbeam_channel::bounded(1);
 		log::warn!("create_engine=================================");
 		// let last_frame_awaiting = Share::new(std::sync::atomic::AtomicBool::new(false));
-		let _ = std::thread::Builder::new().name("ecs".to_string()).spawn(move || {
-			#[cfg(target_os = "android")]
-			panic_with_backtrace_rs();
-			let mut begin = std::time::Instant::now();
-			let mut fps = 0;
-			loop {
-				let begin2 = std::time::Instant::now();
-				let task: Box<dyn FnOnce() -> () + Send> = receiver.recv().unwrap();
-				
-				task();
-				let _ = back_sender.send(());
-				if let Some(cb) = unsafe { FRAME_END_CB.get_mut() } {
-					cb();
-				}
-				fps += 1;
-				if begin.elapsed().as_millis() >= 1000{
-					println!("fps: {}", fps);
-					fps = 0;
-					begin = std::time::Instant::now();
-				}
-				let time = begin2.elapsed().as_millis();
-				if time < 16 {
-					thread::sleep(Duration::from_millis(16 - time as u64));
-				}
-			}
-		});
-		Self{
-			app,
-			last_frame_awaiting: false,
-			sender,
-			back_receiver,
-		}
-	}
+        let _ = std::thread::Builder::new()
+            .name("ecs".to_string())
+            .spawn(move || {
+                #[cfg(target_os = "android")]
+                panic_with_backtrace_rs();
+                let mut begin = std::time::Instant::now();
+                let mut fps = 0;
+                let mut min_fps = 60;
+                loop {
+                    let begin2 = std::time::Instant::now();
+                    let task: Box<dyn FnOnce() -> () + Send> = receiver.recv().unwrap();
+                    // let begin3 = std::time::Instant::now();
+                    // println!("============ ecs");
+                    task();
+                    let _ = back_sender.send(());
+					if let Some(cb) = unsafe { FRAME_END_CB.get_mut() } {
+                        cb();
+                    }
+
+                    fps += 1;
+                    if begin.elapsed().as_millis() >= 1000 {
+                        println!("ECS: FPS: {}, MIN_FPS: {}", fps, min_fps);
+                        min_fps = fps;
+                        fps = 0;
+                        begin = std::time::Instant::now();
+                    }
+
+                    let time = begin2.elapsed().as_millis();
+                    if time < 16 {
+                        thread::sleep(Duration::from_millis(16 - time as u64));
+                    }
+                    min_fps = min_fps.min(1000 / begin2.elapsed().as_millis());
+					
+                }
+            });
+        Self {
+            app,
+            last_frame_awaiting: false,
+            sender,
+            back_receiver,
+        }
+    }
 	pub fn app(&self) -> &App { &self.app }
 	pub fn app_mut(&mut self) -> &mut App { &mut self.app }
 }
@@ -357,6 +366,9 @@ pub fn fram_call(engine: &mut Engine, reset_state: bool) {
     use std::sync::atomic::Ordering;
 
     use pi_bevy_render_plugin::PiRenderDevice;
+
+    // 推动高性能低精度本地时钟
+    pi_time::tick_clock();
 
 	#[cfg(feature = "trace")]
 	let _span = tracing::warn_span!("frame_call").entered();
