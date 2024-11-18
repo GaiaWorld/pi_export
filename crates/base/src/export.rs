@@ -367,8 +367,8 @@ pub fn fram_call(engine: &mut Engine, reset_state: bool) {
 
     use pi_bevy_render_plugin::PiRenderDevice;
 
-    // // 推动高性能低精度本地时钟
-    // pi_time::tick_clock();
+	// 推动高性能低精度本地时钟
+    pi_time::tick_clock();
 
 	#[cfg(feature = "trace")]
 	let _span = tracing::warn_span!("frame_call").entered();
