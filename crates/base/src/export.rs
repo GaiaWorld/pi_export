@@ -510,40 +510,72 @@ pub fn entity_from_number(index: u32, version: u32) -> f64 {
 	unsafe { transmute::<_, f64>( (version as u64) << 32 | index as u64) }
 }
 
+pub struct DataTextureSubData {
+	pub data: Option<Vec<u8>>,
+	pub dataoffset: u64,
+	pub xoffset: u32,
+	pub yoffset: u32,
+	pub width: u32,
+	pub height: u32,
+	pub aspect: Option<wgpu::TextureAspect>,
+	pub depth_or_array_layers: u32,
+}
 
 #[derive(pi_scene_shell::prelude::Resource, Default)]
-pub struct DataTextureRefs {
-    pub data: XHashMap<pi_atom::Atom, Vec<u8>>,
-}
-#[derive(pi_scene_shell::prelude::Resource, Default)]
-pub struct DataTextureRecord {
+pub struct DataTextureCmds {
+    pub createdata: XHashMap<pi_atom::Atom, (DataTextureSubData, wgpu::TextureFormat, wgpu::TextureViewDimension, pi_scene_shell::prelude::KeyImageTexture)>,
+    pub updatedata: XHashMap<pi_atom::Atom, Vec<DataTextureSubData>>,
     pub record: XHashMap<pi_atom::Atom, pi_scene_shell::prelude::Handle<pi_scene_shell::prelude::ResImageTexture>>,
-    pub creation: XHashMap<pi_atom::Atom, (u32, u32, u32, wgpu::TextureFormat, wgpu::TextureViewDimension, pi_scene_shell::prelude::KeyImageTexture)>,
 }
 
-pub fn sys_update_data_texture(
-    mut refs: pi_scene_shell::prelude::ResMut<DataTextureRefs>,
-    mut record: pi_scene_shell::prelude::ResMut<DataTextureRecord>,
-    device: pi_scene_shell::prelude::Res<pi_scene_shell::prelude::PiRenderDevice>,
-    queue: pi_scene_shell::prelude::Res<pi_scene_shell::prelude::PiRenderQueue>,
-    imgtex_asset: pi_scene_shell::prelude::Res<pi_scene_shell::prelude::ShareAssetMgr<pi_scene_shell::prelude::ResImageTexture>>,
+pub fn update_data_texture(
+    refs: &mut DataTextureCmds,
+    device: &pi_scene_shell::prelude::PiRenderDevice,
+    queue: &pi_scene_shell::prelude::PiRenderQueue,
+    imgtex_asset: &pi_scene_shell::prelude::ShareAssetMgr<pi_scene_shell::prelude::ResImageTexture>,
 ) {
-    refs.data.drain().for_each(|(key, data)| {
-        if let Some(res) = record.record.get(&key) {
-            res.update(&queue, &data, 0, 0, res.width(), res.height());
-        } else if let Some((width, height, size_per_pixel, format, dimension, texkey)) = record.creation.remove(&key) {
+    refs.createdata.drain().for_each(|(key, (data, format, dimension, texkey))| {
+        if let Some(res) = refs.record.get(&key) {
+			if res.texture().format() != format || res.texture().dimension() != dimension.compatible_texture_dimension() {
+				// 
+			} else {
+				if let Some(d) = &data.data {
+					res.update(&queue, data.xoffset, data.yoffset, data.width, data.height, data.depth_or_array_layers, data.aspect, d, data.dataoffset);
+				}
+			}
+        } else {
             if let Some(res) = imgtex_asset.get(&texkey) {
-                res.update(&queue, &data, 0, 0, res.width(), res.height());
-                record.record.insert(key, res);
+				if res.texture().format() != format || res.texture().dimension() != dimension.compatible_texture_dimension() {
+					// 
+				} else {
+					if let Some(d) = &data.data {
+						res.update(&queue, data.xoffset, data.yoffset, data.width, data.height, data.depth_or_array_layers, data.aspect, d, data.dataoffset);
+					}
+					refs.record.insert(key, res);
+				}
             } else {
-                let texture = pi_scene_shell::prelude::ResImageTexture::create_data_texture(&device, &queue, &texkey, &data, width, height, format, dimension, size_per_pixel, true);
+				let d = if let Some(data) = &data.data {
+					Some(data.as_slice())
+				} else { None };
+                let texture = pi_scene_shell::prelude::ResImageTexture::create_data_texture(
+					&device, &queue, &texkey, data.width, data.height, format, dimension, true, 0, data.aspect, d, data.dataoffset
+				);
                 match imgtex_asset.insert(texkey, texture) {
-                    Ok(data) => record.record.insert(key, data),
+                    Ok(data) => refs.record.insert(key, data),
                     Err(_) => None,
                 };
             }
-        }
+		}
     });
+	refs.updatedata.drain().for_each(|(key, mut data)| {
+        if let Some(res) = refs.record.get(&key) {
+			data.drain(..).for_each(|data| {
+				if let Some(d) = &data.data {
+					res.update(&queue, data.xoffset, data.yoffset, data.width, data.height, data.depth_or_array_layers, data.aspect, d, data.dataoffset);
+				}
+			});
+        }
+	});
 }
 
 #[derive(pi_scene_shell::prelude::Resource, Default)]
@@ -618,12 +650,6 @@ pub fn init_engine_3d(app: &mut Engine, particlesystem: bool, skeleton: bool, sh
         .add_plugins(pi_trail_renderer::PluginTrail)
         ;
 
-	app.insert_resource(DataTextureRefs::default());
-	app.insert_resource(DataTextureRecord::default());
-	app.add_systems(
-        pi_world::schedule::Update,
-        sys_update_data_texture.in_set(pi_scene_shell::prelude::ERunStageChap::New)
-	);
 	app.insert_resource(VertexBufferRefs::default());
 	app.add_systems(
         pi_world::schedule::Update,

@@ -1,3 +1,4 @@
+use pi_export_base::export::{update_data_texture, DataTextureCmds};
 use pi_scene_shell::prelude::*;
 pub use pi_export_base::export::Engine;
 use pi_particle_system::prelude::*;
@@ -87,6 +88,9 @@ pub struct CommandsExchangeD3 {
     
     pub(crate) sprite_create: ActionListSpriteCreate,
     pub(crate) sprite_modify: ActionListSpriteModify,
+
+    pub(crate) datatexcmd: DataTextureCmds,
+    pub(crate) combinecmds: XHashMap<u32, (Atom, XHashMap<Atom, (u32, u16, bool, u32, u32, u32, u32)>)>,
 }
 
 
@@ -357,4 +361,16 @@ pub fn p3d_commands_exchange(app: &mut Engine, param: &mut ActionSetScene3D, cmd
         cmds.exchange(&mut sets);
         // log::error!(">>>>> p3d_commands_exchange 02");
     }
+
+    let imgtex_asset = app.world.get_resource::<ShareAssetMgr<pi_scene_shell::prelude::ResImageTexture>>().unwrap().clone();
+    let device = app.world.get_resource::<PiRenderDevice>().unwrap();
+    let queue = app.world.get_resource::<PiRenderQueue>().unwrap();
+    update_data_texture(&mut cmds.datatexcmd, device, queue, &imgtex_asset);
+    let requests = app.world.get_resource_mut::<TextureCombineCmds>().unwrap();
+    cmds.combinecmds.drain().for_each(|(requestid, (key, atlas))| {
+        let keytex = KeyImageTexture { url: key, srgb: false, file: false, compressed: false, depth_or_array_layers: 0, 
+            useage: wgpu::TextureUsages::COPY_DST | wgpu::TextureUsages::TEXTURE_BINDING
+        };
+        requests.request(requestid, keytex, atlas, &imgtex_asset);
+    });
 }

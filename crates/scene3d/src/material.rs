@@ -100,6 +100,7 @@ pub fn p3d_material_uniform_tex(
     mipmap_filter: f64,
     anisotropy_clamp: f64,
     border_color: f64,
+    isfile: bool,
     compare: Option<f64>,
 ) {
     let address_mode_u = EngineConstants::address_mode(address_mode_u);
@@ -128,7 +129,7 @@ pub fn p3d_material_uniform_tex(
                     border_color,
                 ),
                 url: EKeyTexture::Image(KeyImageTextureView::new(
-                    KeyImageTexture { url: pi_atom::Atom::from(url.to_string()), srgb, file: true, compressed, depth_or_array_layers: 0, useage: wgpu::TextureUsages::TEXTURE_BINDING | wgpu::TextureUsages::COPY_DST },
+                    KeyImageTexture { url: pi_atom::Atom::from(url.to_string()), srgb, file: isfile, compressed, depth_or_array_layers: 0, useage: wgpu::TextureUsages::TEXTURE_BINDING | wgpu::TextureUsages::COPY_DST },
                     TextureViewDesc {
                         // aspect: wgpu::TextureAspect::All,
                         base_mip_level: 0,
