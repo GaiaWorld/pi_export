@@ -41,6 +41,13 @@ extern {
 }
 
 
+#[global_allocator]
+static ALLOCATOR: talc::Talck<talc::locking::AssumeUnlockable, talc::ClaimOnOom> = unsafe {
+    static mut MEMORY: [u8; 64 * 1024 * 1024] = [0; 64 * 1024 * 1024];
+    let span = talc::Span::from_const_array(std::ptr::addr_of!(MEMORY));
+    talc::Talc::new(talc::ClaimOnOom::new(span)).lock()
+};
+
 #[allow(unused_attributes)]
 #[wasm_bindgen]
 pub fn init_logger(_level: pi_web_logger::Level) {
