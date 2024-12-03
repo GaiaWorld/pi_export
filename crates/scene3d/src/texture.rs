@@ -2,7 +2,7 @@ use std::ops::Deref;
 use pi_assets::asset::{Handle, Size};
 use pi_export_base::export::DataTextureSubData;
 use pi_hash::XHashMap;
-use pi_scene_context::pass::{TextureCombineCmds, WorldResourceTemp};
+use pi_scene_context::pass::{KeyImageTextureFrame, TextureCombineCmds, WorldResourceTemp};
 use pi_scene_shell::prelude::{ResImageTexture, KeyImageTexture};
 pub use pi_export_base::{export::{Engine, Atom}, constants::*};
 // use pi_render::asset::TAssetKeyU64;
@@ -11,7 +11,7 @@ pub use pi_export_base::{export::{Engine, Atom}, constants::*};
 use wasm_bindgen::prelude::wasm_bindgen;
 use js_proxy_gen_macro::pi_js_export;
 
-pub use crate::{constants::EngineConstants, mesh::CommandsExchangeD3};
+use crate::{constants::EngineConstants, mesh::CommandsExchangeD3};
 pub use crate::engine::ActionSetScene3D;
 
 pub struct CombineTextureAtlas {
@@ -28,13 +28,13 @@ pub struct DataTextureRes(Handle<ResImageTexture>);
 pub fn p3d_create_data_texture(param: &mut CommandsExchangeD3, key: &Atom, width: f64, height: f64, format: f64, aspect: Option<f64>) {
 
     let key = key.deref().clone();
-    let format = EngineConstants::render_color_format(format).val();
+    let format = EngineConstants::texture_format(format);
     let width = width as u32;
     let height = height as u32;
     let dimension = wgpu::TextureViewDimension::D2;
     let is_opacity = true;
     let useage = wgpu::TextureUsages::COPY_DST | wgpu::TextureUsages::TEXTURE_BINDING;
-    let texkey = KeyImageTexture { url: key.clone(), srgb: false, file: false, compressed: false, depth_or_array_layers: 0, useage };
+    let texkey = KeyImageTextureFrame { url: key.clone(), file: false, compressed: false, cancombine: false };
 
     let info = DataTextureSubData {
         data: None,
@@ -80,13 +80,12 @@ pub fn p3d_remove_data_texture(param: &mut CommandsExchangeD3, key: &Atom) {
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
-pub fn p3d_query_texture(app: &mut Engine, param: &mut ActionSetScene3D, isfile: bool, url: &Atom, srgb: bool, compressed: bool, depth_or_array_layers: f64, useage: f64, info: &mut [f32]) -> bool {
+pub fn p3d_query_texture(app: &mut Engine, param: &mut ActionSetScene3D, isfile: bool, url: &Atom, cancombine: bool, compressed: bool, depth_or_array_layers: f64, info: &mut [f32]) -> bool {
 	pi_export_base::export::await_last_frame(app);
 
     let resource = param.resource.get_mut(&mut app.world);
 
-    let useage = EngineConstants::texture_usage(useage);
-    let key = KeyImageTexture { url: url.deref().clone(), srgb, file: isfile, compressed, depth_or_array_layers: depth_or_array_layers as u8, useage };
+    let key = KeyImageTextureFrame { url: url.deref().clone(), file: isfile, compressed, cancombine };
     if let Some(img) = resource.imgtex_asset.get(&key) {
         info[0] = img.width() as f32;
         info[1] = img.height() as f32;

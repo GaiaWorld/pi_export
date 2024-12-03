@@ -18,7 +18,7 @@ use pi_slotmap::Key;
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
-pub struct ImageRes(Handle<pi_render::renderer::texture::ResImageTexture>);
+pub struct ImageRes(Handle<pi_render::renderer::texture::ImageTextureFrame>);
 
 use crate::{as_entity, as_f64};
 pub use crate::commands::CommandsExchangeD3;
@@ -321,17 +321,17 @@ pub fn p3d_lighting_shadow_limit(app: &mut Engine, param: &mut ActionSetScene3D,
     
     let mut resource = param.resource.get_mut(&mut app.world);
 
-    resource.scene_lighting_limit.0.max_direct_light_count = scene_max_direct_light_count as u32;
-    resource.scene_lighting_limit.0.max_point_light_count = scene_max_point_light_count as u32;
-    resource.scene_lighting_limit.0.max_spot_light_count = scene_max_spot_light_count as u32;
-    resource.scene_lighting_limit.0.max_hemi_light_count = scene_max_hemi_light_count as u32;
+    resource.scene_lighting_limit.0.max_direct_light_count = scene_max_direct_light_count as u16;
+    resource.scene_lighting_limit.0.max_point_light_count = scene_max_point_light_count as u16;
+    resource.scene_lighting_limit.0.max_spot_light_count = scene_max_spot_light_count as u16;
+    resource.scene_lighting_limit.0.max_hemi_light_count = scene_max_hemi_light_count as u16;
     
-    resource.scene_shadow_limit.0.max_count = scene_max_shadow_count as u32;
+    resource.scene_shadow_limit.0.max_count = scene_max_shadow_count as u16;
 
-    resource.model_lighting_limit.0.max_direct_light_count = model_max_direct_light_count as u32;
-    resource.model_lighting_limit.0.max_point_light_count = model_max_point_light_count as u32;
-    resource.model_lighting_limit.0.max_spot_light_count = model_max_spot_light_count as u32;
-    resource.model_lighting_limit.0.max_hemi_light_count = model_max_hemi_light_count as u32;
+    resource.model_lighting_limit.0.max_direct_light_count = model_max_direct_light_count as u16;
+    resource.model_lighting_limit.0.max_point_light_count = model_max_point_light_count as u16;
+    resource.model_lighting_limit.0.max_spot_light_count = model_max_spot_light_count as u16;
+    resource.model_lighting_limit.0.max_hemi_light_count = model_max_hemi_light_count as u16;
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
@@ -908,17 +908,15 @@ pub fn p3d_get_gltf_fail_reason(app: &mut Engine, param: &mut ActionSetScene3D, 
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
-pub fn p3d_create_image_load(app: &mut Engine, param: &mut ActionSetScene3D, url: &Atom, srgb: bool, compressed: bool, depth_or_array_layers: f64) -> f64 {
+pub fn p3d_create_image_load(app: &mut Engine, param: &mut ActionSetScene3D, url: &Atom, cancombine: bool, compressed: bool, depth_or_array_layers: f64) -> f64 {
 	pi_export_base::export::await_last_frame(app);
     let mut resource = param.resource.get_mut(&mut app.world);
 
-    let id = resource.imgtex_loader.create_load(KeyImageTexture { 
+    let id = resource.imgtex_loader.create_load(KeyImageTextureFrame { 
         url: url.deref().clone(),
-        srgb,
         file: true,
         compressed,
-        depth_or_array_layers: depth_or_array_layers as u8,
-        useage: wgpu::TextureUsages::COPY_DST | wgpu::TextureUsages::TEXTURE_BINDING
+        cancombine
     });
 
     unsafe { transmute(id) }
@@ -1097,48 +1095,12 @@ pub fn p3d_query_material_info(app: &mut Engine, param: &mut ActionSetScene3D, i
                 match &slot.url {
                     EKeyTexture::Tex(key) => { info[idx * 2 + 0] = 1; info[idx * 2 + 1] = key.str_hash() as u32; },
                     EKeyTexture::Image(key) => { info[idx * 2 + 0] = 2; info[idx * 2 + 1] = key.url().url.str_hash() as u32; },
+                    EKeyTexture::ImageFrame(key) => { info[idx * 2 + 0] = 2; info[idx * 2 + 1] = key.url().url.str_hash() as u32; },
                     EKeyTexture::SRT(key) => { info[idx * 2 + 0] = 4; info[idx * 2 + 1] = *key as u32; },
                 }
                 idx += 1;
             })
         } else { info[idx * 2 + 0] = 0; info[idx * 2 + 1] = 0 as u32; }
-        // idx += 1;
-        // if let Some(slot) = slot02 {
-        //     match &slot.0.url {
-        //         EKeyTexture::Tex(key) => { info[idx * 2 + 0] = 1; info[idx * 2 + 1] = key.str_hash() as u32; },
-        //         EKeyTexture::Image(key) => { info[idx * 2 + 0] = 2; info[idx * 2 + 1] = key.url().url.str_hash() as u32; },
-        //         EKeyTexture::SRT(_) => { info[idx * 2 + 0] = 4; info[idx * 2 + 1] = 0 as u32; },
-        //     }
-        // } else { info[idx * 2 + 0] = 0; info[idx * 2 + 1] = 0 as u32; }
-        // idx += 1;
-        // if let Some(slot) = slot03 {
-        //     match &slot.0.url {
-        //         EKeyTexture::Tex(key) => { info[idx * 2 + 0] = 1; info[idx * 2 + 1] = key.str_hash() as u32; },
-        //         EKeyTexture::Image(key) => { info[idx * 2 + 0] = 2; info[idx * 2 + 1] = key.url().url.str_hash() as u32; },
-        //         EKeyTexture::SRT(_) => { info[idx * 2 + 0] = 4; info[idx * 2 + 1] = 0 as u32; },
-        //     }
-        // } else { info[idx * 2 + 0] = 0; info[idx * 2 + 1] = 0 as u32; }
-        // idx += 1;
-        // if let Some(slot) = slot04 {
-        //     match &slot.0.url {
-        //         EKeyTexture::Tex(key) => { info[idx * 2 + 0] = 1; info[idx * 2 + 1] = key.str_hash() as u32; },
-        //         EKeyTexture::Image(key) => { info[idx * 2 + 0] = 2; info[idx * 2 + 1] = key.url().url.str_hash() as u32; },
-        //         EKeyTexture::SRT(_) => { info[idx * 2 + 0] = 4; info[idx * 2 + 1] = 0 as u32; },
-        //     }
-        // } else { info[idx * 2 + 0] = 0; info[idx * 2 + 1] = 0 as u32; }
-        // idx += 1;
-
-        // if let Some(texs) = &textures.0 {
-        //     if let Some(slot) = &texs.textures.0 {
-        //         match &slot.0.0.key() {
-        //             KeyTextureViewUsage::Tex(_, _) => todo!(),
-        //             KeyTextureViewUsage::Image(_, _) => todo!(),
-        //             KeyTextureViewUsage::Render(_, _) => todo!(),
-        //             KeyTextureViewUsage::SRT(_, _, _) => todo!(),
-        //             KeyTextureViewUsage::Temp(_, _) => todo!(),
-        //         }
-        //     } else { info[idx * 2 + 0] = 0; info[idx * 2 + 1] = 0 as u32; }
-        // }
 
         true
     } else {
@@ -1181,12 +1143,3 @@ pub fn p3d_query_material_info(app: &mut Engine, param: &mut ActionSetScene3D, i
 //     }
 // }
 
-fn texture_view_usage_info(key: &KeyTextureViewUsage) {
-    match key {
-        KeyTextureViewUsage::Tex(_, _) => todo!(),
-        KeyTextureViewUsage::Image(_, _) => todo!(),
-        KeyTextureViewUsage::Render(_, _) => todo!(),
-        KeyTextureViewUsage::SRT(_, _, _) => todo!(),
-        KeyTextureViewUsage::Temp(_, _) => todo!(),
-    }
-}

@@ -25,6 +25,7 @@ pub fn p3d_texture_default_view_width(item: &TextureDefaultView) -> f64 {
         ETextureViewUsage::Tex(tex) => tex.width as f64,
         ETextureViewUsage::TexWithId(_) => todo!(),
         ETextureViewUsage::Image(tex) => tex.texture().width() as f64,
+        ETextureViewUsage::ImageFrame(tex) => tex.texture().width() as f64,
         ETextureViewUsage::SRT(_) => todo!(),
     }
 }
@@ -35,6 +36,7 @@ pub fn p3d_texture_default_view_height(item: &TextureDefaultView) -> f64 {
         ETextureViewUsage::Tex(tex) => tex.height as f64,
         ETextureViewUsage::TexWithId(_) => todo!(),
         ETextureViewUsage::Image(tex) => tex.texture().height() as f64,
+        ETextureViewUsage::ImageFrame(tex) => tex.texture().height() as f64,
         ETextureViewUsage::SRT(_) => todo!(),
     }
 }

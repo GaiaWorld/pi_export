@@ -2,6 +2,7 @@
 
 use std::{cell::RefCell, mem::transmute, sync::{atomic::AtomicBool, Arc, OnceLock}, thread, time::Duration};
 
+use pi_scene_context::pass::ImageTextureFrame;
 use pi_share::{Share, ShareCell};
 use pi_world::prelude::{App, WorldPluginExtent};
 use derive_deref_rs::Deref;
@@ -167,7 +168,7 @@ impl Atom {
 
 	#[cfg(feature = "pi_js_export")]
 	pub fn get_string_by_hash(value: u32) -> Option<String> { 
-		match pi_atom::get_by_hash(value as usize) {
+		match pi_atom::get_by_hash(value as u32) {
 			Some(r) => Some(r.as_ref().to_string()),
 			None => None,
 		} 
@@ -367,7 +368,7 @@ pub fn fram_call(engine: &mut Engine, reset_state: bool) {
 
     use pi_bevy_render_plugin::PiRenderDevice;
 
-	// 推动高性能低精度本地时钟
+    // 推动高性能低精度本地时钟
     pi_time::tick_clock();
 
 	#[cfg(feature = "trace")]
@@ -523,33 +524,37 @@ pub struct DataTextureSubData {
 
 #[derive(pi_scene_shell::prelude::Resource, Default)]
 pub struct DataTextureCmds {
-    pub createdata: XHashMap<pi_atom::Atom, (DataTextureSubData, wgpu::TextureFormat, wgpu::TextureViewDimension, pi_scene_shell::prelude::KeyImageTexture)>,
+    pub createdata: XHashMap<pi_atom::Atom, (DataTextureSubData, wgpu::TextureFormat, wgpu::TextureViewDimension, pi_scene_shell::prelude::KeyImageTextureFrame)>,
     pub updatedata: XHashMap<pi_atom::Atom, Vec<DataTextureSubData>>,
-    pub record: XHashMap<pi_atom::Atom, pi_scene_shell::prelude::Handle<pi_scene_shell::prelude::ResImageTexture>>,
+    pub record: XHashMap<pi_atom::Atom, pi_scene_shell::prelude::Handle<pi_scene_shell::prelude::ImageTextureFrame>>,
 }
 
 pub fn update_data_texture(
     refs: &mut DataTextureCmds,
     device: &pi_scene_shell::prelude::PiRenderDevice,
     queue: &pi_scene_shell::prelude::PiRenderQueue,
-    imgtex_asset: &pi_scene_shell::prelude::ShareAssetMgr<pi_scene_shell::prelude::ResImageTexture>,
+    imgtex_asset: &pi_scene_shell::prelude::ShareAssetMgr<pi_scene_shell::prelude::ImageTextureFrame>,
 ) {
     refs.createdata.drain().for_each(|(key, (data, format, dimension, texkey))| {
         if let Some(res) = refs.record.get(&key) {
-			if res.texture().format() != format || res.texture().dimension() != dimension.compatible_texture_dimension() {
+			if res.texture().format != format || res.texture().view_dimension != dimension {
 				// 
 			} else {
 				if let Some(d) = &data.data {
-					res.update(&queue, data.xoffset, data.yoffset, data.width, data.height, data.depth_or_array_layers, data.aspect, d, data.dataoffset);
+					let origin = wgpu::Origin3d { x: data.xoffset, y: data.yoffset, z: 0 };
+					ImageTextureFrame::update_sub(&res.texture().texture, &queue, origin, data.width, data.height, data.depth_or_array_layers, data.aspect, d, data.dataoffset);
+					// res.update(&queue, data.xoffset, data.yoffset, data.width, data.height, data.depth_or_array_layers, data.aspect, d, data.dataoffset);
 				}
 			}
         } else {
             if let Some(res) = imgtex_asset.get(&texkey) {
-				if res.texture().format() != format || res.texture().dimension() != dimension.compatible_texture_dimension() {
+				if res.texture().format != format || res.texture().view_dimension != dimension {
 					// 
 				} else {
 					if let Some(d) = &data.data {
-						res.update(&queue, data.xoffset, data.yoffset, data.width, data.height, data.depth_or_array_layers, data.aspect, d, data.dataoffset);
+						let origin = wgpu::Origin3d { x: data.xoffset, y: data.yoffset, z: 0 };
+						ImageTextureFrame::update_sub(&res.texture().texture, &queue, origin, data.width, data.height, data.depth_or_array_layers, data.aspect, d, data.dataoffset);
+						// res.update(&queue, data.xoffset, data.yoffset, data.width, data.height, data.depth_or_array_layers, data.aspect, d, data.dataoffset);
 					}
 					refs.record.insert(key, res);
 				}
@@ -557,10 +562,10 @@ pub fn update_data_texture(
 				let d = if let Some(data) = &data.data {
 					Some(data.as_slice())
 				} else { None };
-                let texture = pi_scene_shell::prelude::ResImageTexture::create_data_texture(
-					&device, &queue, &texkey, data.width, data.height, format, dimension, true, 0, data.aspect, d, data.dataoffset
+                let texture = pi_scene_shell::prelude::ImageTextureFrame::create_data_texture(
+					&device, &queue, &texkey.url, data.width, data.height, format, dimension, true, 0, data.aspect, d, data.dataoffset
 				);
-                match imgtex_asset.insert(texkey, texture) {
+                match imgtex_asset.insert(texkey, ImageTextureFrame::new(texture)) {
                     Ok(data) => refs.record.insert(key, data),
                     Err(_) => None,
                 };
@@ -571,7 +576,9 @@ pub fn update_data_texture(
         if let Some(res) = refs.record.get(&key) {
 			data.drain(..).for_each(|data| {
 				if let Some(d) = &data.data {
-					res.update(&queue, data.xoffset, data.yoffset, data.width, data.height, data.depth_or_array_layers, data.aspect, d, data.dataoffset);
+					let origin = wgpu::Origin3d { x: data.xoffset, y: data.yoffset, z: 0 };
+					ImageTextureFrame::update_sub(&res.texture().texture, &queue, origin, data.width, data.height, data.depth_or_array_layers, data.aspect, d, data.dataoffset);
+					// res.update(&queue, data.xoffset, data.yoffset, data.width, data.height, data.depth_or_array_layers, data.aspect, d, data.dataoffset);
 				}
 			});
         }
@@ -621,7 +628,7 @@ pub fn sys_vertex_buffer(
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[cfg(feature = "pi_js_export")]
-pub fn init_engine_3d(app: &mut Engine, particlesystem: bool, skeleton: bool, shadowmapping: bool, lighting: bool, spine: bool) {
+pub fn init_engine_3d(app: &mut Engine, spine: bool, param: &[u32]) {
 	use pi_scene_shell::prelude::WorldResourceTemp;
 	use pi_scene_shell::prelude::AppResourceTemp;
 	use pi_scene_shell::run_stage::EngineCustomPlugins;
@@ -631,11 +638,7 @@ pub fn init_engine_3d(app: &mut Engine, particlesystem: bool, skeleton: bool, sh
         app.insert_resource(pi_scene_shell::prelude::AssetMgrConfigs::default());
     }
 
-	let mut engineplugins = EngineCustomPlugins::default();
-	engineplugins.particle_system = particlesystem;
-	engineplugins.skeleton = skeleton;
-	engineplugins.shadowmapping = shadowmapping;
-	engineplugins.lighting = lighting;
+	let engineplugins = EngineCustomPlugins::new(param);
 	app.insert_resource(engineplugins);
 
     pi_3d::PluginBundleDefault::add(app);

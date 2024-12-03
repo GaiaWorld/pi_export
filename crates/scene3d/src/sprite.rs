@@ -64,7 +64,7 @@ pub fn p3d_texture_frame_atlas(atlas: &Atom, width: f64, height: f64) -> PTextur
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_texture_frame_atlas_append_frame(atlas: &mut PTextureFrameAtlas, frame_name: &Atom, framedata: &[u16]) -> f64 {
-    let frame: TextureFrame = TextureFrame::from_data(framedata);
+    let frame: SpriteFrame = SpriteFrame::from_data(framedata);
     let idxframe = atlas.0.append_frame(frame_name.to_string(), frame);
     return idxframe as f64;
 }

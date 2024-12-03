@@ -498,7 +498,7 @@ pub fn p3d_regist_material(
 
     // log::warn!("Material {:?}", key);
 
-    ActionMaterial::regist_material_meta(&resource.shader_metas, KeyShaderMeta::from(key), nodemat.meta());
+    ActionMaterial::regist_material_meta(&resource.shader_metas, KeyShaderMeta::from(key), nodemat.meta(&resource.enginopt));
 
     if let Some(data) = resource.shader_metas.get(&KeyShaderMeta::from(key)) {
         Some(P3DShaderMeta(data))

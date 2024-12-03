@@ -1021,6 +1021,42 @@ impl ContextConstants {
     pub const CONTEXT_LOST_WEBGL: u32 = 0x9242;
     pub const UNPACK_COLORSPACE_CONVERSION_WEBGL: u32 = 0x9243;
     pub const BROWSER_DEFAULT_WEBGL: u32 = 0x9244;
+    pub const COMPRESSED_RGB_S3TC_DXT1_EXT : u32   = 0x83F0;
+    pub const COMPRESSED_RGBA_S3TC_DXT1_EXT: u32   = 0x83F1;
+    pub const COMPRESSED_RGBA_S3TC_DXT3_EXT: u32   = 0x83F2;
+    pub const COMPRESSED_RGBA_S3TC_DXT5_EXT: u32   = 0x83F3;
+    pub const COMPRESSED_SRGB_S3TC_DXT1_EXT      : u32  = 0x8C4C;
+    pub const COMPRESSED_SRGB_ALPHA_S3TC_DXT1_EXT: u32  = 0x8C4D;
+    pub const COMPRESSED_SRGB_ALPHA_S3TC_DXT3_EXT: u32  = 0x8C4E;
+    pub const COMPRESSED_SRGB_ALPHA_S3TC_DXT5_EXT: u32  = 0x8C4F;
+    pub const COMPRESSED_RGBA_ASTC_4X4_KHR          : u32 = 0x93B0;
+    pub const COMPRESSED_RGBA_ASTC_5X4_KHR          : u32 = 0x93B1;
+    pub const COMPRESSED_RGBA_ASTC_5X5_KHR          : u32 = 0x93B2;
+    pub const COMPRESSED_RGBA_ASTC_6X5_KHR          : u32 = 0x93B3;
+    pub const COMPRESSED_RGBA_ASTC_6X6_KHR          : u32 = 0x93B4;
+    pub const COMPRESSED_RGBA_ASTC_8X5_KHR          : u32 = 0x93B5;
+    pub const COMPRESSED_RGBA_ASTC_8X6_KHR          : u32 = 0x93B6;
+    pub const COMPRESSED_RGBA_ASTC_8X8_KHR          : u32 = 0x93B7;
+    pub const COMPRESSED_RGBA_ASTC_10X5_KHR         : u32 = 0x93B8;
+    pub const COMPRESSED_RGBA_ASTC_10X6_KHR         : u32 = 0x93B9;
+    pub const COMPRESSED_RGBA_ASTC_10X8_KHR         : u32 = 0x93BA;
+    pub const COMPRESSED_RGBA_ASTC_10X10_KHR        : u32 = 0x93BB;
+    pub const COMPRESSED_RGBA_ASTC_12X10_KHR        : u32 = 0x93BC;
+    pub const COMPRESSED_RGBA_ASTC_12X12_KHR        : u32 = 0x93BD;
+    pub const COMPRESSED_SRGB8_ALPHA8_ASTC_4X4_KHR  : u32 = 0x93D0;
+    pub const COMPRESSED_SRGB8_ALPHA8_ASTC_5X4_KHR  : u32 = 0x93D1;
+    pub const COMPRESSED_SRGB8_ALPHA8_ASTC_5X5_KHR  : u32 = 0x93D2;
+    pub const COMPRESSED_SRGB8_ALPHA8_ASTC_6X5_KHR  : u32 = 0x93D3;
+    pub const COMPRESSED_SRGB8_ALPHA8_ASTC_6X6_KHR  : u32 = 0x93D4;
+    pub const COMPRESSED_SRGB8_ALPHA8_ASTC_8X5_KHR  : u32 = 0x93D5;
+    pub const COMPRESSED_SRGB8_ALPHA8_ASTC_8X6_KHR  : u32 = 0x93D6;
+    pub const COMPRESSED_SRGB8_ALPHA8_ASTC_8X8_KHR  : u32 = 0x93D7;
+    pub const COMPRESSED_SRGB8_ALPHA8_ASTC_10X5_KHR : u32 = 0x93D8;
+    pub const COMPRESSED_SRGB8_ALPHA8_ASTC_10X6_KHR : u32 = 0x93D9;
+    pub const COMPRESSED_SRGB8_ALPHA8_ASTC_10X8_KHR : u32 = 0x93DA;
+    pub const COMPRESSED_SRGB8_ALPHA8_ASTC_10X10_KHR: u32 = 0x93DB;
+    pub const COMPRESSED_SRGB8_ALPHA8_ASTC_12X10_KHR: u32 = 0x93DC;
+    pub const COMPRESSED_SRGB8_ALPHA8_ASTC_12X12_KHR: u32 = 0x93DD;
 }
 impl ContextConstants {
     pub fn polygon(val: f64) -> PolygonMode {

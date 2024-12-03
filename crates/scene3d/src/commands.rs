@@ -362,14 +362,13 @@ pub fn p3d_commands_exchange(app: &mut Engine, param: &mut ActionSetScene3D, cmd
         // log::error!(">>>>> p3d_commands_exchange 02");
     }
 
-    let imgtex_asset = app.world.get_resource::<ShareAssetMgr<pi_scene_shell::prelude::ResImageTexture>>().unwrap().clone();
+    let imgtex_asset = app.world.get_resource::<ShareAssetMgr<pi_scene_shell::prelude::ImageTextureFrame>>().unwrap().clone();
     let device = app.world.get_resource::<PiRenderDevice>().unwrap();
     let queue = app.world.get_resource::<PiRenderQueue>().unwrap();
     update_data_texture(&mut cmds.datatexcmd, device, queue, &imgtex_asset);
     let requests = app.world.get_resource_mut::<TextureCombineCmds>().unwrap();
     cmds.combinecmds.drain().for_each(|(requestid, (key, atlas))| {
-        let keytex = KeyImageTexture { url: key, srgb: false, file: false, compressed: false, depth_or_array_layers: 0, 
-            useage: wgpu::TextureUsages::COPY_DST | wgpu::TextureUsages::TEXTURE_BINDING
+        let keytex = KeyImageTextureFrame { url: key, file: false, compressed: false, cancombine: false, 
         };
         requests.request(requestid, keytex, atlas, &imgtex_asset);
     });

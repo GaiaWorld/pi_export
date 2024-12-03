@@ -101,6 +101,7 @@ pub fn p3d_material_uniform_tex(
     anisotropy_clamp: f64,
     border_color: f64,
     isfile: bool,
+    cancombine: bool,
     compare: Option<f64>,
 ) {
     let address_mode_u = EngineConstants::address_mode(address_mode_u);
@@ -117,10 +118,13 @@ pub fn p3d_material_uniform_tex(
             mat,
             UniformTextureWithSamplerParam {
                 slotname: key.deref().clone(),
-                filter,
-                sample: pi_export_base::constants::sampler_desc(address_mode_u,
-                    address_mode_v,
-                    address_mode_w,
+                wrapu: address_mode_u,
+                wrapv: address_mode_v,
+                wrapw: address_mode_w,
+                sample: pi_export_base::constants::sampler_desc(
+                    EAddressMode::ClampToEdge,
+                    EAddressMode::ClampToEdge,
+                    EAddressMode::ClampToEdge,
                     mag_filter,
                     min_filter,
                     mipmap_filter,
@@ -128,8 +132,8 @@ pub fn p3d_material_uniform_tex(
                     anisotropy_clamp,
                     border_color,
                 ),
-                url: EKeyTexture::Image(KeyImageTextureView::new(
-                    KeyImageTexture { url: pi_atom::Atom::from(url.to_string()), srgb, file: isfile, compressed, depth_or_array_layers: 0, useage: wgpu::TextureUsages::TEXTURE_BINDING | wgpu::TextureUsages::COPY_DST },
+                url: EKeyTexture::ImageFrame(KeyImageTextureViewFrame::new(
+                    KeyImageTextureFrame { url: pi_atom::Atom::from(url.to_string()), cancombine, file: isfile, compressed },
                     TextureViewDesc {
                         // aspect: wgpu::TextureAspect::All,
                         base_mip_level: 0,
@@ -138,6 +142,8 @@ pub fn p3d_material_uniform_tex(
                         array_layer_count: None,
                     }
                 )),
+                texture_sample: wgpu::TextureSampleType::Float { filterable: true },
+                sampler_bind_type: if filter { wgpu::SamplerBindingType::Filtering } else { wgpu::SamplerBindingType::NonFiltering },
             }
         )
     );
