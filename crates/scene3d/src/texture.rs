@@ -10,8 +10,7 @@ pub use pi_export_base::{export::{Engine, Atom}, constants::*};
 #[cfg(target_arch = "wasm32")]
 use wasm_bindgen::prelude::wasm_bindgen;
 use js_proxy_gen_macro::pi_js_export;
-
-use crate::{constants::EngineConstants, mesh::CommandsExchangeD3};
+pub use crate::{constants::EngineConstants, mesh::CommandsExchangeD3};
 pub use crate::engine::ActionSetScene3D;
 
 pub struct CombineTextureAtlas {
