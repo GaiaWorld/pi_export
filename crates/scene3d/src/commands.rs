@@ -77,6 +77,7 @@ pub struct CommandsExchangeD3 {
     pub(crate) anime_dispose: ActionListAnimeGroupDispose,
     pub(crate) anime_reset_while_start: ActionListAnimeGroupStartReset,
     pub(crate) anime_property_targetanime: ActionListPropertyTargetAnimation,
+    pub(crate) anime_goto: ActionListAnimationGroupGoto,
 
     pub(crate) trail_create: ActionListTrail,
     pub(crate) trail_age: ActionListTrailAge,
@@ -264,6 +265,7 @@ impl CommandsExchangeD3 {
         cmds.anime.action.append(&mut self.anime_action );
         cmds.anime.dispose.append(&mut self.anime_dispose );
         cmds.anime.reset_while_start.append(&mut self.anime_reset_while_start );
+        cmds.anime.goto.append(&mut self.anime_goto );
         cmds.property_targetanimation.append(&mut self.anime_property_targetanime );
         cmds.trail.create.append(&mut self.trail_create );
         cmds.trail.age.append(&mut self.trail_age );

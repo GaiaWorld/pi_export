@@ -424,6 +424,18 @@ pub fn p3d_anime_group_stop(
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
+pub fn p3d_anime_group_goto(
+    cmds: &mut CommandsExchangeD3,
+    group_key: f64,
+    amount: f64,
+) {
+    let group_key = as_entity(group_key);
+
+    cmds.anime_goto.push(AnimationGroupGoto::ops(group_key, amount as KeyFrameCurveValue));
+}
+
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
 pub fn p3d_animation_group_listen(
     cmds: &mut CommandsExchangeD3,
     group_key: f64,
