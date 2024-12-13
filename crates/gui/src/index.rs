@@ -601,7 +601,7 @@ pub fn has_res(engine: &mut Engine, path: &Atom1) -> bool {
 	// 暂时只支持纹理资源访问
 	if path.ends_with(".png") || path.ends_with(".jpg") || path.ends_with(".jpeg") || path.ends_with(".ktx") || path.ends_with(".ktx2") {
 		let reses = engine.world.get_single_res_mut::<ShareAssetMgr<TextureRes>>().unwrap();
-		return reses.get(&(path.str_hash() as u64)).is_some()
+		return reses.get(&path.str_hash()).is_some()
 	}
 	false
 }
@@ -694,13 +694,13 @@ pub fn get_success_res(
 	let result: v8::Local<v8::Array> = unsafe { v8::Local::cast(result) };
 
 	let result_keys: v8::Local<'_, v8::Value> = args.get(2);
-    if !result_keys.is_uint32_array() {
+    if !result_keys.is_float64_array() {
         let msg = v8::String::new(scope, "Invalid arguments 2th param!!!").unwrap();
         let exception = v8::Exception::type_error(scope, msg);
         scope.throw_exception(exception);
         return;
     }
-	let result_keys: v8::Local<v8::Uint32Array> = unsafe { v8::Local::cast(result_keys) };
+	let result_keys: v8::Local<v8::Float32Array> = unsafe { v8::Local::cast(result_keys) };
 
 	let res_success = engine.world.get_single_res_mut::<ResSuccess>().unwrap();
 	let res_success = &mut *res_success;
@@ -708,7 +708,7 @@ pub fn get_success_res(
 	while let Some(r) = res_success.async_list.pop() {
 		let o = vm_builtin::NativeObjectValue::NatObj(vm_builtin::external::NativeObject::new_owned(ResHandle(r.1))).into_native_object(scope);
 		result.set_index(scope, i, o.into());
-		let n = v8::Number::new(scope,  r.0.str_hash() as f64).into();
+		let n = v8::Number::new(scope,  unsafe {transmute::<_, f64>(r.0.str_hash())}).into();
 		result_keys.set_index(scope, i, n);
 		i += 1;
 	}
@@ -716,7 +716,7 @@ pub fn get_success_res(
 	for r in res_success.sync_list.drain(..) {
 		let o = vm_builtin::NativeObjectValue::NatObj(vm_builtin::external::NativeObject::new_owned(ResHandle(r.1))).into_native_object(scope);
 		result.set_index(scope, i, o.into());
-		let n = v8::Number::new(scope,  r.0.str_hash() as f64).into();
+		let n = v8::Number::new(scope,  unsafe {transmute::<_, f64>(r.0.str_hash())}).into();
 		result_keys.set_index(scope, i, n);
 		i += 1;
 	}
@@ -724,19 +724,19 @@ pub fn get_success_res(
 
 #[cfg(target_arch="wasm32")]
 #[wasm_bindgen]
-pub fn get_success_res(engine: &mut Engine, result: js_sys::Array, result_keys: &mut [u32]) {
+pub fn get_success_res(engine: &mut Engine, result: js_sys::Array, result_keys: &mut [f64]) {
 	let mut res_success = engine.world.get_single_res_mut::<ResSuccess>().unwrap();
 	let res_success = &mut *res_success;
 	let mut i = 0;
 	while let Some(r) = res_success.async_list.pop() {
 		result.set(i, ResHandle(r.1).into());
-		result_keys[i as usize] = r.0.str_hash() as u32;
+		result_keys[i as usize] =  unsafe {transmute::<_, f64>(r.0.str_hash())};
 		i += 1;
 	}
 
 	for r in res_success.sync_list.drain(..) {
 		result.set(i, ResHandle(r.1).into());
-		result_keys[i as usize] = r.0.str_hash() as u32;
+		result_keys[i as usize] = unsafe {transmute::<_, f64>(r.0.str_hash())};
 		i += 1;
 	}
 }

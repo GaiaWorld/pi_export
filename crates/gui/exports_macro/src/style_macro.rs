@@ -1493,7 +1493,7 @@ other_out_export!(
 		let key_frames = engine.world.get_single_res::<KeyFramesSheet>().unwrap();
 		let events = key_frames.get_animation_events();
 
-		return (events.len() * 5) as u32;
+		return (events.len() * 6) as u32;
 	},engine: &mut Engine,;;
 );
 
@@ -1536,15 +1536,19 @@ other_out_export!(
 					arr[i + 1] = r.0.data().version() as u32; 
 					// name hash
 					match &r.1 {
-						pi_ui_render::resource::animation_sheet::GroupType::Animation(r) => arr[i + 2] = r.1.str_hash() as u32,
-						pi_ui_render::resource::animation_sheet::GroupType::Transition(_) => arr[i + 2] = 0,
+						pi_ui_render::resource::animation_sheet::GroupType::Animation(r) => unsafe {
+							std::ptr::write(arr.as_ptr().offset((i + 2) as isize) as usize as *mut f64, transmute::<_, f64>(r.1.str_hash()));
+						},
+						pi_ui_render::resource::animation_sheet::GroupType::Transition(_) => unsafe {
+							std::ptr::write(arr.as_ptr().offset((i + 2) as isize) as usize as *mut f64, transmute::<u64, f64>(0));
+						},
 					};
 				},
 				None => continue,
 			};
-			arr[i + 3] = unsafe {transmute::<_, u8>(*ty)}  as u32; // event type
-			arr[i + 4] = *count;  // cur iter count
-			i += 5;
+			arr[i + 4] = unsafe {transmute::<_, u8>(*ty)}  as u32; // event type
+			arr[i + 5] = *count;  // cur iter count
+			i += 6;
 		}
 		i as u32
 	},arr: &mut [u32],;engine: &Engine,;

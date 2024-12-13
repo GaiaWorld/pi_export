@@ -623,11 +623,11 @@ pub fn texture_info(engine: &mut Engine) -> String {
     let info = engine.world.get_single_res::<ShareAssetMgr<AssetWithId<TextureRes>>>().unwrap();
     
     for info in &info.account().used{
-        res.push(TexInfo{ name: get_by_hash(info.name.clone().parse::<u32>().unwrap()), size: info.size as f64, is_used: true,  timeout: info.remain_timeout as f64})
+        res.push(TexInfo{ name: get_by_hash(info.name.clone().parse::<pi_atom::Usize>().unwrap()), size: info.size as f64, is_used: true,  timeout: info.remain_timeout as f64})
     }
 
     for info in &info.account().unused{
-        res.push(TexInfo{ name: get_by_hash(info.name.clone().parse::<u32>().unwrap()), size: info.size as f64, is_used: false,  timeout: info.remain_timeout as f64})
+        res.push(TexInfo{ name: get_by_hash(info.name.clone().parse::<pi_atom::Usize>().unwrap()), size: info.size as f64, is_used: false,  timeout: info.remain_timeout as f64})
     }
     serde_json::to_string(&res).unwrap()
 }

@@ -35,7 +35,7 @@ let out_wasm_js_path = `${dir}/${name}.wasm.ts`;
 fs.readFile(in_wasm_js_path, {encoding:"utf8"}, (err, data) => {
 	if(!err) {
 		data = data.replace(`import.meta.url`, '""');
-		data = data.replace(/pi_hal\-[a-z0-9]*/, 'pi_hal');
+		data = data.replace(/(from '[.a-zA-Z0-9/]*)pi_hal\-[a-z0-9]*/g, function(_match, p0) {return p0 + 'pi_hal'});
 		data = data.replace(/from\s+'(.+?)\.js'/g,  "from '$1'");
 		data = data.replace(/getObject\(arg0\)\sinstanceof\sWindow/g, "true");
 		data = data.replace(/getObject\(arg0\)\sinstanceof\sCanvasRenderingContext2D/g, "true");

@@ -1,4 +1,4 @@
-use std::sync::Arc;
+use std::{mem::transmute, sync::Arc};
 
 use pi_assets::{allocator::Allocator, asset::{Asset, Handle, Size}, mgr::AssetMgr};
 use pi_share::{Share, ShareCell};
@@ -7,7 +7,7 @@ use wasm_bindgen::{prelude::wasm_bindgen, JsValue};
 
 use js_proxy_gen_macro::pi_js_export;
 
-pub static mut DESTROY_RES: Option<Arc<dyn Fn(u32) + Send + Sync>> = None;
+pub static mut DESTROY_RES: Option<Arc<dyn Fn(u64) + Send + Sync>> = None;
 
 #[cfg(target_arch = "wasm32")]
 pub struct CanSyncFunction(js_sys::Function);
@@ -25,15 +25,17 @@ impl CanSyncFunction {
 #[cfg(target_arch = "wasm32")]
 pub fn set_destroy_callback(f: js_sys::Function) {
 	let f1 = CanSyncFunction(f);
-	unsafe {DESTROY_RES = Some(Arc::new(move |value: u32| {
+	unsafe {DESTROY_RES = Some(Arc::new(move |value: u64| {
 		f1.call(&JsValue::from_f64(0.0), &value.into());
 	}))};
 }
 #[cfg(not(target_arch = "wasm32"))]
 #[pi_js_export]
-pub fn set_destroy_callback(f: Arc<dyn Fn(u32, Option<Box<dyn FnOnce(Result<u32, String>) + Send + 'static>>) + Send + Sync + 'static>) {
-	unsafe { DESTROY_RES = Some(Arc::new(move |value: u32| {
-		(f)(value, None);
+pub fn set_destroy_callback(f: Arc<dyn Fn(f64, Option<Box<dyn FnOnce(Result<u32, String>) + Send + 'static>>) + Send + Sync + 'static>) {
+    use std::mem::transmute;
+
+	unsafe { DESTROY_RES = Some(Arc::new(move |value: u64| {
+		(f)(transmute(value), None);
 	}))};
 }
 
@@ -56,8 +58,8 @@ impl ResMgr {
 	/// 创建一个资源， 如果资源已经存在，旧的资源将被覆盖
 	/// 如果创建的资源类型未注册，将崩溃
 	#[pi_js_export]
-	pub fn create_res(&mut self, key: u32, cost: u32) -> ResRef {
-		match self.inner.insert(key, JsRes {key, cost: cost as usize}) {
+	pub fn create_res(&mut self, key: f64, cost: u32) -> ResRef {
+		match self.inner.insert(unsafe {transmute(key)}, JsRes {key: unsafe {transmute(key)}, cost: cost as usize}) {
 			Ok(r) => ResRef(r),
 			_ => unreachable!()
 		}
@@ -65,8 +67,8 @@ impl ResMgr {
 
 	/// 获取资源
 	#[pi_js_export]
-	pub fn get_res(&mut self, key: u32) -> Option<ResRef> {
-		match self.inner.get(&key) {
+	pub fn get_res(&mut self, key: f64) -> Option<ResRef> {
+		match self.inner.get(&unsafe {transmute(key)}) {
 			Some(r) => Some(ResRef(r)),
 			None => None
 		}
@@ -146,12 +148,12 @@ impl ResAllocator {
 
 /// 资源包装
 pub struct JsRes {
-	key: u32,
+	key: u64,
 	cost: usize,
 }
 
 impl Asset for JsRes {
-    type Key = u32;
+    type Key = u64;
 }
 
 impl Size for JsRes {

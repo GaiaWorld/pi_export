@@ -167,15 +167,15 @@ impl Atom {
 	pub fn from_string(value: String) -> Self { Atom::new(pi_atom::Atom::from(value)) }
 
 	#[cfg(feature = "pi_js_export")]
-	pub fn get_string_by_hash(value: u32) -> Option<String> { 
-		match pi_atom::get_by_hash(value as u32) {
+	pub fn get_string_by_hash(value: f64) -> Option<String> { 
+		match pi_atom::get_by_hash(unsafe {transmute(value)}) {
 			Some(r) => Some(r.as_ref().to_string()),
 			None => None,
 		} 
 	}
 
 	#[cfg(feature = "pi_js_export")]
-	pub fn get_hash(&self) -> u32 { self.0.str_hash() as u32 }
+	pub fn get_hash(&self) -> f64 { unsafe {transmute(self.0.str_hash())} }
 }
 
 /// 设置日志过滤器
