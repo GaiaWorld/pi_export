@@ -78,6 +78,12 @@ pub struct CommandsExchangeD3 {
     pub(crate) anime_reset_while_start: ActionListAnimeGroupStartReset,
     pub(crate) anime_property_targetanime: ActionListPropertyTargetAnimation,
     pub(crate) anime_goto: ActionListAnimationGroupGoto,
+    pub(crate) anime_float: ActionListAnimatorableFloat,
+    pub(crate) anime_sint: ActionListAnimatorableSint,
+    pub(crate) anime_uint: ActionListAnimatorableUint,
+    pub(crate) anime_vec2: ActionListAnimatorableVec2,
+    pub(crate) anime_vec3: ActionListAnimatorableVec3,
+    pub(crate) anime_vec4: ActionListAnimatorableVec4,
 
     pub(crate) trail_create: ActionListTrail,
     pub(crate) trail_age: ActionListTrailAge,
@@ -153,6 +159,12 @@ impl CommandsExchangeD3 {
         self.anime_dispose              .capacity() +
         self.anime_reset_while_start    .capacity() +
         self.anime_property_targetanime .capacity() +
+        self.anime_float .capacity() +
+        self.anime_sint .capacity() +
+        self.anime_uint .capacity() +
+        self.anime_vec2 .capacity() +
+        self.anime_vec3 .capacity() +
+        self.anime_vec4 .capacity() +
         self.trail_create               .capacity() +
         self.trail_age                  .capacity() +
         self.parsys_create              .capacity() +
@@ -161,61 +173,7 @@ impl CommandsExchangeD3 {
         self.parsys_trailmaterial       .capacity() +
         self.sprite_create              .capacity() +
         self.sprite_modify              .capacity() +
-        cmds.scene.create               .capacity() +
-        cmds.scene.options              .capacity() +
-        cmds.scene_dispose              .capacity() +
-        cmds.scene.boundingboxdisplay   .capacity() +
-        cmds.scene.collider             .capacity() +
-        cmds.obj_dispose                .capacity() +
-        cmds.transform.create           .capacity() +
-        cmds.transform.localsrt         .capacity() +
-        cmds.transform.localrotq        .capacity() +
-        cmds.transform.tree             .capacity() +
-        cmds.transform.enable           .capacity() +
-        cmds.camera.create              .capacity() +
-        cmds.camera.param               .capacity() +
-        cmds.camera.target              .capacity() +
-        cmds.camera.forceinclude        .capacity() +
-        cmds.mesh.create                .capacity() +
-        cmds.mesh.state                 .capacity() +
-        cmds.mesh.value_state           .capacity() +
-        cmds.mesh.render_state          .capacity() +
-        cmds.mesh.forcelighting         .capacity() +
-        cmds.mesh.bounding              .capacity() +
-        cmds.mesh.layermask             .capacity() +
-        cmds.skin.skin_create           .capacity() +
-        cmds.skin.bone_create           .capacity() +
-        cmds.skin.skin_use              .capacity() +
-        cmds.skin.bone_pose             .capacity() +
-        cmds.instance.create            .capacity() +
-        cmds.instance.attr              .capacity() +
-        cmds.anime_instance             .capacity() +
-        cmds.geometry.create            .capacity() +
-        cmds.material.usemat            .capacity() +
-        cmds.material.create            .capacity() +
-        cmds.material.val               .capacity() +
-        cmds.material.valb              .capacity() +
-        cmds.light.create               .capacity() +
-        cmds.light.param                .capacity() +
-        cmds.shadow.param               .capacity() +
-        cmds.shadow.create              .capacity() +
-        cmds.renderer.create            .capacity() +
-        cmds.renderer.connect           .capacity() +
-        cmds.renderer.modify            .capacity() +
-        cmds.renderer.target            .capacity() +
-        cmds.anime.create               .capacity() +
-        cmds.anime.action               .capacity() +
-        cmds.anime.dispose              .capacity() +
-        cmds.anime.reset_while_start    .capacity() +
-        cmds.property_targetanimation   .capacity() +
-        cmds.trail.create               .capacity() +
-        cmds.trail.age                  .capacity() +
-        cmds.parsys.create              .capacity() +
-        cmds.parsys.calculator          .capacity() +
-        cmds.parsys.state               .capacity() +
-        cmds.parsys.trailmaterial       .capacity() +
-        cmds.spritecreate               .capacity() +
-        cmds.spritemodify               .capacity() + 0
+        cmds.memsize()
     }
     pub(crate) fn exchange(&mut self, cmds: &mut pi_3d::ActionSets) {
         cmds.scene.create.append(&mut self.scene_create );
@@ -247,7 +205,14 @@ impl CommandsExchangeD3 {
         cmds.skin.bone_pose.append(&mut self.skin_bonepose );
         cmds.instance.create.append(&mut self.instance_create );
         cmds.instance.attr.append(&mut self.instance_attr );
-        cmds.anime_instance.append(&mut self.instance_targetanime );
+        cmds.animation.anime_instance.append(&mut self.instance_targetanime );
+        cmds.animation.anime_float.append(&mut self.anime_float );
+        cmds.animation.anime_float.append(&mut self.anime_float );
+        cmds.animation.anime_sint.append(&mut self.anime_sint );
+        cmds.animation.anime_uint.append(&mut self.anime_uint );
+        cmds.animation.anime_vec2.append(&mut self.anime_vec2 );
+        cmds.animation.anime_vec3.append(&mut self.anime_vec3 );
+        cmds.animation.anime_vec4.append(&mut self.anime_vec4 );
         cmds.geometry.create.append(&mut self.geometry_create );
         cmds.material.usemat.append(&mut self.material_usemat );
         cmds.material.create.append(&mut self.material_create );
