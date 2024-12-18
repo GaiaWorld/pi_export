@@ -518,6 +518,21 @@ pub fn p3d_query_resource_state(app: &mut Engine, param: &mut ActionSetScene3D, 
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
+pub fn p3d_query_resource_memory(app: &mut Engine, param: &mut ActionSetScene3D, result: &mut [f64]) -> f64 {
+	pi_export_base::export::await_last_frame(app);
+    
+    let mut offset = 0;
+    let cmds = param.resource.get_mut(&mut app.world);
+    offset = cmds.record(result, offset);
+    let cmds = param.acts.get_mut(&mut app.world);
+    offset = cmds.record(result, offset);
+    offset += 1; result[offset] = app.world.mem_size() as f64;
+
+    (offset + 1) as f64
+}
+
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
 pub fn p3d_material_state(app: &mut Engine, param: &mut ActionSetScene3D, result: &mut [f32]) {
     
     param.materials.align(&app.world);
