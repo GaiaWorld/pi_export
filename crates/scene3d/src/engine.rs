@@ -526,7 +526,7 @@ pub fn p3d_query_resource_memory(app: &mut Engine, param: &mut ActionSetScene3D,
     offset = cmds.record(result, offset);
     let cmds = param.acts.get_mut(&mut app.world);
     offset = cmds.record(result, offset);
-    offset += 1; result[offset] = app.world.mem_size() as f64;
+    offset += 0; result[offset] = app.world.mem_size() as f64;
 
     (offset + 1) as f64
 }
