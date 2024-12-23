@@ -969,7 +969,7 @@ fn ab_query_func(arg: &mut AbQueryArgs, id: EntityKey, aabb: &Aabb2, _bind: &())
         arg.gui.entitys.get_component_by_index::<Layer>(*id, arg.gui.layer_component), 
         arg.gui.entitys.get_component_by_index::<IsShow>(*id, arg.gui.is_show_component), 
         arg.gui.entitys.get_component_by_index::<ZRange>(*id, arg.gui.zrange_component), 
-        arg.gui.entitys.get_component_by_index::<InPassId>(*id, arg.gui.inpass_component)
+        arg.gui.entitys.get_component_by_index::<InPassId>(*id, arg.gui.inpass_component),
     ) {
         // 如果enable false 表示不接收事件, visibility为false， 也无法接收事件、不在树上也不能接收事件
         (Ok(r0), Ok(r1), Ok(r2), Ok(r3)) if (r0.layer() != 0 && r1.get_enable() && r1.get_visibility() && r1.get_display()) => (r2, r3),
@@ -982,15 +982,16 @@ fn ab_query_func(arg: &mut AbQueryArgs, id: EntityKey, aabb: &Aabb2, _bind: &())
             let mut inpass = inpass.0;
             while !inpass.is_null() {
                 // log::warn!("inpass======={:?}", (inpass, id));
-                if let (Ok(parent), Ok(quad), Ok(oveflow)) = (
+                if let (Ok(parent), Ok(quad)) = (
                     arg.gui.entitys.get_component_by_index::<ParentPassId>(*inpass, arg.gui.parentpass_component),
                     arg.gui.entitys.get_component_by_index::<Quad>(*inpass, arg.gui.quad_component),
-                    arg.gui.entitys.get_component_by_index::<Overflow>(*inpass, arg.gui.overflow_component),
                 ){
                     inpass = parent.0;
-                    if oveflow.0 {
-                        if !intersects(&arg.aabb, quad) {
-                            return; // 如果不想交，直接返回，该点不能命中该节点
+                    if let Ok(oveflow) = arg.gui.entitys.get_component_by_index::<Overflow>(*inpass, arg.gui.overflow_component) {
+                        if oveflow.0 {
+                            if !intersects(&arg.aabb, quad) {
+                                return; // 如果不想交，直接返回，该点不能命中该节点
+                            }
                         }
                     }
                 } else {

@@ -15,7 +15,7 @@ pi_js_export = []
 
 [dependencies]
 pi_flex_layout = "=0.2.13"
-pi_hal = {version = "=0.1.40", registry = "yn"}
+pi_hal = {version = "=0.1.41", registry = "yn"}
 pi_sdf = {version = "=0.1.20", registry = "yn"}
 async-executor = "=1.6.0" #1.7.1bug
 pi_export_gui = { path = "../gui", default-features=false, features=["record"] }
@@ -33,7 +33,7 @@ talc = "=4.4.0"
 wasm-bindgen = { version = "=0.2.92" }
 bevy_ecs = "0.11"
 bevy_app = "0.11"
-pi_world = "0.1.20"
+pi_world = "=0.1.25"
 # pi_hal = {version = "0.1", registry = "yn"}
 # pi_hal = {version = "=0.1.37", registry = "yn"}
 pi_winit = {version = "0.27", registry="yn", package="winit"}
