@@ -90,6 +90,8 @@ Promise.resolve().then(() => {
 		// //PI_END
 		// `);
 
+		data = data.replace("function getObject(idx) { return heap[idx]; }", "function getObject(idx) { return heap[idx] || null; }");
+
 		fs.writeFile(out_wasm_js_path, data, {encoding:"utf8"}, (err) => {
 			if(err) {
 				console.log("写文件失败！！", JSON.stringify(err));
