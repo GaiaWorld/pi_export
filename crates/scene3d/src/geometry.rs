@@ -89,7 +89,7 @@ impl GeometryMeta {
     #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
     #[pi_js_export]
     pub fn create_box() -> Self {
-        Self(CubeBuilder::attrs_meta(), Some(CubeBuilder::indices_meta()))
+        Self(CubeBuilder::attrs_meta(), CubeBuilder::indices_meta())
     }
     #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
     #[pi_js_export]
