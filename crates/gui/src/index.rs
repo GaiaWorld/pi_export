@@ -132,7 +132,10 @@ pub fn create_node(gui: &mut Gui) -> f64 {
 	let entity = gui.entitys.alloc_entity();
 
 	#[cfg(feature="record")]
-	gui.node_cmd.0.push(entity);
+    if let TraceOption::Record = gui.record_option {
+        gui.node_cmd.0.push(entity);
+    }
+	
 
 	gui.commands.init_node(entity, NodeTag::Div);
 	// log::warn!("entity :{:?}", entity);
@@ -145,7 +148,9 @@ pub fn create_vnode(gui: &mut Gui) -> f64 {
 	let entity = gui.entitys.alloc_entity();
 
 	#[cfg(feature="record")]
-	gui.node_cmd.0.push(entity);
+    if let TraceOption::Record = gui.record_option {
+	    gui.node_cmd.0.push(entity);
+    }
 
 	gui.commands.init_node(entity, NodeTag::VNode);
 	unsafe { transmute(entity) }
@@ -157,7 +162,9 @@ pub fn create_text_node(gui: &mut Gui) -> f64 {
 	let entity = gui.entitys.alloc_entity();
 
 	#[cfg(feature="record")]
-	gui.node_cmd.0.push(entity);
+    if let TraceOption::Record = gui.record_option {
+	    gui.node_cmd.0.push(entity);
+    }
 
 	gui.commands.init_node(entity, NodeTag::Span);
 	unsafe { transmute(entity) }
@@ -169,7 +176,9 @@ pub fn create_image_node(gui: &mut Gui) -> f64 {
 	let entity = gui.entitys.alloc_entity();
 
 	#[cfg(feature="record")]
-	gui.node_cmd.0.push(entity);
+    if let TraceOption::Record = gui.record_option {
+	    gui.node_cmd.0.push(entity);
+    }
 
 	gui.commands.init_node(entity, NodeTag::Image);
 	unsafe { transmute(entity) }
@@ -181,7 +190,9 @@ pub fn create_canvas_node(gui: &mut Gui) -> f64 {
 	let entity = gui.entitys.alloc_entity();
 
 	#[cfg(feature="record")]
-	gui.node_cmd.0.push(entity);
+    if let TraceOption::Record = gui.record_option {
+	    gui.node_cmd.0.push(entity);
+    }
 
 	gui.commands.init_node(entity, NodeTag::Canvas);
 	unsafe { transmute(entity) }
@@ -404,7 +415,10 @@ pub fn set_next_record(engine: &mut Engine, bin: &[u8]) {
 	{
 		match postcard::from_bytes::<Records>(bin) {
 			Ok(r) => {
-				engine.world.insert_single_res(r);
+                engine.world.init_single_res::<Records>();
+                let records = engine.world.get_single_res_mut::<Records>().unwrap();
+                **records = r;
+                // log::warn!("set_next_record===={:?}", r.list.len());
 				// 重设播放状态
 				let play_state = engine.world.get_single_res_mut::<PlayState>().unwrap();
 				play_state.is_running = true;
@@ -422,13 +436,30 @@ pub fn set_next_record(engine: &mut Engine, bin: &[u8]) {
 	
 }
 
+// 设置下一帧的指令记录为最后一次设置的记录（重复播放最后一次）
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
+pub fn set_next_record_last(engine: &mut Engine) {
+    let records = engine.world.get_single_res_mut::<Records>().unwrap();
+    records.cur_frame_count = 0;
+    // log::warn!("set_next_record===={:?}", r.list.len());
+    // 重设播放状态
+    let play_state = engine.world.get_single_res_mut::<PlayState>().unwrap();
+    play_state.is_running = true;
+    play_state.next_reord_index = 0;
+    play_state.next_state_index = 0;
+    play_state.cur_frame_count = 0;
+}
+
+
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn is_play_end(engine: &mut Engine) -> bool {
 	pi_export_base::export::await_last_frame(engine);
 	#[cfg(feature="record")]
 	match engine.world.get_single_res_mut::<PlayState>() {
-		Some(r) => !r.is_running,
+		Some(r) => {
+            !r.is_running},
 		None => false,
 	}
 	#[cfg(not(feature="record"))]

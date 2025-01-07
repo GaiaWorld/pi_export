@@ -42,6 +42,11 @@ pub fn create_gui(
 		let debug: pi_ui_render::system::base::node::cmd_play::TraceOption = unsafe { transmute(debug as u8) };
 		engine.add_plugins(UiPlugin {cmd_trace: debug.clone(), font_type: FontType::Sdf2});
 		gui.record_option = debug;
+		if let pi_ui_render::system::base::node::cmd_play::TraceOption::Record = debug {
+			gui.commands.is_record = true;
+			let com = engine.world.get_single_res_mut::<pi_ui_render::prelude::UserCommands>().unwrap();
+            com.is_record = true;
+		}
 	}
 
 	#[cfg(not(feature="record"))]

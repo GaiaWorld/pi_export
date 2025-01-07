@@ -62,8 +62,8 @@ pub fn serialize_class_map_list(class_map: &ClassMapList) -> Vec<u8> {
 #[allow(unused_attributes)]
 #[wasm_bindgen]
 pub fn deserialize_class_map(bin: &[u8]) {
-    match postcard::from_bytes::<ClassMap>(bin) {
-        Ok(r) => log::warn!(" deserialize_class_map success: {:?}", r),
+    match postcard::from_bytes::<Vec<ClassMap>>(bin) {
+        Ok(r) => println!(" deserialize_class_map success: {:?}", r),
         Err(e) => {
             log::error!("deserialize_class_map error: {:?}", e);
             return;
@@ -76,5 +76,29 @@ pub fn deserialize_class_map(bin: &[u8]) {
 pub fn init_log(level: pi_web_logger::Level) {
     let _r = pi_web_logger::init_with_level(level);
 	log::info!("init_logger ok!");
+}
+
+#[test]
+fn test() {
+   let css =  "
+.c1643896642{
+    color: #000000;
+}
+.c967772491{
+    text-gradient: linear-gradient(180deg, #FF453D 0%, #FFC017 50%, #FFF1B4 100%);
+}";
+
+let mut class_map_list = ClassMapList::default();
+paser_class_map(css, 0, &mut class_map_list);
+let r = serialize_class_map_list(&class_map_list);
+deserialize_class_map(r.as_slice());
+println!("map: {:?}", &class_map_list.0);
+let mut class_sheet = pi_style::style_type::ClassSheet::default();
+for v in class_map_list.0.iter(){
+    v.clone().to_class_sheet(&mut class_sheet);
+}
+println!("class_sheet: {:?}", class_sheet)
+
+
 }
 

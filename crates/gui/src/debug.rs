@@ -5,6 +5,7 @@ use pi_atom::get_by_hash;
 use pi_atom::Atom;
 use pi_bevy_asset::ShareAssetMgr;
 use pi_bevy_ecs_extend::prelude::Down;
+use pi_bevy_ecs_extend::prelude::Root;
 use pi_bevy_ecs_extend::prelude::Up;
 use pi_bevy_ecs_extend::system_param::tree::Layer;
 use pi_bevy_render_plugin::PiRenderGraph;
@@ -22,6 +23,7 @@ use pi_ui_render::components::user::{TextStyle, TextShadow, TextOverflowData, Te
 use pi_ui_render::components::user::{BorderColor, BackgroundColor, BlendMode, ClassName, FlexNormal, MaskImage, MinMax, NodeState, StyleAttribute, FitType, ZIndex, Vector2, TransformWillChange, Transform};
 use pi_ui_render::resource::fragment::DebugInfo;
 use pi_ui_render::resource::RenderContextMarkType;
+use pi_world::filter::With;
 use serde::{Deserialize, Serialize};
 
 use pi_style::style::Point2;
@@ -297,6 +299,14 @@ pub fn get_class(engine: &mut Engine, class_name: u32) -> String {
 
 	serde_json::to_string(&class).unwrap()
 }
+
+
+// #[pi_js_export]
+// #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+// pub fn get_gui_root(engine: &mut Engine) -> Option<Entity> {
+//     let mut query = engine.world.query::<Entity, (With<Root>, With<Size>)>();
+//     query.iter(&engine.world).next()
+// }
 
 #[allow(unused_attributes)]
 #[pi_js_export]

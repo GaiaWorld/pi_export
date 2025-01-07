@@ -91,6 +91,11 @@ pub fn create_gui(
 		let debug: pi_ui_render::system::base::node::cmd_play::TraceOption = unsafe { transmute(debug) };
 		engine.app_mut().add_plugins(UiPlugin {cmd_trace: debug.clone(), font_type: FontType::Sdf2});
 		gui.record_option = debug;
+        if let pi_ui_render::system::base::node::cmd_play::TraceOption::Record = debug {
+			gui.commands.is_record = true;
+            let com = engine.world.get_single_res_mut::<pi_ui_render::prelude::UserCommands>().unwrap();
+            com.is_record = true;
+		}
 	}
 
 	#[cfg(not(feature="record"))]
@@ -113,7 +118,9 @@ pub fn create_fragment(gui: &mut Gui, mut arr: Float64Array, count: u32, key: u3
 	while index < count {
 		let entity = gui.entitys.alloc_entity();
 		#[cfg(feature="record")]
-		gui.node_cmd.0.push(entity);
+        if let pi_ui_render::system::base::node::cmd_play::TraceOption::Record = gui.record_option {
+		    gui.node_cmd.0.push(entity);
+        }
 
 		arr.set_index(index, unsafe { transmute(entity) });
 		entitys.push(entity);

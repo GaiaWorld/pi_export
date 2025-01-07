@@ -48,6 +48,13 @@ static ALLOCATOR: talc::Talck<talc::locking::AssumeUnlockable, talc::ClaimOnOom>
     talc::Talc::new(talc::ClaimOnOom::new(span)).lock()
 };
 
+
+#[allow(unused_attributes)]
+#[wasm_bindgen]
+pub fn get_counters() -> String {
+	format!("{:?}", ALLOCATOR.lock().get_counters())
+}
+
 #[allow(unused_attributes)]
 #[wasm_bindgen]
 pub fn init_logger(_level: pi_web_logger::Level) {
