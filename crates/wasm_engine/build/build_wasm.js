@@ -90,7 +90,7 @@ Promise.resolve().then(() => {
 		// //PI_END
 		// `);
 
-		data = data.replace("function getObject(idx) { return heap[idx]; }", "function getObject(idx) { return heap[idx] || null; }");
+		data = data.replace("function getObject(idx) { return heap[idx]; }", "function getObject(idx) { let result = heap[idx]; if (result === undefined) { return null } else { return result }; }");
 
 		fs.writeFile(out_wasm_js_path, data, {encoding:"utf8"}, (err) => {
 			if(err) {
