@@ -153,8 +153,46 @@ pub fn p3d_material_uniform_tex(
 #[pi_js_export]
 pub fn p3d_material_uniform_tex_from_render_target(
     cmds: &mut CommandsExchangeD3, mat: f64, key: &Atom, key_tilloff: &Atom, url: f64,
+    filter: bool,
+    address_mode_u: f64,
+    address_mode_v: f64,
+    address_mode_w: f64,
+    mag_filter: f64,
+    min_filter: f64,
+    mipmap_filter: f64,
+    anisotropy_clamp: f64,
+    border_color: f64,
+    compare: Option<f64>,
 ) {
-    let texparam = UniformTextureWithSamplerParam { slotname: key.deref().clone(), ..Default::default() };
+    let address_mode_u = EngineConstants::address_mode(address_mode_u);
+    let address_mode_v = EngineConstants::address_mode(address_mode_v);
+    let address_mode_w = EngineConstants::address_mode(address_mode_w);
+    let mag_filter = ContextConstants::filter_mode(mag_filter);
+    let min_filter = ContextConstants::filter_mode(min_filter);
+    let mipmap_filter = ContextConstants::filter_mode(mipmap_filter);
+    let compare = if let Some(compare) = compare { Some(ContextConstants::compare_function(compare).val2()) } else { None };
+    let anisotropy_clamp = EngineConstants::anisotropy_clamp(anisotropy_clamp);
+    let border_color = EngineConstants::border_color(border_color);
+    let texparam = UniformTextureWithSamplerParam { 
+        slotname: key.deref().clone(),
+        wrapu: address_mode_u,
+        wrapv: address_mode_v,
+        wrapw: address_mode_w,
+        sample: pi_export_base::constants::sampler_desc(
+            EAddressMode::ClampToEdge,
+            EAddressMode::ClampToEdge,
+            EAddressMode::ClampToEdge,
+            mag_filter,
+            min_filter,
+            mipmap_filter,
+            compare,
+            anisotropy_clamp,
+            border_color,
+        ),
+        texture_sample: wgpu::TextureSampleType::Float { filterable: true },
+        sampler_bind_type: if filter { wgpu::SamplerBindingType::Filtering } else { wgpu::SamplerBindingType::NonFiltering },
+        ..Default::default()
+    };
 
     // let address_mode_u = EngineConstants::address_mode(address_mode_u);
     // let address_mode_v = EngineConstants::address_mode(address_mode_v);
