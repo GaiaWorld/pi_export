@@ -36,7 +36,7 @@ use pi_world::world::ComponentIndex;
 use serde::{Serialize, Deserialize};
 use js_proxy_gen_macro::pi_js_export;
 #[cfg(feature="record")]
-use pi_ui_render::system::base::node::cmd_play::{Records, CmdNodeCreate, PlayState, TraceOption };
+pub use pi_ui_render::system::base::node::cmd_play::{Records, CmdNodeCreate, PlayState, TraceOption };
 pub use pi_export_base::export::Atom as Atom1;
 use pi_ui_render::system::res_load::ResSuccess;
 // pub use pi_export_system::blob::Blob;
@@ -440,15 +440,18 @@ pub fn set_next_record(engine: &mut Engine, bin: &[u8]) {
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn set_next_record_last(engine: &mut Engine) {
-    let records = engine.world.get_single_res_mut::<Records>().unwrap();
-    records.cur_frame_count = 0;
-    // log::warn!("set_next_record===={:?}", r.list.len());
-    // 重设播放状态
-    let play_state = engine.world.get_single_res_mut::<PlayState>().unwrap();
-    play_state.is_running = true;
-    play_state.next_reord_index = 0;
-    play_state.next_state_index = 0;
-    play_state.cur_frame_count = 0;
+    #[cfg(feature="record")]
+    {
+        let records = engine.world.get_single_res_mut::<Records>().unwrap();
+        records.cur_frame_count = 0;
+        // log::warn!("set_next_record===={:?}", r.list.len());
+        // 重设播放状态
+        let play_state = engine.world.get_single_res_mut::<PlayState>().unwrap();
+        play_state.is_running = true;
+        play_state.next_reord_index = 0;
+        play_state.next_state_index = 0;
+        play_state.cur_frame_count = 0;
+    }
 }
 
 
