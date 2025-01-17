@@ -98,6 +98,8 @@ pub struct CommandsExchangeD3 {
 
     pub(crate) datatexcmd: DataTextureCmds,
     pub(crate) combinecmds: XHashMap<u32, (Atom, XHashMap<Atom, (u32, u16, bool, u32, u32, u32, u32)>)>,
+    
+    pub(crate) sprite_frames: (usize, Vec<SpriteFrame>),
 }
 
 
@@ -328,6 +330,9 @@ pub fn p3d_commands_exchange(app: &mut Engine, param: &mut ActionSetScene3D, cmd
         cmds.exchange(&mut sets);
         // log::error!(">>>>> p3d_commands_exchange 02");
     }
+
+    let mut spriteframes = app.world.get_resource_mut::<ResSpriteFrames>().unwrap();
+    spriteframes.0.append(&mut cmds.sprite_frames.1);
 
     let imgtex_asset = app.world.get_resource::<ShareAssetMgr<pi_scene_shell::prelude::ImageTextureFrame>>().unwrap().clone();
     let device = app.world.get_resource::<PiRenderDevice>().unwrap();
