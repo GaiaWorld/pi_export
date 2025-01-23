@@ -44,6 +44,15 @@ pub fn p3d_sprite_frame_data(cmds: &mut CommandsExchangeD3, sprite: f64, tilloff
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
+pub fn p3d_record_sprite_frame_data(cmds: &mut CommandsExchangeD3, data: &[u16]) -> f64 {
+    cmds.sprite_frames.1.push(SpriteFrame::from_data(data));
+    let result = cmds.sprite_frames.0;
+    cmds.sprite_frames.0 = cmds.sprite_frames.0 + 1;
+    result as f64
+}
+
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
 pub struct PTextureFrameAtlas(TextureFrameAtlas);
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
@@ -72,20 +81,21 @@ pub fn p3d_texture_frame_atlas_append_frame(atlas: &mut PTextureFrameAtlas, fram
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_texture_frame_atlas_append_animation(atlas: &mut PTextureFrameAtlas, anim_name: &Atom, animframeidxs: &[u16]) -> f64 {
-    let idxanime = atlas.0.append_animation(anim_name.to_string(), animframeidxs.to_vec());
+    // let idxanime = atlas.0.append_animation(anim_name.to_string(), animframeidxs.to_vec());
 
-    return idxanime as f64;
+    // return idxanime as f64;
+    return 0.
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_texture_frame_atlas_cache(app: &mut Engine, atlas: &PTextureFrameAtlas) -> Option<ResTextureFrameAtlas> {
-    if let Some(atlasmgr) = app.world.get_resource_mut::<TextureFrameAtlasManager>() {
-        let key = atlas.0.image.asset_u64();
-        if let Ok(result) = atlasmgr.insert(key, atlas.0.clone()) {
-            return Some(ResTextureFrameAtlas(result));
-        }
-    }
+    // if let Some(atlasmgr) = app.world.get_resource_mut::<TextureFrameAtlasManager>() {
+    //     let key = atlas.0.image.asset_u64();
+    //     if let Ok(result) = atlasmgr.insert(key, atlas.0.clone()) {
+    //         return Some(ResTextureFrameAtlas(result));
+    //     }
+    // }
 
     return None;
 }

@@ -27,6 +27,7 @@ use wgpu::{TextureView, Buffer};
 #[cfg(not(target_arch = "wasm32"))]
 pub use pi_winit::window::Window;
 
+use pi_bevy_render_plugin::PiRenderOptions;
 // pub struct FrameEndOnceLockWrap<F: FnMut() + Send + Sync>(pub OnceLock<Box<dyn FnMut() + Send + Sync>>);
 
 static mut FRAME_END_CB: OnceLock<Box<dyn FnMut() + Send + Sync + 'static>> = OnceLock::new();
@@ -275,9 +276,7 @@ pub fn create_engine(canvas: web_sys::HtmlCanvasElement, width: u32, height: u32
 #[cfg(feature="pi_js_export")]
 #[cfg(not(target_arch = "wasm32"))]
 pub fn create_engine(window: &Arc<Window>, width: u32, height: u32, asset_mgr: &ResAllocator, asset_total_capacity: u32, asset_config: &str, collect_interval: u32) -> Engine {
-    use pi_bevy_render_plugin::PiRenderOptions;
     use wgpu::Backend;
-
 
     let mut app = App::new();
     // window_plugin.add_primary_window = false;
