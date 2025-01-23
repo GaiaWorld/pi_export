@@ -433,6 +433,14 @@ pub fn fram_call(engine: &mut Engine, reset_state: bool) {
 	}
 }
 
+// 将实体id转化为asimage的url
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[cfg(feature = "pi_js_export")]
+pub fn entity_to_asimage_url(entity: f64) -> String {
+	let entity = unsafe { transmute::<f64, Entity>(entity) };
+	pi_bevy_render_plugin::asimage_url::entity_to_asimage_url(entity)
+}
+
 #[cfg(all(feature="pi_js_export", not(target_arch="wasm32")))]
 // 等待上次帧运行结束
 pub fn await_last_frame(engine: &mut Engine) {
