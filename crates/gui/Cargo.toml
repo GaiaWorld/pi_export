@@ -57,14 +57,14 @@ polygon2 = "0.3"
 json ="0.12"
 pi_slotmap_tree ="0.3"
 
-pi_flex_layout = "0.2"
+pi_flex_layout = "0.3"
 pi_spatial = "0.5"
 pi_hal = {version = "0.1", registry = "yn"}
 js_proxy_gen_macro = { registry = "yn", version = "0.2" }
 pi_postprocess = {version = "0.1", registry = "yn"}
 pi_curves = {version = "0.1", registry = "yn"}
 pi_animation = {version = "0.1", registry = "yn"}
-pi_style = {version = "0.1", registry = "yn"}
+pi_style = {version = "0.2", registry = "yn"}
 pi_futures="0.1"
 pi_time = "0.3"
 siphasher = {version="0.3", features=["serde_no_std"]}

@@ -436,7 +436,7 @@ pub fn fram_call(engine: &mut Engine, reset_state: bool) {
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[cfg(feature = "pi_js_export")]
 pub fn entity_to_asimage_url(entity: f64) -> String {
-	let entity = unsafe { transmute::<f64, Entity>(entity) };
+	let entity = unsafe { transmute::<f64, pi_world::world::Entity>(entity) };
 	pi_bevy_render_plugin::asimage_url::entity_to_asimage_url(entity)
 }
 
