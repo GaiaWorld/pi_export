@@ -76,7 +76,7 @@ debug = false
 
 [patch.yn]
 pi_sdf = { path = "../pi_sdf" }
-pi_bon_decode = { path = "../pi_bon_decode"}
+# pi_bon_decode = { path = "../pi_bon_decode"}
 pi_hal = { path = "../pi_hal" }
 pi_wgpu = { path = "../pi_wgpu" }
 # pi_glow = {path = "../pi_glow"}
