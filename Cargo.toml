@@ -56,7 +56,7 @@ debug = false
 # pi_graph = { path = "../pi_graph" }
 # pi_async_graph = { path = "../pi_async_graph" }
 # pi_spatial ={path="../pi_spatial"}
-# wasm-bindgen = { path = "../wasm-bindgen" }
+wasm-bindgen = { path = "../wasm-bindgen" }
 # pi_polygon = { path = "../pi_polygon" }
 
 # pi_world = { path = "../pi_world" }
