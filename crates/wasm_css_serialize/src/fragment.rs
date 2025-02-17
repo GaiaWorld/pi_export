@@ -1,9 +1,10 @@
-use std::collections::VecDeque;
+use std::{collections::VecDeque, sync::atomic::AtomicBool};
 use std::str::FromStr;
 use cssparser::{ParserInput, Parser};
+use log::Level;
 use pi_style::style_parse::parser_style_items;
 use pi_hash::XHashMap;
-use pi_ui_render::resource::fragment::{NodeFragment, NodeTag, Fragments};
+use pi_ui_render::{components::user::{serialize::{SvgShapeType, SvgTypeAttr}, svg_parser_style_items, SvgShapeEnum}, resource::fragment::{Attributes, Fragments, NodeFragment, NodeTag}};
 use serde::{Serialize, Deserialize};
 use pi_null::Null;
 use wasm_bindgen::prelude::wasm_bindgen;
@@ -67,8 +68,22 @@ fn parse_node(node: &NodeFragmentJson, scope_hash: u32, fragments: &mut Vec<Node
 
 	let mut input = ParserInput::new(&node.style);
 	let mut parse = Parser::new(&mut input);
-	let mut style = VecDeque::new();
-	parser_style_items(&mut parse, &mut style, scope_hash as usize);
+	let style = if let NodeTag::Svg  | NodeTag::Rect | NodeTag::Circle | NodeTag::Ellipse| NodeTag::Line | NodeTag::Polygon | NodeTag::Polyline | NodeTag::Path | NodeTag::Defs
+	|  NodeTag::Filter | NodeTag::LinearGradient | NodeTag::Stop | NodeTag::FeDropShadow = tag {
+		let mut style = VecDeque::new();
+		println!("========== tag.to_svg_shape(): {:?}", (tag, tag.to_svg_shape()));
+		if let Some(shape) = tag.to_svg_shape(){
+			style.push_back(SvgTypeAttr::SvgShape(SvgShapeType(shape)));
+		}
+		svg_parser_style_items(&mut parse, &mut style, scope_hash as usize, tag);
+		Attributes::SvgAttributes(style)
+	} else {
+		let mut style = VecDeque::new();
+		
+		parser_style_items(&mut parse, &mut style, scope_hash as usize);
+		Attributes::GuiAttributes(style)
+	};
+	println!("tag = : {:?}", tag);
 
 	fragments.push(NodeFragment {
 		tag,

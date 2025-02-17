@@ -10,6 +10,8 @@ pub mod style_macro {
     use ordered_float::NotNan;
     use pi_flex_layout::prelude::*;
     use pi_style::style::*;
+    use pi_ui_render::components::user::serialize::*;
+    use pi_ui_render::components::user::SvgColor;
     use pi_style::style_type::*;
     use pi_ui_render::resource::NodeCmd;
     use pi_ui_render::components::user::RadialWave;
@@ -5567,6 +5569,1052 @@ pub mod style_macro {
         gui.commands.set_style(node_id, ResetAnimationPlayStateType);
     }
     pub mod debug {}
+    #[cfg(feature = "pi_js_export")]
+    #[allow(unused_attributes)]
+    pub fn set_svg_fill_color(gui: &mut Gui, node_id: f64, fill_color: &[f32]) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands
+            .set_style(
+                node_id,
+                SvgColorType(
+                    SvgColor::Color(
+                        Color::RGBA(
+                            CgColor::new(
+                                fill_color[0],
+                                fill_color[1],
+                                fill_color[2],
+                                fill_color[3],
+                            ),
+                        ),
+                    ),
+                ),
+            );
+    }
+    #[cfg(target_arch = "wasm32")]
+    #[wasm_bindgen]
+    #[allow(unused_attributes)]
+    pub fn set_svg_fill_color(gui: &mut Gui, node_id: f64, fill_color: &[f32]) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands
+            .set_style(
+                node_id,
+                SvgColorType(
+                    SvgColor::Color(
+                        Color::RGBA(
+                            CgColor::new(
+                                fill_color[0],
+                                fill_color[1],
+                                fill_color[2],
+                                fill_color[3],
+                            ),
+                        ),
+                    ),
+                ),
+            );
+    }
+    #[cfg(feature = "pi_js_export")]
+    #[allow(unused_attributes)]
+    pub fn reset_svg_fill_color(gui: &mut Gui, node_id: f64) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands.set_style(node_id, ResetSvgColorType);
+    }
+    #[cfg(target_arch = "wasm32")]
+    #[wasm_bindgen]
+    #[allow(unused_attributes)]
+    pub fn reset_svg_fill_color(gui: &mut Gui, node_id: f64) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands.set_style(node_id, ResetSvgColorType);
+    }
+    #[cfg(feature = "pi_js_export")]
+    #[allow(unused_attributes)]
+    pub fn set_svg_fill_color_id(gui: &mut Gui, node_id: f64, fill_color_url: &str) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands
+            .set_style(
+                node_id,
+                SvgColorType({
+                    use std::hash::Hasher;
+                    let mut hasher = pi_hash::DefaultHasher::default();
+                    hasher.write(fill_color_url.as_bytes());
+                    SvgColor::ID(hasher.finish())
+                }),
+            );
+    }
+    #[cfg(target_arch = "wasm32")]
+    #[wasm_bindgen]
+    #[allow(unused_attributes)]
+    pub fn set_svg_fill_color_id(gui: &mut Gui, node_id: f64, fill_color_url: &str) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands
+            .set_style(
+                node_id,
+                SvgColorType({
+                    use std::hash::Hasher;
+                    let mut hasher = pi_hash::DefaultHasher::default();
+                    hasher.write(fill_color_url.as_bytes());
+                    SvgColor::ID(hasher.finish())
+                }),
+            );
+    }
+    #[cfg(feature = "pi_js_export")]
+    #[allow(unused_attributes)]
+    pub fn reset_svg_fill_color_id(gui: &mut Gui, node_id: f64) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands.set_style(node_id, ResetSvgColorType);
+    }
+    #[cfg(target_arch = "wasm32")]
+    #[wasm_bindgen]
+    #[allow(unused_attributes)]
+    pub fn reset_svg_fill_color_id(gui: &mut Gui, node_id: f64) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands.set_style(node_id, ResetSvgColorType);
+    }
+    #[cfg(feature = "pi_js_export")]
+    #[allow(unused_attributes)]
+    pub fn set_svg_storke_color(gui: &mut Gui, node_id: f64, storke_color: &[f32]) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands
+            .set_style(
+                node_id,
+                SvgColorType(
+                    SvgColor::Color(
+                        Color::RGBA(
+                            CgColor::new(
+                                storke_color[0],
+                                storke_color[1],
+                                storke_color[2],
+                                storke_color[3],
+                            ),
+                        ),
+                    ),
+                ),
+            );
+    }
+    #[cfg(target_arch = "wasm32")]
+    #[wasm_bindgen]
+    #[allow(unused_attributes)]
+    pub fn set_svg_storke_color(gui: &mut Gui, node_id: f64, storke_color: &[f32]) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands
+            .set_style(
+                node_id,
+                SvgColorType(
+                    SvgColor::Color(
+                        Color::RGBA(
+                            CgColor::new(
+                                storke_color[0],
+                                storke_color[1],
+                                storke_color[2],
+                                storke_color[3],
+                            ),
+                        ),
+                    ),
+                ),
+            );
+    }
+    #[cfg(feature = "pi_js_export")]
+    #[allow(unused_attributes)]
+    pub fn reset_svg_storke_color(gui: &mut Gui, node_id: f64) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands.set_style(node_id, ResetSvgColorType);
+    }
+    #[cfg(target_arch = "wasm32")]
+    #[wasm_bindgen]
+    #[allow(unused_attributes)]
+    pub fn reset_svg_storke_color(gui: &mut Gui, node_id: f64) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands.set_style(node_id, ResetSvgColorType);
+    }
+    #[cfg(feature = "pi_js_export")]
+    #[allow(unused_attributes)]
+    pub fn set_svg_storke_width(gui: &mut Gui, node_id: f64, width: f32) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands
+            .set_style(
+                node_id,
+                SvgStrokeWidthType(unsafe { NotNan::new_unchecked(width) }),
+            );
+    }
+    #[cfg(target_arch = "wasm32")]
+    #[wasm_bindgen]
+    #[allow(unused_attributes)]
+    pub fn set_svg_storke_width(gui: &mut Gui, node_id: f64, width: f32) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands
+            .set_style(
+                node_id,
+                SvgStrokeWidthType(unsafe { NotNan::new_unchecked(width) }),
+            );
+    }
+    #[cfg(feature = "pi_js_export")]
+    #[allow(unused_attributes)]
+    pub fn reset_svg_storke_width(gui: &mut Gui, node_id: f64) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands.set_style(node_id, ResetSvgStrokeWidthType);
+    }
+    #[cfg(target_arch = "wasm32")]
+    #[wasm_bindgen]
+    #[allow(unused_attributes)]
+    pub fn reset_svg_storke_width(gui: &mut Gui, node_id: f64) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands.set_style(node_id, ResetSvgStrokeWidthType);
+    }
+    #[cfg(feature = "pi_js_export")]
+    #[allow(unused_attributes)]
+    pub fn set_svg_shape_width(gui: &mut Gui, node_id: f64, width: f32) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands.set_style(node_id, SvgShapeWidthType(width));
+    }
+    #[cfg(target_arch = "wasm32")]
+    #[wasm_bindgen]
+    #[allow(unused_attributes)]
+    pub fn set_svg_shape_width(gui: &mut Gui, node_id: f64, width: f32) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands.set_style(node_id, SvgShapeWidthType(width));
+    }
+    #[cfg(feature = "pi_js_export")]
+    #[allow(unused_attributes)]
+    pub fn reset_svg_shape_width(gui: &mut Gui, node_id: f64) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands.set_style(node_id, ResetSvgShapeWidthType);
+    }
+    #[cfg(target_arch = "wasm32")]
+    #[wasm_bindgen]
+    #[allow(unused_attributes)]
+    pub fn reset_svg_shape_width(gui: &mut Gui, node_id: f64) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands.set_style(node_id, ResetSvgShapeWidthType);
+    }
+    #[cfg(feature = "pi_js_export")]
+    #[allow(unused_attributes)]
+    pub fn set_svg_shape_height(gui: &mut Gui, node_id: f64, height: f32) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands.set_style(node_id, SvgShapeHeightType(height));
+    }
+    #[cfg(target_arch = "wasm32")]
+    #[wasm_bindgen]
+    #[allow(unused_attributes)]
+    pub fn set_svg_shape_height(gui: &mut Gui, node_id: f64, height: f32) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands.set_style(node_id, SvgShapeHeightType(height));
+    }
+    #[cfg(feature = "pi_js_export")]
+    #[allow(unused_attributes)]
+    pub fn reset_svg_shape_height(gui: &mut Gui, node_id: f64) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands.set_style(node_id, ResetSvgShapeHeightType);
+    }
+    #[cfg(target_arch = "wasm32")]
+    #[wasm_bindgen]
+    #[allow(unused_attributes)]
+    pub fn reset_svg_shape_height(gui: &mut Gui, node_id: f64) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands.set_style(node_id, ResetSvgShapeHeightType);
+    }
+    #[cfg(feature = "pi_js_export")]
+    #[allow(unused_attributes)]
+    pub fn set_svg_shape_x(gui: &mut Gui, node_id: f64, x: f32) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands.set_style(node_id, SvgShapeXType(x));
+    }
+    #[cfg(target_arch = "wasm32")]
+    #[wasm_bindgen]
+    #[allow(unused_attributes)]
+    pub fn set_svg_shape_x(gui: &mut Gui, node_id: f64, x: f32) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands.set_style(node_id, SvgShapeXType(x));
+    }
+    #[cfg(feature = "pi_js_export")]
+    #[allow(unused_attributes)]
+    pub fn reset_svg_shape_x(gui: &mut Gui, node_id: f64) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands.set_style(node_id, ResetSvgShapeXType);
+    }
+    #[cfg(target_arch = "wasm32")]
+    #[wasm_bindgen]
+    #[allow(unused_attributes)]
+    pub fn reset_svg_shape_x(gui: &mut Gui, node_id: f64) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands.set_style(node_id, ResetSvgShapeXType);
+    }
+    #[cfg(feature = "pi_js_export")]
+    #[allow(unused_attributes)]
+    pub fn set_svg_shape_y(gui: &mut Gui, node_id: f64, y: f32) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands.set_style(node_id, SvgShapeYType(y));
+    }
+    #[cfg(target_arch = "wasm32")]
+    #[wasm_bindgen]
+    #[allow(unused_attributes)]
+    pub fn set_svg_shape_y(gui: &mut Gui, node_id: f64, y: f32) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands.set_style(node_id, SvgShapeYType(y));
+    }
+    #[cfg(feature = "pi_js_export")]
+    #[allow(unused_attributes)]
+    pub fn reset_svg_shape_y(gui: &mut Gui, node_id: f64) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands.set_style(node_id, ResetSvgShapeYType);
+    }
+    #[cfg(target_arch = "wasm32")]
+    #[wasm_bindgen]
+    #[allow(unused_attributes)]
+    pub fn reset_svg_shape_y(gui: &mut Gui, node_id: f64) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands.set_style(node_id, ResetSvgShapeYType);
+    }
+    #[cfg(feature = "pi_js_export")]
+    #[allow(unused_attributes)]
+    pub fn set_svg_width(gui: &mut Gui, node_id: f64, width: f32) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands.set_style(node_id, SvgWidthType(width));
+    }
+    #[cfg(target_arch = "wasm32")]
+    #[wasm_bindgen]
+    #[allow(unused_attributes)]
+    pub fn set_svg_width(gui: &mut Gui, node_id: f64, width: f32) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands.set_style(node_id, SvgWidthType(width));
+    }
+    #[cfg(feature = "pi_js_export")]
+    #[allow(unused_attributes)]
+    pub fn reset_svg_width(gui: &mut Gui, node_id: f64) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands.set_style(node_id, ResetSvgWidthType);
+    }
+    #[cfg(target_arch = "wasm32")]
+    #[wasm_bindgen]
+    #[allow(unused_attributes)]
+    pub fn reset_svg_width(gui: &mut Gui, node_id: f64) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands.set_style(node_id, ResetSvgWidthType);
+    }
+    #[cfg(feature = "pi_js_export")]
+    #[allow(unused_attributes)]
+    pub fn set_svg_height(gui: &mut Gui, node_id: f64, height: f32) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands.set_style(node_id, SvgHeightType(height));
+    }
+    #[cfg(target_arch = "wasm32")]
+    #[wasm_bindgen]
+    #[allow(unused_attributes)]
+    pub fn set_svg_height(gui: &mut Gui, node_id: f64, height: f32) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands.set_style(node_id, SvgHeightType(height));
+    }
+    #[cfg(feature = "pi_js_export")]
+    #[allow(unused_attributes)]
+    pub fn reset_svg_height(gui: &mut Gui, node_id: f64) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands.set_style(node_id, ResetSvgHeightType);
+    }
+    #[cfg(target_arch = "wasm32")]
+    #[wasm_bindgen]
+    #[allow(unused_attributes)]
+    pub fn reset_svg_height(gui: &mut Gui, node_id: f64) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands.set_style(node_id, ResetSvgHeightType);
+    }
+    #[cfg(feature = "pi_js_export")]
+    #[allow(unused_attributes)]
+    pub fn set_svg_shape(gui: &mut Gui, node_id: f64, shape: f32) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands
+            .set_style(
+                node_id,
+                SvgShapeType(unsafe { std::mem::transmute(shape as u8) }),
+            );
+    }
+    #[cfg(target_arch = "wasm32")]
+    #[wasm_bindgen]
+    #[allow(unused_attributes)]
+    pub fn set_svg_shape(gui: &mut Gui, node_id: f64, shape: f32) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands
+            .set_style(
+                node_id,
+                SvgShapeType(unsafe { std::mem::transmute(shape as u8) }),
+            );
+    }
+    #[cfg(feature = "pi_js_export")]
+    #[allow(unused_attributes)]
+    pub fn reset_svg_shape(gui: &mut Gui, node_id: f64) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands.set_style(node_id, ResetSvgShapeType);
+    }
+    #[cfg(target_arch = "wasm32")]
+    #[wasm_bindgen]
+    #[allow(unused_attributes)]
+    pub fn reset_svg_shape(gui: &mut Gui, node_id: f64) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands.set_style(node_id, ResetSvgShapeType);
+    }
+    #[cfg(feature = "pi_js_export")]
+    #[allow(unused_attributes)]
+    pub fn set_svg_shape_cx(gui: &mut Gui, node_id: f64, center_x: f32) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands.set_style(node_id, SvgShapeCXType(center_x));
+    }
+    #[cfg(target_arch = "wasm32")]
+    #[wasm_bindgen]
+    #[allow(unused_attributes)]
+    pub fn set_svg_shape_cx(gui: &mut Gui, node_id: f64, center_x: f32) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands.set_style(node_id, SvgShapeCXType(center_x));
+    }
+    #[cfg(feature = "pi_js_export")]
+    #[allow(unused_attributes)]
+    pub fn reset_svg_shape_cx(gui: &mut Gui, node_id: f64) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands.set_style(node_id, ResetSvgShapeCXType);
+    }
+    #[cfg(target_arch = "wasm32")]
+    #[wasm_bindgen]
+    #[allow(unused_attributes)]
+    pub fn reset_svg_shape_cx(gui: &mut Gui, node_id: f64) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands.set_style(node_id, ResetSvgShapeCXType);
+    }
+    #[cfg(feature = "pi_js_export")]
+    #[allow(unused_attributes)]
+    pub fn set_svg_shape_cy(gui: &mut Gui, node_id: f64, center_y: f32) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands.set_style(node_id, SvgShapeCYType(center_y));
+    }
+    #[cfg(target_arch = "wasm32")]
+    #[wasm_bindgen]
+    #[allow(unused_attributes)]
+    pub fn set_svg_shape_cy(gui: &mut Gui, node_id: f64, center_y: f32) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands.set_style(node_id, SvgShapeCYType(center_y));
+    }
+    #[cfg(feature = "pi_js_export")]
+    #[allow(unused_attributes)]
+    pub fn reset_svg_shape_cy(gui: &mut Gui, node_id: f64) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands.set_style(node_id, ResetSvgShapeCYType);
+    }
+    #[cfg(target_arch = "wasm32")]
+    #[wasm_bindgen]
+    #[allow(unused_attributes)]
+    pub fn reset_svg_shape_cy(gui: &mut Gui, node_id: f64) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands.set_style(node_id, ResetSvgShapeCYType);
+    }
+    #[cfg(feature = "pi_js_export")]
+    #[allow(unused_attributes)]
+    pub fn set_svg_shape_radius(gui: &mut Gui, node_id: f64, radius: f32) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands.set_style(node_id, SvgShapeRadiusType(radius));
+    }
+    #[cfg(target_arch = "wasm32")]
+    #[wasm_bindgen]
+    #[allow(unused_attributes)]
+    pub fn set_svg_shape_radius(gui: &mut Gui, node_id: f64, radius: f32) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands.set_style(node_id, SvgShapeRadiusType(radius));
+    }
+    #[cfg(feature = "pi_js_export")]
+    #[allow(unused_attributes)]
+    pub fn reset_svg_shape_radius(gui: &mut Gui, node_id: f64) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands.set_style(node_id, ResetSvgShapeRadiusType);
+    }
+    #[cfg(target_arch = "wasm32")]
+    #[wasm_bindgen]
+    #[allow(unused_attributes)]
+    pub fn reset_svg_shape_radius(gui: &mut Gui, node_id: f64) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands.set_style(node_id, ResetSvgShapeRadiusType);
+    }
+    #[cfg(feature = "pi_js_export")]
+    #[allow(unused_attributes)]
+    pub fn set_svg_shape_radius_x(gui: &mut Gui, node_id: f64, radius_x: f32) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands.set_style(node_id, SvgShapeRadiusXType(radius_x));
+    }
+    #[cfg(target_arch = "wasm32")]
+    #[wasm_bindgen]
+    #[allow(unused_attributes)]
+    pub fn set_svg_shape_radius_x(gui: &mut Gui, node_id: f64, radius_x: f32) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands.set_style(node_id, SvgShapeRadiusXType(radius_x));
+    }
+    #[cfg(feature = "pi_js_export")]
+    #[allow(unused_attributes)]
+    pub fn reset_svg_shape_radius_x(gui: &mut Gui, node_id: f64) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands.set_style(node_id, ResetSvgShapeRadiusXType);
+    }
+    #[cfg(target_arch = "wasm32")]
+    #[wasm_bindgen]
+    #[allow(unused_attributes)]
+    pub fn reset_svg_shape_radius_x(gui: &mut Gui, node_id: f64) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands.set_style(node_id, ResetSvgShapeRadiusXType);
+    }
+    #[cfg(feature = "pi_js_export")]
+    #[allow(unused_attributes)]
+    pub fn set_svg_shape_radius_y(gui: &mut Gui, node_id: f64, radius_y: f32) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands.set_style(node_id, SvgShapeRadiusYType(radius_y));
+    }
+    #[cfg(target_arch = "wasm32")]
+    #[wasm_bindgen]
+    #[allow(unused_attributes)]
+    pub fn set_svg_shape_radius_y(gui: &mut Gui, node_id: f64, radius_y: f32) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands.set_style(node_id, SvgShapeRadiusYType(radius_y));
+    }
+    #[cfg(feature = "pi_js_export")]
+    #[allow(unused_attributes)]
+    pub fn reset_svg_shape_radius_y(gui: &mut Gui, node_id: f64) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands.set_style(node_id, ResetSvgShapeRadiusYType);
+    }
+    #[cfg(target_arch = "wasm32")]
+    #[wasm_bindgen]
+    #[allow(unused_attributes)]
+    pub fn reset_svg_shape_radius_y(gui: &mut Gui, node_id: f64) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands.set_style(node_id, ResetSvgShapeRadiusYType);
+    }
+    #[cfg(feature = "pi_js_export")]
+    #[allow(unused_attributes)]
+    pub fn set_svg_shape_ax(gui: &mut Gui, node_id: f64, ax: f32) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands.set_style(node_id, SvgShapeAXType(ax));
+    }
+    #[cfg(target_arch = "wasm32")]
+    #[wasm_bindgen]
+    #[allow(unused_attributes)]
+    pub fn set_svg_shape_ax(gui: &mut Gui, node_id: f64, ax: f32) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands.set_style(node_id, SvgShapeAXType(ax));
+    }
+    #[cfg(feature = "pi_js_export")]
+    #[allow(unused_attributes)]
+    pub fn reset_svg_shape_ax(gui: &mut Gui, node_id: f64) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands.set_style(node_id, ResetSvgShapeAXType);
+    }
+    #[cfg(target_arch = "wasm32")]
+    #[wasm_bindgen]
+    #[allow(unused_attributes)]
+    pub fn reset_svg_shape_ax(gui: &mut Gui, node_id: f64) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands.set_style(node_id, ResetSvgShapeAXType);
+    }
+    #[cfg(feature = "pi_js_export")]
+    #[allow(unused_attributes)]
+    pub fn set_svg_shape_ay(gui: &mut Gui, node_id: f64, ay: f32) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands.set_style(node_id, SvgShapeAYType(ay));
+    }
+    #[cfg(target_arch = "wasm32")]
+    #[wasm_bindgen]
+    #[allow(unused_attributes)]
+    pub fn set_svg_shape_ay(gui: &mut Gui, node_id: f64, ay: f32) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands.set_style(node_id, SvgShapeAYType(ay));
+    }
+    #[cfg(feature = "pi_js_export")]
+    #[allow(unused_attributes)]
+    pub fn reset_svg_shape_ay(gui: &mut Gui, node_id: f64) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands.set_style(node_id, ResetSvgShapeAYType);
+    }
+    #[cfg(target_arch = "wasm32")]
+    #[wasm_bindgen]
+    #[allow(unused_attributes)]
+    pub fn reset_svg_shape_ay(gui: &mut Gui, node_id: f64) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands.set_style(node_id, ResetSvgShapeAYType);
+    }
+    #[cfg(feature = "pi_js_export")]
+    #[allow(unused_attributes)]
+    pub fn set_svg_shape_bx(gui: &mut Gui, node_id: f64, bx: f32) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands.set_style(node_id, SvgShapeBXType(bx));
+    }
+    #[cfg(target_arch = "wasm32")]
+    #[wasm_bindgen]
+    #[allow(unused_attributes)]
+    pub fn set_svg_shape_bx(gui: &mut Gui, node_id: f64, bx: f32) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands.set_style(node_id, SvgShapeBXType(bx));
+    }
+    #[cfg(feature = "pi_js_export")]
+    #[allow(unused_attributes)]
+    pub fn reset_svg_shape_bx(gui: &mut Gui, node_id: f64) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands.set_style(node_id, ResetSvgShapeBXType);
+    }
+    #[cfg(target_arch = "wasm32")]
+    #[wasm_bindgen]
+    #[allow(unused_attributes)]
+    pub fn reset_svg_shape_bx(gui: &mut Gui, node_id: f64) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands.set_style(node_id, ResetSvgShapeBXType);
+    }
+    #[cfg(feature = "pi_js_export")]
+    #[allow(unused_attributes)]
+    pub fn set_svg_shape_by(gui: &mut Gui, node_id: f64, by: f32) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands.set_style(node_id, SvgShapeBYType(by));
+    }
+    #[cfg(target_arch = "wasm32")]
+    #[wasm_bindgen]
+    #[allow(unused_attributes)]
+    pub fn set_svg_shape_by(gui: &mut Gui, node_id: f64, by: f32) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands.set_style(node_id, SvgShapeBYType(by));
+    }
+    #[cfg(feature = "pi_js_export")]
+    #[allow(unused_attributes)]
+    pub fn reset_svg_shape_by(gui: &mut Gui, node_id: f64) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands.set_style(node_id, ResetSvgShapeBYType);
+    }
+    #[cfg(target_arch = "wasm32")]
+    #[wasm_bindgen]
+    #[allow(unused_attributes)]
+    pub fn reset_svg_shape_by(gui: &mut Gui, node_id: f64) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands.set_style(node_id, ResetSvgShapeBYType);
+    }
+    #[cfg(feature = "pi_js_export")]
+    #[allow(unused_attributes)]
+    pub fn set_svg_shape_points(gui: &mut Gui, node_id: f64, points: &[f32]) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands.set_style(node_id, SvgShapePointsType(points.to_vec()));
+    }
+    #[cfg(target_arch = "wasm32")]
+    #[wasm_bindgen]
+    #[allow(unused_attributes)]
+    pub fn set_svg_shape_points(gui: &mut Gui, node_id: f64, points: &[f32]) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands.set_style(node_id, SvgShapePointsType(points.to_vec()));
+    }
+    #[cfg(feature = "pi_js_export")]
+    #[allow(unused_attributes)]
+    pub fn reset_svg_shape_points(gui: &mut Gui, node_id: f64) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands.set_style(node_id, ResetSvgShapePointsType);
+    }
+    #[cfg(target_arch = "wasm32")]
+    #[wasm_bindgen]
+    #[allow(unused_attributes)]
+    pub fn reset_svg_shape_points(gui: &mut Gui, node_id: f64) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands.set_style(node_id, ResetSvgShapePointsType);
+    }
+    #[cfg(feature = "pi_js_export")]
+    #[allow(unused_attributes)]
+    pub fn set_svg_shape_path(
+        gui: &mut Gui,
+        node_id: f64,
+        verb: &[f32],
+        points: &[f32],
+    ) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands
+            .set_style(
+                node_id,
+                SvgShapePathType((
+                    points.to_vec(),
+                    verb.iter().map(|v| *v as u8).collect::<Vec<u8>>(),
+                )),
+            );
+    }
+    #[cfg(target_arch = "wasm32")]
+    #[wasm_bindgen]
+    #[allow(unused_attributes)]
+    pub fn set_svg_shape_path(
+        gui: &mut Gui,
+        node_id: f64,
+        verb: &[f32],
+        points: &[f32],
+    ) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands
+            .set_style(
+                node_id,
+                SvgShapePathType((
+                    points.to_vec(),
+                    verb.iter().map(|v| *v as u8).collect::<Vec<u8>>(),
+                )),
+            );
+    }
+    #[cfg(feature = "pi_js_export")]
+    #[allow(unused_attributes)]
+    pub fn reset_svg_shape_path(gui: &mut Gui, node_id: f64) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands.set_style(node_id, ResetSvgShapePathType);
+    }
+    #[cfg(target_arch = "wasm32")]
+    #[wasm_bindgen]
+    #[allow(unused_attributes)]
+    pub fn reset_svg_shape_path(gui: &mut Gui, node_id: f64) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands.set_style(node_id, ResetSvgShapePathType);
+    }
+    #[cfg(feature = "pi_js_export")]
+    #[allow(unused_attributes)]
+    pub fn set_svg_stroke_dasharray(
+        gui: &mut Gui,
+        node_id: f64,
+        stroke_dasharray: &[f32],
+    ) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands
+            .set_style(
+                node_id,
+                StrokeDasharrayType(StrokeDasharray {
+                    real: stroke_dasharray[2],
+                    empty: stroke_dasharray[3],
+                }),
+            );
+    }
+    #[cfg(target_arch = "wasm32")]
+    #[wasm_bindgen]
+    #[allow(unused_attributes)]
+    pub fn set_svg_stroke_dasharray(
+        gui: &mut Gui,
+        node_id: f64,
+        stroke_dasharray: &[f32],
+    ) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands
+            .set_style(
+                node_id,
+                StrokeDasharrayType(StrokeDasharray {
+                    real: stroke_dasharray[2],
+                    empty: stroke_dasharray[3],
+                }),
+            );
+    }
+    #[cfg(feature = "pi_js_export")]
+    #[allow(unused_attributes)]
+    pub fn reset_svg_stroke_dasharray(gui: &mut Gui, node_id: f64) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands.set_style(node_id, ResetStrokeDasharrayType);
+    }
+    #[cfg(target_arch = "wasm32")]
+    #[wasm_bindgen]
+    #[allow(unused_attributes)]
+    pub fn reset_svg_stroke_dasharray(gui: &mut Gui, node_id: f64) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands.set_style(node_id, ResetStrokeDasharrayType);
+    }
+    #[cfg(feature = "pi_js_export")]
+    #[allow(unused_attributes)]
+    pub fn set_svg_shadow_offset_dx(gui: &mut Gui, node_id: f64, x: f32) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands.set_style(node_id, SvgShadowOffsetXType(x));
+    }
+    #[cfg(target_arch = "wasm32")]
+    #[wasm_bindgen]
+    #[allow(unused_attributes)]
+    pub fn set_svg_shadow_offset_dx(gui: &mut Gui, node_id: f64, x: f32) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands.set_style(node_id, SvgShadowOffsetXType(x));
+    }
+    #[cfg(feature = "pi_js_export")]
+    #[allow(unused_attributes)]
+    pub fn reset_svg_shadow_offset_dx(gui: &mut Gui, node_id: f64) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands.set_style(node_id, ResetSvgShadowOffsetXType);
+    }
+    #[cfg(target_arch = "wasm32")]
+    #[wasm_bindgen]
+    #[allow(unused_attributes)]
+    pub fn reset_svg_shadow_offset_dx(gui: &mut Gui, node_id: f64) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands.set_style(node_id, ResetSvgShadowOffsetXType);
+    }
+    #[cfg(feature = "pi_js_export")]
+    #[allow(unused_attributes)]
+    pub fn set_svg_shadow_offset_dy(gui: &mut Gui, node_id: f64, y: f32) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands.set_style(node_id, SvgShadowOffsetYType(y));
+    }
+    #[cfg(target_arch = "wasm32")]
+    #[wasm_bindgen]
+    #[allow(unused_attributes)]
+    pub fn set_svg_shadow_offset_dy(gui: &mut Gui, node_id: f64, y: f32) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands.set_style(node_id, SvgShadowOffsetYType(y));
+    }
+    #[cfg(feature = "pi_js_export")]
+    #[allow(unused_attributes)]
+    pub fn reset_svg_shadow_offset_dy(gui: &mut Gui, node_id: f64) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands.set_style(node_id, ResetSvgShadowOffsetYType);
+    }
+    #[cfg(target_arch = "wasm32")]
+    #[wasm_bindgen]
+    #[allow(unused_attributes)]
+    pub fn reset_svg_shadow_offset_dy(gui: &mut Gui, node_id: f64) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands.set_style(node_id, ResetSvgShadowOffsetYType);
+    }
+    #[cfg(feature = "pi_js_export")]
+    #[allow(unused_attributes)]
+    pub fn set_svg_blur_level(gui: &mut Gui, node_id: f64, level: f32) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands.set_style(node_id, SvgShadowBlurLevelType(level));
+    }
+    #[cfg(target_arch = "wasm32")]
+    #[wasm_bindgen]
+    #[allow(unused_attributes)]
+    pub fn set_svg_blur_level(gui: &mut Gui, node_id: f64, level: f32) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands.set_style(node_id, SvgShadowBlurLevelType(level));
+    }
+    #[cfg(feature = "pi_js_export")]
+    #[allow(unused_attributes)]
+    pub fn reset_svg_blur_level(gui: &mut Gui, node_id: f64) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands.set_style(node_id, ResetSvgShadowBlurLevelType);
+    }
+    #[cfg(target_arch = "wasm32")]
+    #[wasm_bindgen]
+    #[allow(unused_attributes)]
+    pub fn reset_svg_blur_level(gui: &mut Gui, node_id: f64) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands.set_style(node_id, ResetSvgShadowBlurLevelType);
+    }
+    #[cfg(feature = "pi_js_export")]
+    #[allow(unused_attributes)]
+    pub fn set_svg_filter(gui: &mut Gui, node_id: f64, other_id: &str) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands
+            .set_style(
+                node_id,
+                SvgFilterType({
+                    use std::hash::Hasher;
+                    let mut hasher = pi_hash::DefaultHasher::default();
+                    hasher.write(other_id.as_bytes());
+                    hasher.finish()
+                }),
+            );
+    }
+    #[cfg(target_arch = "wasm32")]
+    #[wasm_bindgen]
+    #[allow(unused_attributes)]
+    pub fn set_svg_filter(gui: &mut Gui, node_id: f64, other_id: &str) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands
+            .set_style(
+                node_id,
+                SvgFilterType({
+                    use std::hash::Hasher;
+                    let mut hasher = pi_hash::DefaultHasher::default();
+                    hasher.write(other_id.as_bytes());
+                    hasher.finish()
+                }),
+            );
+    }
+    #[cfg(feature = "pi_js_export")]
+    #[allow(unused_attributes)]
+    pub fn reset_svg_filter(gui: &mut Gui, node_id: f64) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands.set_style(node_id, ResetSvgFilterType);
+    }
+    #[cfg(target_arch = "wasm32")]
+    #[wasm_bindgen]
+    #[allow(unused_attributes)]
+    pub fn reset_svg_filter(gui: &mut Gui, node_id: f64) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands.set_style(node_id, ResetSvgFilterType);
+    }
+    #[cfg(feature = "pi_js_export")]
+    #[allow(unused_attributes)]
+    pub fn set_svg_filter_id(gui: &mut Gui, node_id: f64, other_id: &str) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands
+            .set_style(
+                node_id,
+                SvgFilterIDType({
+                    use std::hash::Hasher;
+                    let mut hasher = pi_hash::DefaultHasher::default();
+                    hasher.write(other_id.as_bytes());
+                    hasher.finish()
+                }),
+            );
+    }
+    #[cfg(target_arch = "wasm32")]
+    #[wasm_bindgen]
+    #[allow(unused_attributes)]
+    pub fn set_svg_filter_id(gui: &mut Gui, node_id: f64, other_id: &str) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands
+            .set_style(
+                node_id,
+                SvgFilterIDType({
+                    use std::hash::Hasher;
+                    let mut hasher = pi_hash::DefaultHasher::default();
+                    hasher.write(other_id.as_bytes());
+                    hasher.finish()
+                }),
+            );
+    }
+    #[cfg(feature = "pi_js_export")]
+    #[allow(unused_attributes)]
+    pub fn reset_svg_filter_id(gui: &mut Gui, node_id: f64) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands.set_style(node_id, ResetSvgFilterIDType);
+    }
+    #[cfg(target_arch = "wasm32")]
+    #[wasm_bindgen]
+    #[allow(unused_attributes)]
+    pub fn reset_svg_filter_id(gui: &mut Gui, node_id: f64) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands.set_style(node_id, ResetSvgFilterIDType);
+    }
+    #[cfg(feature = "pi_js_export")]
+    #[allow(unused_attributes)]
+    pub fn set_svg_gradient_stop(gui: &mut Gui, node_id: f64, color: &[f32]) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands
+            .set_style(
+                node_id,
+                SvgGradientStopColorType(
+                    CgColor::new(color[0], color[1], color[2], color[3]),
+                ),
+            );
+    }
+    #[cfg(target_arch = "wasm32")]
+    #[wasm_bindgen]
+    #[allow(unused_attributes)]
+    pub fn set_svg_gradient_stop(gui: &mut Gui, node_id: f64, color: &[f32]) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands
+            .set_style(
+                node_id,
+                SvgGradientStopColorType(
+                    CgColor::new(color[0], color[1], color[2], color[3]),
+                ),
+            );
+    }
+    #[cfg(feature = "pi_js_export")]
+    #[allow(unused_attributes)]
+    pub fn reset_svg_gradient_stop(gui: &mut Gui, node_id: f64) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands.set_style(node_id, ResetSvgGradientStopColorType);
+    }
+    #[cfg(target_arch = "wasm32")]
+    #[wasm_bindgen]
+    #[allow(unused_attributes)]
+    pub fn reset_svg_gradient_stop(gui: &mut Gui, node_id: f64) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands.set_style(node_id, ResetSvgGradientStopColorType);
+    }
+    #[cfg(feature = "pi_js_export")]
+    #[allow(unused_attributes)]
+    pub fn set_svg_gradient_offset(gui: &mut Gui, node_id: f64, offset: f32) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands.set_style(node_id, SvgGradientStopOffsetType(offset));
+    }
+    #[cfg(target_arch = "wasm32")]
+    #[wasm_bindgen]
+    #[allow(unused_attributes)]
+    pub fn set_svg_gradient_offset(gui: &mut Gui, node_id: f64, offset: f32) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands.set_style(node_id, SvgGradientStopOffsetType(offset));
+    }
+    #[cfg(feature = "pi_js_export")]
+    #[allow(unused_attributes)]
+    pub fn reset_svg_gradient_offset(gui: &mut Gui, node_id: f64) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands.set_style(node_id, ResetSvgGradientStopOffsetType);
+    }
+    #[cfg(target_arch = "wasm32")]
+    #[wasm_bindgen]
+    #[allow(unused_attributes)]
+    pub fn reset_svg_gradient_offset(gui: &mut Gui, node_id: f64) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands.set_style(node_id, ResetSvgGradientStopOffsetType);
+    }
+    #[cfg(feature = "pi_js_export")]
+    #[allow(unused_attributes)]
+    pub fn set_svg_gradient(gui: &mut Gui, node_id: f64, other_id: &str) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands
+            .set_style(
+                node_id,
+                SvgLinerGradientType({
+                    use std::hash::Hasher;
+                    let mut hasher = pi_hash::DefaultHasher::default();
+                    hasher.write(other_id.as_bytes());
+                    hasher.finish()
+                }),
+            );
+    }
+    #[cfg(target_arch = "wasm32")]
+    #[wasm_bindgen]
+    #[allow(unused_attributes)]
+    pub fn set_svg_gradient(gui: &mut Gui, node_id: f64, other_id: &str) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands
+            .set_style(
+                node_id,
+                SvgLinerGradientType({
+                    use std::hash::Hasher;
+                    let mut hasher = pi_hash::DefaultHasher::default();
+                    hasher.write(other_id.as_bytes());
+                    hasher.finish()
+                }),
+            );
+    }
+    #[cfg(feature = "pi_js_export")]
+    #[allow(unused_attributes)]
+    pub fn reset_svg_gradient(gui: &mut Gui, node_id: f64) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands.set_style(node_id, ResetSvgLinerGradientType);
+    }
+    #[cfg(target_arch = "wasm32")]
+    #[wasm_bindgen]
+    #[allow(unused_attributes)]
+    pub fn reset_svg_gradient(gui: &mut Gui, node_id: f64) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands.set_style(node_id, ResetSvgLinerGradientType);
+    }
+    #[cfg(feature = "pi_js_export")]
+    #[allow(unused_attributes)]
+    pub fn set_svg_shadow_color(gui: &mut Gui, node_id: f64, color: &[f32]) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands
+            .set_style(
+                node_id,
+                SvgShadowColorType(CgColor::new(color[0], color[1], color[2], color[3])),
+            );
+    }
+    #[cfg(target_arch = "wasm32")]
+    #[wasm_bindgen]
+    #[allow(unused_attributes)]
+    pub fn set_svg_shadow_color(gui: &mut Gui, node_id: f64, color: &[f32]) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands
+            .set_style(
+                node_id,
+                SvgShadowColorType(CgColor::new(color[0], color[1], color[2], color[3])),
+            );
+    }
+    #[cfg(feature = "pi_js_export")]
+    #[allow(unused_attributes)]
+    pub fn reset_svg_shadow_color(gui: &mut Gui, node_id: f64) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands.set_style(node_id, ResetSvgShadowColorType);
+    }
+    #[cfg(target_arch = "wasm32")]
+    #[wasm_bindgen]
+    #[allow(unused_attributes)]
+    pub fn reset_svg_shadow_color(gui: &mut Gui, node_id: f64) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        gui.commands.set_style(node_id, ResetSvgShadowColorType);
+    }
 }
 
 pub use self::style_macro::*;
