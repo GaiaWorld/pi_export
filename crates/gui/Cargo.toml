@@ -66,7 +66,7 @@ pi_curves = {version = "0.1", registry = "yn"}
 pi_animation = {version = "0.1", registry = "yn"}
 pi_style = {version = "0.1", registry = "yn"}
 pi_futures="0.1"
-pi_time = "0.3"
+# pi_time = "0.5"
 siphasher = {version="0.3", features=["serde_no_std"]}
 
 winit = { registry = "yn", version = "0.27"}

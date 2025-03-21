@@ -22,7 +22,7 @@ log = "0.4"
 serde_json = "1.0"
 derive-deref-rs = "0.1"
 pi_export_macro = {path="../macro"}
-pi_share = {version="=0.4.15"}
+pi_share = {version="0.4"}
 pi_assets = "0.14"
 pi_hal = {version = "0.1", registry = "yn"}
 render_core = {version = "0.1", registry = "yn"}
