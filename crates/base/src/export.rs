@@ -71,9 +71,9 @@ fn panic_with_backtrace_rs() {
             println!("");
         }
 
-        if let Some(msg) = panic_info.message(){
-            println!("{:?}", msg);
-        }
+        // if let Some(msg) = panic_info.message(){
+        //     println!("{:?}", msg);
+        // }
 
         if let Some(payload) = panic_info.payload().downcast_ref::<&str>() {
             println!("{}", payload);
