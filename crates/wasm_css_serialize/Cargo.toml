@@ -13,7 +13,7 @@ wasm-bindgen = { version = "0.2", features = ["serde-serialize"] }
 js-sys = "0.3"
 postcard = {version = "1.0", features = ["use-std"]}
 log = "0.4"
-getrandom = {version = "0.2.7", features=["js"]}
+getrandom = {version = "0.3", features=["wasm_js"]}
 pi_hash = "0.1"
 cssparser = "0.29"
 serde = { version = "1.0", features = ["derive"]}
@@ -22,15 +22,15 @@ pi_null = "0.1"
 smallvec={version = "1.8", features = ["serde"]}
 
 pi_web_logger={git ="http://ser.yinengyun.com:10082/tech/pi_web_logger.git"}
-pi_style = {version = "0.1", registry = "yn"}
-pi_ui_render = {version = "0.1", registry = "yn"}
-wgpu = {version = "0.1", registry = "yn", package="pi_wgpu"}
-pi_render = { version = "0.1", registry = "yn", features = ["webgl"] }
-pi_bevy_render_plugin = { version = "0.1", registry = "yn", features=["webgl"]}
-pi_hal = { version = "0.1", registry = "yn" }
+pi_style = {version = "0.3", registry = "yn"}
+pi_ui_render = {version = "0.2", registry = "yn"}
+wgpu = {version = "0.2", registry = "yn", package="pi_wgpu"}
+pi_render = { version = "0.2", registry = "yn", features = ["webgl"] }
+pi_bevy_render_plugin = { version = "0.2", registry = "yn", features=["webgl"]}
+pi_hal = { version = "0.2", registry = "yn" }
 
 [target.'cfg(target_arch = "wasm32")'.dependencies]
-pi-async-rt = {version = "0.1", features = ["serial"]}
+pi-async-rt = {version = "0.2", features = ["serial"]}
 uuid = { version = "1", features = ["js"] }
 wgpu1 = { version = "0.19", package = "wgpu", default-features = false, features = ["glsl", "webgl", "fragile-send-sync-non-atomic-wasm"] }
 

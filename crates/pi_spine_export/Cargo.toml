@@ -14,27 +14,27 @@ pi_js_export = []
 
 [dependencies]
 # bevy_ecs = "0.11"
-pi_bevy_asset = {version = "0.1", registry = "yn"}
-pi_bevy_render_plugin = {version = "0.1", registry = "yn"}
-pi_bevy_ecs_extend = {version = "0.1", registry = "yn"}
-pi_window_renderer = {version = "0.1", registry = "yn"}
-wgpu = {version = "0.1", registry = "yn", package="pi_wgpu"}
+pi_bevy_asset = {version = "0.2", registry = "yn"}
+pi_bevy_render_plugin = {version = "0.2", registry = "yn"}
+pi_bevy_ecs_extend = {version = "0.2", registry = "yn"}
+pi_window_renderer = {version = "0.2", registry = "yn"}
+wgpu = {version = "0.2", registry = "yn", package="pi_wgpu"}
 js_proxy_gen_macro = { registry = "yn", version = "0.2" }
 
 pi_hash = "0.1"
-pi_atom = "0.5"
-pi_assets = "0.14"
+pi_atom = "0.6"
+pi_assets = "0.15"
 # pi_export_gui = { path = "../gui" }
 pi_export_base = { path = "../base" }
-pi_spine_rs = {version = "0.0.*", registry = "yn"}
-pi_hal = { version = "0.1", registry = "yn" }
-pi_render = { version = "0.1", registry = "yn" }
+pi_spine_rs = {version = "0.1", registry = "yn"}
+pi_hal = { version = "0.2", registry = "yn" }
+pi_render = { version = "0.2", registry = "yn" }
 
 log="0.4"
 
 [target.'cfg(target_arch = "wasm32")'.dependencies]
-pi_render = { version = "0.1", registry = "yn" }
+pi_render = { version = "0.2", registry = "yn" }
 wasm-bindgen = { version = "0.2", features = ["serde-serialize"] }
 
 [target.'cfg(not(target_arch = "wasm32"))'.dependencies]
-pi_render = { version = "0.1", registry = "yn" }
+pi_render = { version = "0.2", registry = "yn" }

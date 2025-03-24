@@ -483,7 +483,7 @@ pub fn parse_asset_config(asset_config: &str) -> AssetConfig {
 #[inline]
 fn run_all(rt: &LocalTaskRunner<()>) {
 	while pi_hal::runtime::RENDER_RUNTIME.len() > 0 {
-		rt.poll();
+		// rt.poll();
 		rt.run_once();
 	}
     // while let Ok(r) = rt.run() {

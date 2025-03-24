@@ -303,7 +303,7 @@ pub fn features(window: &Arc<Window>) -> String {
             res.push_str(&"MAPPABLE-PRIMARY-BUFFERS".to_ascii_lowercase());
             res.push_str(" ");
         }
-        adapter.inner.context.unmake_current();
+        adapter.unmake_current();
         // res
         sender.send(res).unwrap();
     });
