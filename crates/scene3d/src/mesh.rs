@@ -67,9 +67,7 @@ pub fn p3d_mesh_geometry(app: &mut Engine, cmds: &mut CommandsExchangeD3, mesh: 
     let geo: Entity = app.world.entities().reserve_entity();
     let mesh: Entity = as_entity(mesh);
     // log::error!("MeshGeo: {:?}", geometa.0);
-
     cmds.geometry_create.push(OpsGeomeryCreate::ops(mesh, geo, geometa.0.clone(), geometa.1.clone()));
-
     as_f64(&geo)
 }
 
@@ -77,12 +75,18 @@ pub fn p3d_mesh_geometry(app: &mut Engine, cmds: &mut CommandsExchangeD3, mesh: 
 #[pi_js_export]
 pub fn p3d_mesh_indexrange(cmds: &mut CommandsExchangeD3, mesh: f64, index_start: Option<f64>, index_end: Option<f64>) {
     let mesh: Entity = as_entity(mesh);
-
     if let (Some(index_start), Some(index_count)) = (index_start, index_end) {
         cmds.mesh_valuestate.push(OpsAbstructMeshValueStateModify::ops(mesh, EMeshValueStateModify::IndiceRange( Some((index_start as u32, index_count as u32)) ) ));
     } else {
         cmds.mesh_valuestate.push(OpsAbstructMeshValueStateModify::ops(mesh, EMeshValueStateModify::IndiceRange(None)));
     }
+}
+
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
+pub fn p3d_mesh_morphtargetinfluence(cmds: &mut CommandsExchangeD3, mesh: f64, v0: f64, v1: f64, v2: f64, v3: f64) {
+    let mesh: Entity = as_entity(mesh);
+    cmds.mesh_valuestate.push(OpsAbstructMeshValueStateModify::ops(mesh, EMeshValueStateModify::MorphInfluence(v0 as f32, v1 as f32, v2 as f32, v3 as f32)));
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
