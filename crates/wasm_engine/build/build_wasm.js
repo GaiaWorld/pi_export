@@ -61,15 +61,14 @@ fs.readFile(in_wasm_js_path, {encoding:"utf8"}, (err, data) => {
 		)
 
 		data = data.replace(
-`    const { instance, module } = await __wbg_load(await input, imports);
+`    const { instance, module } = await __wbg_load(await module_or_path, imports);
 
     return __wbg_finalize_init(instance, module);
 }
 
-export { initSync }
-export default __wbg_init;`
-
-,`    const r = await __wbg_load(await input, imports);
+export { initSync };
+export default __wbg_init;`,
+`    const r = await __wbg_load(await module_or_path, imports);
 
     let ret = __wbg_finalize_init(r.instance, r.module);
 	
