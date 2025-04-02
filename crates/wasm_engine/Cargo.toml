@@ -14,8 +14,8 @@ trace = ["log/release_max_level_info", "tracing/release_max_level_info", "pi_bev
 pi_js_export = []
 
 [dependencies]
-pi_hal = {version = "=0.1.41", registry = "yn"}
-pi_sdf = {version = "=0.1.20", registry = "yn"}
+pi_hal = {version = "0.2", registry = "yn"}
+pi_sdf = {version = "0.1", registry = "yn"}
 async-executor = "=1.6.0" #1.7.1bug
 pi_export_gui = { path = "../gui", default-features=false, features=["record"] }
 # pi_export_astar = { path = "../astar"}
@@ -26,15 +26,12 @@ pi_spine_export = { path = "../pi_spine_export"}
 # pi_export_quad_tree = { path = "../quad_tree"}
 scene3d_export = { path = "../scene3d" }
 pi_web_logger = {git = "http://ser.yinengyun.com:10082/tech/pi_web_logger.git"}
-pi_share = "0.4"
+pi_share = "0.5"
 talc = {version="=4.4.0", features = ["counters"]}
-# wasm-bindgen = { version = "0.2"}
-wasm-bindgen = { version = "=0.2.92" }
-bevy_ecs = "0.11"
-bevy_app = "0.11"
-pi_world = "=0.1.26"
-# pi_hal = {version = "0.1", registry = "yn"}
-# pi_hal = {version = "=0.1.37", registry = "yn"}
+wasm-bindgen = { version = "0.2" }
+# bevy_ecs = "0.11"
+# bevy_app = "0.11"
+pi_world = "0.2"
 pi_winit = {version = "0.27", registry="yn", package="winit"}
 
 log = "0.4"
@@ -42,21 +39,21 @@ tracing = "0.1"
 
 # 添加webgl feature
 # wgpu1 = { version = "0.19", package = "wgpu", default-features = false, features = ["glsl", "webgl"] }
-pi_render = { version = "0.1", registry = "yn", features=["webgl"] }
-pi_bevy_winit_window = {version = "0.1", registry = "yn"}
-pi_bevy_render_plugin = { version = "0.1", registry = "yn", features=["webgl"]}
-pi_bevy_log = {version = "0.1", registry = "yn"}
-pi_wgpu =  { version = "0.1", registry = "yn" }
-# pi_wgpu =  {version = "0.1", registry = "yn", features = ["single_thread", "use_wgpu"]}
-pi_spatial = "0.5"
+pi_render = { version = "0.2", registry = "yn", features=["webgl"] }
+pi_bevy_winit_window = {version = "0.2", registry = "yn"}
+pi_bevy_render_plugin = { version = "0.2", registry = "yn", features=["webgl"]}
+pi_bevy_log = {version = "0.2", registry = "yn"}
+pi_wgpu =  { version = "0.2", registry = "yn" }
+# pi_wgpu =  {version = "0.2", registry = "yn", features = ["single_thread", "use_wgpu"]}
+pi_spatial = "0.6"
 pi_path_finding = "0.6"
-pi_orca = "0.4"
-pi_bon_decode = { version = "0.1", registry = "yn"}
+pi_orca = "0.5"
 
-getrandom = { version = "0.2", features = ["js"] }
+getrandom = { version = "0.3", features = ["wasm_js"]}
 
 [target.'cfg(target_arch = "wasm32")'.dependencies]
-pi-async-rt = {version = "0.1", features = ["serial"]}
+pi_bon_decode = { version = "0.2", registry = "yn"}
+pi-async-rt = {version = "0.2", features = ["serial"]}
 uuid = { version = "1", features = ["js"] }
 wasm-bindgen = { version = "0.2", features = ["serde-serialize"]}
 js-sys = "0.3"

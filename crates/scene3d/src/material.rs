@@ -28,10 +28,10 @@ pub fn p3d_material(app: &mut Engine) -> f64 {
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
-pub fn p3d_material_shader(cmds: &mut CommandsExchangeD3, mat: f64, shader: &Atom) {
+pub fn p3d_material_shader(cmds: &mut CommandsExchangeD3, mat: f64, shader: &Atom, usematarray: bool) {
     let entity: Entity = as_entity(mat);
     // log::warn!("Create Material ShaderName: {:?}", shader.as_str());    // log::warn!("MaterialInit: {:?}, {}", entity, mat);
-    cmds.material_create.push(OpsMaterialCreate::ops(entity, shader.as_str()));
+    cmds.material_create.push(OpsMaterialCreate::ops(entity, shader.as_str(), usematarray));
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]

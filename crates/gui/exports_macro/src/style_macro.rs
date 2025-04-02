@@ -16,6 +16,8 @@ use pi_world::prelude::Entity;
 use ordered_float::NotNan;
 use pi_flex_layout::prelude::*;
 use pi_style::style::*;
+use pi_ui_render::components::user::serialize::*;
+use pi_ui_render::components::user::SvgColor;
 use pi_style::style_type::*;
 use pi_ui_render::resource::NodeCmd;
 use pi_ui_render::components::user::RadialWave;
@@ -1662,3 +1664,56 @@ fn reset_animation_str_inner(gui: &mut Gui, node_id: f64) {
 pub mod debug {
 	
 }
+
+style_out_export!(@expr svg_fill_color, SvgColorType, SvgColor::Color(Color::RGBA(CgColor::new(fill_color[0], fill_color[1], fill_color[2], fill_color[3]))),; fill_color: &[f32],);
+style_out_export!(@expr svg_fill_color_id, SvgColorType, {
+	use std::hash::Hasher;
+	let mut hasher = pi_hash::DefaultHasher::default();
+	hasher.write(fill_color_url.as_bytes());
+	SvgColor::ID(hasher.finish())
+},; fill_color_url: &str,);
+style_out_export!(@expr svg_storke_color, SvgColorType, SvgColor::Color(Color::RGBA(CgColor::new(storke_color[0], storke_color[1], storke_color[2], storke_color[3]))),; storke_color: &[f32],);
+style_out_export!(@expr svg_storke_width, SvgStrokeWidthType, unsafe { NotNan::new_unchecked(width) },; width: f32,);
+style_out_export!(@expr svg_shape_width, SvgShapeWidthType, width,; width: f32,);
+style_out_export!(@expr svg_shape_height, SvgShapeHeightType, height,; height: f32,);
+style_out_export!(@expr svg_shape_x, SvgShapeXType, x,; x: f32,);
+style_out_export!(@expr svg_shape_y, SvgShapeYType, y,; y: f32,);
+style_out_export!(@expr svg_width, SvgWidthType, width,; width: f32,);
+style_out_export!(@expr svg_height, SvgHeightType, height,; height: f32,);
+style_out_export!(@expr svg_shape, SvgShapeType, unsafe {std::mem::transmute(shape as u8)},; shape: f32,);
+style_out_export!(@expr svg_shape_cx, SvgShapeCXType, center_x,; center_x: f32,);
+style_out_export!(@expr svg_shape_cy, SvgShapeCYType, center_y,; center_y: f32,);
+style_out_export!(@expr svg_shape_radius, SvgShapeRadiusType, radius,; radius: f32,);
+style_out_export!(@expr svg_shape_radius_x, SvgShapeRadiusXType, radius_x,; radius_x: f32,);
+style_out_export!(@expr svg_shape_radius_y, SvgShapeRadiusYType, radius_y,; radius_y: f32,);
+style_out_export!(@expr svg_shape_ax, SvgShapeAXType, ax,; ax: f32,);
+style_out_export!(@expr svg_shape_ay, SvgShapeAYType, ay,; ay: f32,);
+style_out_export!(@expr svg_shape_bx, SvgShapeBXType, bx,; bx: f32,);
+style_out_export!(@expr svg_shape_by, SvgShapeBYType, by,; by: f32,);
+style_out_export!(@expr svg_shape_points, SvgShapePointsType, points.to_vec(),; points: &[f32],);
+style_out_export!(@expr svg_shape_path, SvgShapePathType, (points.to_vec(), verb.iter().map(|v| *v as u8).collect::<Vec<u8>>()),; verb: &[f32], points: &[f32],);
+style_out_export!(@expr svg_stroke_dasharray, StrokeDasharrayType, StrokeDasharray{real: stroke_dasharray[2], empty: stroke_dasharray[3]},; stroke_dasharray: &[f32],);
+style_out_export!(@expr svg_shadow_offset_dx, SvgShadowOffsetXType, x,; x: f32,);
+style_out_export!(@expr svg_shadow_offset_dy, SvgShadowOffsetYType, y,; y: f32,);
+style_out_export!(@expr svg_blur_level, SvgShadowBlurLevelType, level,; level: f32,);
+style_out_export!(@expr svg_filter, SvgFilterType, {
+	use std::hash::Hasher;
+	let mut hasher = pi_hash::DefaultHasher::default();
+	hasher.write(other_id.as_bytes());
+	hasher.finish()
+},; other_id: &str,);
+style_out_export!(@expr svg_filter_id, SvgFilterIDType, {
+	use std::hash::Hasher;
+	let mut hasher = pi_hash::DefaultHasher::default();
+	hasher.write(other_id.as_bytes());
+	hasher.finish()
+},; other_id: &str,);
+style_out_export!(@expr svg_gradient_stop, SvgGradientStopColorType, CgColor::new(color[0], color[1], color[2], color[3]),; color: &[f32],);
+style_out_export!(@expr svg_gradient_offset, SvgGradientStopOffsetType, offset,; offset: f32,);
+style_out_export!(@expr svg_gradient, SvgLinerGradientType, {
+	use std::hash::Hasher;
+	let mut hasher = pi_hash::DefaultHasher::default();
+	hasher.write(other_id.as_bytes());
+	hasher.finish()
+},; other_id: &str,);
+style_out_export!(@expr svg_shadow_color, SvgShadowColorType, CgColor::new(color[0], color[1], color[2], color[3]),; color: &[f32],);

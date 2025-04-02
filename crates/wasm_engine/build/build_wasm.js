@@ -36,6 +36,7 @@ fs.readFile(in_wasm_js_path, {encoding:"utf8"}, (err, data) => {
 	if(!err) {
 		data = data.replace(`import.meta.url`, '""');
 		data = data.replace(/(from '[.a-zA-Z0-9/]*)pi_hal\-[a-z0-9]*/g, function(_match, p0) {return p0 + 'pi_hal'});
+		data = data.replace(/(from '[.a-zA-Z0-9/]*)pi_bon_decode\-[a-z0-9]*/g, function(_match, p0) {return p0 + 'pi_bon_decode'});
 		data = data.replace(/from\s+'(.+?)\.js'/g,  "from '$1'");
 		data = data.replace(/getObject\(arg0\)\sinstanceof\sWindow/g, "true");
 		data = data.replace(/getObject\(arg0\)\sinstanceof\sCanvasRenderingContext2D/g, "true");
@@ -60,15 +61,14 @@ fs.readFile(in_wasm_js_path, {encoding:"utf8"}, (err, data) => {
 		)
 
 		data = data.replace(
-`    const { instance, module } = await __wbg_load(await input, imports);
+`    const { instance, module } = await __wbg_load(await module_or_path, imports);
 
     return __wbg_finalize_init(instance, module);
 }
 
-export { initSync }
-export default __wbg_init;`
-
-,`    const r = await __wbg_load(await input, imports);
+export { initSync };
+export default __wbg_init;`,
+`    const r = await __wbg_load(await module_or_path, imports);
 
     let ret = __wbg_finalize_init(r.instance, r.module);
 	

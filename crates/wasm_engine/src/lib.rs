@@ -26,6 +26,7 @@ pub use scene3d_export::{
 pub use pi_spatial::*;
 pub use pi_path_finding::*;
 pub use pi_orca::*;
+#[cfg(target_arch = "wasm32")]
 pub use pi_bon_decode::*;
 use wasm_bindgen::prelude::*;
 
@@ -40,10 +41,10 @@ extern {
 	fn stack(error: &Error) -> String;
 }
 
-
+#[cfg(not(debug_assertions))]
 #[global_allocator]
 static ALLOCATOR: talc::Talck<talc::locking::AssumeUnlockable, talc::ClaimOnOom> = unsafe {
-    static mut MEMORY: [u8; 64 * 1024 * 1024] = [0; 64 * 1024 * 1024];
+    static mut MEMORY: [u8; 96 * 1024 * 1024] = [0; 96 * 1024 * 1024];
     let span = talc::Span::from_const_array(std::ptr::addr_of!(MEMORY));
     talc::Talc::new(talc::ClaimOnOom::new(span)).lock()
 };
@@ -52,7 +53,10 @@ static ALLOCATOR: talc::Talck<talc::locking::AssumeUnlockable, talc::ClaimOnOom>
 #[allow(unused_attributes)]
 #[wasm_bindgen]
 pub fn get_counters() -> String {
-	format!("{:?}", ALLOCATOR.lock().get_counters())
+	#[cfg(not(debug_assertions))]
+	return format!("{:?}", ALLOCATOR.lock().get_counters());
+	#[cfg(debug_assertions)]
+	"debug is not talc!!!".to_string()
 }
 
 #[allow(unused_attributes)]

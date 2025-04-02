@@ -10,11 +10,11 @@ edition = "2021"
 # crate-type = ["cdylib", "rlib", "dylib"]
 
 [dependencies]
-pi_assets = "0.14"
-pi_share = "0.4"
+pi_assets = "0.15"
+pi_share = "0.5"
 serde = "1.0"
 serde_json = "1.0"
-pi_time = "0.3"
+pi_time = "0.5"
 
 wasm-bindgen = "*"
 js-sys = "0.3"

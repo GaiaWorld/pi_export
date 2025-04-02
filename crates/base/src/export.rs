@@ -71,9 +71,9 @@ fn panic_with_backtrace_rs() {
             println!("");
         }
 
-        if let Some(msg) = panic_info.message(){
-            println!("{:?}", msg);
-        }
+        // if let Some(msg) = panic_info.message(){
+        //     println!("{:?}", msg);
+        // }
 
         if let Some(payload) = panic_info.payload().downcast_ref::<&str>() {
             println!("{}", payload);
@@ -483,7 +483,7 @@ pub fn parse_asset_config(asset_config: &str) -> AssetConfig {
 #[inline]
 fn run_all(rt: &LocalTaskRunner<()>) {
 	while pi_hal::runtime::RENDER_RUNTIME.len() > 0 {
-		rt.poll();
+		// rt.poll();
 		rt.run_once();
 	}
     // while let Ok(r) = rt.run() {

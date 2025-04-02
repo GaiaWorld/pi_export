@@ -952,6 +952,10 @@ fn query_text1(engine: &mut Engine, node: Entity, x: f32, y: f32) -> CharPos {
 				start = cur + 1;
 			}
 		}
+        if start == end && start < text.len() {
+            // 如果start与end相等，无法进行下一次循环， 需要重新取到pos
+            pos = calc_text_pos(&text[start], text);
+        }
 	}
 
 	// log::info!("start: {}, pos:{:?}", start, pos);

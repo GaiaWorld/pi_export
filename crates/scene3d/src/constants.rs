@@ -141,6 +141,22 @@ impl EngineConstants {
     pub const VERTEX_ATTR_MATRICESWEIGHTS3       : u8 = 40;
     pub const VERTEX_ATTR_MATRICESINDICESEXTRA3  : u8 = 41;
     pub const VERTEX_ATTR_MATRICESWEIGHTSEXTRA3  : u8 = 42;
+    pub const VERTEX_ATTR_POSITION_M             : u8 = 43;
+    pub const VERTEX_ATTR_COLOR4_M               : u8 = 44;
+    pub const VERTEX_ATTR_UV_M                   : u8 = 45;
+    pub const VERTEX_ATTR_NORMAL_M               : u8 = 46;
+    pub const VERTEX_ATTR_POSITION_M1            : u8 = 47;
+    pub const VERTEX_ATTR_COLOR4_M1              : u8 = 48;
+    pub const VERTEX_ATTR_UV_M1                  : u8 = 49;
+    pub const VERTEX_ATTR_NORMAL_M1              : u8 = 50;
+    pub const VERTEX_ATTR_POSITION_M2            : u8 = 51;
+    pub const VERTEX_ATTR_COLOR4_M2              : u8 = 52;
+    pub const VERTEX_ATTR_UV_M2                  : u8 = 53;
+    pub const VERTEX_ATTR_NORMAL_M2              : u8 = 54;
+    pub const VERTEX_ATTR_POSITION_M3            : u8 = 55;
+    pub const VERTEX_ATTR_COLOR4_M3              : u8 = 56;
+    pub const VERTEX_ATTR_UV_M3                  : u8 = 57;
+    pub const VERTEX_ATTR_NORMAL_M3              : u8 = 58;
     
     // 不支持
     // pub const VERTEX_FORMAT_BYTE                        : u16 = 0x1400;
@@ -490,6 +506,10 @@ impl EngineConstants {
             Self::VERTEX_ATTR_INSWORLDROW2           => EBuildinVertexAtribute::InsWorldRow2,
             Self::VERTEX_ATTR_INSWORLDROW3           => EBuildinVertexAtribute::InsWorldRow3,
             Self::VERTEX_ATTR_INSWORLDROW4           => EBuildinVertexAtribute::InsWorldRow4,
+            Self::VERTEX_ATTR_POSITION_M             => EBuildinVertexAtribute::PositionM,
+            Self::VERTEX_ATTR_COLOR4_M               => EBuildinVertexAtribute::Color4M,
+            Self::VERTEX_ATTR_UV_M                   => EBuildinVertexAtribute::UVM,
+            Self::VERTEX_ATTR_NORMAL_M               => EBuildinVertexAtribute::NormalM,
             _  => EBuildinVertexAtribute::MatricesWeightsExtra,
         }
     }

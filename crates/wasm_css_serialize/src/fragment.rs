@@ -1,9 +1,10 @@
-use std::collections::VecDeque;
+use std::{collections::VecDeque, sync::atomic::AtomicBool};
 use std::str::FromStr;
 use cssparser::{ParserInput, Parser};
+use log::Level;
 use pi_style::style_parse::parser_style_items;
 use pi_hash::XHashMap;
-use pi_ui_render::resource::fragment::{NodeFragment, NodeTag, Fragments};
+use pi_ui_render::{components::user::{serialize::{SvgShapeType, SvgTypeAttr}, svg_parser_style_items, SvgShapeEnum}, resource::fragment::{Attributes, Fragments, NodeFragment, NodeTag}};
 use serde::{Serialize, Deserialize};
 use pi_null::Null;
 use wasm_bindgen::prelude::wasm_bindgen;
@@ -26,17 +27,17 @@ pub struct NodeFragmentWithScope {
 
 #[wasm_bindgen]
 pub fn serde_fragment_as_bin(json: &str) -> Vec<u8> {
+	let _r = pi_web_logger::init_with_level(pi_web_logger::Level::Debug);
 	let value = serde_json::from_str::<XHashMap<String, NodeFragmentWithScope>>(json).unwrap();
 	let mut map = XHashMap::default();
 	let mut fragments = Vec::new();
 	for (key, nodes) in value.into_iter() {
-		println!("key===={:?}", key);
 		let k = u32::from_str(key.as_str()).unwrap();
 		let index = fragments.len();
 		for json in nodes.value.iter() {
 			parse_node(json, nodes.scope, &mut fragments);
 		}
-		// log::warn!("k================={:?}, {:?}, {:?}", k, index, &fragments[index..fragments.len()]);
+		
 		map.insert(k, index..fragments.len());
 	}
 
@@ -44,7 +45,7 @@ pub fn serde_fragment_as_bin(json: &str) -> Vec<u8> {
 		fragments,
 		map,
 	};
-
+	log::error!("k=================json : {:?}", json);
 	match postcard::to_stdvec(&t) {
 		Ok(bin) => return bin.to_vec(),
 		Err(r) =>{
@@ -67,8 +68,22 @@ fn parse_node(node: &NodeFragmentJson, scope_hash: u32, fragments: &mut Vec<Node
 
 	let mut input = ParserInput::new(&node.style);
 	let mut parse = Parser::new(&mut input);
-	let mut style = VecDeque::new();
-	parser_style_items(&mut parse, &mut style, scope_hash as usize);
+	let style = if let NodeTag::Svg  | NodeTag::Rect | NodeTag::Circle | NodeTag::Ellipse| NodeTag::Line | NodeTag::Polygon | NodeTag::Polyline | NodeTag::Path | NodeTag::Defs
+	|  NodeTag::Filter | NodeTag::LinearGradient | NodeTag::Stop | NodeTag::FeDropShadow = tag {
+		let mut style = VecDeque::new();
+		println!("========== tag.to_svg_shape(): {:?}", (tag, tag.to_svg_shape()));
+		if let Some(shape) = tag.to_svg_shape(){
+			style.push_back(SvgTypeAttr::SvgShape(SvgShapeType(shape)));
+		}
+		svg_parser_style_items(&mut parse, &mut style, scope_hash as usize, tag);
+		Attributes::SvgAttributes(style)
+	} else {
+		let mut style = VecDeque::new();
+		
+		parser_style_items(&mut parse, &mut style, scope_hash as usize);
+		Attributes::GuiAttributes(style)
+	};
+	println!("tag = : {:?}", tag);
 
 	fragments.push(NodeFragment {
 		tag,
@@ -85,7 +100,7 @@ fn parse_node(node: &NodeFragmentJson, scope_hash: u32, fragments: &mut Vec<Node
 fn test() {
 	let _json = r#"{
 		"c6546848": [{
-			"style": "width: 10px;height: 10px;",
+			"style": "width: 10px;height: 10px;flex-wrap: wrap;",
 			"tag": "div",
 			"class": [],
 			"parent": null
@@ -109,7 +124,7 @@ fn test() {
 			"value": [
 				{
 					"tag":"div",
-					"style":"text-overflow: ellipsis;",
+					"style":"text-overflow: ellipsis;flex-wrap: wrap;",
 					"parent":null,
 					"class":[1508762967]
 				}
