@@ -1,8 +1,8 @@
 call cfg.bat
 
 cd ../
-set RUSTFLAGS=--cfg=web_sys_unstable_apis
-set RUSTFLAGS=--cfg getrandom_backend="wasm_js"
+@REM set RUSTFLAGS=--cfg=web_sys_unstable_apis
+@REM set RUSTFLAGS=--cfg getrandom_backend="wasm_js"
 set RUST_LOG=info
 
 cargo build --lib --release --target wasm32-unknown-unknown --features release
