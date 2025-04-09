@@ -14,10 +14,11 @@ let cwd = process.cwd();
 
 var dir = process.argv[2] || "pkg";
 var name = process.argv[3] || "gui";
+var cfgPath = process.argv[4] || "temp/cfg.txt";
 var wasmName = `${name}_bg`;
 
 let outDir;
-let data = fs.readFileSync("temp/cfg.txt", {encoding:"utf8"});
+let data = fs.readFileSync(cfgPath, {encoding:"utf8"});
 let datas = data.split("=");
 if (datas.length == 2) {
 	let d = datas[1].trim();

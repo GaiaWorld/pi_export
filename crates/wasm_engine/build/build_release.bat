@@ -1,3 +1,4 @@
+set "cfgPath=../temp/cfg.txt"
 call cfg.bat
 cd ../
 @REM set RUSTFLAGS=--cfg=web_sys_unstable_apis

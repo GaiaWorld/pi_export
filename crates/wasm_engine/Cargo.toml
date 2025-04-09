@@ -9,6 +9,7 @@ crate-type = ["cdylib"]
 
 [features]
 default = ["pi_js_export"]
+const_memory = []
 release = ["log/release_max_level_warn", "tracing/release_max_level_off"]
 trace = ["log/release_max_level_info", "tracing/release_max_level_info", "pi_bevy_log/tracing-chrome", "pi_bevy_render_plugin/trace", "pi_world/trace"]
 pi_js_export = []
