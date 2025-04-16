@@ -151,6 +151,19 @@ pub fn p3d_material_uniform_tex(
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
+pub fn p3d_load_texture(
+    cmds: &mut CommandsExchangeD3,
+    url: &Atom,
+    compressed: bool,
+    isfile: bool,
+    cancombine: bool,
+) {
+    let key = KeyImageTextureFrame { url: pi_atom::Atom::from(url.to_string()), cancombine, file: isfile, compressed };
+    cmds.loadtextures.push(key);
+}
+
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
 pub fn p3d_material_uniform_tex_from_render_target(
     cmds: &mut CommandsExchangeD3, mat: f64, key: &Atom, key_tilloff: &Atom, url: f64,
     filter: bool,
