@@ -451,8 +451,8 @@ pub fn p3d_varying(block: &mut P3DShaderVaryings, name: &Atom, format: &Atom) {
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_regist_material(
-    app: &mut Engine,
-    param: &mut ActionSetScene3D,
+    app: &Engine,
+    param: &ActionSetScene3D,
     key: &str,
     uniforms: &MaterialUniformDefines,
     vs_define_code: &str,
@@ -464,9 +464,6 @@ pub fn p3d_regist_material(
     varyings: &P3DShaderVaryings,
     binds_defines_base: Option<f64>,
 ) -> Option<P3DShaderMeta> {
-	pi_export_base::export::await_last_frame(app);
-    let resource = param.resource.get_mut(&mut app.world);
-
     let mut nodemat = NodeMaterialBuilder::new();
     nodemat.vs_define = String::from(vs_define_code);
     nodemat.fs_define = String::from(fs_define_code);
@@ -491,16 +488,19 @@ pub fn p3d_regist_material(
     // tempvaryings.drain(..).for_each(|item| {
     //     varyings.0.push(item);
     // });
+    let node_material_blocks = app.world.get_resource::<NodeMaterialBlocks>().unwrap();
+    let shader_metas = app.world.get_resource::<ShareAssetMgr::<ShaderEffectMeta>>().unwrap();
+    let enginopt = app.world.get_resource::<EngineCustomPlugins>().unwrap();
     
     includes.0.iter().for_each(|val| {
-        nodemat.include(val, &resource.node_material_blocks);
+        nodemat.include(val, node_material_blocks);
     });
 
     // log::warn!("Material {:?}", key);
 
-    ActionMaterial::regist_material_meta(&resource.shader_metas, KeyShaderMeta::from(key), nodemat.meta(&resource.enginopt));
+    ActionMaterial::regist_material_meta(shader_metas, KeyShaderMeta::from(key), nodemat.meta(enginopt));
 
-    if let Some(data) = resource.shader_metas.get(&KeyShaderMeta::from(key)) {
+    if let Some(data) = shader_metas.get(&KeyShaderMeta::from(key)) {
         Some(P3DShaderMeta(data))
     } else { None }
 }
