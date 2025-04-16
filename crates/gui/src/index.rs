@@ -643,7 +643,7 @@ pub fn has_res(engine: &mut Engine, path: &Atom1) -> bool {
 #[allow(dead_code)]
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
-pub struct ResHandle(Arc<dyn Any + Send + Sync + 'static>);
+pub struct ResHandle(Share<dyn Any + Send + Sync + 'static>);
 
 /// 加载资源
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]

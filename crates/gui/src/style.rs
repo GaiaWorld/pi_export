@@ -4443,7 +4443,6 @@ pub mod style_macro {
             for i in class_name.iter() {
                 s.push(*i as usize);
             }
-            // log::warn!("set class {:?}", (&node, class_name));
             gui.commands.set_class(node, ClassName(s));
         }
     }

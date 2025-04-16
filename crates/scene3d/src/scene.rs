@@ -206,9 +206,9 @@ pub fn p3d_scene_pick(app: &mut Engine, param: &mut ActionSetScene3D, scene: f64
     let scene: Entity = as_entity(scene);
     let camera: Entity = as_entity(viewer);
 
-    param.collider.align(&app.world);
-    param.vp_matrix.align(&app.world);
-    param.pickitems.align(&app.world);
+    param.collider.align();
+    param.vp_matrix.align();
+    param.pickitems.align();
     if let (Ok((collider, bounding)), Ok(vp)) = (param.collider.get(&app.world, scene), param.vp_matrix.get(&app.world, camera)) {
         let ray = vp.ray(projectx as f32, projecty as f32);
         let picked = ray_cast_scene((collider, bounding), &ray, !not_ray_bounding, &param.pickitems.get_param(&app.world));
