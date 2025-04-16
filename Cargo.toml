@@ -1,6 +1,6 @@
-targets = [
-    { triple = "wasm32-unknown-unknown" }
-]
+# targets = [
+#     { triple = "wasm32-unknown-unknown" }
+# ]
 
 [workspace]
 members = ["crates/*"]
@@ -101,7 +101,7 @@ debug = false
 # pi_bevy_window = { path = "../pi_bevy/crates/window" }
 # pi_window_renderer = { path="../pi_bevy/crates/window_renderer" }
 
-pi_ui_render = { path = "../pi_ui_render" }
+pi_ui_render = { path = "../pi_ui_render_1.87" }
 # pi_style = { path = "../pi_style" }
 # pi_style = { path = "../pi_style" }
 
