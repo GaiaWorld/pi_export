@@ -669,9 +669,4 @@ pub fn init_engine_3d(app: &mut Engine, spine: bool, param: &[u32]) {
         pi_world::schedule::Update,
         pi_scene_context::prelude::sys_state_transform.in_set(pi_scene_shell::prelude::ERunStageChap::StateCheck)
     );
-	
-	if spine {
-		app
-			.add_plugins(pi_spine_rs::PluginSpineRenderer);
-	}
 }
