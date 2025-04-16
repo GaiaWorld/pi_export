@@ -121,71 +121,35 @@ pub fn p3d_geo_set_indice(geo: &mut GeometryMeta, name: String, start: Option<f6
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
-pub fn p3d_create_vertex_buffer(app: &mut Engine, param: &mut ActionSetScene3D, key: String, data: &[f32], length: f64) {
-	pi_export_base::export::await_last_frame(app);
+pub fn p3d_create_vertex_buffer(
+    cmds: &mut crate::commands::CommandsExchangeD3,
+    key: String, data: &[f32], length: f64
+) {
     let length = length as usize;
-
-    // let queue = app.world.get_resource::<PiRenderQueue>().unwrap().clone();
-    // let queue = queue.0.clone();
     let key = KeyVertexBuffer::from(key.as_str());
-    let key_u64 = key.asset_u64();
-
-    let refs = app.world.get_resource_mut::<VertexBufferRefs>().unwrap();
-    refs.vertexs.insert(key, bytemuck::cast_slice::<f32, u8>(&data[0..length]).to_vec());
-    
-    // let mut resource = param.resource.get_mut(&mut app.world);
-    // if let Some(buffer) = resource.vb_mgr.get(&key_u64) {
-    //     queue.write_buffer(buffer.buffer(), 0, bytemuck::cast_slice(data));
-    // } else {
-    //     let data = bytemuck::cast_slice::<f32, u8>(&data[0..length]).to_vec();
-    //     ActionVertexBuffer::create(&mut resource.vb_wait, key, data);
-    // }
+    cmds.verticesbuffers.push((key, bytemuck::cast_slice::<f32, u8>(&data[0..length]).to_vec()));
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
-pub fn p3d_create_indices_buffer(app: &mut Engine, param: &mut ActionSetScene3D, key: String, data: &[u16], length: f64) {
-	pi_export_base::export::await_last_frame(app);
+pub fn p3d_create_indices_buffer(
+    cmds: &mut crate::commands::CommandsExchangeD3,
+    key: String, data: &[u16], length: f64
+) {
     let length = length as usize;
-
-    // let queue = app.world.get_resource::<PiRenderQueue>().unwrap().clone();
-    // let queue = queue.0.clone();
     let key = KeyVertexBuffer::from(key.as_str());
-    let key_u64 = key.asset_u64();
-    
-    let refs = app.world.get_resource_mut::<VertexBufferRefs>().unwrap();
-    refs.indices.insert(key, bytemuck::cast_slice::<u16, u8>(&data[0..length]).to_vec());
-
-    // let mut resource = param.resource.get_mut(&mut app.world);
-    // if let Some(buffer) = resource.vb_mgr.get(&key_u64) {
-    //     queue.write_buffer(buffer.buffer(), 0, bytemuck::cast_slice(data));
-    // } else {
-    //     let data = bytemuck::cast_slice::<u16, u8>(&data[0..length]).to_vec();
-    //     ActionVertexBuffer::create_indices(&mut resource.vb_wait, key, data);
-    // }
+    cmds.indicesbuffers.push((key, bytemuck::cast_slice::<u16, u8>(&data[0..length]).to_vec()));
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
-pub fn p3d_create_indices_buffer_u32(app: &mut Engine, param: &mut ActionSetScene3D, key: String, data: &[u32], length: f64) {
-	pi_export_base::export::await_last_frame(app);
+pub fn p3d_create_indices_buffer_u32(
+    cmds: &mut crate::commands::CommandsExchangeD3,
+    key: String, data: &[u32], length: f64
+) {
     let length = length as usize;
-
-    // let queue = app.world.get_resource::<PiRenderQueue>().unwrap().clone();
-    // let queue = queue.0.clone();
     let key = KeyVertexBuffer::from(key.as_str());
-    let key_u64 = key.asset_u64();
-
-    let refs = app.world.get_resource_mut::<VertexBufferRefs>().unwrap();
-    refs.indicesu32.insert(key, bytemuck::cast_slice::<u32, u8>(&data[0..length]).to_vec());
-
-    // let mut resource = param.resource.get_mut(&mut app.world);
-    // if let Some(buffer) = resource.vb_mgr.get(&key_u64) {
-    //     queue.write_buffer(buffer.buffer(), 0, bytemuck::cast_slice(data));
-    // } else {
-    //     let data = bytemuck::cast_slice::<u32, u8>(&data[0..length]).to_vec();
-    //     ActionVertexBuffer::create_indices(&mut resource.vb_wait, key, data);
-    // }
+    cmds.indicesbuffersu32.push((key, bytemuck::cast_slice::<u32, u8>(&data[0..length]).to_vec()));
 }
 
 // #[cfg_attr(target_arch="wasm32", wasm_bindgen)]

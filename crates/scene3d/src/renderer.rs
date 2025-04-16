@@ -123,8 +123,10 @@ pub fn p3d_render_clear_stencil(cmds: &mut CommandsExchangeD3, renderer: f64, va
 /// val 数值为 u32
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
-pub fn p3d_render_viewport(cmds: &mut CommandsExchangeD3, renderer: f64, x: f64, y: f64, w: f64, h: f64) {
+pub fn p3d_render_viewport(cmds: &mut CommandsExchangeD3, renderer: f64, x: f64, y: f64, w: f64, h: f64, mindepth: Option<f64>, maxdepth: Option<f64>) {
     let renderer: Entity = as_entity(renderer);
+    let mindepth = if let Some(mindepth) = mindepth { mindepth as f32 } else { 0. };
+    let maxdepth = if let Some(maxdepth) = maxdepth { maxdepth as f32 } else { 1. };
 
-    cmds.renderer_modify.push(OpsRendererCommand::Viewport(renderer, x as f32, y as f32, w as f32, h as f32));
+    cmds.renderer_modify.push(OpsRendererCommand::Viewport(renderer, x as f32, y as f32, w as f32, h as f32, mindepth, maxdepth));
 }

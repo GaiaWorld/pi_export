@@ -349,7 +349,7 @@ pub fn p3d_query_world_matrix(app: &mut Engine, param: &mut ActionSetScene3D, en
 	pi_export_base::export::await_last_frame(app);
     let entity: Entity = as_entity(entity);
 
-    param.world_transform.align(&app.world);
+    param.world_transform.align();
     if let Ok(trans) = param.world_transform.get(&app.world, entity) {
         let mut i = 0;
         trans.matrix.as_slice().iter().for_each(|val| {
@@ -368,10 +368,10 @@ pub fn p3d_query_scene_state(app: &mut Engine, param: &mut ActionSetScene3D, ent
 	pi_export_base::export::await_last_frame(app);
     let entity: Entity = as_entity(entity);
 
-    param.renderers.align(&app.world);
-    param.particlesystems.align(&app.world);
-    param.trails.align(&app.world);
-    param.animectxs.align(&app.world);
+    param.renderers.align();
+    param.particlesystems.align();
+    param.trails.align();
+    param.animectxs.align();
 
     let mut drawcalls = 0;
     let mut count_vertex = 0;
@@ -535,7 +535,7 @@ pub fn p3d_query_resource_memory(app: &mut Engine, param: &mut ActionSetScene3D,
 #[pi_js_export]
 pub fn p3d_material_state(app: &mut Engine, param: &mut ActionSetScene3D, result: &mut [f32]) {
     
-    param.materials.align(&app.world);
+    param.materials.align();
 
     // let mut cmds = param.materials.get(&mut app.world);
     let mut state = StateMaterial::default();
@@ -605,7 +605,7 @@ pub fn p3d_material_state(app: &mut Engine, param: &mut ActionSetScene3D, result
 pub fn p3d_mesh_state(app: &mut Engine, param: &mut ActionSetScene3D, scene: Option<f64>, result: &mut [f32]) {
     
     // let mut cmds = param.state.get_mut(&mut app.world);
-    param.meshes.align(&app.world);
+    param.meshes.align();
 
     let mut state = StateMesh::default();
     if let Some(scene) = scene {
@@ -633,7 +633,7 @@ pub fn p3d_mesh_state(app: &mut Engine, param: &mut ActionSetScene3D, scene: Opt
 #[pi_js_export]
 pub fn p3d_transform_state(app: &mut Engine, param: &mut ActionSetScene3D, scene: Option<f64>, result: &mut [f32]) {
 	pi_export_base::export::await_last_frame(app);
-    param.transforms.align(&app.world);
+    param.transforms.align();
 
     let mut state = StateTransform::default();
     let mut calc_local_time = 0;
@@ -666,7 +666,7 @@ pub fn p3d_transform_state(app: &mut Engine, param: &mut ActionSetScene3D, scene
 pub fn p3d_query_transform_state(app: &mut Engine, param: &mut ActionSetScene3D, transform: Option<f64>, result: &mut [f32]) -> bool {
 	pi_export_base::export::await_last_frame(app);
 
-    param.transforms.align(&app.world);
+    param.transforms.align();
 
     let mut state = StateTransform::default();
     if let Some(transform) = transform {
@@ -688,7 +688,7 @@ pub fn p3d_query_transform_state(app: &mut Engine, param: &mut ActionSetScene3D,
 pub fn p3d_camera_state(app: &mut Engine, param: &mut ActionSetScene3D, camera: Option<f64>, result: &mut [f32]) {
     
     // let mut cmds = param.state.get_mut(&mut app.world);
-    param.cameras.align(&app.world);
+    param.cameras.align();
 
     let mut state = StateCamera::default();
     if let Some(camera) = camera {
@@ -754,7 +754,7 @@ pub fn p3d_global_state(app: &mut Engine, param: &mut ActionSetScene3D, val: boo
 pub fn p3d_query_local_matrix(app: &mut Engine, param: &mut ActionSetScene3D, entity: f64, matrix: &mut [f32]) -> bool {
 	pi_export_base::export::await_last_frame(app);
     let entity: Entity = as_entity(entity);
-    param.local_transform.align(&app.world);
+    param.local_transform.align();
 
     if let Ok(trans) = param.local_transform.get(&app.world, entity) {
         let mut i = 0;
@@ -773,7 +773,7 @@ pub fn p3d_query_local_matrix(app: &mut Engine, param: &mut ActionSetScene3D, en
 pub fn p3d_query_view_matrix(app: &mut Engine, param: &mut ActionSetScene3D, entity: f64, matrix: &mut [f32]) -> bool {
 	pi_export_base::export::await_last_frame(app);
     let entity: Entity = as_entity(entity);
-    param.view_matrix.align(&app.world);
+    param.view_matrix.align();
 
     if let Ok(trans) = param.view_matrix.get(&app.world, entity) {
         let mut i = 0;
@@ -792,7 +792,7 @@ pub fn p3d_query_view_matrix(app: &mut Engine, param: &mut ActionSetScene3D, ent
 pub fn p3d_query_project_matrix(app: &mut Engine, param: &mut ActionSetScene3D, entity: f64, matrix: &mut [f32]) -> bool {
 	pi_export_base::export::await_last_frame(app);
     let entity: Entity = as_entity(entity);
-    param.project_matrix.align(&app.world);
+    param.project_matrix.align();
 
     if let Ok(trans) = param.project_matrix.get(&app.world, entity) {
         let mut i = 0;
@@ -811,7 +811,7 @@ pub fn p3d_query_project_matrix(app: &mut Engine, param: &mut ActionSetScene3D, 
 pub fn p3d_query_viewproject_matrix(app: &mut Engine, param: &mut ActionSetScene3D, entity: f64, matrix: &mut [f32]) -> bool {
 	pi_export_base::export::await_last_frame(app);
     let entity: Entity = as_entity(entity);
-    param.vp_matrix.align(&app.world);
+    param.vp_matrix.align();
 
     if let Ok(trans) = param.vp_matrix.get(&app.world, entity) {
         let mut i = 0;
@@ -1002,11 +1002,11 @@ pub fn p3d_query_children(app: &mut Engine, param: &mut ActionSetScene3D, id: f6
 	pi_export_base::export::await_last_frame(app);
     let id = as_entity(id);
 
-    param.tree.align(&app.world);
+    param.tree.align();
     let tree = param.tree.get(&app.world);
     let mut idx = 0;
-    param.treedown.align(&app.world);
-    param.nodes.align(&app.world);
+    param.treedown.align();
+    param.nodes.align();
 
     match param.treedown.get(&app.world, id) {
         Ok(down) => tree.iter(down.head()).for_each(|child| {
@@ -1042,10 +1042,10 @@ pub fn p3d_query_children(app: &mut Engine, param: &mut ActionSetScene3D, id: f6
 #[pi_js_export]
 pub fn p3d_query_mesh_info(app: &mut Engine, param: &mut ActionSetScene3D, id: f64, info: &mut [u32]) -> bool {
 	pi_export_base::export::await_last_frame(app);
-    param.model.align(&app.world);
-    param.pass.align(&app.world);
-    param.renderers.align(&app.world);
-    param.passactive.align(&app.world);
+    param.model.align();
+    param.pass.align();
+    param.renderers.align();
+    param.passactive.align();
 
     let id = as_entity(id);
     if let Ok((geoenable, passids)) = param.model.get(&app.world, id) {
@@ -1097,7 +1097,7 @@ pub fn p3d_query_mesh_info(app: &mut Engine, param: &mut ActionSetScene3D, id: f
 #[pi_js_export]
 pub fn p3d_query_material_info(app: &mut Engine, param: &mut ActionSetScene3D, id: f64, info: &mut [u32]) -> bool {
 	pi_export_base::export::await_last_frame(app);
-    param.materials.align(&app.world);
+    param.materials.align();
     let id = as_entity(id);
     if let Ok((
         meta, textures
