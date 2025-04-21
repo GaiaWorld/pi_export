@@ -172,11 +172,12 @@ pub fn p3d_scene_boundingbox(cmds: &mut CommandsExchangeD3, scene: f64, display:
 pub fn p3d_collider(cmds: &mut CommandsExchangeD3, node: f64,
     minx: f64, miny: f64, minz: f64,
     maxx: f64, maxy: f64, maxz: f64,
-    intersection_treshold: f64
+    intersection_treshold: f64, alphaindex: Option<f64>
 ) {
     let node: Entity = as_entity(node);
+    let alphaindex = if let Some(alphaindex) = alphaindex { alphaindex as i32 } else { i32::MIN };
 
-    cmds.scene_collider.push(OpsCollider::ops(node, (minx as f32, miny as f32, minz as f32), (maxx as f32, maxy as f32, maxz as f32), intersection_treshold as f32));
+    cmds.scene_collider.push(OpsCollider::new(node, (minx as f32, miny as f32, minz as f32), (maxx as f32, maxy as f32, maxz as f32), intersection_treshold as f32, alphaindex));
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
