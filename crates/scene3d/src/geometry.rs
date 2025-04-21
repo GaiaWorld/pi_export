@@ -11,7 +11,7 @@ use pi_mesh_builder::{
 };
 
 use crate::constants::EngineConstants;
-pub use crate::engine::ActionSetScene3D;
+pub use crate::commands::CommandsExchangeD3;
 #[cfg(target_arch = "wasm32")]
 use wasm_bindgen::prelude::wasm_bindgen;
 use js_proxy_gen_macro::pi_js_export;
@@ -122,7 +122,7 @@ pub fn p3d_geo_set_indice(geo: &mut GeometryMeta, name: String, start: Option<f6
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_create_vertex_buffer(
-    cmds: &mut crate::commands::CommandsExchangeD3,
+    cmds: &mut CommandsExchangeD3,
     key: String, data: &[f32], length: f64
 ) {
     let length = length as usize;
@@ -133,7 +133,7 @@ pub fn p3d_create_vertex_buffer(
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_create_indices_buffer(
-    cmds: &mut crate::commands::CommandsExchangeD3,
+    cmds: &mut CommandsExchangeD3,
     key: String, data: &[u16], length: f64
 ) {
     let length = length as usize;
@@ -144,7 +144,7 @@ pub fn p3d_create_indices_buffer(
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_create_indices_buffer_u32(
-    cmds: &mut crate::commands::CommandsExchangeD3,
+    cmds: &mut CommandsExchangeD3,
     key: String, data: &[u32], length: f64
 ) {
     let length = length as usize;
