@@ -1,3 +1,4 @@
+set "cfgPath=../temp/cfg.txt"
 call cfg.bat
 
 cd ../
