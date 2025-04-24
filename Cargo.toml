@@ -59,8 +59,8 @@ debug = false
 # wasm-bindgen = { path = "../wasm-bindgen" }
 # pi_polygon = { path = "../pi_polygon" }
 
-pi_world = { path = "../pi_world" }
-pi_share = { path = "../pi_share" }
+# pi_world = { path = "../pi_world" }
+# pi_share = { path = "../pi_share" }
 # pi_world_macros = { path = "../pi_world/macros" }
 # once_cell = { path = "../once_cell" }
 
@@ -102,11 +102,11 @@ pi_bevy_post_process = { path = "../pi_bevy/crates/post_process" }
 pi_bevy_window = { path = "../pi_bevy/crates/window" }
 pi_window_renderer = { path="../pi_bevy/crates/window_renderer" }
 
-pi_ui_render = { path = "../pi_ui_render" }
+# pi_ui_render = { path = "../pi_ui_render" }
 # pi_style = { path = "../pi_style" }
 # pi_style = { path = "../pi_style" }
 
-pi_postprocess ={path="../pi_post_process"}
+# pi_postprocess ={path="../pi_post_process"}
 
 pi_3d               = { path = "../pi_3d" }
 pi_node_materials   = { path = "../pi_3d/crates/node_materials" }
@@ -121,8 +121,8 @@ pi_scene_shell      = { path = "../pi_3d/crates/pi_scene_shell" }
 # pi_gltf                 = { path = "../pi_gltf" }
 # pi_animation ={path="../pi_animation"}
 
-pi_spine_rs = { path = "../pi_spine_rs" }
-pi_spine_render = { path = "../pi_spine_rs/crates/pi_spine_render" }
+# pi_spine_rs = { path = "../pi_spine_rs" }
+# pi_spine_render = { path = "../pi_spine_rs/crates/pi_spine_render" }
 
 # [package.metadata.wasm-pack.profile.profiling]
 # wasm-opt = ['-O']
