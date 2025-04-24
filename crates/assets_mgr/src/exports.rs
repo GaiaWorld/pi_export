@@ -24,8 +24,10 @@ impl CanSyncFunction {
 #[cfg_attr(target_arch = "wasm32", wasm_bindgen)]
 #[cfg(target_arch = "wasm32")]
 pub fn set_destroy_callback(f: js_sys::Function) {
+	use std::mem::transmute;
 	let f1 = CanSyncFunction(f);
 	unsafe {DESTROY_RES = Some(Arc::new(move |value: u64| {
+		let value = transmute::<u64, f64>(value);
 		f1.call(&JsValue::from_f64(0.0), &value.into());
 	}))};
 }

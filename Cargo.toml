@@ -1,6 +1,6 @@
-targets = [
-    { triple = "wasm32-unknown-unknown" }
-]
+# targets = [
+#     { triple = "wasm32-unknown-unknown" }
+# ]
 
 [workspace]
 members = ["crates/*"]
