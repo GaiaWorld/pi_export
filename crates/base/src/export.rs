@@ -12,6 +12,7 @@ use pi_hash::XHashMap;
 use pi_render::{asset::TAssetKeyU64, renderer::sampler::SamplerRes, rhi::{asset::{RenderRes, TextureRes}, bind_group::BindGroup, pipeline::RenderPipeline}};
 use pi_bevy_render_plugin::{FrameState, PiRenderPlugin};
 use pi_window_renderer::PluginWindowRender;
+use pi_bevy_render_plugin::PiRenderDevice;
 pub use pi_export_assets_mgr::exports::ResAllocator;
 #[cfg(target_arch = "wasm32")]
 use wasm_bindgen::prelude::*;
@@ -365,7 +366,7 @@ static IS_FIRST: AtomicBool = AtomicBool::new(true);
 pub fn fram_call(engine: &mut Engine, reset_state: bool) {
     use std::sync::atomic::Ordering;
 
-    use pi_bevy_render_plugin::PiRenderDevice;
+    
 
     // 推动高性能低精度本地时钟
     pi_time::tick_clock();
@@ -669,4 +670,18 @@ pub fn init_engine_3d(app: &mut Engine, spine: bool, param: &[u32]) {
         pi_world::schedule::Update,
         pi_scene_context::prelude::sys_state_transform.in_set(pi_scene_shell::prelude::ERunStageChap::StateCheck)
     );
+}
+
+#[cfg(feature = "pi_js_export")]
+pub fn bind_context(app: &mut Engine) {
+	use pi_bevy_render_plugin::PiRenderDevice;
+	let device = app.world.get_single_res_mut::<PiRenderDevice>().unwrap();
+	device.make_current();
+}
+
+#[cfg(feature = "pi_js_export")]
+pub fn unbind_context(app: &mut Engine) {
+	use pi_bevy_render_plugin::PiRenderDevice;
+	let device = app.world.get_single_res_mut::<PiRenderDevice>().unwrap();
+	device.unmake_current();
 }
