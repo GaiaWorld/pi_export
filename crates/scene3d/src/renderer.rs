@@ -13,7 +13,6 @@ pub use crate::{as_entity, as_f64};
 use wasm_bindgen::prelude::wasm_bindgen;
 
 pub use pi_export_base::export::Engine;
-pub use crate::engine::ActionSetScene3D;
 
 /// * pass_tag:
 ///     * 0b0000_0000_0000_0001
@@ -35,6 +34,15 @@ pub fn p3d_create_render(app: &mut Engine, cmds: &mut CommandsExchangeD3, viewer
     cmds.renderer_create.push(OpsRendererCreate::ops(id_renderer, name.clone(), viewer, PassTag::new(pass_tag as u16), transparent));
 
     as_f64(&id_renderer)
+}
+
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
+pub fn p3d_render_enabled(cmds: &mut CommandsExchangeD3, renderer: f64, enable: bool) {
+
+    let renderer: Entity = as_entity(renderer);
+    
+    cmds.renderer_modify.push(OpsRendererCommand::Active(renderer, enable));
 }
 
 /// 

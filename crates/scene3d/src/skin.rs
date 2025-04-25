@@ -5,7 +5,7 @@ use pi_scene_shell::prelude::*;
 
 use crate::as_f64;
 pub use crate::commands::CommandsExchangeD3;
-pub use crate::{engine::ActionSetScene3D, as_entity};
+pub use crate::as_entity;
 
 #[cfg(target_arch = "wasm32")]
 use wasm_bindgen::prelude::wasm_bindgen;
