@@ -15,6 +15,7 @@ use pi_ui_render::resource::DebugEntity;
 pub use pi_export_base::export::Engine;
 // pub use pi_export_system::blob::Blob;
 use pi_null::Null;
+use pi_ui_render::resource::PostProcessCmd;
 use pi_ui_render::system::system_set::UiSchedule;
 use pi_ui_render::{
     components::{
@@ -639,6 +640,20 @@ pub fn has_res(engine: &mut Engine, path: &Atom1) -> bool {
 	}
 	false
 }
+
+/// 设置自定义后处理
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
+pub fn set_custom_post(gui: &mut Gui, node_id: f64, post_id: f64) {
+	let node = unsafe { transmute::<f64, Entity>(node_id) };
+    let post = unsafe { transmute::<f64, Entity>(post_id) };
+	gui.commands.push_cmd(PostProcessCmd(
+        EntityKey(node),
+        node,
+    ));
+}
+
+
 
 #[allow(dead_code)]
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
