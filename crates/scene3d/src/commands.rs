@@ -362,6 +362,7 @@ pub fn p3d_commands_exchange(app: &mut Engine, param: &mut ActionSetScene3D, cmd
     while let Some((key, data)) = cmds.verticesbuffers.pop() {
 		let key_u64 = key.asset_u64();
 		if let Some(buffer) = vb_mgr.get(&key_u64) {
+            log::error!("Write buffer");
 			queue.write_buffer(buffer.buffer(), 0, &data);
 		} else {
 			pi_scene_context::prelude::ActionVertexBuffer::create(vb_wait, key, data);

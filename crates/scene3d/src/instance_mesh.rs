@@ -6,7 +6,7 @@ use pi_scene_context::prelude::*;
 
 use crate::{constants::EngineConstants};
 pub use crate::commands::CommandsExchangeD3;
-pub use crate::{engine::ActionSetScene3D, as_entity, as_f64};
+pub use crate::{as_entity, as_f64};
 pub use pi_export_base::{export::{Engine, Atom}, constants::*};
 
 #[cfg(target_arch = "wasm32")]

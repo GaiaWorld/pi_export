@@ -176,7 +176,9 @@ pub fn p3d_collider(cmds: &mut CommandsExchangeD3, node: f64,
 ) {
     let node: Entity = as_entity(node);
     let alphaindex = if let Some(alphaindex) = alphaindex { alphaindex as i32 } else { i32::MIN };
-
+    if (intersection_treshold + 0.2928932).abs() < 0.00001 {
+        log::error!("Collider: {:?}", (node, (minx as f32, miny as f32, minz as f32), (maxx as f32, maxy as f32, maxz as f32), intersection_treshold as f32, alphaindex));
+    }
     cmds.scene_collider.push(OpsCollider::new(node, (minx as f32, miny as f32, minz as f32), (maxx as f32, maxy as f32, maxz as f32), intersection_treshold as f32, alphaindex));
 }
 
@@ -184,6 +186,7 @@ pub fn p3d_collider(cmds: &mut CommandsExchangeD3, node: f64,
 #[pi_js_export]
 pub fn p3d_create_pickingray(app: &mut Engine, param: &mut ActionSetScene3D, camera: f64, projectx: f64, projecty: f64, result: &mut [f32]) -> bool {
 	pi_export_base::export::await_last_frame(app);
+    param.vp_matrix.align();
     let camera: Entity = as_entity(camera);
 
     if let Ok(tree) = param.vp_matrix.get(&app.world, camera) {
