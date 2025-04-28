@@ -49,16 +49,16 @@ pub fn p3d_render_enabled(cmds: &mut CommandsExchangeD3, renderer: f64, enable: 
 /// Renderer Modify
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
-pub fn p3d_render_target_key(cmds: &mut CommandsExchangeD3, renderer: f64, keytarget: Option<f64>) {
+pub fn p3d_render_target_key(cmds: &mut CommandsExchangeD3, renderer: f64, keytarget: Option<f64>, use_as_out: Option<bool>) {
     let renderer: Entity = as_entity(renderer);
-
+    let use_as_out = if let Some(use_as_out) = use_as_out { use_as_out } else { false };
     match keytarget {
         Some(keytarget) => {
             let keytarget = unsafe { transmute(keytarget) };
-            cmds.renderer_target.push(OpsRendererTarget::ops(renderer, KeyCustomRenderTarget::Custom(keytarget)));
+            cmds.renderer_target.push(OpsRendererTarget::Custom(renderer, KeyCustomRenderTarget::Custom(keytarget), use_as_out));
         },
         None => {
-            cmds.renderer_target.push(OpsRendererTarget::ops(renderer, KeyCustomRenderTarget::FinalRender));
+            cmds.renderer_target.push(OpsRendererTarget::Custom(renderer, KeyCustomRenderTarget::FinalRender, use_as_out));
         },
     }
 }
@@ -67,12 +67,13 @@ pub fn p3d_render_target_key(cmds: &mut CommandsExchangeD3, renderer: f64, keyta
 /// Renderer Modify
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
-pub fn p3d_render_target_auto(cmds: &mut CommandsExchangeD3, renderer: f64, width: f64, height: f64, colorformat: f64, depthstencilformat: f64) {
+pub fn p3d_render_target_auto(cmds: &mut CommandsExchangeD3, renderer: f64, width: f64, height: f64, colorformat: f64, depthstencilformat: f64, force_allocate: Option<bool>) {
     let renderer: Entity = as_entity(renderer);
     let colorformat =  EngineConstants::render_color_format(colorformat);
     let depthstencilformat =  EngineConstants::render_depth_format(depthstencilformat);
 
-    cmds.renderer_target.push(OpsRendererTarget::Auto(renderer, width as u16, height as u16, colorformat, depthstencilformat));
+    let force_allocate = if let Some(force_allocate) = force_allocate { force_allocate } else { true };
+    cmds.renderer_target.push(OpsRendererTarget::Auto(renderer, width as u16, height as u16, colorformat, depthstencilformat, force_allocate));
 }
 
 /// 
