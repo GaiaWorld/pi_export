@@ -176,9 +176,9 @@ pub fn p3d_collider(cmds: &mut CommandsExchangeD3, node: f64,
 ) {
     let node: Entity = as_entity(node);
     let alphaindex = if let Some(alphaindex) = alphaindex { alphaindex as i32 } else { i32::MIN };
-    if (intersection_treshold + 0.2928932).abs() < 0.00001 {
-        log::error!("Collider: {:?}", (node, (minx as f32, miny as f32, minz as f32), (maxx as f32, maxy as f32, maxz as f32), intersection_treshold as f32, alphaindex));
-    }
+    // if (intersection_treshold + 0.2928932).abs() < 0.00001 {
+    //     log::error!("Collider: {:?}", (node, (minx as f32, miny as f32, minz as f32), (maxx as f32, maxy as f32, maxz as f32), intersection_treshold as f32, alphaindex));
+    // }
     cmds.scene_collider.push(OpsCollider::new(node, (minx as f32, miny as f32, minz as f32), (maxx as f32, maxy as f32, maxz as f32), intersection_treshold as f32, alphaindex));
 }
 
@@ -233,11 +233,11 @@ pub fn p3d_scene_pick(app: &mut Engine, param: &mut ActionSetScene3D, scene: f64
             }
             true
         } else {
-            log::error!("bbb {:?}", collider.size());
+            // log::error!("bbb {:?}", collider.size());
             false
         }
     } else {
-        log::error!("aaa");
+        // log::error!("aaa");
         false
     }
 }
