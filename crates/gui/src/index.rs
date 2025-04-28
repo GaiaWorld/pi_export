@@ -644,9 +644,12 @@ pub fn has_res(engine: &mut Engine, path: &Atom1) -> bool {
 /// 设置自定义后处理
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
-pub fn set_custom_post(gui: &mut Gui, node_id: f64, post_id: f64) {
+pub fn set_custom_post(gui: &mut Gui, node_id: f64, post_id: Option<f64>) {
 	let node = unsafe { transmute::<f64, Entity>(node_id) };
-    let post = unsafe { transmute::<f64, Entity>(post_id) };
+    let post = match post_id{
+        Some(post_id) => unsafe { transmute::<f64, Entity>(post_id) },
+        None => Entity::null(),
+    } ;
 	gui.commands.push_cmd(PostProcessCmd(
         EntityKey(node),
         node,
