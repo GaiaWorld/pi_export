@@ -1,4 +1,4 @@
-use std::ops::Deref;
+use std::{mem::transmute, ops::Deref};
 use pi_assets::asset::{Handle, Size};
 use pi_bevy_render_plugin::PiRenderDevice;
 use pi_export_base::export::DataTextureSubData;
@@ -80,19 +80,33 @@ pub fn p3d_remove_data_texture(param: &mut CommandsExchangeD3, key: &Atom) {
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
-pub fn p3d_query_texture(app: &mut Engine, param: &mut ActionSetScene3D, isfile: bool, url: &Atom, cancombine: bool, compressed: bool, depth_or_array_layers: f64, info: &mut [f32]) -> bool {
+pub fn p3d_create_texture_loader(app: &mut Engine, param: &mut ActionSetScene3D, isfile: bool, url: &Atom, cancombine: bool, compressed: bool, depth_or_array_layers: f64) -> f64 {
 	pi_export_base::export::await_last_frame(app);
 
-    let resource = param.resource.get_mut(&mut app.world);
+    let mut resource = param.resource.get_mut(&mut app.world);
 
     let key = KeyImageTextureFrame { url: url.deref().clone(), file: isfile, compressed, cancombine };
-    if let Some(img) = resource.imgtex_asset.get(&key) {
-        info[0] = img.width() as f32;
-        info[1] = img.height() as f32;
-        info[2] = img.size() as f32;
-        true
+    let loader = resource.imgtex_loader.create_load(key);
+    unsafe { transmute(loader) }
+}
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
+pub fn p3d_query_texture_loader(app: &mut Engine, param: &mut ActionSetScene3D, loader: f64, info: &mut [u32]) {
+	pi_export_base::export::await_last_frame(app);
+
+    let mut resource = param.resource.get_mut(&mut app.world);
+
+    let loader = unsafe { transmute(loader) };
+    if let Some(success) = resource.imgtex_loader.query_success(loader) {
+        info[0] = 1;
+        info[1] = success.width();
+        info[2] = success.height();
+        info[3] = success.size() as u32;
+    } else if let Some(fail) = resource.imgtex_loader.query_failed_reason(loader) {
+        info[0] = 0;
+        info[1] = fail;
     } else {
-        false
+        info[0] = 2;
     }
 }
 
