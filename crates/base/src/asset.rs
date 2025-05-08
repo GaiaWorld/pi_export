@@ -26,7 +26,7 @@ pub fn p3d_texture_default_view_width(item: &TextureDefaultView) -> f64 {
         ETextureViewUsage::TexWithId(_) => todo!(),
         ETextureViewUsage::Image(tex) => tex.texture().width() as f64,
         ETextureViewUsage::ImageFrame(tex) => tex.texture().width() as f64,
-        ETextureViewUsage::SRT(_) => todo!(),
+        _ => todo!(),
     }
 }
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
@@ -37,7 +37,7 @@ pub fn p3d_texture_default_view_height(item: &TextureDefaultView) -> f64 {
         ETextureViewUsage::TexWithId(_) => todo!(),
         ETextureViewUsage::Image(tex) => tex.texture().height() as f64,
         ETextureViewUsage::ImageFrame(tex) => tex.texture().height() as f64,
-        ETextureViewUsage::SRT(_) => todo!(),
+        _ => todo!(),
     }
 }
 
