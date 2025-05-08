@@ -105,5 +105,5 @@ vm_builtin = { git = "http://ser.yinengyun.com:10082/tech/pi_v8.git", branch = "
 v8 = { git = "http://ser.yinengyun.com:10082/tech/v8.git" }
 
 [dev-dependencies]
-font_kit = { registry = "yn", version = "=0.1.0" }
+# font_kit = { registry = "yn", version = "=0.1.0" }
 

@@ -4494,18 +4494,23 @@ pub mod style_macro {
         }
     }
     #[cfg(feature = "pi_js_export")]
-    pub fn set_brush(gui: &mut Gui, node: f64, brush: f64, by_draw_list: Option<bool>) {
+    pub fn set_brush(
+        gui: &mut Gui,
+        node: f64,
+        brush: Option<f64>,
+        by_draw_list: Option<bool>,
+    ) {
         {
             let node = unsafe { transmute::<f64, Entity>(node) };
-            let brush = unsafe { transmute::<f64, Entity>(brush) };
+            let brush = match brush {
+                Some(brush) => unsafe { transmute::<f64, Entity>(brush) }
+                None => Entity::null(),
+            };
             gui.commands
                 .push_cmd(
-                    ComponentCmd(
-                        pi_ui_render::components::user::Canvas {
-                            id: brush,
-                            by_draw_list: by_draw_list.unwrap_or(false),
-                            pre_graph_id: Default::default(),
-                        },
+                    pi_ui_render::resource::CanvasCmd(
+                        brush,
+                        by_draw_list.unwrap_or(false),
                         node,
                     ),
                 );
@@ -4513,18 +4518,23 @@ pub mod style_macro {
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
-    pub fn set_brush(gui: &mut Gui, node: f64, brush: f64, by_draw_list: Option<bool>) {
+    pub fn set_brush(
+        gui: &mut Gui,
+        node: f64,
+        brush: Option<f64>,
+        by_draw_list: Option<bool>,
+    ) {
         {
             let node = unsafe { transmute::<f64, Entity>(node) };
-            let brush = unsafe { transmute::<f64, Entity>(brush) };
+            let brush = match brush {
+                Some(brush) => unsafe { transmute::<f64, Entity>(brush) }
+                None => Entity::null(),
+            };
             gui.commands
                 .push_cmd(
-                    ComponentCmd(
-                        pi_ui_render::components::user::Canvas {
-                            id: brush,
-                            by_draw_list: by_draw_list.unwrap_or(false),
-                            pre_graph_id: Default::default(),
-                        },
+                    pi_ui_render::resource::CanvasCmd(
+                        brush,
+                        by_draw_list.unwrap_or(false),
                         node,
                     ),
                 );

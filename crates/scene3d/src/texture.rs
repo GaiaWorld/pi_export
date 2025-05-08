@@ -142,5 +142,21 @@ pub fn p3d_texture_combine_param(app: &mut Engine, format: f64, maxlayer: f64, m
     let format = EngineConstants::texture_format(format);
     let cmds = app.world.get_resource_mut::<TextureCombineAtlas2DMgr>().unwrap();
     cmds.append_desc(KeyAtlasDesc { format }, &device, maxlayer as u32, maxsize as u32, maxcount as usize);
+    // let loader = app.world.get_resource_mut::<pi_scene_shell::prelude::ImageTextureLoader>().unwrap();
+    // loader.test.push(String::from("assets/qian_01.astc.ktx"));
+    // loader.test.push(String::from("assets/plant1_0.astc.ktx"));
+    // loader.test.push(String::from("assets/player_001.astc.ktx"));
+    // loader.test.push(String::from("assets/plant3_0.astc.ktx"));
+    // loader.test.push(String::from("assets/plant4_1.astc.ktx"));
+    // loader.test.push(String::from("assets/plant4_0.astc.ktx"));
+    // loader.test.push(String::from("assets/qian_03.astc.ktx"));
+    // loader.test.push(String::from("assets/mutou_02.astc.ktx"));
+    // loader.test.push(String::from("assets/meigui_1.astc.ktx"));
+    // loader.test.push(String::from("assets/meigui_2.astc.ktx"));
+    // loader.test.push(String::from("assets/qiezi_4.astc.ktx"));
+    // loader.test.push(String::from("assets/qiezi_3.astc.ktx"));
+    // loader.test.push(String::from("assets/meigui_4.astc.ktx"));
+    // loader.test.push(String::from("assets/citiehua_2.astc.ktx"));
+    // loader.test.push(String::from("assets/citiehua_3.astc.ktx"));
 }
 

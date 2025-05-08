@@ -9,7 +9,6 @@ pub use crate::{as_entity, as_f64};
 use wasm_bindgen::prelude::wasm_bindgen;
 
 pub use pi_export_base::export::Engine;
-pub use crate::engine::ActionSetScene3D;
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]

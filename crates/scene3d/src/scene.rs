@@ -172,17 +172,21 @@ pub fn p3d_scene_boundingbox(cmds: &mut CommandsExchangeD3, scene: f64, display:
 pub fn p3d_collider(cmds: &mut CommandsExchangeD3, node: f64,
     minx: f64, miny: f64, minz: f64,
     maxx: f64, maxy: f64, maxz: f64,
-    intersection_treshold: f64
+    intersection_treshold: f64, alphaindex: Option<f64>
 ) {
     let node: Entity = as_entity(node);
-
-    cmds.scene_collider.push(OpsCollider::ops(node, (minx as f32, miny as f32, minz as f32), (maxx as f32, maxy as f32, maxz as f32), intersection_treshold as f32));
+    let alphaindex = if let Some(alphaindex) = alphaindex { alphaindex as i32 } else { i32::MIN };
+    if (intersection_treshold + 0.2928932).abs() < 0.00001 {
+        log::error!("Collider: {:?}", (node, (minx as f32, miny as f32, minz as f32), (maxx as f32, maxy as f32, maxz as f32), intersection_treshold as f32, alphaindex));
+    }
+    cmds.scene_collider.push(OpsCollider::new(node, (minx as f32, miny as f32, minz as f32), (maxx as f32, maxy as f32, maxz as f32), intersection_treshold as f32, alphaindex));
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_create_pickingray(app: &mut Engine, param: &mut ActionSetScene3D, camera: f64, projectx: f64, projecty: f64, result: &mut [f32]) -> bool {
 	pi_export_base::export::await_last_frame(app);
+    param.vp_matrix.align();
     let camera: Entity = as_entity(camera);
 
     if let Ok(tree) = param.vp_matrix.get(&app.world, camera) {
@@ -206,9 +210,9 @@ pub fn p3d_scene_pick(app: &mut Engine, param: &mut ActionSetScene3D, scene: f64
     let scene: Entity = as_entity(scene);
     let camera: Entity = as_entity(viewer);
 
-    param.collider.align(&app.world);
-    param.vp_matrix.align(&app.world);
-    param.pickitems.align(&app.world);
+    param.collider.align();
+    param.vp_matrix.align();
+    param.pickitems.align();
     if let (Ok((collider, bounding)), Ok(vp)) = (param.collider.get(&app.world, scene), param.vp_matrix.get(&app.world, camera)) {
         let ray = vp.ray(projectx as f32, projecty as f32);
         let picked = ray_cast_scene((collider, bounding), &ray, !not_ray_bounding, &param.pickitems.get_param(&app.world));

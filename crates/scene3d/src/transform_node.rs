@@ -4,7 +4,7 @@ pub use pi_export_base::export::Engine;
 use pi_scene_context::prelude::*;
 
 pub use crate::commands::CommandsExchangeD3;
-pub use crate::{engine::ActionSetScene3D, as_entity, as_f64};
+pub use crate::{as_entity, as_f64};
 #[cfg(target_arch = "wasm32")]
 use wasm_bindgen::prelude::wasm_bindgen;
 use js_proxy_gen_macro::pi_js_export;

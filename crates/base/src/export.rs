@@ -12,6 +12,7 @@ use pi_hash::XHashMap;
 use pi_render::{asset::TAssetKeyU64, renderer::sampler::SamplerRes, rhi::{asset::{RenderRes, TextureRes}, bind_group::BindGroup, pipeline::RenderPipeline}};
 use pi_bevy_render_plugin::{FrameState, PiRenderPlugin};
 use pi_window_renderer::PluginWindowRender;
+use pi_bevy_render_plugin::PiRenderDevice;
 pub use pi_export_assets_mgr::exports::ResAllocator;
 #[cfg(target_arch = "wasm32")]
 use wasm_bindgen::prelude::*;
@@ -341,21 +342,21 @@ pub fn dump_graphviz(engine: &Engine) -> String  {
 }
 
 // 在wasm目标上,返回system依赖图
-// #[cfg(feature="system_graph")]
-// #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
-// pub fn dump_system(engine: &mut Engine) -> String  {
-// 	let label = bevy::prelude::Update;
-// 	engine.0.world
-// 	.resource_scope::<bevy::prelude::Schedules, _>(|world, mut schedules| {
-// 		let schedule = schedules
-// 			.get_mut(&bevy::prelude::Update)
-// 			.ok_or_else(|| format!("schedule with label {label:?} doesn't exist"))
-// 			.unwrap();
+#[cfg(feature="system_graph")]
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+pub fn dump_system(engine: &mut Engine) -> String  {
+	let label = bevy::prelude::Update;
+	engine.0.world
+	.resource_scope::<bevy::prelude::Schedules, _>(|world, mut schedules| {
+		let schedule = schedules
+			.get_mut(&bevy::prelude::Update)
+			.ok_or_else(|| format!("schedule with label {label:?} doesn't exist"))
+			.unwrap();
 
-// 		bevy_mod_debugdump::schedule_graph::schedule_graph_dot(schedule, world, &Default::default())
-// 	})
-// 	// bevy_mod_debugdump::schedule_graph_dot(&mut engine.0, bevy::prelude::Update, &Default::default())
-// }
+		bevy_mod_debugdump::schedule_graph::schedule_graph_dot(schedule, world, &Default::default())
+	})
+	// bevy_mod_debugdump::schedule_graph_dot(&mut engine.0, bevy::prelude::Update, &Default::default())
+}
 
 static IS_FIRST: AtomicBool = AtomicBool::new(true);
 
@@ -365,7 +366,7 @@ static IS_FIRST: AtomicBool = AtomicBool::new(true);
 pub fn fram_call(engine: &mut Engine, reset_state: bool) {
     use std::sync::atomic::Ordering;
 
-    use pi_bevy_render_plugin::PiRenderDevice;
+    
 
     // 推动高性能低精度本地时钟
     pi_time::tick_clock();
@@ -669,9 +670,18 @@ pub fn init_engine_3d(app: &mut Engine, spine: bool, param: &[u32]) {
         pi_world::schedule::Update,
         pi_scene_context::prelude::sys_state_transform.in_set(pi_scene_shell::prelude::ERunStageChap::StateCheck)
     );
-	
-	if spine {
-		app
-			.add_plugins(pi_spine_rs::PluginSpineRenderer);
-	}
+}
+
+#[cfg(feature = "pi_js_export")]
+pub fn bind_context(app: &mut Engine) {
+	use pi_bevy_render_plugin::PiRenderDevice;
+	let device = app.world.get_single_res_mut::<PiRenderDevice>().unwrap();
+	device.make_current();
+}
+
+#[cfg(feature = "pi_js_export")]
+pub fn unbind_context(app: &mut Engine) {
+	use pi_bevy_render_plugin::PiRenderDevice;
+	let device = app.world.get_single_res_mut::<PiRenderDevice>().unwrap();
+	device.unmake_current();
 }

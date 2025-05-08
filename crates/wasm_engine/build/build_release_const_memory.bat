@@ -1,4 +1,4 @@
-set "cfgPath=../temp/cfg.txt"
+set "cfgPath=../temp/cfg_const_memory.txt"
 call cfg.bat
 cd ../
 @REM set RUSTFLAGS=--cfg=web_sys_unstable_apis
@@ -7,6 +7,6 @@ cd ../
 set RUSTFLAGS=--cfg getrandom_backend="wasm_js" -Ctarget-feature=-reference-types,-sign-ext
 set CARGO_UNSTABLE_BUILD_STD=panic_abort,std
 set RUST_LOG=info
-wasm-pack build --release  --target web --out-dir pkg --out-name wasm_engine
-node build/build_wasm.js pkg wasm_engine
+wasm-pack build --release  --features const_memory --target web --out-dir pkg_const_memery --out-name wasm_engine
+node build/build_wasm.js pkg_const_memery wasm_engine temp/cfg_const_memory.txt
 pause;

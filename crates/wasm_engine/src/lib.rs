@@ -5,7 +5,6 @@ pub use pi_export_gui::*;
 // pub use pi_export_astar::export:: *;
 pub use pi_export_base::export::*;
 // pub use pi_export_quad_tree::export::*;
-pub use pi_spine_export:: *;
 pub use scene3d_export::{
 	engine::*,
 	scene::*,
@@ -41,6 +40,7 @@ extern {
 	fn stack(error: &Error) -> String;
 }
 
+#[cfg(feature="const_memory")]
 #[cfg(not(debug_assertions))]
 #[global_allocator]
 static ALLOCATOR: talc::Talck<talc::locking::AssumeUnlockable, talc::ClaimOnOom> = unsafe {
@@ -49,7 +49,14 @@ static ALLOCATOR: talc::Talck<talc::locking::AssumeUnlockable, talc::ClaimOnOom>
     talc::Talc::new(talc::ClaimOnOom::new(span)).lock()
 };
 
+#[cfg(not(feature="const_memory"))]
+#[allow(unused_attributes)]
+#[wasm_bindgen]
+pub fn get_counters() -> String {
+	"". to_string()
+}
 
+#[cfg(feature="const_memory")]
 #[allow(unused_attributes)]
 #[wasm_bindgen]
 pub fn get_counters() -> String {

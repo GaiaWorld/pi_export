@@ -1,7 +1,9 @@
+set "cfgPath=../temp/cfg.txt"
 call cfg.bat
 
 cd ../
-set RUSTFLAGS=--cfg=web_sys_unstable_apis
+@REM set RUSTFLAGS=--cfg=web_sys_unstable_apis
+@REM set RUSTFLAGS=--cfg getrandom_backend="wasm_js"
 set RUSTFLAGS=--cfg getrandom_backend="wasm_js"
 set RUST_LOG=info
 

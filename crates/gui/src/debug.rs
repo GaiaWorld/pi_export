@@ -4,44 +4,25 @@ use js_proxy_gen_macro::pi_js_export;
 use pi_atom::get_by_hash;
 use pi_atom::Atom;
 use pi_bevy_asset::ShareAssetMgr;
-use pi_bevy_ecs_extend::prelude::Down;
-use pi_bevy_ecs_extend::prelude::Root;
-use pi_bevy_ecs_extend::prelude::Up;
-use pi_bevy_ecs_extend::system_param::tree::Layer;
-use pi_bevy_render_plugin::PiRenderGraph;
-use pi_null::Null;
 use pi_render::rhi::asset::TextureRes;
 use pi_style::style::ImageRepeat;
-use pi_ui_render::components::calc::DrawInfo;
-use pi_ui_render::components::calc::InPassId;
-use pi_ui_render::components::calc::RenderContextMark;
-use pi_ui_render::components::pass_2d::Camera;
-use pi_ui_render::components::pass_2d::GraphId;
-use pi_ui_render::components::pass_2d::ParentPassId;
-use pi_ui_render::components::user::{BorderRadius, BorderImageSlice, BorderImageRepeat, BorderImageClip, BorderImage, Border, Blur, BackgroundImageMod, BackgroundImageClip, BackgroundImage, AsImage, Animation};
-use pi_ui_render::components::user::{TextStyle, TextShadow, TextOverflowData, TextContent, Show, RadialWave, Position, Padding, Opacity, MaskImageClip, Margin, Hsi, FlexContainer, ClipPath, Canvas, BoxShadow};
-use pi_ui_render::components::user::{BorderColor, BackgroundColor, BlendMode, ClassName, FlexNormal, MaskImage, MinMax, NodeState, StyleAttribute, FitType, ZIndex, Vector2, TransformWillChange, Transform};
+use pi_ui_render::components::user::{BorderRadius, BorderImageSlice, BorderImageRepeat, BorderImageClip, Border, BackgroundImageClip};
+use pi_ui_render::components::user::{TextStyle, TextShadow, TextContent, Show, Position, Padding, MaskImageClip, Margin, Hsi, FlexContainer, BoxShadow};
+use pi_ui_render::components::user::{BorderColor, BackgroundColor, BlendMode, ClassName, FlexNormal, MaskImage, MinMax, NodeState, StyleAttribute, FitType, Vector2, TransformWillChange, Transform};
 use pi_ui_render::resource::fragment::DebugInfo;
-use pi_ui_render::resource::RenderContextMarkType;
-use pi_world::filter::With;
 use serde::{Deserialize, Serialize};
 
 use pi_style::style::Point2;
 
 use pi_ui_render::components::calc::ContentBox;
-use pi_ui_render::components::calc::IsShow;
 use pi_ui_render::components::calc::LayoutResult;
 use pi_ui_render::components::calc::WorldMatrix;
-use pi_ui_render::components::calc::{DrawList, EntityKey, ZRange};
 use pi_ui_render::components::user::serialize::StyleTypeReader;
-use pi_ui_render::components::user::Vector4;
 // use pi_ui_render::components::user::*;
-use pi_ui_render::components::user::{Overflow, Size};
+use pi_ui_render::components::user::Size;
 pub use pi_export_base::export::Engine;
 use pi_ui_render::resource::ClassSheet;
 use pi_world::prelude::Entity;
-use pi_ui_render::components::calc::View;
-use smallvec::SmallVec;
 #[cfg(target_arch = "wasm32")]
 use wasm_bindgen::prelude::wasm_bindgen;
 
@@ -223,56 +204,6 @@ pub struct CharNode {
     pub base_width: f32,       // font_size 为32 的字符宽度
 }
 
-#[allow(unused_attributes)]
-#[pi_js_export]
-#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
-pub fn get_layout(engine: &mut Engine, node_id: f64) -> String {
-    let node_id = unsafe { transmute(node_id) };
-
-    // let mut query = engine.world.query::<(
-    //     Option<&NodeState>,
-    //     Option<&Size>,
-    //     Option<&Margin>,
-    //     Option<&Padding>,
-    //     Option<&Border>,
-    //     Option<&Position>,
-    //     Option<&MinMax>,
-    //     Option<&FlexContainer>,
-    //     Option<&FlexNormal>,
-    //     Option<&Show>,
-    //     Option<&LayoutResult>,
-    // )>();
-    let (node_state, size, margin, padding, border, position, minmax, flex_container, flex_normal, show, layout_ret) =
-        (
-            engine.world.get_component::<NodeState>(node_id).ok(),
-            engine.world.get_component::<Size>(node_id).ok(),
-            engine.world.get_component::<Margin>(node_id).ok(),
-            engine.world.get_component::<Padding>(node_id).ok(),
-            engine.world.get_component::<Border>(node_id).ok(),
-            engine.world.get_component::<Position>(node_id).ok(),
-            engine.world.get_component::<MinMax>(node_id).ok(),
-            engine.world.get_component::<FlexContainer>(node_id).ok(),
-            engine.world.get_component::<FlexNormal>(node_id).ok(),
-            engine.world.get_component::<Show>(node_id).ok(),
-            engine.world.get_component::<LayoutResult>(node_id).ok(),
-        );
-        // query.get(&engine.world, node_id).unwrap();
-
-	serde_json::to_string(&Layout {
-        size: size.map(|r| r.clone()),
-        margin: margin.map(|r| r.clone()),
-        padding: padding.map(|r| r.clone()),
-        border: border.map(|r| r.clone()),
-        position: position.map(|r| r.clone()),
-        minmax: minmax.map(|r| r.clone()),
-        flex_container: flex_container.map(|r| r.clone()),
-        flex_normal: flex_normal.map(|r| r.clone()),
-        show: show.map(|r| r.clone()),
-        node_state: node_state.map(|r| r.clone()),
-        is_vnode: node_state.map_or(false, |r| r.0.is_vnode()),
-        layout_ret: layout_ret.map(|r| r.clone()),
-    }).unwrap()
-}
 
 
 #[allow(unused_attributes)]
@@ -300,319 +231,37 @@ pub fn get_class(engine: &mut Engine, class_name: u32) -> String {
 	serde_json::to_string(&class).unwrap()
 }
 
+#[allow(unused_attributes)]
+#[pi_js_export]
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+pub fn get_global_info(engine: &mut Engine) -> String {
+    let info = pi_ui_render::devtools::get_global_info(&engine.world);
+    serde_json::to_string(&info).unwrap()
+}
 
-// #[pi_js_export]
-// #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
-// pub fn get_gui_root(engine: &mut Engine) -> Option<Entity> {
-//     let mut query = engine.world.query::<Entity, (With<Root>, With<Size>)>();
-//     query.iter(&engine.world).next()
-// }
+#[allow(unused_attributes)]
+#[pi_js_export]
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+pub fn get_class_names(engine: &mut Engine, node_id: f64) -> String {
+    let node_id = unsafe { transmute::<_, Entity>(node_id) };
+    pi_ui_render::devtools::get_class_names(&engine.world, node_id)
+}
+
+#[allow(unused_attributes)]
+#[pi_js_export]
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+pub fn get_style(engine: &mut Engine, node_id: f64) -> String {
+    let node_id = unsafe { transmute::<_, Entity>(node_id) };
+    pi_ui_render::devtools::get_style(&engine.world, node_id)
+}
+
 
 #[allow(unused_attributes)]
 #[pi_js_export]
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 pub fn node_info(engine: &mut Engine, node_id: f64) -> String {
     let node_id = unsafe { transmute::<_, Entity>(node_id) };
-    let layout = engine.world.get_component::<LayoutResult>(node_id).unwrap().clone();
-
-    let world_matrix = &engine.world.get_component::<WorldMatrix>(node_id).unwrap().clone();
-
-    let view_port =  engine.world.get_component::<Camera>(node_id).map(|r| {r.view_port.clone()});
-	let view =  engine.world.get_component::<View>(node_id).map(|r| {r.clone()});
-
-	let mark_type_as_image = engine.world.get_single_res::<RenderContextMarkType<AsImage>>().unwrap().clone();
-	let mark_type_overflow = engine.world.get_single_res::<RenderContextMarkType<Overflow>>().unwrap().clone();
-	let mark_type_blur = engine.world.get_single_res::<RenderContextMarkType<Blur>>().unwrap().clone();
-	let mark_type_hsi = engine.world.get_single_res::<RenderContextMarkType<Hsi>>().unwrap().clone();
-	let mark_type_opacity = engine.world.get_single_res::<RenderContextMarkType<Opacity>>().unwrap().clone();
-	let mark_type_radial_wave = engine.world.get_single_res::<RenderContextMarkType<RadialWave>>().unwrap().clone();
-	let mark_type_clippath = engine.world.get_single_res::<RenderContextMarkType<ClipPath>>().unwrap().clone();
-	let mark_type_transform_willchange = engine.world.get_single_res::<RenderContextMarkType<TransformWillChange>>().unwrap().clone();
-	
-
-    // let draw_list =  engine.world.query::<&DrawList>();
-
-    // let mask_image =  engine.world.query::<&MaskImage>();
-
-    // let mask_image_clip =  engine.world.query::<&MaskImageClip>();
-
-    // let content_boxs = engine.world.query::<&ContentBox>();
-
-    let width = layout.rect.right - layout.rect.left;
-    let height = layout.rect.bottom - layout.rect.top;
-    // border box
-    let b_left_top = world_matrix * Vector4::new(0.0, 0.0, 1.0, 1.0);
-    let b_left_bottom = world_matrix * Vector4::new(0.0, height, 1.0, 1.0);
-    let b_right_bottom = world_matrix * Vector4::new(width, height, 1.0, 1.0);
-    let b_right_top = world_matrix * Vector4::new(width, 0.0, 1.0, 1.0);
-
-    // border box
-    let absolute_b_box = Quad {
-        left_top: Point2::new(b_left_top.x, b_left_top.y),
-        left_bottom: Point2::new(b_left_bottom.x, b_left_bottom.y),
-        right_bottom: Point2::new(b_right_bottom.x, b_right_bottom.y),
-        right_top: Point2::new(b_right_top.x, b_right_top.y),
-    };
-
-    // padding box
-    let p_left_top = world_matrix * Vector4::new(layout.border.left, layout.border.top, 1.0, 1.0);
-    let p_left_bottom = world_matrix * Vector4::new(layout.border.left, height - layout.border.bottom, 1.0, 1.0);
-    let p_right_bottom = world_matrix * Vector4::new(width - layout.border.right, height - layout.border.bottom, 1.0, 1.0);
-    let p_right_top = world_matrix * Vector4::new(width - layout.border.right, layout.border.top, 1.0, 1.0);
-
-    let absolute_p_box = Quad {
-        left_top: Point2::new(p_left_top.x, p_left_top.y),
-        left_bottom: Point2::new(p_left_bottom.x, p_left_bottom.y),
-        right_bottom: Point2::new(p_right_bottom.x, p_right_bottom.y),
-        right_top: Point2::new(p_right_top.x, p_right_top.y),
-    };
-
-    // content box
-    let c_left_top = world_matrix * Vector4::new(layout.border.left + layout.padding.left, layout.border.top + layout.padding.top, 1.0, 1.0);
-    let c_left_bottom = world_matrix
-        * Vector4::new(
-            layout.border.left + layout.padding.left,
-            height - layout.border.bottom - layout.padding.bottom,
-            1.0,
-            1.0,
-        );
-    let c_right_bottom = world_matrix
-        * Vector4::new(
-            width - layout.border.right - layout.padding.right,
-            height - layout.border.bottom - layout.padding.bottom,
-            1.0,
-            1.0,
-        );
-    let c_right_top = world_matrix
-        * Vector4::new(
-            width - layout.border.right - layout.padding.right,
-            layout.border.top + layout.padding.top,
-            1.0,
-            1.0,
-        );
-
-    let absolute_c_box = Quad {
-        left_top: Point2::new(c_left_top.x, c_left_top.y),
-        left_bottom: Point2::new(c_left_bottom.x, c_left_bottom.y),
-        right_bottom: Point2::new(c_right_bottom.x, c_right_bottom.y),
-        right_top: Point2::new(c_right_top.x, c_right_top.y),
-    };
-
-    // let yogas = gui.gui.yoga.lend();
-    // let yoga = yogas[node_id];
-
-    // let octs = gui.gui.oct.lend();
-    // let oct = octs[node_id];
-
-    let draw_list = match engine.world.get_component::<DrawList>(node_id) {
-        Ok(r) => r.0.clone(),
-        _ => SmallVec::default(),
-    };
-
-    let mut draw_objs = Vec::new();
-    for i in draw_list.iter() {
-        if let Ok(_) = engine.world.get_component::<DrawInfo>(i.id) {
-			draw_objs.push(RenderObject {
-				id: format!("{:?}", i),
-				name: "".to_string().clone(),
-			});
-		}
-    }
-    let mut children = Vec::new();
-
-    if let Ok(down) = engine.world.get_component::<Down>(node_id) {
-        let mut n = down.head();
-        while !EntityKey(n).is_null() {
-            children.push(unsafe { transmute::<_, f64>(n) });
-            n = match engine.world.get_component::<Up>(n) {
-                Ok(r) => r.next(),
-                _ => break,
-            };
-        }
-    }
-    let parent = match engine.world.get_component::<Up>(node_id) {
-        Ok(r) => r.parent(),
-        __ => EntityKey::null().0,
-    };
-
-    let (
-        overflow,
-        is_show,
-        mask_image,
-        mask_image_clip,
-        blur,
-        zindex,
-        z_range,
-        content_box,
-        quad,
-        text_style,
-        text_content,
-        class_name,
-        background_image,
-        border_image,
-        background_color,
-        border_color,
-        opacity,
-        transform,
-        box_shadow,
-        border_image_clip,
-        border_image_slice,
-        border_image_repeat,
-        background_image_clip,
-        border_radius,
-        background_image_mod,
-        hsi,
-        transform_will_change,
-        inpass,
-        parentpass,
-        graph_id,
-        animation,
-        text_shadow,
-        as_image,
-        canvas,
-        layer,
-        text_overflow_data,
-        context_mark,
-        blend_mode,
-    ) =
-        (
-            engine.world.get_component::<Overflow>(node_id).ok(),
-            engine.world.get_component::<IsShow>(node_id).ok(),
-            engine.world.get_component::<MaskImage>(node_id).ok(),
-            engine.world.get_component::<MaskImageClip>(node_id).ok(),
-            engine.world.get_component::<Blur>(node_id).ok(),
-            engine.world.get_component::<ZIndex>(node_id).ok(),
-            engine.world.get_component::<ZRange>(node_id).ok(),
-            engine.world.get_component::<ContentBox>(node_id).ok(),
-            engine.world.get_component::<pi_ui_render::components::calc::Quad>(node_id).ok(),
-            engine.world.get_component::<TextStyle>(node_id).ok(),
-            engine.world.get_component::<TextContent>(node_id).ok(),
-            engine.world.get_component::<ClassName>(node_id).ok(),
-            engine.world.get_component::<BackgroundImage>(node_id).ok(),
-            engine.world.get_component::<BorderImage>(node_id).ok(),
-            engine.world.get_component::<BackgroundColor>(node_id).ok(),
-            engine.world.get_component::<BorderColor>(node_id).ok(),
-            engine.world.get_component::<Opacity>(node_id).ok(),
-            engine.world.get_component::<Transform>(node_id).ok(),
-            engine.world.get_component::<BoxShadow>(node_id).ok(),
-            engine.world.get_component::<BorderImageClip>(node_id).ok(),
-            engine.world.get_component::<BorderImageSlice>(node_id).ok(),
-            engine.world.get_component::<BorderImageRepeat>(node_id).ok(),
-            engine.world.get_component::<BackgroundImageClip>(node_id).ok(),
-            engine.world.get_component::<BorderRadius>(node_id).ok(),
-            engine.world.get_component::<BackgroundImageMod>(node_id).ok(),
-            engine.world.get_component::<Hsi>(node_id).ok(),
-            engine.world.get_component::<TransformWillChange>(node_id).ok(),
-            engine.world.get_component::<InPassId>(node_id).ok(),
-            engine.world.get_component::<ParentPassId>(node_id).ok(),
-            engine.world.get_component::<GraphId>(node_id).ok(),
-            engine.world.get_component::<Animation>(node_id).ok(),
-            engine.world.get_component::<TextShadow>(node_id).ok(),
-            engine.world.get_component::<AsImage>(node_id).ok(),
-            engine.world.get_component::<Canvas>(node_id).ok(),
-            engine.world.get_component::<Layer>(node_id).ok(),
-            engine.world.get_component::<TextOverflowData>(node_id).ok(),
-            engine.world.get_component::<RenderContextMark>(node_id).unwrap(),
-            engine.world.get_component::<BlendMode>(node_id).ok(),
-        );
-
-	let mut mark_str = Vec::new();
-	if context_mark.get(***mark_type_as_image).as_deref() == Some(&true) {
-		mark_str.push("AsImage");
-	}
-	if context_mark.get(***mark_type_overflow).as_deref() == Some(&true) {
-		mark_str.push("Overflow");
-	}
-	if context_mark.get(***mark_type_blur).as_deref() == Some(&true) {
-		mark_str.push("Blur");
-	}
-	if context_mark.get(***mark_type_hsi).as_deref() == Some(&true) {
-		mark_str.push("Hsi");
-	}
-	if context_mark.get(***mark_type_opacity).as_deref() == Some(&true) {
-		mark_str.push("Opacity");
-	}
-	if context_mark.get(***mark_type_radial_wave).as_deref() == Some(&true) {
-		mark_str.push("RadialWave");
-	}
-	if context_mark.get(***mark_type_clippath).as_deref() == Some(&true) {
-		mark_str.push("ClipPath");
-	}
-	if context_mark.get(***mark_type_transform_willchange).as_deref() == Some(&true) {
-		mark_str.push("TransformWillChange");
-	}
-	
-    let mut info = Info {
-        // char_block: char_block,
-        overflow: overflow.map_or(false, |r| r.0),
-		blend_mode: blend_mode.map(|r| r.clone()),
-        // by_overflow: by_overflow,
-        visibility: is_show.map_or(false, |r| r.get_visibility()),
-        display: is_show.map_or(false, |r| r.get_display()),
-        enable: is_show.map_or(false, |r| r.get_enable()),
-        mask_image: mask_image.map(|r| r.clone()),
-        mask_image_clip: mask_image_clip.map(|r| r.clone()),
-        // context_mark: match context_marks.get(node_id) {
-        //     Some(r) => Some(r.clone()),
-        //     None => None,
-        // },
-        // render_context: match render_contexts {
-        //     Some(r) => true,
-        //     None => false,
-        // },
-        opacity: opacity.map_or(1.0, |r| r.0),
-        blur: blur.map_or(0.0, |r| r.0),
-        zindex: zindex.map_or(0, |r| r.0),
-        zdepth: z_range.map_or(0.0, |r| r.start as f32),
-        layout: unsafe { transmute(layout.clone()) },
-        border_box: absolute_b_box,
-        padding_box: absolute_p_box,
-        content_box: absolute_c_box,
-        content_bound_box: content_box.map(|r| r.clone()),
-        quad: quad.map(|r| r.clone()),
-        // culling: gui.gui.culling.lend()[node_id].0,
-        text: text_style.map(|r| r.clone()),
-		text_shadow: text_shadow.map(|r| r.clone()),
-        text_content: text_content.map(|r| r.clone()),
-        render_obj: draw_objs,
-        class_name: class_name.map(|r| r.clone()),
-        image: background_image.map(|r| r.0.as_str().to_string()),
-        border_image: border_image.map(|r| r.0.as_str().to_string()),
-        background_color: background_color.map(|r| r.clone()),
-        border_color: border_color.map(|r| r.clone()),
-        transform: transform.map(|r| r.clone()),
-        box_shadow: box_shadow.map(|r| r.clone()),
-        border_image_clip: border_image_clip.map(|r| r.clone()),
-        border_image_slice: border_image_slice.map(|r| r.clone()),
-        border_image_repeat: border_image_repeat.map(|r| r.clone()),
-        image_clip: background_image_clip.map(|r| r.clone()),
-        border_radius: border_radius.map(|r| r.clone()),
-        object_fit: background_image_mod.map(|r| r.object_fit.clone()),
-        background_repeat: background_image_mod.map(|r| r.repeat.clone()),
-        filter: hsi.map(|r| r.clone()),
-        // style_mark: gui.gui.style_mark.lend()[node_id],
-        transform_will_change: transform_will_change.map(|r| r.clone()),
-        parent_id: format!("{:?}", parent),
-		inpass: format!("{:?}", inpass),
-		parentpass: format!("{:?}", parentpass),
-		graph_id: format!("{:?}", graph_id),
-        children: children,
-		animation: format!("{:?}", animation),
-		as_image: format!("{:?}", as_image),
-		canvas: "".to_string(),
-		layer: format!("{:?}", layer),
-		view_port: format!("{:?}", view_port),
-		view: format!("{:?}", view),
-		text_overflow_data: format!("{:?}", text_overflow_data),
-		context_mark: mark_str.join("|"),
-    };
-	let canvas = canvas.map(|r| {r.clone()});
-	let canvas_graph_id = if let Some(canvas) = canvas.clone() {
-		engine.world.get_component::<GraphId>(canvas.id).ok()
-	} else {
-		None
-	};
-	info.canvas = format!("{:?}, {:?}", canvas, canvas_graph_id);
+    let info = pi_ui_render::devtools::node_info(&engine.world, node_id);
     serde_json::to_string(&info).unwrap()
 }
 

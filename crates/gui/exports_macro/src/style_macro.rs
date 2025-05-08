@@ -992,13 +992,13 @@ other_out_export!(
     gui,
     {
 		let node = unsafe { transmute::<f64, Entity>(node) };
-		let brush = unsafe { transmute::<f64, Entity>(brush) };
-		gui.commands.push_cmd(ComponentCmd(
-			pi_ui_render::components::user::Canvas{ id: brush, by_draw_list: by_draw_list.unwrap_or(false), pre_graph_id: Default::default() },
-			node,
-		));
+		let brush = match brush{
+			Some(brush) => unsafe { transmute::<f64, Entity>(brush) },
+			None => Entity::null(),
+		} ;
+		gui.commands.push_cmd(pi_ui_render::resource::CanvasCmd(brush, by_draw_list.unwrap_or(false), node),);
 	},;;
-	node: f64, brush: f64,by_draw_list: Option<bool>,
+	node: f64, brush: Option<f64>,by_draw_list: Option<bool>,
 );
 
 /// 设置水波纹效果

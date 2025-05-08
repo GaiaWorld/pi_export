@@ -510,6 +510,10 @@ impl EngineConstants {
             Self::VERTEX_ATTR_COLOR4_M               => EBuildinVertexAtribute::Color4M,
             Self::VERTEX_ATTR_UV_M                   => EBuildinVertexAtribute::UVM,
             Self::VERTEX_ATTR_NORMAL_M               => EBuildinVertexAtribute::NormalM,
+            Self::VERTEX_ATTR_CUSTOMVEC4A            => EBuildinVertexAtribute::CustomV4A,
+            Self::VERTEX_ATTR_CUSTOMVEC4B            => EBuildinVertexAtribute::CustomV4B,
+            Self::VERTEX_ATTR_CUSTOMVEC4C            => EBuildinVertexAtribute::CustomV4C,
+            Self::VERTEX_ATTR_CUSTOMVEC4D            => EBuildinVertexAtribute::CustomV4D,
             _  => EBuildinVertexAtribute::MatricesWeightsExtra,
         }
     }
