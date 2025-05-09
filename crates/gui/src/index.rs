@@ -651,7 +651,7 @@ pub fn set_custom_post(gui: &mut Gui, node_id: f64, post_id: Option<f64>) {
         None => Entity::null(),
     } ;
 	gui.commands.push_cmd(PostProcessCmd(
-        EntityKey(node),
+        EntityKey(post),
         node,
     ));
 }
