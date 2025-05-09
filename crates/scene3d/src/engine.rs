@@ -989,11 +989,15 @@ pub fn p3d_get_image(app: &mut Engine, param: &mut ActionSetScene3D, id: f64) ->
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
-pub fn p3d_get_image_fail_reason(app: &mut Engine, param: &mut ActionSetScene3D, id: f64) -> Option<String> {
+pub fn p3d_get_image_fail_reason(app: &mut Engine, param: &mut ActionSetScene3D, id: f64) -> Option<f64> {
 	pi_export_base::export::await_last_frame(app);
     let mut resource = param.resource.get_mut(&mut app.world);
     let id: IDImageTextureLoad = unsafe { transmute(id) };
-    resource.imgtex_loader.query_failed_reason(id)
+    if let Some(err) = resource.imgtex_loader.query_failed_reason(id) {
+        Some(err as f64)
+    } else {
+        None
+    }
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
