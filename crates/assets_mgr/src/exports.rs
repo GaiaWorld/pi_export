@@ -1,13 +1,13 @@
 use std::{mem::transmute, sync::Arc};
 
-use pi_assets::{allocator::Allocator, asset::{Asset, Handle, Size}, mgr::AssetMgr};
+use pi_assets::{allocator::Allocator, asset::{Asset, Handle, Size}, homogeneous::HomogeneousMgr as HomogeneousMgr1, mgr::AssetMgr};
 use pi_share::{Share, ShareCell};
 #[cfg(target_arch = "wasm32")]
 use wasm_bindgen::{prelude::wasm_bindgen, JsValue};
 
 use js_proxy_gen_macro::pi_js_export;
 
-pub static mut DESTROY_RES: Option<Arc<dyn Fn(u64) + Send + Sync>> = None;
+pub static mut DESTROY_RES: Option<Arc<dyn Fn(f64) + Send + Sync>> = None;
 
 #[cfg(target_arch = "wasm32")]
 pub struct CanSyncFunction(js_sys::Function);
@@ -26,18 +26,16 @@ impl CanSyncFunction {
 pub fn set_destroy_callback(f: js_sys::Function) {
 	use std::mem::transmute;
 	let f1 = CanSyncFunction(f);
-	unsafe {DESTROY_RES = Some(Arc::new(move |value: u64| {
-		let value = transmute::<u64, f64>(value);
+	unsafe {DESTROY_RES = Some(Arc::new(move |value: f64| {
 		f1.call(&JsValue::from_f64(0.0), &value.into());
 	}))};
 }
 #[cfg(not(target_arch = "wasm32"))]
 #[pi_js_export]
 pub fn set_destroy_callback(f: Arc<dyn Fn(f64, Option<Box<dyn FnOnce(Result<u32, String>) + Send + 'static>>) + Send + Sync + 'static>) {
-    use std::mem::transmute;
 
-	unsafe { DESTROY_RES = Some(Arc::new(move |value: u64| {
-		(f)(transmute(value), None);
+	unsafe { DESTROY_RES = Some(Arc::new(move |value: f64| {
+		(f)(value, None);
 	}))};
 }
 
@@ -61,7 +59,7 @@ impl ResMgr {
 	/// 如果创建的资源类型未注册，将崩溃
 	#[pi_js_export]
 	pub fn create_res(&mut self, key: f64, cost: u32) -> ResRef {
-		match self.inner.insert(unsafe {transmute(key)}, JsRes {key: unsafe {transmute(key)}, cost: cost as usize}) {
+		match self.inner.insert(unsafe {transmute(key)}, JsRes {key, cost: cost as usize}) {
 			Ok(r) => ResRef(r),
 			_ => unreachable!()
 		}
@@ -74,6 +72,33 @@ impl ResMgr {
 			Some(r) => Some(ResRef(r)),
 			None => None
 		}
+	}
+}
+
+/// 同质资源管理器
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen)]
+#[pi_js_export]
+pub struct HomogeneousMgr {
+	inner: Share<HomogeneousMgr1<JsRes>>,
+}
+
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen)]
+#[pi_js_export]
+impl HomogeneousMgr {
+	/// push资产
+	#[pi_js_export]
+	pub fn push(&mut self, key: f64) {
+		self.inner.push(JsRes {key, cost: 0 as usize/*TODO*/});
+	}
+
+	/// 弹出资产
+	#[pi_js_export]
+	pub fn pop(&mut self) -> Option<f64> {
+		self.inner.pop().map(|r|{
+			let r1 = r.key;
+			std::mem::forget(r);
+			r1
+		})
 	}
 }
 
@@ -119,7 +144,7 @@ impl ResAllocator {
 	// 10 * 1024 * 1024,
 	// 		50 * 1024 * 1024,
 	// 		5 * 60000,
-	/// 创建一个资源， 如果资源已经存在，则会修改资源的配置
+	/// 注册资产管理器
 	#[pi_js_export]
 	pub fn register_to_resmgr(&mut self, ty: u32, min_capacity: u32, weight: u32, time_out: u32) -> ResMgr {
 		let mut m = pi_assets::mgr::AssetMgr::<JsRes>::new(pi_assets::asset::GarbageEmpty(),
@@ -133,6 +158,21 @@ impl ResAllocator {
 			inner: m,
 		}
 	}
+
+	/// 注册同质资产管理器
+	#[pi_js_export]
+	pub fn register_to_homogeneous_resmgr(&mut self, ty: u32, min_capacity: u32, weight: u32, time_out: u32) -> HomogeneousMgr {
+		let mut m = HomogeneousMgr1::<JsRes>::new(pi_assets::homogeneous::GarbageEmpty(),
+		min_capacity as usize,
+		time_out as usize,);
+		let m1 = Share::get_mut(&mut m).unwrap();
+		m1.ty = ty; // 标记类型
+		self.inner.borrow_mut().register(m.clone(), min_capacity as usize, weight as usize);
+		HomogeneousMgr{
+			inner: m,
+		}
+	}
+
 	// 资产管理器总大小
     #[pi_js_export]
 	pub fn size(&self) -> f32 {
@@ -150,7 +190,7 @@ impl ResAllocator {
 
 /// 资源包装
 pub struct JsRes {
-	key: u64,
+	key: f64,
 	cost: usize,
 }
 
@@ -166,7 +206,7 @@ impl Size for JsRes {
 }
 
 impl std::ops::Drop for JsRes {
-    #[allow(static_mut_ref)]
+    #[allow(static_mut_refs)]
 	fn drop(&mut self) {
 		unsafe { 
 			if let Some(r) = &DESTROY_RES {

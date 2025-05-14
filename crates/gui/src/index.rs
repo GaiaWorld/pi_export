@@ -1035,15 +1035,15 @@ fn ab_query_func(arg: &mut AbQueryArgs, id: EntityKey, aabb: &Aabb2, _bind: &())
         // 取最大z的node
         if z_range.start > arg.max_z {
             // 检查是否有裁剪，及是否在裁剪范围内
-            let mut inpass = inpass.0;
+            let mut inpass = *(inpass.0);
             while !inpass.is_null() {
                 // log::warn!("inpass======={:?}", (inpass, id));
                 if let (Ok(parent), Ok(quad)) = (
-                    arg.gui.entitys.get_component_by_index::<ParentPassId>(*inpass, arg.gui.parentpass_component),
-                    arg.gui.entitys.get_component_by_index::<Quad>(*inpass, arg.gui.quad_component),
+                    arg.gui.entitys.get_component_by_index::<ParentPassId>(inpass, arg.gui.parentpass_component),
+                    arg.gui.entitys.get_component_by_index::<Quad>(inpass, arg.gui.quad_component),
                 ){
                     inpass = parent.0;
-                    if let Ok(oveflow) = arg.gui.entitys.get_component_by_index::<Overflow>(*inpass, arg.gui.overflow_component) {
+                    if let Ok(oveflow) = arg.gui.entitys.get_component_by_index::<Overflow>(inpass, arg.gui.overflow_component) {
                         if oveflow.0 {
                             if !intersects(&arg.aabb, quad) {
                                 return; // 如果不想交，直接返回，该点不能命中该节点
