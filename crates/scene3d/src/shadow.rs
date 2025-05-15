@@ -22,12 +22,13 @@ pub use pi_export_base::export::Engine;
 ///     * 0b0000_0000_1000_0000
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
-pub fn p3d_shadow_generator(app: &mut Engine, cmds: &mut CommandsExchangeD3, scene: f64, light: f64, pass_tag: f64) -> f64 {
+pub fn p3d_shadow_generator(app: &mut Engine, cmds: &mut CommandsExchangeD3, scene: f64, light: f64, pass_tag: f64, graph: Option<f64>) -> f64 {
     let id: Entity = app.world.entities().reserve_entity();
     let scene: Entity = as_entity(scene);
     let light: Entity = as_entity(light);
+    let graph = if let Some(graph) = graph { as_entity(graph) } else { Entity::null() };
 
-    cmds.shadow_create.push(OpsShadowGenerator::ops(id, scene, light, PassTag::new(pass_tag as u16)));
+    cmds.shadow_create.push(OpsShadowGenerator::ops(id, scene, light, PassTag::new(pass_tag as u16), graph));
     cmds.renderer_create.push(OpsRendererCreate::ops(id, String::from("Shadow") + id.index().to_string().as_str(), id, PassTag::new(pass_tag as u16), false));
 
     as_f64(&id)

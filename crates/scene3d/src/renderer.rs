@@ -14,6 +14,17 @@ use wasm_bindgen::prelude::wasm_bindgen;
 
 pub use pi_export_base::export::Engine;
 
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
+pub fn p3d_create_render_subgraph(app: &mut Engine, cmds: &mut CommandsExchangeD3, name: String) -> f64 {
+
+    let id_renderer: Entity = app.world.entities().reserve_entity();
+
+    cmds.renderer_subgraph.push(OpsSubGraphCreate::ops(id_renderer, name.clone()));
+
+    as_f64(&id_renderer)
+}
+
 /// * pass_tag:
 ///     * 0b0000_0000_0000_0001
 ///     * 0b0000_0000_0000_0010

@@ -69,6 +69,7 @@ pub struct CommandsExchangeD3 {
     pub(crate) shadow_param: ActionListShadowGeneratorParam,
     pub(crate) shadow_create: ActionListShadowGenerator,
     
+    pub(crate) renderer_subgraph: ActionListSubGraphCreate,
     pub(crate) renderer_create: ActionListRendererCreate,
     pub(crate) renderer_connect: ActionListRendererConnect,
     pub(crate) renderer_modify: ActionListRendererModify,
@@ -230,6 +231,7 @@ impl CommandsExchangeD3 {
         cmds.light.param.append(&mut self.light_param );
         cmds.shadow.param.append(&mut self.shadow_param );
         cmds.shadow.create.append(&mut self.shadow_create );
+        cmds.renderer.subgraph.append(&mut self.renderer_subgraph );
         cmds.renderer.create.append(&mut self.renderer_create );
         cmds.renderer.connect.append(&mut self.renderer_connect );
         cmds.renderer.modify.append(&mut self.renderer_modify );
@@ -323,7 +325,8 @@ impl CommandsExchangeD3 {
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_commands_exchange(app: &mut Engine, param: &mut ActionSetScene3D, cmds: &mut CommandsExchangeD3) {
-	pi_export_base::export::await_last_frame(app);
+	// pi_export_base::export::await_last_frame(app);
+
     // log::error!(">>>>> p3d_commands_exchange");
     // log::error!("World Memory {:?}", app.world.mem_size());
     let state = param.state.get_mut(&mut app.world);
