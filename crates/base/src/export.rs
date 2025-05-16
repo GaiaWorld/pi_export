@@ -341,6 +341,12 @@ pub fn dump_graphviz(engine: &Engine) -> String  {
 	g.dump_graphviz()
 }
 
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+pub fn dump_toop_graphviz(engine: &Engine) -> String  {
+	let g = engine.world.get_single_res::<pi_bevy_render_plugin::PiRenderGraph>().unwrap();
+	g.dump_toop_graphviz()
+}
+
 // 在wasm目标上,返回system依赖图
 #[cfg(feature="system_graph")]
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
