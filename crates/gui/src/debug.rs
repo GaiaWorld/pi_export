@@ -234,9 +234,34 @@ pub fn get_class(engine: &mut Engine, class_name: u32) -> String {
 #[allow(unused_attributes)]
 #[pi_js_export]
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
-pub fn get_global_info(engine: &mut Engine) -> String {
-    let info = pi_ui_render::devtools::get_global_info(&engine.world);
-    serde_json::to_string(&info).unwrap()
+pub fn get_global_info(engine: &mut Engine, name: String) -> String {
+    match name.as_str() {
+        "ExecutionGraph" => {
+            let g = engine.world.get_single_res::<pi_bevy_render_plugin::PiRenderGraph>().unwrap();
+	        g.dump_graphviz()
+        },
+        "ToopGraph" => {
+            let g = engine.world.get_single_res::<pi_bevy_render_plugin::PiRenderGraph>().unwrap();
+	        g.dump_toop_graphviz()
+        },
+        "GlobalInfo" => {
+            let info = pi_ui_render::devtools::get_global_info(&engine.world);
+            serde_json::to_string(&info).unwrap()
+        },
+        _ => "".to_string(),
+    }
+    
+}
+
+#[allow(unused_attributes)]
+#[pi_js_export]
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+pub fn get_global_info_interface(engine: &mut Engine) -> String {
+    let mut arr = Vec::new();
+    arr.push(["ExecutionGraph", "graph"]);
+    arr.push(["ToopGraph", "graph"]);
+    arr.push(["GlobalInfo", "json"]);
+    serde_json::to_string(&arr).unwrap()
 }
 
 #[allow(unused_attributes)]
