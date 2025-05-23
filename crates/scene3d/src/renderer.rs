@@ -56,6 +56,16 @@ pub fn p3d_render_enabled(cmds: &mut CommandsExchangeD3, renderer: f64, enable: 
     cmds.renderer_modify.push(OpsRendererCommand::Active(renderer, enable));
 }
 
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
+pub fn p3d_render_clear_link_mesh(cmds: &mut CommandsExchangeD3, renderer: f64, mesh: f64) {
+
+    let renderer: Entity = as_entity(renderer);
+    let mesh: Entity = as_entity(mesh);
+    
+    cmds.renderer_modify.push(OpsRendererCommand::ClearLinkMesh(renderer, mesh));
+}
+
 /// 
 /// Renderer Modify
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
