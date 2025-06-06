@@ -329,6 +329,12 @@ pub fn debug_info(engine: &mut Engine) -> Vec<f64> {
     res.push(engine.world.mem_size() as f64);
     res
 }
+
+#[pi_js_export]
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+pub fn active_gui(engine: &mut Engine, active: bool) {
+    pi_ui_render::devtools::active_gui(&mut engine.world, active);
+}
 // #[allow(unused_attributes)]
 // #[pi_js_export]
 // pub fn overflow_clip(gui: &Gui) -> JsValue {
