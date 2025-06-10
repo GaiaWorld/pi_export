@@ -36,13 +36,15 @@ pub fn p3d_create_render_subgraph(app: &mut Engine, cmds: &mut CommandsExchangeD
 ///     * 0b0000_0000_1000_0000
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
-pub fn p3d_create_render(app: &mut Engine, cmds: &mut CommandsExchangeD3, viewer: f64, name: String, pass_tag: f64, transparent: bool) -> f64 {
+pub fn p3d_create_render(app: &mut Engine, cmds: &mut CommandsExchangeD3, viewer: f64, name: String, pass_tag: f64, transparent: bool, recordinput: Option<bool>) -> f64 {
 
     let viewer: Entity = as_entity(viewer);
 
     let id_renderer: Entity = app.world.entities().reserve_entity();
+
+    let recordinput = if let Some(recordinput) = recordinput { recordinput } else { true };
     
-    cmds.renderer_create.push(OpsRendererCreate::ops(id_renderer, name.clone(), viewer, PassTag::new(pass_tag as u16), transparent));
+    cmds.renderer_create.push(OpsRendererCreate::ops(id_renderer, name.clone(), viewer, PassTag::new(pass_tag as u16), transparent, recordinput));
 
     as_f64(&id_renderer)
 }
