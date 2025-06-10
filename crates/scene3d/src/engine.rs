@@ -372,6 +372,7 @@ pub fn p3d_query_scene_state(app: &mut Engine, param: &mut ActionSetScene3D, ent
     param.particlesystems.align();
     param.trails.align();
     param.animectxs.align();
+    param.viewers.align();
 
     let mut drawcalls = 0;
     let mut count_vertex = 0;
