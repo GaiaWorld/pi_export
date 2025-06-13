@@ -44,7 +44,7 @@ pub fn on_suspended(engine: &mut Engine, version: String) {
     }
     await_last_frame(engine);
     let device = engine.world.get_single_res_mut::<PiRenderDevice>().unwrap();
-    device.0.unmake_current();
+    // device.0.unmake_current();
 
     println!("----------on_suspended222222: {}", version);
     // let world = &mut engine.app.world;

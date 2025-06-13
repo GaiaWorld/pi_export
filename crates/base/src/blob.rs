@@ -207,7 +207,7 @@ pub fn features(window: &Arc<Window>) -> String {
             );
         }
         if features
-            .contains(wgpu::Features::UNIFORM_BUFFER_AND_STORAGE_TEXTURE_ARRAY_NON_UNIFORM_INDEXING)
+            .contains(wgpu::Features::SAMPLED_TEXTURE_AND_STORAGE_BUFFER_ARRAY_NON_UNIFORM_INDEXING)
         {
             res.push_str(
                 &"UNIFORM-BUFFER-AND-STORAGE-TEXTURE-ARRAY-NON-UNIFORM-INDEXING"
@@ -303,7 +303,7 @@ pub fn features(window: &Arc<Window>) -> String {
             res.push_str(&"MAPPABLE-PRIMARY-BUFFERS".to_ascii_lowercase());
             res.push_str(" ");
         }
-        adapter.unmake_current();
+        // adapter.unmake_current();
         // res
         sender.send(res).unwrap();
     });

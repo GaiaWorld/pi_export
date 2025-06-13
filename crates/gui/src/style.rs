@@ -2490,7 +2490,7 @@ pub mod style_macro {
                     match parse_as_image(&mut parse) {
                         Ok(r) => r,
                         Err(e) => {
-                            ();
+                            (/*ERROR*/);
                             return;
                         }
                     }
@@ -2511,7 +2511,7 @@ pub mod style_macro {
                     match parse_as_image(&mut parse) {
                         Ok(r) => r,
                         Err(e) => {
-                            ();
+                            (/*ERROR*/);
                             return;
                         }
                     }
@@ -3692,7 +3692,7 @@ pub mod style_macro {
                     match BaseShape::parse(&mut parse) {
                         Ok(r) => r,
                         Err(e) => {
-                            ();
+                            (/*ERROR*/);
                             return;
                         }
                     }
@@ -3713,7 +3713,7 @@ pub mod style_macro {
                     match BaseShape::parse(&mut parse) {
                         Ok(r) => r,
                         Err(e) => {
-                            ();
+                            (/*ERROR*/);
                             return;
                         }
                     }
@@ -3976,16 +3976,13 @@ pub mod style_macro {
                 AnimationNameType({
                     let mut input = cssparser::ParserInput::new(value);
                     let mut parse = cssparser::Parser::new(&mut input);
-                    let value = if let Ok(value)
-                        = parse_comma_separated::<
-                            _,
-                            _,
-                        >(
-                            &mut parse,
-                            |input| Ok(
-                                pi_atom::Atom::from(input.expect_ident()?.as_ref()),
-                            ),
-                        ) {
+                    let value = if let Ok(value) = parse_comma_separated::<
+                        _,
+                        _,
+                    >(
+                        &mut parse,
+                        |input| Ok(pi_atom::Atom::from(input.expect_ident()?.as_ref())),
+                    ) {
                         value
                     } else {
                         Default::default()
@@ -4013,16 +4010,13 @@ pub mod style_macro {
                 AnimationNameType({
                     let mut input = cssparser::ParserInput::new(value);
                     let mut parse = cssparser::Parser::new(&mut input);
-                    let value = if let Ok(value)
-                        = parse_comma_separated::<
-                            _,
-                            _,
-                        >(
-                            &mut parse,
-                            |input| Ok(
-                                pi_atom::Atom::from(input.expect_ident()?.as_ref()),
-                            ),
-                        ) {
+                    let value = if let Ok(value) = parse_comma_separated::<
+                        _,
+                        _,
+                    >(
+                        &mut parse,
+                        |input| Ok(pi_atom::Atom::from(input.expect_ident()?.as_ref())),
+                    ) {
                         value
                     } else {
                         Default::default()
@@ -4349,11 +4343,10 @@ pub mod style_macro {
                 AnimationTimingFunctionType({
                     let mut input = cssparser::ParserInput::new(value);
                     let mut parse = cssparser::Parser::new(&mut input);
-                    if let Ok(value)
-                        = parse_comma_separated(
-                            &mut parse,
-                            <AnimationTimingFunction as StyleParse>::parse,
-                        ) {
+                    if let Ok(value) = parse_comma_separated(
+                        &mut parse,
+                        <AnimationTimingFunction as StyleParse>::parse,
+                    ) {
                         value
                     } else {
                         Default::default()
@@ -4372,11 +4365,10 @@ pub mod style_macro {
                 AnimationTimingFunctionType({
                     let mut input = cssparser::ParserInput::new(value);
                     let mut parse = cssparser::Parser::new(&mut input);
-                    if let Ok(value)
-                        = parse_comma_separated(
-                            &mut parse,
-                            <AnimationTimingFunction as StyleParse>::parse,
-                        ) {
+                    if let Ok(value) = parse_comma_separated(
+                        &mut parse,
+                        <AnimationTimingFunction as StyleParse>::parse,
+                    ) {
                         value
                     } else {
                         Default::default()
@@ -4656,7 +4648,7 @@ pub mod style_macro {
                 gui.commands.add_css_bin(pi_ui_render::resource::ExtendCssCmd(r));
             }
             Err(e) => {
-                ();
+                (/*ERROR*/);
                 return;
             }
         }
@@ -4669,7 +4661,7 @@ pub mod style_macro {
                 gui.commands.add_css_bin(pi_ui_render::resource::ExtendCssCmd(r));
             }
             Err(e) => {
-                ();
+                (/*ERROR*/);
                 return;
             }
         }
@@ -4922,10 +4914,9 @@ pub mod style_macro {
         let node = unsafe { unsafe { transmute::<f64, Entity>(node) } };
         {
             pi_export_base::export::await_last_frame(engine);
-            if let Ok(is_show)
-                = gui
-                    .entitys
-                    .get_component_by_index::<IsShow>(node, gui.is_show_component)
+            if let Ok(is_show) = gui
+                .entitys
+                .get_component_by_index::<IsShow>(node, gui.is_show_component)
             {
                 is_show.get_enable()
             } else {
@@ -4939,10 +4930,9 @@ pub mod style_macro {
         let node = unsafe { unsafe { transmute::<f64, Entity>(node) } };
         {
             pi_export_base::export::await_last_frame(engine);
-            if let Ok(is_show)
-                = gui
-                    .entitys
-                    .get_component_by_index::<IsShow>(node, gui.is_show_component)
+            if let Ok(is_show) = gui
+                .entitys
+                .get_component_by_index::<IsShow>(node, gui.is_show_component)
             {
                 is_show.get_enable()
             } else {
@@ -4955,23 +4945,20 @@ pub mod style_macro {
         let node = unsafe { unsafe { transmute::<f64, Entity>(node) } };
         {
             let mut r = 0.0;
-            if let Ok(parent)
-                = gui.entitys.get_component_by_index::<Up>(node, gui.up_component)
+            if let Ok(parent) = gui
+                .entitys
+                .get_component_by_index::<Up>(node, gui.up_component)
             {
-                if let Ok(parent_layout)
-                    = gui
-                        .entitys
-                        .get_component_by_index::<
-                            LayoutResult,
-                        >(node, gui.layout_component)
+                if let Ok(parent_layout) = gui
+                    .entitys
+                    .get_component_by_index::<LayoutResult>(node, gui.layout_component)
                 {
                     r += parent_layout.padding.top + parent_layout.border.top;
                 }
             }
-            if let Ok(layout)
-                = gui
-                    .entitys
-                    .get_component_by_index::<LayoutResult>(node, gui.layout_component)
+            if let Ok(layout) = gui
+                .entitys
+                .get_component_by_index::<LayoutResult>(node, gui.layout_component)
             {
                 r += layout.rect.top;
             }
@@ -4984,23 +4971,20 @@ pub mod style_macro {
         let node = unsafe { unsafe { transmute::<f64, Entity>(node) } };
         {
             let mut r = 0.0;
-            if let Ok(parent)
-                = gui.entitys.get_component_by_index::<Up>(node, gui.up_component)
+            if let Ok(parent) = gui
+                .entitys
+                .get_component_by_index::<Up>(node, gui.up_component)
             {
-                if let Ok(parent_layout)
-                    = gui
-                        .entitys
-                        .get_component_by_index::<
-                            LayoutResult,
-                        >(node, gui.layout_component)
+                if let Ok(parent_layout) = gui
+                    .entitys
+                    .get_component_by_index::<LayoutResult>(node, gui.layout_component)
                 {
                     r += parent_layout.padding.top + parent_layout.border.top;
                 }
             }
-            if let Ok(layout)
-                = gui
-                    .entitys
-                    .get_component_by_index::<LayoutResult>(node, gui.layout_component)
+            if let Ok(layout) = gui
+                .entitys
+                .get_component_by_index::<LayoutResult>(node, gui.layout_component)
             {
                 r += layout.rect.top;
             }
@@ -5012,23 +4996,20 @@ pub mod style_macro {
         let node = unsafe { unsafe { transmute::<f64, Entity>(node) } };
         {
             let mut r = 0.0;
-            if let Ok(parent)
-                = gui.entitys.get_component_by_index::<Up>(node, gui.up_component)
+            if let Ok(parent) = gui
+                .entitys
+                .get_component_by_index::<Up>(node, gui.up_component)
             {
-                if let Ok(parent_layout)
-                    = gui
-                        .entitys
-                        .get_component_by_index::<
-                            LayoutResult,
-                        >(node, gui.layout_component)
+                if let Ok(parent_layout) = gui
+                    .entitys
+                    .get_component_by_index::<LayoutResult>(node, gui.layout_component)
                 {
                     r += parent_layout.padding.left + parent_layout.border.left;
                 }
             }
-            if let Ok(layout)
-                = gui
-                    .entitys
-                    .get_component_by_index::<LayoutResult>(node, gui.layout_component)
+            if let Ok(layout) = gui
+                .entitys
+                .get_component_by_index::<LayoutResult>(node, gui.layout_component)
             {
                 r += layout.rect.left;
             }
@@ -5041,23 +5022,20 @@ pub mod style_macro {
         let node = unsafe { unsafe { transmute::<f64, Entity>(node) } };
         {
             let mut r = 0.0;
-            if let Ok(parent)
-                = gui.entitys.get_component_by_index::<Up>(node, gui.up_component)
+            if let Ok(parent) = gui
+                .entitys
+                .get_component_by_index::<Up>(node, gui.up_component)
             {
-                if let Ok(parent_layout)
-                    = gui
-                        .entitys
-                        .get_component_by_index::<
-                            LayoutResult,
-                        >(node, gui.layout_component)
+                if let Ok(parent_layout) = gui
+                    .entitys
+                    .get_component_by_index::<LayoutResult>(node, gui.layout_component)
                 {
                     r += parent_layout.padding.left + parent_layout.border.left;
                 }
             }
-            if let Ok(layout)
-                = gui
-                    .entitys
-                    .get_component_by_index::<LayoutResult>(node, gui.layout_component)
+            if let Ok(layout) = gui
+                .entitys
+                .get_component_by_index::<LayoutResult>(node, gui.layout_component)
             {
                 r += layout.rect.left;
             }
@@ -5068,10 +5046,9 @@ pub mod style_macro {
     pub fn offset_width(gui: &mut Gui, engine: &Engine, node: f64) -> u32 {
         let node = unsafe { unsafe { transmute::<f64, Entity>(node) } };
         {
-            let r = if let Ok(layout)
-                = gui
-                    .entitys
-                    .get_component_by_index::<LayoutResult>(node, gui.layout_component)
+            let r = if let Ok(layout) = gui
+                .entitys
+                .get_component_by_index::<LayoutResult>(node, gui.layout_component)
             {
                 layout.rect.right - layout.rect.left
             } else {
@@ -5085,10 +5062,9 @@ pub mod style_macro {
     pub fn offset_width(gui: &mut Gui, engine: &Engine, node: f64) -> u32 {
         let node = unsafe { unsafe { transmute::<f64, Entity>(node) } };
         {
-            let r = if let Ok(layout)
-                = gui
-                    .entitys
-                    .get_component_by_index::<LayoutResult>(node, gui.layout_component)
+            let r = if let Ok(layout) = gui
+                .entitys
+                .get_component_by_index::<LayoutResult>(node, gui.layout_component)
             {
                 layout.rect.right - layout.rect.left
             } else {
@@ -5101,10 +5077,9 @@ pub mod style_macro {
     pub fn offset_height(gui: &mut Gui, engine: &Engine, node: f64) -> u32 {
         let node = unsafe { unsafe { transmute::<f64, Entity>(node) } };
         {
-            let r = if let Ok(layout)
-                = gui
-                    .entitys
-                    .get_component_by_index::<LayoutResult>(node, gui.layout_component)
+            let r = if let Ok(layout) = gui
+                .entitys
+                .get_component_by_index::<LayoutResult>(node, gui.layout_component)
             {
                 layout.rect.bottom - layout.rect.top
             } else {
@@ -5118,10 +5093,9 @@ pub mod style_macro {
     pub fn offset_height(gui: &mut Gui, engine: &Engine, node: f64) -> u32 {
         let node = unsafe { unsafe { transmute::<f64, Entity>(node) } };
         {
-            let r = if let Ok(layout)
-                = gui
-                    .entitys
-                    .get_component_by_index::<LayoutResult>(node, gui.layout_component)
+            let r = if let Ok(layout) = gui
+                .entitys
+                .get_component_by_index::<LayoutResult>(node, gui.layout_component)
             {
                 layout.rect.bottom - layout.rect.top
             } else {
@@ -5370,7 +5344,7 @@ pub mod style_macro {
             for (group_id, ty, count) in events.iter() {
                 match map.get(*group_id) {
                     Some(r) => {
-                        ();
+                        (/*ERROR*/);
                         arr[i] = r.0.index() as u32;
                         arr[i + 1] = r.0.data().version() as u32;
                         match &r.1 {
@@ -5416,7 +5390,7 @@ pub mod style_macro {
             for (group_id, ty, count) in events.iter() {
                 match map.get(*group_id) {
                     Some(r) => {
-                        ();
+                        (/*ERROR*/);
                         arr[i] = r.0.index() as u32;
                         arr[i + 1] = r.0.data().version() as u32;
                         match &r.1 {
@@ -5540,12 +5514,12 @@ pub mod style_macro {
         let mut animations = match parse_animation(&mut parse) {
             Ok(r) => r,
             Err(e) => {
-                ();
+                (/*ERROR*/);
                 return;
             }
         };
         animations.name.scope_hash = scope_hash as usize;
-        ();
+        (/*ERROR*/);
         if animations.name.value.len() > 0 {
             gui.commands.set_style(node_id, AnimationNameType(animations.name));
             gui.commands.set_style(node_id, AnimationDurationType(animations.duration));

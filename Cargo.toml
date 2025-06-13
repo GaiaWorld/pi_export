@@ -10,7 +10,7 @@ exclude = ["crates/gui/exports_macro"]
 [profile.release]
 # debug= true
 # strip = true
-# lto = true #这为LLVM提供了更多内联和修剪功能的机会。它不仅使.wasm尺寸更小，而且在运行时也更快！缺点是编译将花费更长的时间
+lto = true #这为LLVM提供了更多内联和修剪功能的机会。它不仅使.wasm尺寸更小，而且在运行时也更快！缺点是编译将花费更长的时间
 opt-level = 3  # 默认情况下，对LLVM的优化通道进行了调整，以提高速度，而不是大小。我们可以通过修改以下
 # opt-level = "z" # 了更积极地优化尺寸，以进一步的潜在速度成本
 # 请注意，令人惊讶的是，opt-level = "s"有时二进制文件的大小可能小于opt-level = "z"。总是测量！
@@ -42,6 +42,7 @@ debug = false
 
 # [patch.crates-io]
 [patch.crates-io]
+fixedbitset = { path = "../fixedbitset" }
 # pi_time = { path = "../pi_time" }
 # pi_path_finding = { path = "../pi_path_finding" }
 # pi_flex_layout = { path = "../pi_flex_layout" }
@@ -49,7 +50,8 @@ debug = false
 # pi_slotmap = { path = "../pi_slotmap" }
 # pi_slotmap_tree = { path = "../pi_slotmap_tree" }
 # pi_map = { path = "../pi_map" }
-# wgpu = {path = "../wgpu/wgpu"}
+# wgpu = { version = "25.0.*" }
+# naga = { path = "../wgpu/naga"}
 # smallvec = {path = "../smallvec"}
 # pi_cache = {path = "../pi_cache"}
 # pi_assets = {path = "../pi_assets"}
@@ -59,7 +61,8 @@ debug = false
 # wasm-bindgen = { path = "../wasm-bindgen" }
 # pi_polygon = { path = "../pi_polygon" }
 
-# pi_world = { path = "../pi_world" }
+pi_world                = { path = "../pi_world", features = ["single_thread", "rc"] }
+pi_world_macros         = { path = "../pi_world/macros" }
 # pi_share = { path = "../pi_share" }
 # pi_world_macros = { path = "../pi_world/macros" }
 # once_cell = { path = "../once_cell" }
@@ -76,8 +79,9 @@ debug = false
 
 
 [patch.yn]
-# pi_hal = { path = "../pi_hal" }
-# pi_wgpu = { path = "../pi_wgpu" }
+pi_hal = { path = "../pi_hal" }
+pi_wgpu = { path = "../pi_wgpu" }
+# pi_world = { path = "../pi_world" }
 # pi_glow = {path = "../pi_glow"}
 # pi_wgpu = { path = "../pi_wgpu" }
 # pi_bon_decode = {path = "../pi_bon_decode"}
@@ -85,11 +89,11 @@ debug = false
 # winit = {path = "../winit"}
 
 # pi_render
-pi_render               = { version = "0.2", registry = "yn", path = "../pi_render" }
+pi_render               = { version = "0.3", registry = "yn", path = "../pi_render" }
 render_utils            = { version = "0.2", registry = "yn", path = "../pi_render/crates/render_utils" }
-render_core             = { version = "0.2", registry = "yn", path = "../pi_render/crates/render_core" }
+render_core             = { version = "0.3", registry = "yn", path = "../pi_render/crates/render_core" }
 render_derive           = { version = "0.2", registry = "yn", path = "../pi_render/crates/render_derive" }
-render_compile          = { version = "0.2", registry = "yn", path = "../pi_render/crates/render_compile" }
+render_compile          = { version = "0.3", registry = "yn", path = "../pi_render/crates/render_compile" }
 
 # pi_bevy
 pi_bevy_ecs_extend = { path = "../pi_bevy/crates/ecs_extend" }
@@ -106,7 +110,7 @@ pi_ui_render = { path = "../pi_ui_render" }
 # pi_style = { path = "../pi_style" }
 # pi_style = { path = "../pi_style" }
 
-# pi_postprocess ={path="../pi_post_process"}
+pi_postprocess ={path="../pi_postprocess"}
 
 pi_3d               = { path = "../pi_3d" }
 pi_node_materials   = { path = "../pi_3d/crates/node_materials" }

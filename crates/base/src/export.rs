@@ -392,7 +392,7 @@ pub fn fram_call(engine: &mut Engine, reset_state: bool) {
 		if IS_FIRST.load(Ordering::Relaxed){
 			// IS_FIRST.store(false, Ordering::Relaxed);
 			let device = engine.world.get_single_res_mut::<PiRenderDevice>().unwrap();
-			device.unmake_current();
+			// device.unmake_current();
 		}
 		
 		let sender = engine.sender.clone();
@@ -401,11 +401,11 @@ pub fn fram_call(engine: &mut Engine, reset_state: bool) {
 			let device = engine.world.get_single_res_mut::<PiRenderDevice>().unwrap();
 			if IS_FIRST.load(Ordering::Relaxed){
 				IS_FIRST.store(false, Ordering::Relaxed);
-				device.make_current();
+				// device.make_current();
 			}
 
 			if reset_state {
-				device.reset_state();
+				// device.reset_state();
 			}
 			
 			// bevy_ecs::system::CommandQueue::default().apply(&mut engine.world);
@@ -413,7 +413,7 @@ pub fn fram_call(engine: &mut Engine, reset_state: bool) {
 
 			if reset_state {
 				let device = engine.world.get_single_res_mut::<PiRenderDevice>().unwrap();
-				device.reset_state();
+				// device.reset_state();
 			}
 			// *engine.world.get_single_res_mut::<FrameState>().unwrap() = FrameState::UnActive;
 			// log::warn!("fram_call end=====");
@@ -682,12 +682,12 @@ pub fn init_engine_3d(app: &mut Engine, spine: bool, param: &[u32]) {
 pub fn bind_context(app: &mut Engine) {
 	use pi_bevy_render_plugin::PiRenderDevice;
 	let device = app.world.get_single_res_mut::<PiRenderDevice>().unwrap();
-	device.make_current();
+	// device.make_current();
 }
 
 #[cfg(feature = "pi_js_export")]
 pub fn unbind_context(app: &mut Engine) {
 	use pi_bevy_render_plugin::PiRenderDevice;
 	let device = app.world.get_single_res_mut::<PiRenderDevice>().unwrap();
-	device.unmake_current();
+	// device.unmake_current();
 }

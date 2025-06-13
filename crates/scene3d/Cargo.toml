@@ -11,16 +11,17 @@ keywords = [""]
 [features]
 default 				= ["pi_js_export"]
 pi_js_export 			= []
+spector 			    = []
 
 [dependencies]
-wgpu                    = { version = "0.2", registry = "yn", package = "pi_wgpu" }
+wgpu                    = { version = "0.3", registry = "yn", package = "pi_wgpu" }
 # bevy_ecs                = "0.11"
 paste = "1.0"
-pi_bevy_asset 			= { version = "0.2", registry = "yn" }
-pi_bevy_render_plugin 	= { version = "0.2", registry = "yn" }
-pi_bevy_ecs_extend 		= { version = "0.2", registry = "yn" }
-pi_bevy_winit_window    = { version = "0.2", registry = "yn" }
-pi_window_renderer 		= { version = "0.2", registry = "yn" }
+pi_bevy_asset 			= { version = "0.3", registry = "yn" }
+pi_bevy_render_plugin 	= { version = "0.3", registry = "yn" }
+pi_bevy_ecs_extend 		= { version = "0.3", registry = "yn" }
+pi_bevy_winit_window    = { version = "0.3", registry = "yn" }
+pi_window_renderer 		= { version = "0.3", registry = "yn" }
 derive_deref            = "1.1"
 
 pi_hash 				= "0.1"
@@ -28,23 +29,23 @@ pi_slotmap              = "0.2"
 pi_atom 				= "0.6"
 pi_assets 				= "0.15"
 pi_export_base 			= { path = "../base" }
-pi_hal 					= { version = "0.2", registry = "yn" }
+pi_hal 					= { version = "0.3", registry = "yn" }
 log						= "0.4"
-pi_render               = { version = "0.2", registry = "yn", features=["webgl"] }
+pi_render               = { version = "0.3", registry = "yn", features=["webgl"] }
 pi_world = "0.2"
 
 pi_scene_math           = { version = "0.0.*", registry = "yn" }
 pi_animation            = { version = "0.2", registry = "yn" }
 pi_curves               = { version = "0.1", registry = "yn" }
 
-pi_3d 		            = { version = "1.1.0", registry = "yn" }
-pi_scene_shell 		    = { version = "1.1.*", registry = "yn" }
-pi_node_materials 		= { version = "1.1.*", registry = "yn" }
-pi_scene_context 		= { version = "1.2.0", registry = "yn" }
-pi_mesh_builder 		= { version = "1.1.*", registry = "yn" }
-pi_gltf2_load           = { version = "1.1.*", registry = "yn" }
-pi_particle_system      = { version = "1.1.*", registry = "yn" }
-pi_trail_renderer       = { version = "1.1.*", registry = "yn" }
+pi_3d 		            = { version = "1.3.*", registry = "yn" }
+pi_scene_shell 		    = { version = "1.3.*", registry = "yn" }
+pi_node_materials 		= { version = "1.3.*", registry = "yn" }
+pi_scene_context 		= { version = "1.3.*", registry = "yn" }
+pi_mesh_builder 		= { version = "1.3.*", registry = "yn" }
+pi_gltf2_load           = { version = "1.3.*", registry = "yn" }
+pi_particle_system      = { version = "1.3.*", registry = "yn" }
+pi_trail_renderer       = { version = "1.3.*", registry = "yn" }
 
 bytemuck                = { version = "1.4", features = [ "derive" ] }
 

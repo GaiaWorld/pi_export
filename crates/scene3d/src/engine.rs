@@ -68,7 +68,7 @@ pub fn p3d_device_limis(app: &mut Engine, data: &mut [u32]) {
     i += 1;   data[i] = bit_ok(features, wgpu::Features::POLYGON_MODE_LINE );
     i += 1;   data[i] = bit_ok(features, wgpu::Features::POLYGON_MODE_POINT );
     i += 1;   data[i] = bit_ok(features, wgpu::Features::PUSH_CONSTANTS );
-    i += 1;   data[i] = bit_ok(features, wgpu::Features::RAY_QUERY );
+    i += 1;   data[i] = bit_ok(features, wgpu::Features::TIMESTAMP_QUERY );
     i += 1;   data[i] = bit_ok(features, wgpu::Features::RAY_TRACING_ACCELERATION_STRUCTURE );
     i += 1;   data[i] = bit_ok(features, wgpu::Features::RG11B10UFLOAT_RENDERABLE );
     i += 1;   data[i] = bit_ok(features, wgpu::Features::SAMPLED_TEXTURE_AND_STORAGE_BUFFER_ARRAY_NON_UNIFORM_INDEXING );
@@ -77,7 +77,7 @@ pub fn p3d_device_limis(app: &mut Engine, data: &mut [u32]) {
     i += 1;   data[i] = bit_ok(features, wgpu::Features::SHADER_F64 );
     i += 1;   data[i] = bit_ok(features, wgpu::Features::SHADER_I16 );
     i += 1;   data[i] = bit_ok(features, wgpu::Features::SHADER_PRIMITIVE_INDEX );
-    i += 1;   data[i] = bit_ok(features, wgpu::Features::SHADER_UNUSED_VERTEX_OUTPUT );
+    i += 1;   data[i] = bit_ok(features, wgpu::Features::SHADER_PRIMITIVE_INDEX );
     i += 1;   data[i] = bit_ok(features, wgpu::Features::SPIRV_SHADER_PASSTHROUGH );
     i += 1;   data[i] = bit_ok(features, wgpu::Features::STORAGE_RESOURCE_BINDING_ARRAY );
     i += 1;   data[i] = bit_ok(features, wgpu::Features::TEXTURE_ADAPTER_SPECIFIC_FORMAT_FEATURES );
@@ -90,7 +90,7 @@ pub fn p3d_device_limis(app: &mut Engine, data: &mut [u32]) {
     i += 1;   data[i] = bit_ok(features, wgpu::Features::TEXTURE_FORMAT_NV12 );
     i += 1;   data[i] = bit_ok(features, wgpu::Features::TIMESTAMP_QUERY );
     i += 1;   data[i] = bit_ok(features, wgpu::Features::TIMESTAMP_QUERY_INSIDE_PASSES );
-    i += 1;   data[i] = bit_ok(features, wgpu::Features::UNIFORM_BUFFER_AND_STORAGE_TEXTURE_ARRAY_NON_UNIFORM_INDEXING );
+    i += 1;   data[i] = bit_ok(features, wgpu::Features::SAMPLED_TEXTURE_AND_STORAGE_BUFFER_ARRAY_NON_UNIFORM_INDEXING );
     i += 1;   data[i] = bit_ok(features, wgpu::Features::VERTEX_ATTRIBUTE_64BIT );
     i += 1;   data[i] = bit_ok(features, wgpu::Features::VERTEX_WRITABLE_STORAGE );
 
