@@ -21,7 +21,10 @@ impl Timer {
 
 	/// push一个定时任务
 	// #[pi_js_export]
-	pub fn push(&mut self, func: f64, timeout: f32) -> f64 {
+	pub fn push(&mut self, func: f64, mut timeout: f64) -> f64 {
+		if (timeout < 0) {
+			timeout = 0;
+		}
 		let r = self.0.push(timeout as usize, func);
 		unsafe { transmute(r) }
 	}
@@ -35,8 +38,8 @@ impl Timer {
 
 	/// 弹出一个定时任务
 	// #[pi_js_export]
-	pub fn pop(&mut self, now: u64) -> Option<f64> {
-		self.0.pop(now)
+	pub fn pop(&mut self, now: f64) -> Option<f64> {
+		self.0.pop(now as u64)
 	}
 }
 
