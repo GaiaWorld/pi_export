@@ -8,7 +8,7 @@ use wasm_bindgen::{prelude::wasm_bindgen, JsValue};
 
 #[cfg_attr(target_arch = "wasm32", wasm_bindgen)]
 // #[pi_js_export]
-pub struct Timer(Timer1<f64, 128, 16, 1>);
+pub struct Timer(Timer1<f64, 250, 60, 2>, u64);
 
 #[cfg_attr(target_arch = "wasm32", wasm_bindgen)]
 // #[pi_js_export]
@@ -16,7 +16,7 @@ impl Timer {
 	/// 创建定时器
 	// #[pi_js_export]
 	pub fn new() -> Self {
-		Self(Timer1::<f64, 128, 16, 1>::default())
+		Self(Timer1::<f64, 250, 60, 2>::default(), 0)
 	}
 
 	/// push一个定时任务
@@ -36,14 +36,15 @@ impl Timer {
 	/// 弹出一个定时任务
 	// #[pi_js_export]
 	pub fn pop(&mut self, now: u64) -> Option<f64> {
-		self.0.pop(now)
+		let now: u64 = now / 4; // 以4ms为精度
+		self.0.pop(now + self.1)
 	}
 	
 
-	/// 轮滚动 - 向后滚动一个最小粒度, 可能会造成轮的逐层滚动。如果滚动到底，则修正堆上全部的定时任务，并将堆上的到期任务放入轮中
+	/// 准备弹出， 在循环弹出前， 先调用此方法
 	// #[pi_js_export]
-	pub fn roll(&mut self) {
-		self.0.roll();
+	pub fn pop_ready(&mut self) {
+		self.1 = self.0.roll_count();
 	}
 }
 
