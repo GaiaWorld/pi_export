@@ -1,6 +1,5 @@
 use std::mem::transmute;
 
-use js_sys::Function;
 use pi_cancel_timer::Timer as Timer1;
 #[cfg(target_arch = "wasm32")]
 use wasm_bindgen::{prelude::wasm_bindgen, JsValue};
@@ -9,7 +8,7 @@ use wasm_bindgen::{prelude::wasm_bindgen, JsValue};
 
 #[cfg_attr(target_arch = "wasm32", wasm_bindgen)]
 // #[pi_js_export]
-pub struct Timer(Timer1<Function, 128, 16, 1>);
+pub struct Timer(Timer1<f64, 128, 16, 1>);
 
 #[cfg_attr(target_arch = "wasm32", wasm_bindgen)]
 // #[pi_js_export]
@@ -17,26 +16,26 @@ impl Timer {
 	/// 创建定时器
 	// #[pi_js_export]
 	pub fn new() -> Self {
-		Self(Timer1::<Function, 128, 16, 1>::default())
+		Self(Timer1::<f64, 128, 16, 1>::default())
 	}
 
 	/// push一个定时任务
 	// #[pi_js_export]
-	pub fn push(&mut self, func: Function, timeout: f32) -> f64 {
+	pub fn push(&mut self, func: f64, timeout: f32) -> f64 {
 		let r = self.0.push(timeout as usize, func);
 		unsafe { transmute(r) }
 	}
 
 	/// 取消一个定时任务
 	// #[pi_js_export]
-	pub fn cancel(&mut self, key: u64) -> Option<Function> {
+	pub fn cancel(&mut self, key: u64) -> Option<f64> {
 		let key = unsafe { transmute(key) };
 		self.0.cancel(key)
 	}
 
 	/// 弹出一个定时任务
 	// #[pi_js_export]
-	pub fn pop(&mut self, now: u64) -> Option<Function> {
+	pub fn pop(&mut self, now: u64) -> Option<f64> {
 		self.0.pop(now)
 	}
 	

@@ -13,7 +13,6 @@ edition = "2021"
 pi_cancel_timer = "*"
 
 wasm-bindgen = "*"
-js-sys = "0.3"
 # js_proxy_gen_macro = { registry = "yn", version = "0.2" }
 
 
