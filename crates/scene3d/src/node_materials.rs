@@ -465,12 +465,7 @@ pub fn p3d_regist_material(
     binds_defines_base: Option<f64>,
 ) -> Option<P3DShaderMeta> {
     let mut nodemat = NodeMaterialBuilder::new();
-    nodemat.vs_define = String::from(vs_define_code);
-    nodemat.fs_define = String::from(fs_define_code);
     varyings.0.iter().for_each(|v| { nodemat.varyings.0.push(v.clone()) });
-    
-    nodemat.vs = String::from(vs_code);
-    nodemat.fs = String::from(fs_code);
 
     if let Some(binds_defines_base) = binds_defines_base {
         nodemat.binddefines = binds_defines_base as BindDefine;
@@ -498,6 +493,12 @@ pub fn p3d_regist_material(
 
     // log::warn!("Material {:?}", key);
 
+    nodemat.vs_define += vs_define_code;
+    nodemat.fs_define += fs_define_code;
+    nodemat.vs = String::from(vs_code);
+    nodemat.fs = String::from(fs_code);
+
+    // log::error!("Material {:?} {:?}", key, &nodemat.fs);
     ActionMaterial::regist_material_meta(shader_metas, KeyShaderMeta::from(key), nodemat.meta(enginopt));
 
     if let Some(data) = shader_metas.get(&KeyShaderMeta::from(key)) {
