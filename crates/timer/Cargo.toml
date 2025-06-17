@@ -1,6 +1,6 @@
 [package]
 name = "pi_export_timer"
-version = "0.1.5"
+version = "0.1.6"
 authors = ["suncy <suncy@gmail.com>"]
 edition = "2021"
 
@@ -11,6 +11,7 @@ edition = "2021"
 
 [dependencies]
 pi_cancel_timer = "*"
+pi_slot_wheel = "*"
 
 wasm-bindgen = "*"
 # js_proxy_gen_macro = { registry = "yn", version = "0.2" }
