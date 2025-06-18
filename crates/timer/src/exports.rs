@@ -48,7 +48,7 @@ impl Timer {
 
 	// key的索引
 	pub fn index(key: f64) -> u32 {
-		(unsafe { transmute::<_, u64>(key) } >> 32) as u32
+		(unsafe { transmute::<_, u64>(key) } << 32 >> 32) as u32
 	}
 }
 

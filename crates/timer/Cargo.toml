@@ -14,6 +14,7 @@ pi_cancel_timer = "*"
 pi_slot_wheel = "*"
 
 wasm-bindgen = "*"
+log = "*"
 # js_proxy_gen_macro = { registry = "yn", version = "0.2" }
 
 
