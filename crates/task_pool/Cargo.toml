@@ -1,6 +1,6 @@
 [package]
-name = "pi_export_timer"
-version = "0.1.8"
+name = "pi_export_task_pool"
+version = "0.1.0"
 authors = ["suncy <suncy@gmail.com>"]
 edition = "2021"
 
@@ -12,6 +12,9 @@ edition = "2021"
 [dependencies]
 pi_cancel_timer = "*"
 pi_slot_wheel = "*"
+pi_weight_task = "*"
+slotmap = "1.0"
+bitvec = "1.0"
 
 wasm-bindgen = "*"
 log = "*"

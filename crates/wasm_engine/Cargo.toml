@@ -21,7 +21,7 @@ pi_arr = {version = "0.20"}
 pi_sdf = {version = "0.1", registry = "yn"}
 async-executor = "=1.6.0" #1.7.1bug
 pi_export_gui = { path = "../gui", default-features=false, features=["record"] }
-pi_export_timer = { path = "../timer" }
+pi_export_task_pool = { path = "../task_pool" }
 # pi_export_astar = { path = "../astar"}
 # pi_export_base = { path = "../base", features = ["allow_not_run"]}
 pi_export_base = { path = "../base"}
