@@ -29,7 +29,7 @@ pub fn p3d_shadow_generator(app: &mut Engine, cmds: &mut CommandsExchangeD3, sce
     let graph = if let Some(graph) = graph { as_entity(graph) } else { Entity::null() };
 
     cmds.shadow_create.push(OpsShadowGenerator::ops(id, scene, light, PassTag::new(pass_tag as u16), graph));
-    cmds.renderer_create.push(OpsRendererCreate::ops(id, String::from("Shadow") + id.index().to_string().as_str(), id, PassTag::new(pass_tag as u16), false, false));
+    cmds.renderer_create.push(OpsRendererCreate::ops(id, String::from("Shadow") + id.index().to_string().as_str(), id, PassTag::new(pass_tag as u16), false, false, false));
 
     as_f64(&id)
 }
