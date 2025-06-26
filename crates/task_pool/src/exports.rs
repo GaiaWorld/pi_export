@@ -1,14 +1,12 @@
 use std::mem::transmute;
 use std::num::NonZeroU32;
 
-use pi_cancel_timer::Timer as Timer1;
 use pi_slot_wheel::TimerKey;
-use slotmap::{DefaultKey, SlotMap};
-use bitvec::vec::BitVec;
+use slotmap::{KeyData, SlotMap};
 use pi_weight_task::{Deque as Deque1, DequeKey, DequeState, TaskPool as TaskPool1, WeightType as WeightType1};
 #[cfg(target_arch = "wasm32")]
 use wasm_bindgen::{prelude::wasm_bindgen, JsValue};
-
+use slotmap::Key;
 
 // use js_proxy_gen_macro::pi_js_export;
 
@@ -55,7 +53,7 @@ impl TaskPool {
 	}
 
 	/// 创建串行任务队, 并加入任务池， 返回队列id
-	pub fn create_deque(&mut self, weight_type: WeightType, mut weight: u32) -> f64 {
+	pub fn create_deque(&mut self, weight_type: WeightType, weight: u32) -> f64 {
 		let weight_type = to_deque_weight(weight_type, weight);
         let deque = Deque1::new(weight_type, ());
 		let key = self.pool.push_deque(deque);
@@ -65,13 +63,13 @@ impl TaskPool {
 	/// 修复队列状态
 	pub fn repair_deque_state(&mut self, key: f64, state: TaskState) {
 		let key = to_key(key);
-		if let Some(deque) = self.pool.get_deque(key) {
+		if let Some(_deque) = self.pool.get_deque(key) {
 			self.pool.repair_deque_state(key, state.0);
 		}		
 	}
 
 	/// 重设置队列的权重
-	pub fn reset_deque_weight(&mut self, key: f64, mut weight_type: WeightType, weight: u32) {
+	pub fn reset_deque_weight(&mut self, key: f64, weight_type: WeightType, weight: u32) {
 		let key = to_key(key);
 		let weight_type = to_deque_weight(weight_type, weight);
 		self.pool.reset_deque_weight(key, weight_type);
@@ -153,7 +151,7 @@ impl TaskPool {
 	pub fn pop(&mut self, now: u32) -> Option<u32> {
 		let task = self.pool.pop(now as u64);
 		match task.0 {
-			Some(r) => Some((unsafe { transmute::<_, u64>(r) } << 32 >> 32) as u32),
+			Some(r) => Some(to_index(r)),
 			_ => None
 		}
 	}
@@ -162,7 +160,7 @@ impl TaskPool {
 	pub fn pop_ignore_timer(&mut self) -> Option<u32> {
 		let task = self.pool.pop_ignore_timer();
 		match task.0 {
-			Some(r) => Some((unsafe { transmute::<_, u64>(r) } << 32 >> 32) as u32),
+			Some(r) => Some(to_index(r)),
 			_ => None
 		}
 	}
@@ -173,16 +171,23 @@ impl TaskPool {
 
 #[inline]
 fn to_f64(r: DequeKey) -> f64 {
-	unsafe { transmute(r) }
+	let data = r.data();
+	unsafe { transmute(data.as_ffi()) }
+}
+
+#[inline]
+fn to_index(r: DequeKey) -> u32 {
+	let data = r.data().as_ffi();
+	(data << 32 >> 32) as u32
 }
 
 #[inline]
 fn to_key(r: f64) -> DequeKey {
-	unsafe { transmute(r) }
+	DequeKey::from(KeyData::from_ffi(unsafe { transmute::<_, u64>(r) }))
 }
 
 #[inline]
-fn to_deque_weight(mut weight_type: WeightType, mut weight: u32 ) -> WeightType1 {
+fn to_deque_weight(weight_type: WeightType, mut weight: u32 ) -> WeightType1 {
 	if weight == 0 {
 		weight = 1;
 	}
