@@ -3,9 +3,10 @@ use pi_assets::asset::{Handle, Size};
 use pi_bevy_render_plugin::PiRenderDevice;
 use pi_export_base::export::DataTextureSubData;
 use pi_hash::XHashMap;
-use pi_scene_context::pass::{KeyAtlasDesc, KeyImageTextureFrame, TextureCombineAtlas2DMgr, TextureCombineCmds, WorldResourceTemp};
+use pi_scene_context::pass::{KeyAtlasDesc, KeyImageTextureFrame, TextureCombineCmds, WorldResourceTemp};
 use pi_scene_shell::prelude::{ResImageTexture, KeyImageTexture};
 pub use pi_export_base::{export::{Engine, Atom}, constants::*};
+use pi_scene_shell::prelude::ResTextureCombineAtlas2DMgr;
 // use pi_render::asset::TAssetKeyU64;
 
 #[cfg(target_arch = "wasm32")]
@@ -154,7 +155,7 @@ pub fn p3d_texture_combine_param(app: &mut Engine, format: f64, maxlayer: f64, m
     pi_export_base::export::await_last_frame(app);
     let device = app.world.get_resource::<PiRenderDevice>().unwrap().0.clone();
     let format = EngineConstants::texture_format(format);
-    let cmds = app.world.get_resource_mut::<TextureCombineAtlas2DMgr>().unwrap();
+    let cmds = app.world.get_resource_mut::<ResTextureCombineAtlas2DMgr>().unwrap();
     cmds.append_desc(KeyAtlasDesc { format }, &device, maxlayer as u32, maxsize as u32, maxcount as usize);
     // let loader = app.world.get_resource_mut::<pi_scene_shell::prelude::ImageTextureLoader>().unwrap();
     // loader.test.push(String::from("assets/qian_01.astc.ktx"));

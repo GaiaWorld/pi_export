@@ -941,37 +941,37 @@ pub fn p3d_create_image_load(app: &mut Engine, param: &mut ActionSetScene3D, url
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_query_image_load(app: &mut Engine, param: &mut ActionSetScene3D, success: &mut [f64], failed: &mut [f64]) {
-	pi_export_base::export::await_last_frame(app);
-    let resource = param.resource.get_mut(&mut app.world);
+	// pi_export_base::export::await_last_frame(app);
+    // let resource = param.resource.get_mut(&mut app.world);
 
-    let max = success.len();
-    let mut item = resource.imgtex_loader.success_load.pop();
+    // let max = success.len();
+    // let mut item = resource.imgtex_loader.success_load.pop();
     let mut idx = 0;
-    while let Some(entity) = item {
-        success[idx] = unsafe { transmute(entity) };
+    // while let Some(entity) = item {
+    //     success[idx] = unsafe { transmute(entity) };
 
-        idx += 1;
-        if idx >= max {
-            break;
-        }
+    //     idx += 1;
+    //     if idx >= max {
+    //         break;
+    //     }
 
-        item = resource.imgtex_loader.success_load.pop();
-    }
+    //     item = resource.imgtex_loader.success_load.pop();
+    // }
     success[idx] = 0.;
     
-    let max = success.len();
-    let mut item = resource.imgtex_loader.fails.pop();
-    let mut idx = 0;
-    while let Some(entity) = item {
-        failed[idx] = unsafe { transmute(entity) };
+    // let max = success.len();
+    // let mut item = resource.imgtex_loader.fails.pop();
+    // let mut idx = 0;
+    // while let Some(entity) = item {
+    //     failed[idx] = unsafe { transmute(entity) };
 
-        idx += 1;
-        if idx >= max {
-            break;
-        }
+    //     idx += 1;
+    //     if idx >= max {
+    //         break;
+    //     }
 
-        item = resource.imgtex_loader.fails.pop();
-    }
+    //     item = resource.imgtex_loader.fails.pop();
+    // }
     failed[idx] = 0.;
 }
 

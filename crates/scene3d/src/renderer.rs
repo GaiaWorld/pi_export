@@ -83,7 +83,7 @@ pub fn p3d_render_target_key(cmds: &mut CommandsExchangeD3, renderer: f64, keyta
             cmds.renderer_target.push(OpsRendererTarget::Custom(renderer, KeyCustomRenderTarget::Custom(keytarget), use_as_out));
         },
         None => {
-            cmds.renderer_target.push(OpsRendererTarget::Custom(renderer, KeyCustomRenderTarget::FinalRender, use_as_out));
+            cmds.renderer_target.push(OpsRendererTarget::Custom(renderer, KeyCustomRenderTarget::FinalRender(false), use_as_out));
         },
     }
 }

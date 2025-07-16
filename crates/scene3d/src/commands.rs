@@ -354,7 +354,7 @@ pub fn p3d_commands_exchange(app: &mut Engine, param: &mut ActionSetScene3D, cmd
         requests.request(requestid, keytex, atlas, &imgtex_asset);
     });
 
-    let texloader = app.world.get_resource_mut::<ImageTextureLoader>().unwrap();
+    let texloader = app.world.get_resource_mut::<ResImageTextureLoader>().unwrap();
     while let Some(key) = cmds.loadtextures.pop() {
         texloader.create_load(key);
     }
