@@ -129,6 +129,12 @@ impl TaskPool {
 		to_f64(key)
 	}
 
+	/// 取到可取消定时器的滚动次数
+	pub fn roll_count(&mut self) -> f64 {
+		self.pool.get_cancel_timer_mut().roll_count() as f64
+
+	}
+
 	/// 删除一个定时任务
 	pub fn delete_cancel_timer(&mut self, key: f64) {
 		let key = to_key(key);
@@ -151,7 +157,10 @@ impl TaskPool {
 	pub fn pop(&mut self, now: u32) -> Option<u32> {
 		let task = self.pool.pop(now as u64);
 		match task.0 {
-			Some(r) => Some(to_index(r)),
+			Some(r) => {
+				self.slot_map.remove(r);
+				Some(to_index(r))
+			},
 			_ => None
 		}
 	}
@@ -160,13 +169,13 @@ impl TaskPool {
 	pub fn pop_ignore_timer(&mut self) -> Option<u32> {
 		let task = self.pool.pop_ignore_timer();
 		match task.0 {
-			Some(r) => Some(to_index(r)),
+			Some(r) => {
+				self.slot_map.remove(r);
+				Some(to_index(r))
+			},
 			_ => None
 		}
 	}
-
-	
-	
 }
 
 #[inline]

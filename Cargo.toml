@@ -10,7 +10,7 @@ exclude = ["crates/gui/exports_macro"]
 [profile.release]
 # debug= true
 # strip = true
-lto = true #这为LLVM提供了更多内联和修剪功能的机会。它不仅使.wasm尺寸更小，而且在运行时也更快！缺点是编译将花费更长的时间
+# lto = true #这为LLVM提供了更多内联和修剪功能的机会。它不仅使.wasm尺寸更小，而且在运行时也更快！缺点是编译将花费更长的时间(在release编译脚本中设置了)
 opt-level = 3  # 默认情况下，对LLVM的优化通道进行了调整，以提高速度，而不是大小。我们可以通过修改以下
 # opt-level = "z" # 了更积极地优化尺寸，以进一步的潜在速度成本
 # 请注意，令人惊讶的是，opt-level = "s"有时二进制文件的大小可能小于opt-level = "z"。总是测量！
@@ -76,7 +76,7 @@ debug = false
 
 
 [patch.yn]
-# pi_hal = { path = "../pi_hal" }
+pi_hal = { path = "../pi_hal" }
 # pi_wgpu = { path = "../pi_wgpu" }
 # pi_glow = {path = "../pi_glow"}
 # pi_wgpu = { path = "../pi_wgpu" }
@@ -85,11 +85,11 @@ debug = false
 # winit = {path = "../winit"}
 
 # pi_render
-pi_render               = { version = "0.2", registry = "yn", path = "../pi_render" }
+pi_render               = { version = "0.3", registry = "yn", path = "../pi_render" }
 render_utils            = { version = "0.2", registry = "yn", path = "../pi_render/crates/render_utils" }
-render_core             = { version = "0.2", registry = "yn", path = "../pi_render/crates/render_core" }
+render_core             = { version = "0.3", registry = "yn", path = "../pi_render/crates/render_core" }
 render_derive           = { version = "0.2", registry = "yn", path = "../pi_render/crates/render_derive" }
-render_compile          = { version = "0.2", registry = "yn", path = "../pi_render/crates/render_compile" }
+render_compile          = { version = "0.3", registry = "yn", path = "../pi_render/crates/render_compile" }
 
 # pi_bevy
 pi_bevy_ecs_extend = { path = "../pi_bevy/crates/ecs_extend" }

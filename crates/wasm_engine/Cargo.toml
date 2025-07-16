@@ -15,7 +15,7 @@ trace = ["log/release_max_level_info", "tracing/release_max_level_info", "pi_bev
 pi_js_export = []
 
 [dependencies]
-pi_hal = {version = "0.2", registry = "yn"}
+pi_hal = {version = "0.3", registry = "yn"}
 pi_atom = {version = "0.6"}
 pi_arr = {version = "0.20"}
 pi_sdf = {version = "0.1", registry = "yn"}
@@ -36,19 +36,19 @@ bevy_ecs = "0.11"
 bevy_app = "0.11"
 # pi_world = {version = "0.2"}
 pi_world = {version = "0.2", features = ["rc"]}
-pi_winit = {version = "0.27", registry="yn", package="winit"}
+pi_winit = {version = "0.28", registry="yn", package="winit"}
 
 log = "0.4"
 tracing = "0.1"
 
 # 添加webgl feature
 # wgpu1 = { version = "0.19", package = "wgpu", default-features = false, features = ["glsl", "webgl"] }
-pi_render = { version = "0.2", registry = "yn", features=["webgl"] }
-pi_bevy_winit_window = {version = "0.2", registry = "yn"}
-pi_bevy_render_plugin = { version = "0.2", registry = "yn", features=["webgl"]}
+pi_render = { version = "0.3", registry = "yn", features=["webgl"] }
+pi_bevy_winit_window = {version = "0.3", registry = "yn"}
+pi_bevy_render_plugin = { version = "0.3", registry = "yn", features=["webgl"]}
 pi_bevy_log = {version = "0.2", registry = "yn"}
-pi_wgpu =  { version = "0.2", registry = "yn" }
-# pi_wgpu =  {version = "0.2", registry = "yn", features = ["single_thread", "use_wgpu"]}
+pi_wgpu =  { version = "0.3", registry = "yn" }
+# pi_wgpu =  {version = "0.3", registry = "yn", features = ["single_thread", "use_wgpu"]}
 pi_spatial = "0.6"
 pi_path_finding = "0.6"
 pi_orca = "0.5"
@@ -61,8 +61,7 @@ pi-async-rt = {version = "0.2", features = ["serial"]}
 uuid = { version = "1", features = ["js"] }
 wasm-bindgen = { version = "0.2", features = ["serde-serialize"]}
 js-sys = "0.3"
-# 固定在0.3.67， 是因为0.3.68版本接口更改， 无法适配wgpu 0.19
-web-sys = {version="=0.3.67", features = [
+web-sys = {version="0.3", features = [
 	"HtmlCanvasElement"
 ]}
 wgpu1 = { version = "0.19", package = "wgpu", default-features = false, features = ["glsl", "webgl", "fragile-send-sync-non-atomic-wasm"] }
