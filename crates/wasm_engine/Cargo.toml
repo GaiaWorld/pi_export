@@ -21,6 +21,7 @@ pi_arr = { version = "=0.20", features = ["rc"]}
 pi_sdf = {version = "0.1", registry = "yn"}
 async-executor = "=1.6.0" #1.7.1bug
 pi_export_gui = { path = "../gui", default-features=false, features=["record"] }
+pi_export_task_pool = { path = "../task_pool" }
 # pi_export_astar = { path = "../astar"}
 # pi_export_base = { path = "../base", features = ["allow_not_run"]}
 pi_export_base = { path = "../base"}
@@ -50,7 +51,7 @@ pi_bevy_winit_window = {version = "0.3", registry = "yn"}
 pi_bevy_render_plugin = { version = "0.3", registry = "yn", features=["webgl"]}
 pi_bevy_log = {version = "0.2", registry = "yn"}
 pi_wgpu =  { version = "0.3", registry = "yn" }
-# pi_wgpu =  {version = "0.2", registry = "yn", features = ["single_thread", "use_wgpu"]}
+# pi_wgpu =  {version = "0.3", registry = "yn", features = ["single_thread", "use_wgpu"]}
 pi_spatial = "0.6"
 pi_path_finding = "0.6"
 pi_orca = "0.5"

@@ -23,7 +23,7 @@ impl AbQueryArgs {
 
 /// ab节点的查询函数, 这里只是一个简单范本，使用了quad节点的查询函数intersects
 /// 应用方为了功能和性能，应该实现自己需要的ab节点的查询函数， 比如点查询， 球查询-包含或相交， 视锥体查询...
-pub fn ab_query_func(arg: &mut AbQueryArgs, id: DefaultKey, aabb: &AABB, bind: &i32) {
+pub fn ab_query_func(arg: &mut AbQueryArgs, id: DefaultKey, aabb: &AABB, _bind: &i32) {
     // println!("ab_query_func: id: {}, bind:{:?}, arg: {:?}", id, bind, arg.result);
     if intersects(&arg.aabb, aabb) {
         if arg.result.len() <= arg.len {

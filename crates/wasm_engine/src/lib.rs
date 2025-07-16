@@ -25,6 +25,7 @@ pub use scene3d_export::{
 pub use pi_spatial::*;
 pub use pi_path_finding::*;
 pub use pi_orca::*;
+pub use pi_export_task_pool::exports::*;
 #[cfg(target_arch = "wasm32")]
 pub use pi_bon_decode::*;
 use wasm_bindgen::prelude::*;
