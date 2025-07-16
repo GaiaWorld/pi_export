@@ -42,7 +42,7 @@ debug = false
 
 # [patch.crates-io]
 [patch.crates-io]
-fixedbitset = { path = "../fixedbitset" }
+# fixedbitset = { path = "../fixedbitset" }
 # pi_time = { path = "../pi_time" }
 # pi_path_finding = { path = "../pi_path_finding" }
 # pi_flex_layout = { path = "../pi_flex_layout" }
@@ -110,7 +110,7 @@ pi_ui_render = { path = "../pi_ui_render" }
 # pi_style = { path = "../pi_style" }
 # pi_style = { path = "../pi_style" }
 
-pi_postprocess ={path="../pi_postprocess"}
+# pi_postprocess ={path="../pi_postprocess"}
 
 pi_3d               = { path = "../pi_3d" }
 pi_node_materials   = { path = "../pi_3d/crates/node_materials" }
