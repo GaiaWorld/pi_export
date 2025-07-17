@@ -107,6 +107,8 @@ pub struct CommandsExchangeD3 {
     pub(crate) verticesbuffers: Vec<(KeyVertexBuffer, Vec<u8>)>,
     pub(crate) indicesbuffers: Vec<(KeyVertexBuffer, Vec<u8>)>,
     pub(crate) indicesbuffersu32: Vec<(KeyVertexBuffer, Vec<u8>)>,
+    
+    pub(crate) crossdrawlistinfo: Vec<(Entity, Vec<Entity>)>,
 }
 
 
@@ -342,6 +344,15 @@ pub fn p3d_commands_exchange(app: &mut Engine, param: &mut ActionSetScene3D, cmd
 
     let spriteframes = app.world.get_resource_mut::<ResSpriteFrames>().unwrap();
     spriteframes.0.append(&mut cmds.sprite_frames.1);
+
+    let crossrenderinfos = app.world.get_resource_mut::<pi_bevy_render_plugin::render_cross::CrossRenderDrawListEntities>().unwrap();
+    cmds.crossdrawlistinfo.drain(..).for_each(|(link, list)| {
+        if list.len() > 0 {
+            crossrenderinfos.0.insert(link, list);
+        } else {
+            crossrenderinfos.0.remove(&link);
+        }
+    });
 
     let imgtex_asset = app.world.get_resource::<ShareAssetMgr<pi_scene_shell::prelude::ImageTextureFrame>>().unwrap().clone();
     let device = app.world.get_resource::<PiRenderDevice>().unwrap();
