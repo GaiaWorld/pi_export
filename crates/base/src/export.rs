@@ -651,6 +651,10 @@ pub fn init_engine_3d(app: &mut Engine, spine: bool, param: &[u32]) {
     if app.world.get_resource::<pi_scene_shell::prelude::AssetMgrConfigs>().is_none() {
         app.insert_resource(pi_scene_shell::prelude::AssetMgrConfigs::default());
     }
+	
+    if app.world.get_resource::<pi_bevy_render_plugin::render_cross::CrossRenderDrawListEntities>().is_none() {
+        app.insert_resource(pi_bevy_render_plugin::render_cross::CrossRenderDrawListEntities::default());
+    }
 
 	let engineplugins = EngineCustomPlugins::new(param);
 	app.insert_resource(engineplugins);

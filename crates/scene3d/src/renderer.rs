@@ -164,3 +164,22 @@ pub fn p3d_render_viewport(cmds: &mut CommandsExchangeD3, renderer: f64, x: f64,
 
     cmds.renderer_modify.push(OpsRendererCommand::Viewport(renderer, x as f32, y as f32, w as f32, h as f32, mindepth, maxdepth));
 }
+
+///
+/// val 数值为 u32
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
+pub fn p3d_crossrender_link_drawlists(cmds: &mut CommandsExchangeD3, linkentity: f64, drawlistrenderers: &[f64], len: f64) {
+    let linkentity: Entity = as_entity(linkentity);
+    let mut list = vec![];
+    let len = len as usize;
+    if len > 0 {
+        for i in 0..len {
+            let entity: Entity = as_entity(drawlistrenderers[i]);
+            list.push(entity);
+        }
+        cmds.crossdrawlistinfo.push((linkentity, list));
+    } else {
+        cmds.crossdrawlistinfo.push((linkentity, list));
+    };
+}
