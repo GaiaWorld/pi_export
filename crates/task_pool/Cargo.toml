@@ -17,10 +17,12 @@ bitvec = "1.0"
 
 wasm-bindgen = "*"
 log = "*"
-# js_proxy_gen_macro = { registry = "yn", version = "0.2" }
+js_proxy_gen_macro = { registry = "yn", version = "0.2" }
 
 
 [features]
+default 				= ["pi_js_export"]
+pi_js_export 			= []
 # default = ["wasm_bindgen"]
 wasm_bindgen = []
 # # default = ["no_debug", "no_define_js"]

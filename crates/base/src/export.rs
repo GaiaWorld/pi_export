@@ -392,7 +392,7 @@ pub fn fram_call(engine: &mut Engine, reset_state: bool) {
 		if IS_FIRST.load(Ordering::Relaxed){
 			// IS_FIRST.store(false, Ordering::Relaxed);
 			let device = engine.world.get_single_res_mut::<PiRenderDevice>().unwrap();
-			// device.unmake_current();
+			device.unmake_current();
 		}
 		
 		let sender = engine.sender.clone();
@@ -401,7 +401,7 @@ pub fn fram_call(engine: &mut Engine, reset_state: bool) {
 			let device = engine.world.get_single_res_mut::<PiRenderDevice>().unwrap();
 			if IS_FIRST.load(Ordering::Relaxed){
 				IS_FIRST.store(false, Ordering::Relaxed);
-				// device.make_current();
+				device.make_current();
 			}
 
 			if reset_state {

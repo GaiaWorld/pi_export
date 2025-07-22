@@ -8,11 +8,12 @@ use pi_weight_task::{Deque as Deque1, DequeKey, DequeState, TaskPool as TaskPool
 use wasm_bindgen::{prelude::wasm_bindgen, JsValue};
 use slotmap::Key;
 
-// use js_proxy_gen_macro::pi_js_export;
+use js_proxy_gen_macro::pi_js_export;
 
 /// 队列权重类型
-#[cfg_attr(target_arch = "wasm32", wasm_bindgen)]
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen)]
+#[pi_js_export]
 pub enum WeightType {
     /// 标准权重
     Normal = 0,
@@ -20,13 +21,13 @@ pub enum WeightType {
     Unit = 1,
 }
 
+#[pi_js_export]
 #[cfg_attr(target_arch = "wasm32", wasm_bindgen)]
-// #[pi_js_export]
-pub struct TaskState(DequeState);
+pub struct TaskState(pub DequeState);
 
 
 #[cfg_attr(target_arch = "wasm32", wasm_bindgen)]
-// #[pi_js_export]
+#[pi_js_export]
 pub struct TaskPool {
 	pool: TaskPool1<DequeKey, (), 128, 60, 2>,
 	slot_map: SlotMap<DequeKey, TaskType>,
@@ -41,10 +42,9 @@ enum TaskType {
 }
 
 #[cfg_attr(target_arch = "wasm32", wasm_bindgen)]
-// #[pi_js_export]
 impl TaskPool {
 	/// 创建定时器
-	// #[pi_js_export]
+	#[pi_js_export]
 	pub fn new() -> Self {
 		Self {
 			pool: TaskPool1::<DequeKey, (), 128, 60, 2>::default(),
@@ -53,6 +53,7 @@ impl TaskPool {
 	}
 
 	/// 创建串行任务队, 并加入任务池， 返回队列id
+	#[pi_js_export]
 	pub fn create_deque(&mut self, weight_type: WeightType, weight: u32) -> f64 {
 		let weight_type = to_deque_weight(weight_type, weight);
         let deque = Deque1::new(weight_type, ());
@@ -61,6 +62,7 @@ impl TaskPool {
 	}
 
 	/// 修复队列状态
+	// #[pi_js_export]
 	pub fn repair_deque_state(&mut self, key: f64, state: TaskState) {
 		let key = to_key(key);
 		if let Some(_deque) = self.pool.get_deque(key) {
@@ -69,6 +71,7 @@ impl TaskPool {
 	}
 
 	/// 重设置队列的权重
+	#[pi_js_export]
 	pub fn reset_deque_weight(&mut self, key: f64, weight_type: WeightType, weight: u32) {
 		let key = to_key(key);
 		let weight_type = to_deque_weight(weight_type, weight);
@@ -77,21 +80,25 @@ impl TaskPool {
 	}
 
 	/// 队列长度
+	#[pi_js_export]
 	pub fn deque_len(&self, key: f64) -> Option<u32> {
 		self.pool.get_deque(to_key(key)).map(|r| { r.deque.len() as u32 })
 	}
 
 	/// 释放队列的锁，成功释放，则返回true， 否则返回false
+	#[pi_js_export]
     pub fn deque_unlock(&mut self, key: f64) -> bool {
 		self.pool.deque_unlock(to_key(key))
 	}
 
 	/// 删除一个任务队列，如果删除成功，返回true， 否则返回false
+	#[pi_js_export]
     pub fn remove_deque(&mut self, key: f64) -> bool {
 		self.pool.remove_deque(to_key(key))
 	}
 
 	/// 插入一个指定任务权重的并行任务
+	#[pi_js_export]
     pub fn push_deque_task(&mut self, id: f64) -> Option<f64> {
 		let id = to_key(id);
 		if let Some(deque) = self.pool.get_deque_mut(id) {
@@ -103,6 +110,7 @@ impl TaskPool {
 	}
 
 	/// 取到队列状态
+	#[pi_js_export]
     pub fn get_deque_state(&mut self, id: f64) -> Option<TaskState> {
 		let id = to_key(id);
 		if let Some(deque) = self.pool.get_deque_mut(id) {
@@ -112,6 +120,7 @@ impl TaskPool {
 	}
 
 	/// 插入一个指定任务权重的并行任务
+	#[pi_js_export]
     pub fn push_async(&mut self, weight: u32) -> f64 {
 		let key = self.slot_map.insert(TaskType::Other);
 		self.pool.push_async(key, weight);
@@ -119,6 +128,7 @@ impl TaskPool {
 	}
 
 	/// push一个可取消的定时任务
+	#[pi_js_export]
 	pub fn push_cancel_timer(&mut self, mut timeout: f64) -> f64 {
 		if timeout < 0.0 {
 			timeout = 0.0;
@@ -130,12 +140,14 @@ impl TaskPool {
 	}
 
 	/// 取到可取消定时器的滚动次数
+	#[pi_js_export]
 	pub fn roll_count(&mut self) -> f64 {
 		self.pool.get_cancel_timer_mut().roll_count() as f64
 
 	}
 
 	/// 删除一个定时任务
+	#[pi_js_export]
 	pub fn delete_cancel_timer(&mut self, key: f64) {
 		let key = to_key(key);
 		if let Some(TaskType::CancelTimer(timer_key)) = self.slot_map.remove(key) {
@@ -144,6 +156,7 @@ impl TaskPool {
 	}
 
 	/// push一个不可取消的定时任务
+	#[pi_js_export]
 	pub fn push_timer(&mut self, mut timeout: f64) -> f64 {
 		if timeout < 0.0 {
 			timeout = 0.0;
@@ -154,6 +167,7 @@ impl TaskPool {
 	}
 
 	/// 弹出一个任务
+	#[pi_js_export]
 	pub fn pop(&mut self, now: u32) -> Option<u32> {
 		let task = self.pool.pop(now as u64);
 		match task.0 {
@@ -166,6 +180,7 @@ impl TaskPool {
 	}
 
 	/// 弹出一个任务（忽略定时器的任务）
+	#[pi_js_export]
 	pub fn pop_ignore_timer(&mut self) -> Option<u32> {
 		let task = self.pool.pop_ignore_timer();
 		match task.0 {
