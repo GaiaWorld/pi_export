@@ -74,16 +74,17 @@ pub fn p3d_render_clear_link_mesh(cmds: &mut CommandsExchangeD3, renderer: f64, 
 /// Renderer Modify
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
-pub fn p3d_render_target_key(cmds: &mut CommandsExchangeD3, renderer: f64, keytarget: Option<f64>, use_as_out: Option<bool>) {
+pub fn p3d_render_target_key(cmds: &mut CommandsExchangeD3, renderer: f64, keytarget: Option<f64>, use_as_out: Option<bool>, realtoscreen: Option<bool>) {
     let renderer: Entity = as_entity(renderer);
     let use_as_out = if let Some(use_as_out) = use_as_out { use_as_out } else { false };
+    let realtoscreen = if let Some(realtoscreen) = realtoscreen { realtoscreen } else { false };
     match keytarget {
         Some(keytarget) => {
             let keytarget = unsafe { transmute(keytarget) };
             cmds.renderer_target.push(OpsRendererTarget::Custom(renderer, KeyCustomRenderTarget::Custom(keytarget), use_as_out));
         },
         None => {
-            cmds.renderer_target.push(OpsRendererTarget::Custom(renderer, KeyCustomRenderTarget::FinalRender(false), use_as_out));
+            cmds.renderer_target.push(OpsRendererTarget::Custom(renderer, KeyCustomRenderTarget::FinalRender(realtoscreen), use_as_out));
         },
     }
 }
