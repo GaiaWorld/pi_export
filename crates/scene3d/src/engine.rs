@@ -44,6 +44,7 @@ fn bit_ok(bits: wgpu::Features, bit: wgpu::Features) -> u32 {
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_device_limis(app: &mut Engine, data: &mut [u32]) {
+    pi_export_base::export::await_last_frame(app);
 	let device = app.world.get_resource::<PiRenderDevice>().unwrap();
     let limits = device.limits();
     let features = device.features();
@@ -535,7 +536,7 @@ pub fn p3d_query_resource_memory(app: &mut Engine, param: &mut ActionSetScene3D,
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_material_state(app: &mut Engine, param: &mut ActionSetScene3D, result: &mut [f32]) {
-    
+    pi_export_base::export::await_last_frame(app);
     param.materials.align();
 
     // let mut cmds = param.materials.get(&mut app.world);
@@ -604,7 +605,7 @@ pub fn p3d_material_state(app: &mut Engine, param: &mut ActionSetScene3D, result
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_mesh_state(app: &mut Engine, param: &mut ActionSetScene3D, scene: Option<f64>, result: &mut [f32]) {
-    
+    pi_export_base::export::await_last_frame(app);
     // let mut cmds = param.state.get_mut(&mut app.world);
     param.meshes.align();
 
@@ -687,7 +688,7 @@ pub fn p3d_query_transform_state(app: &mut Engine, param: &mut ActionSetScene3D,
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_camera_state(app: &mut Engine, param: &mut ActionSetScene3D, camera: Option<f64>, result: &mut [f32]) {
-    
+    pi_export_base::export::await_last_frame(app);
     // let mut cmds = param.state.get_mut(&mut app.world);
     param.cameras.align();
 
@@ -730,6 +731,7 @@ pub fn p3d_texture_loader_state(app: &mut Engine, param: &mut ActionSetScene3D, 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_errors(app: &mut Engine, param: &mut ActionSetScene3D, info: &mut [u32], flag: bool) -> f64 {
+    pi_export_base::export::await_last_frame(app);
     let count = info.len();
     let mut resource = param.resource.get_mut(&mut app.world);
     resource.error_record.1 = flag;
@@ -856,6 +858,7 @@ pub fn gltf_particle_calculator(item: &GLTFRes, index: f64) -> Option<&Handle<Pa
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_create_gltf_load(app: &mut Engine, param: &mut ActionSetScene3D, entity: f64, baseurl: &Atom, dyndesc: String) {
+    pi_export_base::export::await_last_frame(app);
     let resource = param.resource.get_mut(&mut app.world);
 
     let entity: Entity = as_entity(entity);
