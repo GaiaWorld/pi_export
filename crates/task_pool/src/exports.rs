@@ -23,7 +23,7 @@ pub enum WeightType {
 
 #[pi_js_export]
 #[cfg_attr(target_arch = "wasm32", wasm_bindgen)]
-pub struct TaskState(pub DequeState);
+pub struct TaskState( DequeState);
 
 
 #[cfg_attr(target_arch = "wasm32", wasm_bindgen)]

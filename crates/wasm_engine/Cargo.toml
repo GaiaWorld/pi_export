@@ -38,8 +38,8 @@ bevy_app = "0.11"
 pi_world = {version = "0.2", features = ["rc"]}
 pi_winit = {version = "0.28", registry="yn", package="winit"}
 
-# naga = { path = "../../../wgpu/naga", features=["glsl-in", "wgsl-in", "spv-in", "compact"] }
-# wgpu = { path = "../../../wgpu/wgpu" }
+naga = { path = "../../../wgpu/naga", features=["glsl-in", "wgsl-in", "spv-in", "compact"] }
+wgpu = { path = "../../../wgpu/wgpu" }
 
 log = "0.4"
 tracing = "0.1"

@@ -5,54 +5,53 @@ use pi_bevy_render_plugin::IS_RESUMED;
 // use pi_bevy_winit_window::update_window_handle;
 use crate::export::await_last_frame;
 pub use crate::export::Engine;
+use pi_bevy_render_plugin::PiRenderDevice;
 pub use pi_winit::window::Window;
+use std::sync::atomic::AtomicBool;
 use std::sync::atomic::Ordering;
 use std::sync::Arc;
-use pi_bevy_render_plugin::PiRenderDevice;
+use std::sync::RwLock;
+
+#[derive(Debug, Clone, Copy)]
+pub enum WindowState {
+    Resumed,
+    Suspended,
+}
+
+static mut WINDOW_STATE: RwLock<WindowState> = RwLock::new(WindowState::Resumed);
+pub static mut IS_CHANGED: AtomicBool = AtomicBool::new(false);
 
 #[cfg(feature = "pi_js_export")]
 pub fn on_resumed(engine: &mut Engine, window: &Arc<Window>) {
-
-    await_last_frame(engine);
+    // await_last_frame(engine);
     println!("----------on_resumed222222");
-    // android 某些设备在某些情况下不会触发on_suspended再触发on_resumed
-    let world = &mut engine.app.world;
-    // let device = engine.world.get_single_res_mut::<PiRenderDevice>().unwrap();
-    // device.0.make_current();
-    world
-        .get_single_res_mut::<PiScreenTexture>()
-        .unwrap()
-        .0
-        .take();
-    // let w = update_window_handle(&mut app.world, window.as_ref());
-    // let raw_handle = pi_bevy_winit_window::HandleWrapper {
-    //     handle: Arc::new(WindowWrapper(window.clone())),
-    // };
+    *unsafe { WINDOW_STATE.write().unwrap() } = WindowState::Resumed;
+    let _ = unsafe { IS_CHANGED.store(true, Ordering::Relaxed) };
 
-    // world
-    //     .get_single_res_mut::<PiRenderWindow>().unwrap()
-    //     .update_handle(Arc::new(WindowWrapper(window.clone())));
-
-    IS_RESUMED.store(true, Ordering::Relaxed);
 }
 
 #[cfg(feature = "pi_js_export")]
 pub fn on_suspended(engine: &mut Engine, version: String) {
-
-    if version.contains("Android 13"){
-        
-    }
-    await_last_frame(engine);
-    let device = engine.world.get_single_res_mut::<PiRenderDevice>().unwrap();
-    // device.0.unmake_current();
-
+    if version.contains("Android 13") {}
     println!("----------on_suspended222222: {}", version);
     // let world = &mut engine.app.world;
+    *unsafe { WINDOW_STATE.write().unwrap() } = WindowState::Suspended;
+    unsafe { IS_CHANGED.store(true, Ordering::Relaxed) };
+}
 
-    engine.world
+pub fn on_change(engine: &mut Engine) {
+    engine
+        .world
         .get_single_res_mut::<PiScreenTexture>()
         .unwrap()
         .0
         .take();
-    IS_RESUMED.store(false, Ordering::Relaxed);
+    match unsafe { *WINDOW_STATE.read().unwrap() } {
+        WindowState::Resumed => {
+            IS_RESUMED.store(true, Ordering::Relaxed);
+        }
+        WindowState::Suspended => {
+            IS_RESUMED.store(false, Ordering::Relaxed);
+        }
+    }
 }

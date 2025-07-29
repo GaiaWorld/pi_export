@@ -12,6 +12,7 @@ allow_not_run = []
 # system_graph = [] # 提供接口，返回system的日程图
 
 [dependencies]
+lazy_static = "1.5"
 pi_export_assets_mgr = {version = "0.1", registry = "yn", path = "../assets_mgr"}
 console_log = "1.0"
 crossbeam-channel = "0.5"
