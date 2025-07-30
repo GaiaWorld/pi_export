@@ -1,6 +1,6 @@
 
 
-use std::{cell::RefCell, mem::transmute, sync::{atomic::AtomicBool, Arc, OnceLock}, thread, time::Duration};
+use std::{cell::RefCell, mem::transmute, sync::{atomic::{AtomicBool, AtomicU64}, Arc, OnceLock}, thread, time::Duration};
 
 use pi_scene_context::pass::ImageTextureFrame;
 use pi_share::{Share, ShareCell};
@@ -31,7 +31,7 @@ pub use pi_winit::window::Window;
 use pi_bevy_render_plugin::PiRenderOptions;
 // pub struct FrameEndOnceLockWrap<F: FnMut() + Send + Sync>(pub OnceLock<Box<dyn FnMut() + Send + Sync>>);
 
-static mut FRAME_END_CB: OnceLock<Box<dyn FnMut() + Send + Sync + 'static>> = OnceLock::new();
+static mut FRAME_END_CB: OnceLock<Box<dyn FnMut(f64) + Send + Sync + 'static>> = OnceLock::new();
 static mut FRAME_TIME: u32 = 16;
 
 #[cfg(feature = "pi_js_export")]
@@ -41,7 +41,7 @@ pub fn set_fps(fps: u32){
 }
 
 /// 初始化帧结束的回调，只能设置一次
-pub fn init_frame_end_cb<F: FnMut() + Send + Sync + 'static>(f: F) {
+pub fn init_frame_end_cb<F: FnMut(f64) + Send + Sync + 'static>(f: F) {
 	if let Err(_e) = unsafe { FRAME_END_CB.set(Box::new(f)) } {
 		println!("frame end callback init failed");
 	}
@@ -55,10 +55,12 @@ pub struct Engine {
 	/// 上帧等待
 	// pub last_frame_awaiting: Share<std::sync::atomic::AtomicBool>,
 	pub last_frame_awaiting: bool,
-	pub sender: crossbeam_channel::Sender<Box<dyn FnOnce() -> () + Send>>,
+	pub sender: crossbeam_channel::Sender<(Box<dyn FnOnce() -> () + Send>, f64)>,
 
 	// 回应的sender和receiver
-	pub back_receiver: crossbeam_channel::Receiver<()>
+	pub back_receiver: crossbeam_channel::Receiver<()>,
+	// 调试用
+	pub id: f64,
 }
 
 #[cfg(target_os = "android")]
@@ -110,14 +112,14 @@ impl Engine {
                 let mut min_fps = 60;
                 loop {
                     let begin2 = std::time::Instant::now();
-                    let task: Box<dyn FnOnce() -> () + Send> = receiver.recv().unwrap();
+                    let (task, id): (Box<dyn FnOnce() -> () + Send>, f64) = receiver.recv().unwrap();
                     // let begin3 = std::time::Instant::now();
                     // println!("============ ecs");
                     task();
                     // let _ = back_sender.send(());
 					if let Some(cb) = unsafe { FRAME_END_CB.get_mut() } {
-						// println!("========= ondraw cb");
-                        cb();
+						// println!("========= ondraw cb: {}", id);
+                        cb(id);
                     }
 
                     fps += 1;
@@ -142,6 +144,7 @@ impl Engine {
             last_frame_awaiting: false,
             sender,
             back_receiver,
+			id: 0.0,
         }
     }
 	pub fn app(&self) -> &App { &self.app }
@@ -408,8 +411,10 @@ pub fn fram_call(engine: &mut Engine, reset_state: bool) {
 		}
 		
 		let sender = engine.sender.clone();
-		// println!("================ send fram_call");
-		let _ = sender.send(Box::new(move || {
+		let id =  engine.id;
+		engine.id += 1.0;
+		// println!("================ send fram_call: {}", id);
+		let _ = sender.send((Box::new(move || {
 
 			if IS_FIRST.load(Ordering::Relaxed){
 				IS_FIRST.store(false, Ordering::Relaxed);
@@ -430,7 +435,7 @@ pub fn fram_call(engine: &mut Engine, reset_state: bool) {
 			}
 			// *engine.world.get_single_res_mut::<FrameState>().unwrap() = FrameState::UnActive;
 			// log::warn!("fram_call end=====");
-		}));
+		}), id));
 	}
 	
 	#[cfg(target_arch="wasm32")]
