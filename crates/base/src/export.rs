@@ -99,7 +99,7 @@ impl Engine {
     pub fn new(mut app: App) -> Self {
 		let (sender, receiver) = crossbeam_channel::bounded(1);
 		let (back_sender, back_receiver) = crossbeam_channel::bounded(1);
-		app.world.insert_single_res(FrameSender(back_sender));
+		// app.world.insert_single_res(FrameSender(back_sender));
 		log::warn!("create_engine=================================");
 		// let last_frame_awaiting = Share::new(std::sync::atomic::AtomicBool::new(false));
         let _ = std::thread::Builder::new()
@@ -116,7 +116,7 @@ impl Engine {
                     // let begin3 = std::time::Instant::now();
                     // println!("============ ecs");
                     task();
-                    // let _ = back_sender.send(());
+                    let _ = back_sender.send(());
 					if let Some(cb) = unsafe { FRAME_END_CB.get_mut() } {
 						// println!("========= ondraw cb: {}", id);
                         cb(id);
