@@ -109,6 +109,7 @@ pub struct CommandsExchangeD3 {
     pub(crate) indicesbuffersu32: Vec<(KeyVertexBuffer, Vec<u8>)>,
     
     pub(crate) crossdrawlistinfo: Vec<(Entity, Vec<Entity>)>,
+    pub(crate) screenwithpostprocess: bool,
 }
 
 
@@ -344,6 +345,9 @@ pub fn p3d_commands_exchange(app: &mut Engine, param: &mut ActionSetScene3D, cmd
 
     let spriteframes = app.world.get_resource_mut::<ResSpriteFrames>().unwrap();
     spriteframes.0.append(&mut cmds.sprite_frames.1);
+
+    let screenwithpostprocess = app.world.get_resource_mut::<pi_bevy_render_plugin::ScreenWithPostprocess>().unwrap();
+    screenwithpostprocess.0 = cmds.screenwithpostprocess;
 
     let crossrenderinfos = app.world.get_resource_mut::<pi_bevy_render_plugin::render_cross::CrossRenderDrawListEntities>().unwrap();
     cmds.crossdrawlistinfo.drain(..).for_each(|(link, list)| {
