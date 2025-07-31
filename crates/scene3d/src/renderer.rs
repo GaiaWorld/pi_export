@@ -184,3 +184,10 @@ pub fn p3d_crossrender_link_drawlists(cmds: &mut CommandsExchangeD3, linkentity:
         cmds.crossdrawlistinfo.push((linkentity, list));
     };
 }
+
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
+pub fn p3d_render_screenwithpostprocess(cmds: &mut CommandsExchangeD3, flag: bool) {
+
+    cmds.screenwithpostprocess = flag;
+}
