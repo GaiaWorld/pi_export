@@ -346,9 +346,6 @@ pub fn p3d_commands_exchange(app: &mut Engine, param: &mut ActionSetScene3D, cmd
     let spriteframes = app.world.get_resource_mut::<ResSpriteFrames>().unwrap();
     spriteframes.0.append(&mut cmds.sprite_frames.1);
 
-    let screenwithpostprocess = app.world.get_resource_mut::<pi_bevy_render_plugin::ScreenWithPostprocess>().unwrap();
-    screenwithpostprocess.0 = cmds.screenwithpostprocess;
-
     let crossrenderinfos = app.world.get_resource_mut::<pi_bevy_render_plugin::render_cross::CrossRenderDrawListEntities>().unwrap();
     cmds.crossdrawlistinfo.drain(..).for_each(|(link, list)| {
         if list.len() > 0 {
@@ -401,4 +398,49 @@ pub fn p3d_commands_exchange(app: &mut Engine, param: &mut ActionSetScene3D, cmd
 			pi_scene_context::prelude::ActionVertexBuffer::create_indices(vb_wait, key, data);
 		}
     }
+
+    let screenwithpostprocess = app.world.get_resource::<pi_bevy_render_plugin::ScreenWithPostprocess>().unwrap();
+    let window = app.world.get_resource::<pi_bevy_render_plugin::PiRenderWindow>().unwrap();
+    let mut screenfbo = None;
+    let width = window.width;
+    let height = window.height;
+    let format = wgpu::TextureFormat::pi_render_default();
+    if cmds.screenwithpostprocess  {
+        if let Some(rt) = &screenwithpostprocess.1 {
+            let w = rt.rect().width() as u32;
+            let h = rt.rect().height() as u32;
+            if w == width && h == height {
+                screenfbo = Some(rt.clone());
+            }
+        }
+        if screenfbo.is_none() {
+            let atlas = app.world.get_resource_mut::<pi_bevy_render_plugin::PiSafeAtlasAllocator>().unwrap();
+            let target_type = atlas.create_type(TargetDescriptor {
+                colors_descriptor: smallvec::SmallVec::from_slice(
+                    &[TextureDescriptor {
+                        mip_level_count: 1,
+                        sample_count: 1,
+                        dimension: wgpu::TextureDimension::D2,
+                        format,
+                        usage: wgpu::TextureUsages::COPY_DST | wgpu::TextureUsages::COPY_SRC | wgpu::TextureUsages::RENDER_ATTACHMENT | wgpu::TextureUsages::TEXTURE_BINDING,
+                        base_mip_level: 0,
+                        base_array_layer: 0,
+                        array_layer_count: None,
+                        view_dimension: Some(wgpu::TextureViewDimension::D2),
+                    }]
+                ),
+                need_depth: false,
+                depth_descriptor: None,
+                default_width: width,
+                default_height: height,
+            });
+            let t: Vec<Share<SafeTargetView>> = vec![];
+            let rt = atlas.allocate_alone_not_share(width, height, target_type, t.iter(), true);
+            screenfbo = Some(Share::new(rt));
+        }
+    }
+
+    let screenwithpostprocess = app.world.get_resource_mut::<pi_bevy_render_plugin::ScreenWithPostprocess>().unwrap();
+    screenwithpostprocess.0 = cmds.screenwithpostprocess;
+    screenwithpostprocess.1 = screenfbo;
 }
