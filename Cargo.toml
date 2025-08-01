@@ -61,8 +61,8 @@ naga = { path = "../wgpu/naga"}
 # wasm-bindgen = { path = "../wasm-bindgen" }
 # pi_polygon = { path = "../pi_polygon" }
 
-pi_world                = { path = "../pi_world", features = ["single_thread", "rc"] }
-pi_world_macros         = { path = "../pi_world/macros" }
+# pi_world                = { path = "../pi_world", features = ["single_thread", "rc"] }
+# pi_world_macros         = { path = "../pi_world/macros" }
 # pi_share = { path = "../pi_share" }
 # pi_world_macros = { path = "../pi_world/macros" }
 # once_cell = { path = "../once_cell" }
@@ -80,7 +80,7 @@ pi_world_macros         = { path = "../pi_world/macros" }
 
 [patch.yn]
 pi_hal = { path = "../pi_hal" }
-# pi_wgpu = { path = "../pi_wgpu" }
+pi_wgpu = { path = "../pi_wgpu" }
 # pi_glow = {path = "../pi_glow"}
 # pi_wgpu = { path = "../pi_wgpu" }
 # pi_bon_decode = {path = "../pi_bon_decode"}
