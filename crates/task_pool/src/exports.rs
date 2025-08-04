@@ -3,7 +3,7 @@ use std::num::NonZeroU32;
 
 use pi_slot_wheel::TimerKey;
 use slotmap::{KeyData, SlotMap};
-use pi_weight_task::{Deque as Deque1, DequeKey, DequeState, TaskPool as TaskPool1, WeightType as WeightType1};
+use pi_weight_task::{Deque as Deque1, DequeKey, TaskPool as TaskPool1, WeightType as WeightType1};
 #[cfg(target_arch = "wasm32")]
 use wasm_bindgen::{prelude::wasm_bindgen, JsValue};
 use slotmap::Key;
@@ -63,10 +63,11 @@ impl TaskPool {
 
 	/// 修复队列状态
 	// #[pi_js_export]
-	pub fn repair_deque_state(&mut self, key: f64, state: TaskState) {
+	pub fn repair_deque_state(&mut self, key: f64) {
 		let key = to_key(key);
-		if let Some(_deque) = self.pool.get_deque(key) {
-			self.pool.repair_deque_state(key, state.0);
+		if let Some(deque) = self.pool.get_deque(key) {
+			let state = deque.state(); // 取到队列状态
+			self.pool.repair_deque_state(key, state);
 		}		
 	}
 
@@ -101,7 +102,13 @@ impl TaskPool {
 	#[pi_js_export]
     pub fn push_deque_task(&mut self, id: f64) -> Option<f64> {
 		let id = to_key(id);
-		if let Some(deque) = self.pool.get_deque_mut(id) {
+		if let Some(deque) = self.pool.get_deque(id) { // 这里不使用可变， 是为了让队列状态中的旧长度不更新
+			let ptr_usize = deque as *const Deque1<DequeKey, ()> as usize;
+			fn ptr(ptr: usize) -> *mut Deque1<DequeKey, ()> {
+				ptr as *mut Deque1<DequeKey, ()>
+			}
+			let deque = unsafe {&mut *ptr(ptr_usize)};
+			
 			let key = self.slot_map.insert(TaskType::Other);
 			deque.deque.push_back(key);
 			return Some(to_f64(key))
@@ -109,14 +116,14 @@ impl TaskPool {
 		None
 	}
 
-	/// 取到队列状态
-	#[pi_js_export]
-    pub fn get_deque_state(&mut self, id: f64) -> Option<TaskState> {
+	/// 更新队列旧的长度
+    #[pi_js_export]
+	pub fn update_deque_old_len(&mut self, id: f64) {
 		let id = to_key(id);
-		if let Some(deque) = self.pool.get_deque_mut(id) {
-			return Some(TaskState(deque.state()))
+		if let Some(_deque) = self.pool.get_deque_mut(id) { // 仅仅为了更新旧的长度
+			// return Some(TaskState(deque.state()))
 		}
-		None
+		// None
 	}
 
 	/// 插入一个指定任务权重的并行任务
