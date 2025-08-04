@@ -51,7 +51,7 @@ debug = false
 # pi_slotmap_tree = { path = "../pi_slotmap_tree" }
 # pi_map = { path = "../pi_map" }
 # wgpu = { version = "25.0.*" }
-# naga = { path = "../wgpu/naga"}
+naga = { path = "../wgpu/naga"}
 # smallvec = {path = "../smallvec"}
 # pi_cache = {path = "../pi_cache"}
 # pi_assets = {path = "../pi_assets"}

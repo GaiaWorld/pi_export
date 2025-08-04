@@ -17,6 +17,7 @@ use js_proxy_gen_macro::pi_js_export;
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_sprite(app: &mut Engine, cmds: &mut CommandsExchangeD3, source: f64, atlas: &Atom) -> f64 {
+
     let id: Entity = app.world.entities().reserve_entity();
 
     let source = as_entity(source);

@@ -14,6 +14,7 @@ use js_proxy_gen_macro::pi_js_export;
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_skeleton(app: &mut Engine, cmds: &mut CommandsExchangeD3, bonespervertex: f64, root: f64, bones: &[f64], bonecount: f64, cacheframe: f64) -> f64 {
+
     let id: Entity = app.world.entities().reserve_entity();
 
     let state = match (bonespervertex as u8) {
@@ -38,6 +39,7 @@ pub fn p3d_skeleton(app: &mut Engine, cmds: &mut CommandsExchangeD3, bonesperver
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_bone(app: &mut Engine, cmds: &mut CommandsExchangeD3, scene: f64) -> f64 {
+
     let id: Entity = app.world.entities().reserve_entity();
 
     let scene = as_entity(scene);

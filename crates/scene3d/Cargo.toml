@@ -15,6 +15,7 @@ spector 			    = []
 
 [dependencies]
 wgpu                    = { version = "0.3", registry = "yn", package = "pi_wgpu" }
+smallvec                = "1.9"
 # bevy_ecs                = "0.11"
 paste = "1.0"
 pi_bevy_asset 			= { version = "0.3", registry = "yn" }

@@ -10,7 +10,7 @@ use pi_bevy_asset::{PiAssetPlugin, AssetConfig, AssetDesc};
 use pi_bevy_post_process::PiPostProcessPlugin;
 use pi_hash::XHashMap;
 use pi_render::{asset::TAssetKeyU64, renderer::sampler::SamplerRes, rhi::{asset::{RenderRes, TextureRes}, bind_group::BindGroup, pipeline::RenderPipeline}};
-use pi_bevy_render_plugin::{FrameState, PiRenderPlugin};
+use pi_bevy_render_plugin::{system::FrameSender, FrameState, PiRenderPlugin};
 use pi_window_renderer::PluginWindowRender;
 use pi_bevy_render_plugin::PiRenderDevice;
 pub use pi_export_assets_mgr::exports::ResAllocator;
@@ -32,6 +32,14 @@ use pi_bevy_render_plugin::PiRenderOptions;
 // pub struct FrameEndOnceLockWrap<F: FnMut() + Send + Sync>(pub OnceLock<Box<dyn FnMut() + Send + Sync>>);
 
 static mut FRAME_END_CB: OnceLock<Box<dyn FnMut() + Send + Sync + 'static>> = OnceLock::new();
+static mut FRAME_TIME: u32 = 16;
+
+#[cfg(feature = "pi_js_export")]
+pub fn set_fps(fps: u32){
+	println!("==========set fps: {}", fps);
+	// unsafe { FRAME_TIME = 1000 / fps };
+}
+
 /// 初始化帧结束的回调，只能设置一次
 pub fn init_frame_end_cb<F: FnMut() + Send + Sync + 'static>(f: F) {
 	if let Err(_e) = unsafe { FRAME_END_CB.set(Box::new(f)) } {
@@ -86,9 +94,10 @@ fn panic_with_backtrace_rs() {
 
 #[cfg(all(feature="pi_js_export", not(target_arch="wasm32")))]
 impl Engine {
-    pub fn new(app: App) -> Self {
+    pub fn new(mut app: App) -> Self {
 		let (sender, receiver) = crossbeam_channel::bounded(1);
 		let (back_sender, back_receiver) = crossbeam_channel::bounded(1);
+		app.world.insert_single_res(FrameSender(back_sender));
 		log::warn!("create_engine=================================");
 		// let last_frame_awaiting = Share::new(std::sync::atomic::AtomicBool::new(false));
         let _ = std::thread::Builder::new()
@@ -105,8 +114,9 @@ impl Engine {
                     // let begin3 = std::time::Instant::now();
                     // println!("============ ecs");
                     task();
-                    let _ = back_sender.send(());
+                    // let _ = back_sender.send(());
 					if let Some(cb) = unsafe { FRAME_END_CB.get_mut() } {
+						// println!("========= ondraw cb");
                         cb();
                     }
 
@@ -119,8 +129,9 @@ impl Engine {
                     }
 
                     let time = begin2.elapsed().as_millis();
-                    if time < 16 {
-                        thread::sleep(Duration::from_millis(16 - time as u64));
+					let frame_time = unsafe { FRAME_TIME } as u128;
+                    if time < frame_time {
+                        thread::sleep(Duration::from_millis((frame_time - time) as u64));
                     }
                     min_fps = min_fps.min(1000 / begin2.elapsed().as_millis());
 					
@@ -372,6 +383,7 @@ static IS_FIRST: AtomicBool = AtomicBool::new(true);
 pub fn fram_call(engine: &mut Engine, reset_state: bool) {
     use std::sync::atomic::Ordering;
 
+    use crate::event::{on_change, IS_CHANGED};
     
 
     // 推动高性能低精度本地时钟
@@ -382,7 +394,7 @@ pub fn fram_call(engine: &mut Engine, reset_state: bool) {
 	// *engine.world.get_single_res_mut::<FrameState>().unwrap() = FrameState::Active;
 
 	// log::warn!("fram_call start=====");
-	await_last_frame(engine);
+	// await_last_frame(engine);
 	// log::warn!("fram_call start1=====");
 	#[cfg(all(feature="pi_js_export", not(target_arch="wasm32")))]
 	{
@@ -392,28 +404,29 @@ pub fn fram_call(engine: &mut Engine, reset_state: bool) {
 		if IS_FIRST.load(Ordering::Relaxed){
 			// IS_FIRST.store(false, Ordering::Relaxed);
 			let device = engine.world.get_single_res_mut::<PiRenderDevice>().unwrap();
-			// device.unmake_current();
+			device.unmake_current();
 		}
 		
 		let sender = engine.sender.clone();
+		// println!("================ send fram_call");
 		let _ = sender.send(Box::new(move || {
 
-			let device = engine.world.get_single_res_mut::<PiRenderDevice>().unwrap();
 			if IS_FIRST.load(Ordering::Relaxed){
 				IS_FIRST.store(false, Ordering::Relaxed);
-				// device.make_current();
+				let device = engine.world.get_single_res::<PiRenderDevice>().unwrap();
+				device.make_current();
 			}
 
-			if reset_state {
+			// if reset_state {
 				// device.reset_state();
-			}
+			// }
 			
 			// bevy_ecs::system::CommandQueue::default().apply(&mut engine.world);
 			engine.run();
 
-			if reset_state {
-				let device = engine.world.get_single_res_mut::<PiRenderDevice>().unwrap();
-				// device.reset_state();
+			if unsafe { IS_CHANGED.load(Ordering::Relaxed) } {
+				unsafe { IS_CHANGED.store(false, Ordering::Relaxed) };
+				on_change(engine);
 			}
 			// *engine.world.get_single_res_mut::<FrameState>().unwrap() = FrameState::UnActive;
 			// log::warn!("fram_call end=====");
