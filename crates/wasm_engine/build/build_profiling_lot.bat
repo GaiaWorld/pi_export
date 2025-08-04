@@ -9,10 +9,8 @@ set RUSTFLAGS=--cfg getrandom_backend="wasm_js" -Ctarget-feature=-reference-type
 set CARGO_UNSTABLE_BUILD_STD=panic_abort,std
 set CARGO_PROFILE_RELEASE_LTO=true
 set RUST_LOG=info
-wasm-pack build --profiling  --target web --out-dir pkg_profiling --out-name wasm_engine --features release
+wasm-pack build --profiling  --target web --out-dir pkg_profiling_lot --out-name wasm_engine --features release
 
-C:\\Users\\chuanyan\\.cargo\\bin\\wasm-bindgen.exe ../../target/wasm32-unknown-unknown/release/pi_wasm_engine.wasm --out-dir pkg_profiling --typescript --target web --out-name wasm_engine
-node build/build_wasm.js pkg_profiling wasm_engine
+C:\\Users\\chuanyan\\.cargo\\bin\\wasm-bindgen.exe ../../target/wasm32-unknown-unknown/release/pi_wasm_engine.wasm --out-dir pkg_profiling_lot --typescript --target web --out-name wasm_engine
+node build/build_wasm.js pkg_profiling_lot wasm_engine
 pause;
-
-
