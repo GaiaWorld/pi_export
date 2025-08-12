@@ -22,6 +22,7 @@ pi_hash="0.1"
 log = "0.4"
 serde_json = "1.0"
 derive-deref-rs = "0.1"
+smallvec                = "1.9"
 pi_export_macro = {path="../macro"}
 pi_share = {version="0.5"}
 pi_assets = "0.15"

@@ -661,10 +661,14 @@ pub fn sys_vertex_buffer(
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[cfg(feature = "pi_js_export")]
 pub fn init_engine_3d(app: &mut Engine, spine: bool, param: &[u32]) {
-	use pi_scene_shell::prelude::WorldResourceTemp;
+	use pi_bevy_render_plugin::FrameDataPrepare;
+use pi_bevy_render_plugin::GraphBuild;
+use pi_scene_shell::prelude::WorldResourceTemp;
 	use pi_scene_shell::prelude::AppResourceTemp;
 	use pi_scene_shell::run_stage::EngineCustomPlugins;
 	use pi_world::prelude::IntoSystemConfigs;
+
+use crate::asset::sys_screen_with_postprocess;
 
     if app.world.get_resource::<pi_scene_shell::prelude::AssetMgrConfigs>().is_none() {
         app.insert_resource(pi_scene_shell::prelude::AssetMgrConfigs::default());
@@ -698,6 +702,10 @@ pub fn init_engine_3d(app: &mut Engine, spine: bool, param: &[u32]) {
         pi_world::schedule::Update,
         pi_scene_context::prelude::sys_state_transform.in_set(pi_scene_shell::prelude::ERunStageChap::StateCheck)
     );
+	app.add_systems(
+		pi_world::schedule::PreUpdate,
+		sys_screen_with_postprocess.in_set(FrameDataPrepare).before(GraphBuild)
+	);
 }
 
 #[cfg(feature = "pi_js_export")]
