@@ -663,7 +663,9 @@ use pi_scene_shell::prelude::WorldResourceTemp;
 	use pi_scene_shell::run_stage::EngineCustomPlugins;
 	use pi_world::prelude::IntoSystemConfigs;
 
+use crate::asset::sys_custom_buffer;
 use crate::asset::sys_screen_with_postprocess;
+use crate::asset::ActionListCustomBuffer;
 
     if app.world.get_resource::<pi_scene_shell::prelude::AssetMgrConfigs>().is_none() {
         app.insert_resource(pi_scene_shell::prelude::AssetMgrConfigs::default());
@@ -701,6 +703,11 @@ use crate::asset::sys_screen_with_postprocess;
 		pi_world::schedule::PreUpdate,
 		sys_screen_with_postprocess.in_set(FrameDataPrepare).before(GraphBuild)
 	);
+	app.add_systems(
+		pi_scene_shell::run_stage::StageD3,
+		sys_custom_buffer.in_set(pi_scene_shell::run_stage::ERunStageChap::D3).before(pi_scene_shell::run_stage::ERunStageChap::Create)
+	);
+	app.insert_resource(ActionListCustomBuffer::default());
 }
 
 #[cfg(feature = "pi_js_export")]
