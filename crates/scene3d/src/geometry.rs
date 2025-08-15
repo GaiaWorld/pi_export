@@ -149,7 +149,7 @@ pub fn p3d_create_indices_buffer_u32(
 ) {
     let length = length as usize;
     let key = KeyVertexBuffer::from(key.as_str());
-    cmds.indicesbuffersu32.push((key, bytemuck::cast_slice::<u32, u8>(&data[0..length]).to_vec()));
+    cmds.indicesbuffers.push((key, bytemuck::cast_slice::<u32, u8>(&data[0..length]).to_vec()));
 }
 
 // #[cfg_attr(target_arch="wasm32", wasm_bindgen)]

@@ -1,7 +1,9 @@
 use pi_assets::asset::Handle;
 use pi_bevy_asset::ShareAssetMgr;
+use pi_bevy_render_plugin::{PiRenderDevice, PiRenderQueue};
 use pi_render::{asset::TAssetKeyU64, components::view::target_alloc::{TargetDescriptor, TextureDescriptor}, rhi::asset::TextureRes};
 use js_proxy_gen_macro::pi_js_export;
+use pi_scene_context::pass::KeyVertexBuffer;
 use pi_scene_shell::prelude::{ETextureViewUsage, ImageTextureView, Res, ResMut, PiRenderDefault};
 use pi_share::Share;
 
@@ -121,4 +123,39 @@ pub fn sys_screen_with_postprocess(
     }
  
     screenwithpostprocess.1 = screenfbo;
+}
+
+pub type ActionListCustomBuffer = pi_scene_shell::prelude::ActionList<(KeyVertexBuffer, Vec<u8>, bool, bool)>;
+
+pub fn sys_custom_buffer(
+    mut actions: ResMut<ActionListCustomBuffer>,
+    queue: Res<PiRenderQueue>,
+    mut vb_wait: ResMut<pi_scene_shell::prelude::VertexBufferDataMap3D>,
+    vb_mgr: Res<pi_scene_shell::prelude::ShareAssetMgr<pi_scene_shell::prelude::EVertexBufferRange>>,
+) {
+    actions.drain().for_each(|(key, data, isindices, isu32)| {
+
+		let key_u64 = key.asset_u64();
+        if isindices {
+            if isu32 {
+                if let Some(buffer) = vb_mgr.get(&key_u64) {
+                    queue.write_buffer(buffer.buffer(), 0, &data);
+                } else {
+                    pi_scene_context::prelude::ActionVertexBuffer::create_indices(&mut vb_wait, key, data);
+                }
+            } else {
+                if let Some(buffer) = vb_mgr.get(&key_u64) {
+                    queue.write_buffer(buffer.buffer(), 0, &data);
+                } else {
+                    pi_scene_context::prelude::ActionVertexBuffer::create_indices(&mut vb_wait, key, data);
+                }
+            }
+        } else {
+            if let Some(buffer) = vb_mgr.get(&key_u64) {
+                queue.write_buffer(buffer.buffer(), 0, &data);
+            } else {
+                pi_scene_context::prelude::ActionVertexBuffer::create(&mut vb_wait, key, data);
+            }
+        }
+    });
 }

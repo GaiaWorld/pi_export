@@ -5,7 +5,7 @@ use pi_3d::PluginBundleDefault;
 use pi_assets::asset::Handle;
 use pi_scene_shell::prelude::*;
 pub use pi_export_base::export::Engine;
-use pi_export_base::export::await_last_frame;
+use pi_export_base::{asset::ActionListCustomBuffer, export::await_last_frame};
 use pi_gltf2_load::{GLTF, PluginGLTF2Res, KeyGLTF};
 use pi_mesh_builder::{cube::PluginCubeBuilder, quad::PluginQuadBuilder};
 use pi_node_materials::{prelude::*, NodeMaterialBlocks, PluginNodeMaterial, PluginNodeMaterialSimple};
