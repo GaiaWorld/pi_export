@@ -710,7 +710,7 @@ use crate::asset::ActionListCustomBuffer;
 	);
 	app.add_systems(
 		pi_scene_shell::run_stage::StageD3,
-		sys_custom_buffer.in_set(pi_scene_shell::run_stage::ERunStageChap::D3).before(pi_scene_shell::run_stage::ERunStageChap::Create)
+		sys_custom_buffer.in_set(FrameDataPrepare).before(pi_scene_shell::run_stage::ERunStageChap::D3).before(pi_scene_shell::run_stage::ERunStageChap::Create)
 	);
 	app.insert_resource(ActionListCustomBuffer::default());
 }
