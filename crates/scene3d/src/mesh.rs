@@ -64,9 +64,13 @@ pub fn p3d_mesh(app: &mut Engine, cmds: &mut CommandsExchangeD3, scene: f64, ins
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
-pub fn p3d_mesh_geometry(app: &mut Engine, cmds: &mut CommandsExchangeD3, mesh: f64, geometa: &GeometryMeta) -> f64 {
+pub fn p3d_mesh_geometry(app: &mut Engine, cmds: &mut CommandsExchangeD3, mesh: f64, geometa: &GeometryMeta, geoid: Option<f64>) -> f64 {
 
-    let geo: Entity = app.world.entities().reserve_entity();
+    let geo: Entity = if let Some(geo) = geoid {
+        as_entity(geo)
+    } else {
+        app.world.entities().reserve_entity()
+    };
     let mesh: Entity = as_entity(mesh);
     // log::error!("MeshGeo: {:?}", geometa.0);
     cmds.geometry_create.push(OpsGeomeryCreate::ops(mesh, geo, geometa.0.clone(), geometa.1.clone()));
