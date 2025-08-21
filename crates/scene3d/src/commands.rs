@@ -1,6 +1,7 @@
 use std::ops::Deref;
 
 use pi_export_base::{asset::ActionListCustomBuffer, export::{update_data_texture, DataTextureCmds}};
+use pi_gltf2_load::GLTF;
 use pi_scene_shell::prelude::*;
 pub use pi_export_base::export::Engine;
 use pi_particle_system::prelude::*;
@@ -111,6 +112,8 @@ pub struct CommandsExchangeD3 {
     
     pub(crate) crossdrawlistinfo: Vec<(Entity, Vec<Entity>)>,
     pub(crate) screenwithpostprocess: bool,
+    pub(crate) gltfs: XHashMap<u64, Handle<GLTF>>,
+    pub(crate) gltfcounter: u64,
 }
 
 

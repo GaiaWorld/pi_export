@@ -40,23 +40,6 @@ pub fn p3d_instance_mesh_vec3(cmds: &mut CommandsExchangeD3, instance: f64, r: f
     cmds.instance_attr.push(OpsInstanceAttr::ops(instance, EInstanceAttr::Vec3([r as f32, g as f32, b as f32]), attr.deref().clone() ));
 }
 
-// #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
-// #[pi_js_export]
-// pub fn p3d_instance_mesh_color_arr(cmds: &mut CommandsExchangeD3, data: &[f64], len: f64) {
-//     // let instance: Entity = as_entity(instance);    // cmds.instancemeshcmds_color.push(OpsInstanceColor::ops(instance, r as f32, g as f32, b as f32));
-
-//     let len = len as usize;
-//     let size = 4;
-//     let count = len / size;
-//     for i in 0..count {
-//         let instance: Entity = as_entity(data[i * size + 0]);
-//         let r = data[i * size + 1];
-//         let g = data[i * size + 2];
-//         let b = data[i * size + 3];
-//         cmds.instance_color.push(OpsInstanceColor::ops(instance, r as f32, g as f32, b as f32));
-//     }
-// }
-
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_instance_mesh_vec2(cmds: &mut CommandsExchangeD3, instance: f64, x: f64, y: f64, attr: &Atom) {
@@ -155,27 +138,3 @@ pub fn p3d_mesh_bone_offset_arr(cmds: &mut CommandsExchangeD3, data: &[f64], len
         cmds.mesh_valuestate.push(OpsAbstructMeshValueStateModify::ops(instance, EMeshValueStateModify::BoneOffset(val as u32)));
     }
 }
-
-// #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
-// #[pi_js_export]
-// pub fn p3d_instance_mesh_tilloff_arr(cmds: &mut CommandsExchangeD3, data: &[f64], len: f64) {
-//     // let instance: Entity = as_entity(instance);    // cmds.instancemeshcmds_tilloff.push(OpsInstanceTillOff::ops(instance, uscale as f32, vscale as f32, uoffset as f32, voffset as f32));
-
-//     let len = len as usize;
-//     let size = 5;
-//     let count = len / size;
-//     for i in 0..count {
-//         let instance: Entity = as_entity(data[i * size + 0]);
-//         let uscale = data[i * size + 1];
-//         let vscale = data[i * size + 2];
-//         let uoffset = data[i * size + 3];
-//         let voffset = data[i * size + 4];
-//         cmds.instance_tilloff.push(OpsInstanceTillOff::ops(instance, uscale as f32, vscale as f32, uoffset as f32, voffset as f32));
-//     }
-// }
-
-// #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
-// #[pi_js_export]
-// pub fn p3d_instance_mesh_attr_float(cmds: &mut CommandsExchangeD3, instance: f64, vtype: f64, val: f64) {
-//     let instance: Entity = as_entity(instance);    cmds.instance_float.push(OpsInstanceFloat::ops(instance, val as f32, EngineConstants::instance_attr_float(vtype)));
-// }

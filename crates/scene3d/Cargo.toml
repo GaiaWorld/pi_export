@@ -24,6 +24,8 @@ pi_bevy_ecs_extend 		= { version = "0.3", registry = "yn" }
 pi_bevy_winit_window    = { version = "0.3", registry = "yn" }
 pi_window_renderer 		= { version = "0.3", registry = "yn" }
 derive_deref            = "1.1"
+serde_json              = "1.0"
+serde                   = { version = "1.0", features = ["derive"] }
 
 pi_hash 				= "0.1"
 pi_slotmap              = "0.2"

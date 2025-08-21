@@ -1,12 +1,16 @@
 
 
+use std::ops::Range;
 use std::{ops::Deref, mem::transmute};
 
+use pi_mesh_builder::cube::CubeBuilder;
+use pi_mesh_builder::quad::QuadBuilder;
 use pi_scene_context::geometry::instance::EInstanceSortMode;
 use pi_scene_shell::prelude::*;
 use pi_export_base::constants::ContextConstants;
 pub use pi_export_base::export::{Engine, Atom};
 use pi_scene_context::prelude::*;
+use serde::{Deserialize, Serialize};
 
 use crate::constants::EngineConstants;
 pub use crate::commands::CommandsExchangeD3;
@@ -27,6 +31,7 @@ use js_proxy_gen_macro::pi_js_export;
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
+#[derive(Serialize, Deserialize)]
 pub struct VInstanceAttributes(bool, Vec<CustomVertexAttribute>);
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
@@ -73,7 +78,40 @@ pub fn p3d_mesh_geometry(app: &mut Engine, cmds: &mut CommandsExchangeD3, mesh: 
     };
     let mesh: Entity = as_entity(mesh);
     // log::error!("MeshGeo: {:?}", geometa.0);
-    cmds.geometry_create.push(OpsGeomeryCreate::ops(mesh, geo, geometa.0.clone(), geometa.1.clone()));
+    let mut vertices = vec![];
+    let mut indices = None;
+    match &geometa.0 {
+        crate::geometry::EGeometry::Vec(vbmetas) => {
+            vbmetas.iter().for_each(|vb| {
+                vertices.push( VertexBufferDesc::new(vb.key.clone(), vb.range.clone(), vb.attrs(), vb.instance) );
+            });
+            
+            indices = if let Some(indice) = &geometa.1 {
+                let range = if let (Some(start), Some(end)) = (indice.1, indice.2) {
+                    Some(Range { start: start as u32, end: end as u32 })
+                } else {
+                    None
+                };
+
+                let ib = IndicesBufferDesc {
+                    format: if indice.3 { wgpu::IndexFormat::Uint16 } else { wgpu::IndexFormat::Uint32 },
+                    buffer_range: range,
+                    buffer: KeyVertexBuffer::from(indice.0.as_str()),
+                };
+                Some(ib)
+            } else { None };
+        },
+        crate::geometry::EGeometry::Quad => {
+            vertices = QuadBuilder::attrs_meta();
+            indices = None;
+        },
+        crate::geometry::EGeometry::Cube => {
+            vertices = CubeBuilder::attrs_meta();
+            indices = CubeBuilder::indices_meta();
+        },
+    }
+
+    cmds.geometry_create.push(OpsGeomeryCreate::ops(mesh, geo, vertices, indices));
     as_f64(&geo)
 }
 

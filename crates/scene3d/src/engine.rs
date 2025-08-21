@@ -830,29 +830,43 @@ pub fn p3d_query_viewproject_matrix(app: &mut Engine, param: &mut ActionSetScene
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
-pub struct GLTFRes(Handle<GLTF>);
+pub struct GLTFRes(u64);
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
-pub fn p3d_gltf_val(item: &GLTFRes) -> String {
-    item.0.output.clone()
+pub fn p3d_gltf_val(cmds: &CommandsExchangeD3, item: &GLTFRes) -> String {
+    if let Some(gltf) = cmds.gltfs.get(&item.0) {
+        gltf.output.clone()
+    } else {
+        String::from("")
+    }
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 /// 创建动画组
 pub fn p3d_animation_curve_id_bygltf(
+    cmds: &CommandsExchangeD3,
     gltf: &GLTFRes,
     group_index: f64,
     channel_index: f64,
 ) -> f64 {
-    let key = gltf.0.key_anime_curve(group_index as usize, channel_index as usize);
-    unsafe { transmute(key) }
+    if let Some(gltf) = cmds.gltfs.get(&gltf.0) {
+        let key = gltf.key_anime_curve(group_index as usize, channel_index as usize);
+        unsafe { transmute(key) }
+    } else {
+        0.
+    }
 }
 
-pub fn gltf_particle_calculator(item: &GLTFRes, index: f64) -> Option<&Handle<ParticleSystemCalculatorID>> {
-    let index = index as usize;
-    item.0.particlesys_calculators.get(&index)
+pub fn gltf_particle_calculator<'a>(
+    cmds: &'a CommandsExchangeD3, item: &'a GLTFRes, index: f64) -> Option<&'a Handle<ParticleSystemCalculatorID>> {
+    if let Some(gltf) = cmds.gltfs.get(&item.0) {
+        let index = index as usize;
+        gltf.particlesys_calculators.get(&index)
+    } else {
+        None
+    }
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
@@ -905,15 +919,24 @@ pub fn p3d_query_gltf_load(app: &mut Engine, param: &mut ActionSetScene3D, succe
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
-pub fn p3d_get_gltf(app: &mut Engine, param: &mut ActionSetScene3D, entity: f64) -> Option<GLTFRes> {
+pub fn p3d_get_gltf(app: &mut Engine, param: &mut ActionSetScene3D, cmds: &mut CommandsExchangeD3, entity: f64) -> Option<GLTFRes> {
 	pi_export_base::export::await_last_frame(app);
     let mut resource = param.resource.get_mut(&mut app.world);
     let entity: Entity = as_entity(entity);
     if let Some(val) = resource.gltf2_loader.get_success(entity) {
-        Some(GLTFRes(val))
+        let id = cmds.gltfcounter;
+        cmds.gltfcounter += 1;
+        cmds.gltfs.insert(id, val);
+        Some(GLTFRes(id))
     } else {
         None
     }
+}
+
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
+pub fn p3d_dispose_gltf(cmds: &mut CommandsExchangeD3, entity: &GLTFRes) {
+	cmds.gltfs.remove(&entity.0);
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]

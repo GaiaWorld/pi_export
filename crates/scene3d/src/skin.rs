@@ -26,9 +26,11 @@ pub fn p3d_skeleton(app: &mut Engine, cmds: &mut CommandsExchangeD3, bonesperver
 
     let root = as_entity(root);
     let mut boneentities = vec![];
-    bones.iter().for_each(|idx| {
-        boneentities.push(as_entity(*idx));
-    });
+    for idx in 0..(bonecount as usize) {
+        boneentities.push(as_entity(bones[idx]));
+    }
+    // bones.iter().for_each(|idx| {
+    // });
 
     cmds.skin_create.push(OpsSkinCreation::ops(id, state, root, &boneentities, cacheframe as u16, None));
 
