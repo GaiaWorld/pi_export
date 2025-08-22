@@ -10,6 +10,7 @@ use pi_scene_shell::prelude::*;
 pub use pi_export_base::export::Engine;
 use pi_scene_context::prelude::*;
 use pi_slotmap::DefaultKey;
+use serde::{Serialize, Deserialize};
 pub use crate::engine::ActionSetScene3D;
 use crate::{as_entity, as_f64, as_f64_dk};
 pub use crate::commands::CommandsExchangeD3;
@@ -21,6 +22,7 @@ use wasm_bindgen::prelude::*;
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
+#[derive(Serialize, Deserialize)]
 pub enum EAnimeCurve {
     FrameValues = 0x00,
     FrameValuesStep = 0x01,
@@ -32,6 +34,7 @@ pub enum EAnimeCurve {
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
+#[derive(Serialize, Deserialize)]
 pub enum EAnimePropertyID {
     LocalPosition       =  0,
     LocalRotation       =  1,
@@ -70,6 +73,7 @@ pub enum EAnimePropertyID {
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
+#[derive(Serialize, Deserialize)]
 pub enum ELoopMode {
     /// 不循环
     Not,
@@ -100,6 +104,7 @@ impl ELoopMode {
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
+#[derive(Serialize, Deserialize)]
 pub enum EAmountMode {
     None            ,
 
@@ -251,6 +256,7 @@ fn number_to_easingmode(val: u8) -> pi_curves::easing::EEasingMode {
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
+#[derive(Serialize, Deserialize)]
 pub enum EAnimationGroupListen {
     Start,
     End,
@@ -270,6 +276,7 @@ impl EAnimationGroupListen {
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
+#[derive(Serialize, Deserialize)]
 pub enum EFillMode {
     None = 0,
     Forwards = 1,

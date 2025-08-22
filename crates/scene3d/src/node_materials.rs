@@ -6,6 +6,7 @@ use pi_assets::asset::Handle;
 use pi_scene_shell::prelude::*;
 use pi_scene_context::prelude::*;
 use pi_node_materials::prelude::*;
+use serde::{Deserialize, Serialize};
 use crate::constants::EngineConstants;
 pub use crate::engine::ActionSetScene3D;
 pub use pi_export_base::{export::{Engine, Atom}, constants::*};
@@ -229,7 +230,8 @@ pub const VARYING_V4H               : u32 = 0b_1000_0000_0000_0000_0000_0000_000
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
-pub struct NodeMaterialBlock(Atom, NodeMaterialBlockInfo);
+#[derive(Serialize, Deserialize)]
+pub struct NodeMaterialBlock(pi_atom::Atom, NodeMaterialBlockInfo);
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 impl NodeMaterialBlock {
@@ -244,7 +246,7 @@ impl NodeMaterialBlock {
         if let Some(bind_defines) = bind_defines {
             info.binddefines = bind_defines as BindDefine;
         }
-        Self(key.clone(), info)
+        Self(key.deref().clone(), info)
     }
 }
 
@@ -300,8 +302,7 @@ pub fn p3d_node_material_block_varying(block: &mut NodeMaterialBlock, name: &Ato
 pub fn p3d_node_material_block_texture(block: &mut NodeMaterialBlock, key: &Atom, filterable: bool, stage: f64, default_texture: f64, demision: f64) {
     block.1.textures.push(UniformTexture2DDesc::new(
         key.deref().clone(),
-        wgpu::TextureSampleType::Float { filterable },
-        EngineConstants::texture_view_dimension(demision),
+        if filterable { ESamplerType::FloatFilter } else { ESamplerType::Float  },
         false,
         EngineConstants::shader_stage(stage),
         EngineConstants::default_texture(default_texture),
@@ -313,12 +314,13 @@ pub fn p3d_node_material_block_regist(app: &mut Engine, param: &mut ActionSetSce
     pi_export_base::export::await_last_frame(app);
     let mut resource = param.resource.get_mut(&mut app.world);
 
-    resource.node_material_blocks.0.insert(block.0.deref().clone(), block.1.clone());
+    resource.node_material_blocks.0.insert(block.0.clone(), block.1.clone());
 }
 
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
+#[derive(Serialize, Deserialize)]
 pub struct NodematerialIncludes(Vec<pi_atom::Atom>);
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
@@ -348,6 +350,7 @@ pub fn p3d_material_includes_reset(includes: &mut NodematerialIncludes) {
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
+#[derive(Serialize, Deserialize)]
 pub struct MaterialUniformDefines(MaterialValueBindDesc, Vec<UniformTexture2DDesc>);
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
@@ -399,8 +402,7 @@ pub fn p3d_shader_uniform_tex(uniforms: &mut MaterialUniformDefines, key: &str, 
     uniforms.1.push(
         UniformTexture2DDesc::new(
             UniformPropertyName::from(key),
-            wgpu::TextureSampleType::Float { filterable },
-            EngineConstants::texture_view_dimension(demision),
+        if filterable { ESamplerType::FloatFilter } else { ESamplerType::Float  },
             false,
             EngineConstants::shader_stage(stage),
             EngineConstants::default_texture(default_texture),
@@ -426,6 +428,7 @@ pub struct P3DShaderMeta(Handle<ShaderEffectMeta>);
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
+#[derive(Serialize, Deserialize)]
 pub struct P3DShaderVaryings(Vec<Varying>);
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]

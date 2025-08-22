@@ -60,7 +60,7 @@ pub fn p3d_particle_system_with_gltf(
     tilloff_attr_key: &Atom,
     update_buffer_interval_frame: Option<f64>,
 ) {
-    if let Some(calculator) = gltf_particle_calculator(gltf, index_calculator) {
+    if let Some(calculator) = gltf_particle_calculator(&cmds, gltf, index_calculator) {
         let scene = as_entity(scene);
         let entity = as_entity(entity);
         let trailmesh = as_entity(trailmesh);

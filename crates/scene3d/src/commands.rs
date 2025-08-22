@@ -1,6 +1,7 @@
 use std::ops::Deref;
 
-use pi_export_base::export::{update_data_texture, DataTextureCmds};
+use pi_export_base::{asset::ActionListCustomBuffer, export::{update_data_texture, DataTextureCmds}};
+use pi_gltf2_load::GLTF;
 use pi_scene_shell::prelude::*;
 pub use pi_export_base::export::Engine;
 use pi_particle_system::prelude::*;
@@ -107,9 +108,12 @@ pub struct CommandsExchangeD3 {
     pub(crate) verticesbuffers: Vec<(KeyVertexBuffer, Vec<u8>)>,
     pub(crate) indicesbuffers: Vec<(KeyVertexBuffer, Vec<u8>)>,
     pub(crate) indicesbuffersu32: Vec<(KeyVertexBuffer, Vec<u8>)>,
+    pub(crate) custombuffers: ActionListCustomBuffer,
     
     pub(crate) crossdrawlistinfo: Vec<(Entity, Vec<Entity>)>,
     pub(crate) screenwithpostprocess: bool,
+    pub(crate) gltfs: XHashMap<u64, Handle<GLTF>>,
+    pub(crate) gltfcounter: u64,
 }
 
 
@@ -371,32 +375,37 @@ pub fn p3d_commands_exchange(app: &mut Engine, param: &mut ActionSetScene3D, cmd
         texloader.create_load(key);
     }
 
-    let queue = app.world.get_resource::<pi_scene_shell::prelude::PiRenderQueue>().unwrap().deref().clone();
-    let vb_mgr = app.world.get_resource::<pi_scene_shell::prelude::ShareAssetMgr<pi_scene_shell::prelude::EVertexBufferRange>>().unwrap().deref().clone();
-    let vb_wait = app.world.get_resource_mut::<pi_scene_shell::prelude::VertexBufferDataMap3D>().unwrap();
+    // let queue = app.world.get_resource::<pi_scene_shell::prelude::PiRenderQueue>().unwrap().deref().clone();
+    // let vb_mgr = app.world.get_resource::<pi_scene_shell::prelude::ShareAssetMgr<pi_scene_shell::prelude::EVertexBufferRange>>().unwrap().deref().clone();
+    // let vb_wait = app.world.get_resource_mut::<pi_scene_shell::prelude::VertexBufferDataMap3D>().unwrap();
+    let actions = app.world.get_resource_mut::<ActionListCustomBuffer>().unwrap();
+
     while let Some((key, data)) = cmds.verticesbuffers.pop() {
-		let key_u64 = key.asset_u64();
-		if let Some(buffer) = vb_mgr.get(&key_u64) {
-			queue.write_buffer(buffer.buffer(), 0, &data);
-		} else {
-			pi_scene_context::prelude::ActionVertexBuffer::create(vb_wait, key, data);
-		}
+        actions.push((key, data, false, false));
+		// let key_u64 = key.asset_u64();
+		// if let Some(buffer) = vb_mgr.get(&key_u64) {
+		// 	queue.write_buffer(buffer.buffer(), 0, &data);
+		// } else {
+		// 	pi_scene_context::prelude::ActionVertexBuffer::create(vb_wait, key, data);
+		// }
     }
     while let Some((key, data)) = cmds.indicesbuffers.pop() {
-		let key_u64 = key.asset_u64();
-		if let Some(buffer) = vb_mgr.get(&key_u64) {
-			queue.write_buffer(buffer.buffer(), 0, &data);
-		} else {
-			pi_scene_context::prelude::ActionVertexBuffer::create_indices(vb_wait, key, data);
-		}
+        actions.push((key, data, true, false));
+		// let key_u64 = key.asset_u64();
+		// if let Some(buffer) = vb_mgr.get(&key_u64) {
+		// 	queue.write_buffer(buffer.buffer(), 0, &data);
+		// } else {
+		// 	pi_scene_context::prelude::ActionVertexBuffer::create_indices(vb_wait, key, data);
+		// }
     }
     while let Some((key, data)) = cmds.indicesbuffersu32.pop() {
-		let key_u64 = key.asset_u64();
-		if let Some(buffer) = vb_mgr.get(&key_u64) {
-			queue.write_buffer(buffer.buffer(), 0, &data);
-		} else {
-			pi_scene_context::prelude::ActionVertexBuffer::create_indices(vb_wait, key, data);
-		}
+        actions.push((key, data, true, false));
+		// let key_u64 = key.asset_u64();
+		// if let Some(buffer) = vb_mgr.get(&key_u64) {
+		// 	queue.write_buffer(buffer.buffer(), 0, &data);
+		// } else {
+		// 	pi_scene_context::prelude::ActionVertexBuffer::create_indices(vb_wait, key, data);
+		// }
     }
 
     let screenwithpostprocess = app.world.get_resource_mut::<pi_bevy_render_plugin::ScreenWithPostprocess>().unwrap();
