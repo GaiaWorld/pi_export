@@ -45,7 +45,7 @@ debug = false
 # fixedbitset = { path = "../fixedbitset" }
 # pi_time = { path = "../pi_time" }
 # pi_path_finding = { path = "../pi_path_finding" }
-# pi_flex_layout = { path = "../pi_flex_layout" }
+pi_flex_layout = { path = "../pi_flex_layout" }
 # bevy = { path = "../bevy" }
 # pi_slotmap = { path = "../pi_slotmap" }
 # pi_slotmap_tree = { path = "../pi_slotmap_tree" }

@@ -21,10 +21,6 @@ pub enum WeightType {
     Unit = 1,
 }
 
-#[pi_js_export]
-#[cfg_attr(target_arch = "wasm32", wasm_bindgen)]
-pub struct TaskState( DequeState);
-
 
 #[cfg_attr(target_arch = "wasm32", wasm_bindgen)]
 #[pi_js_export]
@@ -146,6 +142,16 @@ impl TaskPool {
 		to_f64(key)
 	}
 
+	/// 判断指定时间是否存在任务
+	pub fn has_cancel_timer(&self, mut timeout: f64) -> Option<bool> {
+		self.pool.get_cancel_timer().is_null(timeout as u64)
+	}
+
+	/// 判断指定时间内是否存在任务 
+	pub fn is_cancel_timer_ok(&mut self, mut timeout: f64) -> bool {
+		self.pool.get_cancel_timer_mut().is_ok(timeout as u64)
+	}
+	
 	/// 取到可取消定时器的滚动次数
 	#[pi_js_export]
 	pub fn roll_count(&mut self) -> f64 {
