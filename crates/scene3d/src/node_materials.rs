@@ -7,7 +7,7 @@ use pi_scene_shell::prelude::*;
 use pi_scene_context::prelude::*;
 use pi_node_materials::prelude::*;
 use serde::{Deserialize, Serialize};
-use crate::constants::EngineConstants;
+use crate::{constants::EngineConstants, mesh::CommandsExchangeD3};
 pub use crate::engine::ActionSetScene3D;
 pub use pi_export_base::{export::{Engine, Atom}, constants::*};
 
@@ -231,7 +231,7 @@ pub const VARYING_V4H               : u32 = 0b_1000_0000_0000_0000_0000_0000_000
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 #[derive(Serialize, Deserialize)]
-pub struct NodeMaterialBlock(pi_atom::Atom, NodeMaterialBlockInfo);
+pub struct NodeMaterialBlock(pub(crate)  pi_atom::Atom, pub(crate) NodeMaterialBlockInfo);
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 impl NodeMaterialBlock {
@@ -310,18 +310,17 @@ pub fn p3d_node_material_block_texture(block: &mut NodeMaterialBlock, key: &Atom
 }
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
-pub fn p3d_node_material_block_regist(app: &mut Engine, param: &mut ActionSetScene3D, block: &NodeMaterialBlock) {
+pub fn p3d_node_material_block_regist(app: &mut Engine, param: &mut ActionSetScene3D, cmds: &mut CommandsExchangeD3, block: &NodeMaterialBlock) {
     pi_export_base::export::await_last_frame(app);
-    let mut resource = param.resource.get_mut(&mut app.world);
 
-    resource.node_material_blocks.0.insert(block.0.clone(), block.1.clone());
+    CommandsExchangeD3::p3d_node_material_block_regist(app, param, block);
 }
 
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 #[derive(Serialize, Deserialize)]
-pub struct NodematerialIncludes(Vec<pi_atom::Atom>);
+pub struct NodematerialIncludes(pub(crate) Vec<pi_atom::Atom>);
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 impl NodematerialIncludes {
@@ -351,7 +350,7 @@ pub fn p3d_material_includes_reset(includes: &mut NodematerialIncludes) {
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 #[derive(Serialize, Deserialize)]
-pub struct MaterialUniformDefines(MaterialValueBindDesc, Vec<UniformTexture2DDesc>);
+pub struct MaterialUniformDefines(pub(crate) MaterialValueBindDesc, pub(crate) Vec<UniformTexture2DDesc>);
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 impl MaterialUniformDefines {
@@ -424,12 +423,12 @@ pub fn p3d_check_shader(
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
-pub struct P3DShaderMeta(Handle<ShaderEffectMeta>);
+pub struct P3DShaderMeta(pub(crate) Handle<ShaderEffectMeta>);
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 #[derive(Serialize, Deserialize)]
-pub struct P3DShaderVaryings(Vec<Varying>);
+pub struct P3DShaderVaryings(pub(crate) Vec<Varying>);
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
@@ -455,7 +454,7 @@ pub fn p3d_varying(block: &mut P3DShaderVaryings, name: &Atom, format: &Atom) {
 #[pi_js_export]
 pub fn p3d_regist_material(
     app: &Engine,
-    param: &ActionSetScene3D,
+    cmds: &mut CommandsExchangeD3,
     key: &str,
     uniforms: &MaterialUniformDefines,
     vs_define_code: &str,
@@ -467,44 +466,46 @@ pub fn p3d_regist_material(
     varyings: &P3DShaderVaryings,
     binds_defines_base: Option<f64>,
 ) -> Option<P3DShaderMeta> {
-    let mut nodemat = NodeMaterialBuilder::new();
-    varyings.0.iter().for_each(|v| { nodemat.varyings.0.push(v.clone()) });
+    CommandsExchangeD3::p3d_regist_material(app, key, uniforms, vs_define_code, fs_define_code, vs_code, fs_code, includes, instance_code, varyings, binds_defines_base)
 
-    if let Some(binds_defines_base) = binds_defines_base {
-        nodemat.binddefines = binds_defines_base as BindDefine;
-        // log::error!("binds_defines_base {:?}", binds_defines_base);
-    }
-    nodemat.material_instance_code = String::from(instance_code);
-    // nodemat.check_instance = EVerticeExtendCode(instance_state_check as u32);
+    // let mut nodemat = NodeMaterialBuilder::new();
+    // varyings.0.iter().for_each(|v| { nodemat.varyings.0.push(v.clone()) });
 
-    nodemat.values = uniforms.0.clone();
-    nodemat.textures = uniforms.1.clone();
+    // if let Some(binds_defines_base) = binds_defines_base {
+    //     nodemat.binddefines = binds_defines_base as BindDefine;
+    //     // log::error!("binds_defines_base {:?}", binds_defines_base);
+    // }
+    // nodemat.material_instance_code = String::from(instance_code);
+    // // nodemat.check_instance = EVerticeExtendCode(instance_state_check as u32);
 
-    // let varyings = &mut nodemat.varyings;
-    // let mut tempvaryings = to_varyings(varying as u32);
+    // nodemat.values = uniforms.0.clone();
+    // nodemat.textures = uniforms.1.clone();
+
+    // // let varyings = &mut nodemat.varyings;
+    // // let mut tempvaryings = to_varyings(varying as u32);
     
-    // tempvaryings.drain(..).for_each(|item| {
-    //     varyings.0.push(item);
+    // // tempvaryings.drain(..).for_each(|item| {
+    // //     varyings.0.push(item);
+    // // });
+    // let node_material_blocks = app.world.get_resource::<NodeMaterialBlocks>().unwrap();
+    // let shader_metas = app.world.get_resource::<ShareAssetMgr::<ShaderEffectMeta>>().unwrap();
+    // let enginopt = app.world.get_resource::<EngineCustomPlugins>().unwrap();
+    
+    // includes.0.iter().for_each(|val| {
+    //     nodemat.include(val, node_material_blocks);
     // });
-    let node_material_blocks = app.world.get_resource::<NodeMaterialBlocks>().unwrap();
-    let shader_metas = app.world.get_resource::<ShareAssetMgr::<ShaderEffectMeta>>().unwrap();
-    let enginopt = app.world.get_resource::<EngineCustomPlugins>().unwrap();
-    
-    includes.0.iter().for_each(|val| {
-        nodemat.include(val, node_material_blocks);
-    });
 
-    // log::warn!("Material {:?}", key);
+    // // log::warn!("Material {:?}", key);
 
-    nodemat.vs_define += vs_define_code;
-    nodemat.fs_define += fs_define_code;
-    nodemat.vs = String::from(vs_code);
-    nodemat.fs = String::from(fs_code);
+    // nodemat.vs_define += vs_define_code;
+    // nodemat.fs_define += fs_define_code;
+    // nodemat.vs = String::from(vs_code);
+    // nodemat.fs = String::from(fs_code);
 
-    // log::error!("Material {:?} {:?}", key, &nodemat.fs);
-    ActionMaterial::regist_material_meta(shader_metas, KeyShaderMeta::from(key), nodemat.meta(enginopt));
+    // // log::error!("Material {:?} {:?}", key, &nodemat.fs);
+    // ActionMaterial::regist_material_meta(shader_metas, KeyShaderMeta::from(key), nodemat.meta(enginopt));
 
-    if let Some(data) = shader_metas.get(&KeyShaderMeta::from(key)) {
-        Some(P3DShaderMeta(data))
-    } else { None }
+    // if let Some(data) = shader_metas.get(&KeyShaderMeta::from(key)) {
+    //     Some(P3DShaderMeta(data))
+    // } else { None }
 }

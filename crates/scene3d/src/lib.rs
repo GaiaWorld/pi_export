@@ -28,6 +28,7 @@ pub mod commands;
 pub mod skin;
 pub mod sprite;
 pub mod record;
+pub mod cmd_call;
 
 pub fn as_entity(val: f64) -> Entity {
     // Entity::from_bits(val.to_bits())

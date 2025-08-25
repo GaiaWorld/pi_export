@@ -1059,7 +1059,7 @@ impl ContextConstants {
     pub const COMPRESSED_SRGB8_ALPHA8_ASTC_12X12_KHR: u32 = 0x93DD;
 }
 impl ContextConstants {
-    pub fn polygon(val: f64) -> PolygonMode {
+    pub fn polygon(val: u32) -> PolygonMode {
         match val as u32 {
             Self::LINES => { PolygonMode::Line },
             Self::POINTS => { PolygonMode::Point },
@@ -1067,7 +1067,7 @@ impl ContextConstants {
             _ => { PolygonMode::Fill },
         }
     }
-    pub fn topolygon(val: f64) -> PrimitiveTopology {
+    pub fn topolygon(val: u32) -> PrimitiveTopology {
         match val as u32 {
             Self::POINTS => { PrimitiveTopology::PointList },
             Self::LINE_LOOP => { PrimitiveTopology::LineList },
@@ -1077,7 +1077,7 @@ impl ContextConstants {
             _ => { PrimitiveTopology::TriangleList },
         }
     }
-    pub fn stencil_operation(val: f64) -> StencilOperation {
+    pub fn stencil_operation(val: u32) -> StencilOperation {
         match val as u32 {
             Self::KEEP => { StencilOperation::Keep },
             Self::ZERO => { StencilOperation::Zero },
@@ -1090,21 +1090,21 @@ impl ContextConstants {
             _ => { StencilOperation::Keep },
         }
     }
-    pub fn front_face(val: f64) -> FrontFace {
+    pub fn front_face(val: u32) -> FrontFace {
         match val as u32 {
             Self::CW => { FrontFace::Cw },
             Self::CCW => { FrontFace::Ccw },
             _ => { FrontFace::Ccw },
         }
     }
-    pub fn cull_mode(val: f64) -> CullMode {
+    pub fn cull_mode(val: u32) -> CullMode {
         match val as u32 {
             Self::NONE => { CullMode::Off },
             Self::FRONT => { CullMode::Front },
             _ => { CullMode::Back },
         }
     }
-    pub fn address_mode(val: f64) -> EAddressMode {
+    pub fn address_mode(val: u32) -> EAddressMode {
         match val as u32 {
             ContextConstants::REPEAT => { EAddressMode::Repeat },
             ContextConstants::CLAMP_TO_EDGE => { EAddressMode::ClampToEdge },
@@ -1112,14 +1112,14 @@ impl ContextConstants {
             _ => { EAddressMode::ClampToEdge },
         }
     }
-    pub fn filter_mode(val: f64) -> EFilterMode {
+    pub fn filter_mode(val: u32) -> EFilterMode {
         match val as u32 {
             Self::NEAREST => { EFilterMode::Nearest },
             Self::LINEAR => { EFilterMode::Linear },
             _ => { EFilterMode::Nearest },
         }
     }
-    pub fn compare_function(val: f64) -> CompareFunction {
+    pub fn compare_function(val: u32) -> CompareFunction {
         match val as u32 {
             Self::NEVER         => CompareFunction::Never,
             Self::LESS          => CompareFunction::Less,
@@ -1132,7 +1132,7 @@ impl ContextConstants {
             _                   => { CompareFunction::Always },
         }
     }
-    pub fn blend_operation(val: f64) -> BlendOperation {
+    pub fn blend_operation(val: u32) -> BlendOperation {
         match val as u32 {
             Self::FUNC_ADD              => BlendOperation::Add,
             Self::FUNC_SUBTRACT         => BlendOperation::Subtract,
@@ -1142,7 +1142,7 @@ impl ContextConstants {
             _                           => BlendOperation::Add,
         }
     }
-    pub fn blend_factor(val: f64) -> BlendFactor {
+    pub fn blend_factor(val: u32) -> BlendFactor {
         match val as u32 {
             Self::ZERO                      => BlendFactor::Zero,
             Self::ONE                       => BlendFactor::One,
@@ -1162,6 +1162,24 @@ impl ContextConstants {
     }
 }
 
+pub enum EPrimitive {
+    CCullMode   (u32),
+    CPolygonMode(u32),
+    CFrontFace  (u32),
+    CUnClipDepth(u32),
+    Topology    (u32),
+}
+
+pub struct _StencilFaceState {
+    /// Comparison function that determines if the fail_op or pass_op is used on the stencil buffer.
+    pub(crate) compare: u32,
+    /// Operation that is preformed when stencil test fails.
+    pub(crate) fail_op: u32,
+    /// Operation that is performed when depth test fails but stencil test succeeds.
+    pub(crate) depth_fail_op: u32,
+    /// Operation that is performed when stencil test success.
+    pub(crate) pass_op: u32,
+}
 
 pub const ACT_ENTITY: u8                        = 000;
 pub const ACT_DISPOSE: u8                       = 001;

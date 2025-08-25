@@ -29,8 +29,9 @@ pub fn p3d_shadow_generator(app: &mut Engine, cmds: &mut CommandsExchangeD3, sce
     let light: Entity = as_entity(light);
     let graph = if let Some(graph) = graph { as_entity(graph) } else { Entity::null() };
 
-    cmds.shadow_create.push(OpsShadowGenerator::ops(id, scene, light, PassTag::new(pass_tag as u16), graph));
-    cmds.renderer_create.push(OpsRendererCreate::ops(id, String::from("Shadow") + id.index().to_string().as_str(), id, PassTag::new(pass_tag as u16), false, false, false));
+    CommandsExchangeD3::p3d_shadow_generator(cmds, scene, light, id, pass_tag as u16, graph);
+    // cmds.shadow_create.push(OpsShadowGenerator::ops(id, scene, light, PassTag::new(pass_tag as u16), graph));
+    // cmds.renderer_create.push(OpsRendererCreate::ops(id, String::from("Shadow") + id.index().to_string().as_str(), id, PassTag::new(pass_tag as u16), false, false, false));
 
     as_f64(&id)
 }
@@ -40,9 +41,12 @@ pub fn p3d_shadow_generator(app: &mut Engine, cmds: &mut CommandsExchangeD3, sce
 pub fn p3d_shadow_base_param(cmds: &mut CommandsExchangeD3, shadow: f64, bias: f64, normal_bias: f64, depthscale: f64) -> f64 {
     let shadow: Entity = as_entity(shadow);
 
-    cmds.shadow_param.push(OpsShadowGeneratorParam::Bias(shadow, bias as f32));
-    cmds.shadow_param.push(OpsShadowGeneratorParam::NormalBias(shadow, normal_bias as f32));
-    cmds.shadow_param.push(OpsShadowGeneratorParam::DepthScale(shadow, depthscale as f32));
+    let val =  EShadowGeneratorParam::Bias(bias as f32);
+    CommandsExchangeD3::p3d_shadow_base_param(cmds, shadow, val);
+    let val =  EShadowGeneratorParam::NormalBias( normal_bias as f32);
+    CommandsExchangeD3::p3d_shadow_base_param(cmds, shadow, val);
+    let val =  EShadowGeneratorParam::DepthScale( depthscale as f32);
+    CommandsExchangeD3::p3d_shadow_base_param(cmds, shadow, val);
 
     as_f64(&shadow)
 }
@@ -52,8 +56,11 @@ pub fn p3d_shadow_base_param(cmds: &mut CommandsExchangeD3, shadow: f64, bias: f
 pub fn p3d_shadow_frustum(cmds: &mut CommandsExchangeD3, shadow: f64, frustum_size: f64, minz: f64, maxz: f64) {
     let shadow: Entity = as_entity(shadow);
 
-    cmds.shadow_param.push(OpsShadowGeneratorParam::ShadowFrustumSize(shadow, frustum_size as f32));
-    cmds.shadow_param.push(OpsShadowGeneratorParam::ShadowMinz(shadow, minz as f32));
-    cmds.shadow_param.push(OpsShadowGeneratorParam::ShadowMaxz(shadow, maxz as f32));
+    let val = EShadowGeneratorParam::ShadowFrustumSize( frustum_size as f32);
+    CommandsExchangeD3::p3d_shadow_base_param(cmds, shadow, val);
+    let val = EShadowGeneratorParam::ShadowMinz( minz as f32);
+    CommandsExchangeD3::p3d_shadow_base_param(cmds, shadow, val);
+    let val = EShadowGeneratorParam::ShadowMaxz( maxz as f32);
+    CommandsExchangeD3::p3d_shadow_base_param(cmds, shadow, val);
 }
 

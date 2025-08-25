@@ -19,7 +19,7 @@ use js_proxy_gen_macro::pi_js_export;
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_material(app: &mut Engine) -> f64 {
-    let id: Entity = app.world.entities().reserve_entity();
+    let id: Entity = CommandsExchangeD3::p3d_entity(app);
 
     let result = as_f64(&id);
 
@@ -29,9 +29,11 @@ pub fn p3d_material(app: &mut Engine) -> f64 {
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_material_shader(cmds: &mut CommandsExchangeD3, mat: f64, shader: &Atom, usematarray: bool) {
-    let entity: Entity = as_entity(mat);
+    let mat: Entity = as_entity(mat);
     // log::warn!("Create Material ShaderName: {:?}", shader.as_str());    // log::warn!("MaterialInit: {:?}, {}", entity, mat);
-    cmds.material_create.push(OpsMaterialCreate::ops(entity, shader.as_str(), usematarray));
+
+    CommandsExchangeD3::p3d_material_shader(cmds, mat, shader.deref(), usematarray);
+    // cmds.material_create.push(OpsMaterialCreate::ops(mat, shader.as_str(), usematarray));
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
@@ -39,9 +41,9 @@ pub fn p3d_material_shader(cmds: &mut CommandsExchangeD3, mat: f64, shader: &Ato
 pub fn p3d_material_apply(cmds: &mut CommandsExchangeD3, mat: f64, mesh: f64, pass: f64) {
     let mat: Entity = as_entity(mat);
     let mesh: Entity = as_entity(mesh);
-    let pass = EngineConstants::passtag(pass);
 
-    cmds.material_usemat.push(OpsMaterialUse::ops(mesh, mat, pass));
+    CommandsExchangeD3::p3d_material_apply(cmds, mat, mesh, pass);
+    // cmds.material_usemat.push(OpsMaterialUse::ops(mesh, mat, pass));
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
@@ -49,7 +51,9 @@ pub fn p3d_material_apply(cmds: &mut CommandsExchangeD3, mat: f64, mesh: f64, pa
 pub fn p3d_material_uniform_mat4(cmds: &mut CommandsExchangeD3, mat: f64,  key: &Atom, m11: f64, m12: f64, m13: f64, m14: f64, m21: f64, m22: f64, m23: f64, m24: f64, m31: f64, m32: f64, m33: f64, m34: f64, m41: f64, m42: f64, m43: f64, m44: f64) {
     let mat: Entity = as_entity(mat);
     let val = [m11 as f32, m12 as f32, m13 as f32, m14 as f32, m21 as f32, m22 as f32, m23 as f32, m24 as f32, m31 as f32, m32 as f32, m33 as f32, m34 as f32, m41 as f32, m42 as f32, m43 as f32, m44 as f32];
-    cmds.material_valb.push( OpsUniformValB::mat4(mat, key.deref().clone(), val) );
+    
+    CommandsExchangeD3::p3d_material_uniform_mat(cmds, mat, key.deref(), val);
+    // cmds.material_valb.push( OpsUniformValB::mat4(mat, key.deref().clone(), val) );
 }
 // #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 // #[pi_js_export]
@@ -61,17 +65,29 @@ pub fn p3d_material_uniform_mat4(cmds: &mut CommandsExchangeD3, mat: f64,  key: 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_material_uniform_vec2(cmds: &mut CommandsExchangeD3, mat: f64,  key: &Atom, x: f64, y: f64) {
-    let mat: Entity = as_entity(mat);    cmds.material_val.push( OpsUniformVal::vec2(mat, key.deref().clone(), x as f32, y as f32) );
+    let mat: Entity = as_entity(mat);    
+    
+    let val = EUniformVal::Vec2( key.deref().clone(), x as f32, y as f32);
+    CommandsExchangeD3::p3d_material_uniform_value(cmds, mat, val);
+    // cmds.material_val.push( OpsUniformVal::vec2(mat, key.deref().clone(), x as f32, y as f32) );
 }
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_material_uniform_vec4(cmds: &mut CommandsExchangeD3, mat: f64,  key: &Atom, x: f64, y: f64, z: f64, w: f64) {
-    let mat: Entity = as_entity(mat);    cmds.material_val.push( OpsUniformVal::vec4(mat, key.deref().clone(), x as f32, y as f32, z as f32, w as f32) );
+    let mat: Entity = as_entity(mat);    
+    
+    let val = EUniformVal::Vec4(key.deref().clone(), x as f32, y as f32, z as f32, w as f32);
+    CommandsExchangeD3::p3d_material_uniform_value(cmds, mat, val);
+    // cmds.material_val.push( OpsUniformVal::vec4(mat, key.deref().clone(), x as f32, y as f32, z as f32, w as f32) );
 }
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_material_uniform_float(cmds: &mut CommandsExchangeD3, mat: f64,  key: &Atom, val: f64) {
-    let mat: Entity = as_entity(mat);    cmds.material_val.push( OpsUniformVal::float(mat, key.deref().clone(), val as f32) );
+    let mat: Entity = as_entity(mat);    
+    
+    let val = EUniformVal::Float( key.deref().clone(), val as f32);
+    CommandsExchangeD3::p3d_material_uniform_value(cmds, mat, val);
+    // cmds.material_val.push( OpsUniformVal::float(mat, key.deref().clone(), val as f32) );
 }
 // #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 // #[pi_js_export]
@@ -82,7 +98,11 @@ pub fn p3d_material_uniform_float(cmds: &mut CommandsExchangeD3, mat: f64,  key:
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_material_uniform_uint(cmds: &mut CommandsExchangeD3, mat: f64,  key: &Atom, val: f64) {
-    let mat: Entity = as_entity(mat);    cmds.material_val.push( OpsUniformVal::uint(mat, key.deref().clone(), val as u32) );
+    let mat: Entity = as_entity(mat);   
+    
+    let val = EUniformVal::Uint( key.deref().clone(), val as u32);
+    CommandsExchangeD3::p3d_material_uniform_value(cmds, mat, val); 
+    // cmds.material_val.push( OpsUniformVal::uint(mat, key.deref().clone(), val as u32) );
 }
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
@@ -104,49 +124,25 @@ pub fn p3d_material_uniform_tex(
     cancombine: bool,
     compare: Option<f64>,
 ) {
-    let address_mode_u = EngineConstants::address_mode(address_mode_u);
-    let address_mode_v = EngineConstants::address_mode(address_mode_v);
-    let address_mode_w = EngineConstants::address_mode(address_mode_w);
-    let mag_filter = ContextConstants::filter_mode(mag_filter);
-    let min_filter = ContextConstants::filter_mode(min_filter);
-    let mipmap_filter = ContextConstants::filter_mode(mipmap_filter);
-    let compare = if let Some(compare) = compare { Some(ContextConstants::compare_function(compare).val2()) } else { None };
-    let anisotropy_clamp = EngineConstants::anisotropy_clamp(anisotropy_clamp);
-    let border_color = EngineConstants::border_color(border_color);
-    let mat: Entity = as_entity(mat);    cmds.material_valb.push(
-        OpsUniformValB::texture(
-            mat,
-            UniformTextureWithSamplerParam {
-                slotname: key.deref().clone(),
-                wrapu: address_mode_u,
-                wrapv: address_mode_v,
-                wrapw: address_mode_w,
-                sample: pi_export_base::constants::sampler_desc(
-                    EAddressMode::ClampToEdge,
-                    EAddressMode::ClampToEdge,
-                    EAddressMode::ClampToEdge,
-                    mag_filter,
-                    min_filter,
-                    mipmap_filter,
-                    compare,
-                    anisotropy_clamp,
-                    border_color,
-                ),
-                url: EKeyTexture::ImageFrame(KeyImageTextureViewFrame::new(
-                    KeyImageTextureFrame { url: pi_atom::Atom::from(url.to_string()), cancombine, file: isfile, compressed },
-                    TextureViewDesc {
-                        // aspect: wgpu::TextureAspect::All,
-                        base_mip_level: 0,
-                        mip_level_count: None,
-                        base_array_layer: 0,
-                        array_layer_count: None,
-                    }
-                )),
-                texture_sample: wgpu::TextureSampleType::Float { filterable: true },
-                sampler_bind_type: if filter { wgpu::SamplerBindingType::Filtering } else { wgpu::SamplerBindingType::NonFiltering },
-            }
-        )
+    let mat: Entity = as_entity(mat);  
+
+    CommandsExchangeD3::p3d_material_uniform_tex(cmds, mat, key.deref(), url.deref(),
+        srgb,
+        compressed,
+        filter,
+        address_mode_u,
+        address_mode_v,
+        address_mode_w,
+        mag_filter,
+        min_filter,
+        mipmap_filter,
+        anisotropy_clamp,
+        border_color,
+        isfile,
+        cancombine,
+        compare
     );
+    
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
@@ -177,37 +173,21 @@ pub fn p3d_material_uniform_tex_from_render_target(
     border_color: f64,
     compare: Option<f64>,
 ) {
-    let address_mode_u = EngineConstants::address_mode(address_mode_u);
-    let address_mode_v = EngineConstants::address_mode(address_mode_v);
-    let address_mode_w = EngineConstants::address_mode(address_mode_w);
-    let mag_filter = ContextConstants::filter_mode(mag_filter);
-    let min_filter = ContextConstants::filter_mode(min_filter);
-    let mipmap_filter = ContextConstants::filter_mode(mipmap_filter);
-    let compare = if let Some(compare) = compare { Some(ContextConstants::compare_function(compare).val2()) } else { None };
-    let anisotropy_clamp = EngineConstants::anisotropy_clamp(anisotropy_clamp);
-    let border_color = EngineConstants::border_color(border_color);
-    let texparam = UniformTextureWithSamplerParam { 
-        slotname: key.deref().clone(),
-        wrapu: address_mode_u,
-        wrapv: address_mode_v,
-        wrapw: address_mode_w,
-        sample: pi_export_base::constants::sampler_desc(
-            EAddressMode::ClampToEdge,
-            EAddressMode::ClampToEdge,
-            EAddressMode::ClampToEdge,
-            mag_filter,
-            min_filter,
-            mipmap_filter,
-            compare,
-            anisotropy_clamp,
-            border_color,
-        ),
-        texture_sample: wgpu::TextureSampleType::Float { filterable: true },
-        sampler_bind_type: if filter { wgpu::SamplerBindingType::Filtering } else { wgpu::SamplerBindingType::NonFiltering },
-        ..Default::default()
-    };
-    let mat: Entity = as_entity(mat);
-    let key = unsafe { transmute(url) };    cmds.material_valb.push(OpsUniformValB::texture_from_target(mat, texparam, key, key_tilloff.deref().clone()));
+    
+    let mat: Entity = as_entity(mat);  
+
+    CommandsExchangeD3::p3d_material_uniform_tex_from_render_target(cmds, mat, key.deref(), key_tilloff.deref(), url,
+        filter,
+        address_mode_u,
+        address_mode_v,
+        address_mode_w,
+        mag_filter,
+        min_filter,
+        mipmap_filter,
+        anisotropy_clamp,
+        border_color,
+        compare
+    );
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
@@ -225,37 +205,21 @@ pub fn p3d_material_uniform_tex_from_renderer(
     border_color: f64,
     compare: Option<f64>,
 ) {
-    let address_mode_u = EngineConstants::address_mode(address_mode_u);
-    let address_mode_v = EngineConstants::address_mode(address_mode_v);
-    let address_mode_w = EngineConstants::address_mode(address_mode_w);
-    let mag_filter = ContextConstants::filter_mode(mag_filter);
-    let min_filter = ContextConstants::filter_mode(min_filter);
-    let mipmap_filter = ContextConstants::filter_mode(mipmap_filter);
-    let compare = if let Some(compare) = compare { Some(ContextConstants::compare_function(compare).val2()) } else { None };
-    let anisotropy_clamp = EngineConstants::anisotropy_clamp(anisotropy_clamp);
-    let border_color = EngineConstants::border_color(border_color);
-    let texparam = UniformTextureWithSamplerParam { 
-        slotname: key.deref().clone(),
-        wrapu: address_mode_u,
-        wrapv: address_mode_v,
-        wrapw: address_mode_w,
-        sample: pi_export_base::constants::sampler_desc(
-            EAddressMode::ClampToEdge,
-            EAddressMode::ClampToEdge,
-            EAddressMode::ClampToEdge,
-            mag_filter,
-            min_filter,
-            mipmap_filter,
-            compare,
-            anisotropy_clamp,
-            border_color,
-        ),
-        texture_sample: wgpu::TextureSampleType::Float { filterable: true },
-        sampler_bind_type: if filter { wgpu::SamplerBindingType::Filtering } else { wgpu::SamplerBindingType::NonFiltering },
-        ..Default::default()
-    };
-    let mat: Entity = as_entity(mat);
-    let key = as_entity(url);    cmds.material_valb.push(OpsUniformValB::texture_from_renderer(mat, texparam, key, key_tilloff.deref().clone()));
+    let mat: Entity = as_entity(mat);  
+    let url = as_entity(url);
+
+    CommandsExchangeD3::p3d_material_uniform_tex_from_renderer(cmds, mat, key.deref(), key_tilloff.deref(), url,
+        filter,
+        address_mode_u,
+        address_mode_v,
+        address_mode_w,
+        mag_filter,
+        min_filter,
+        mipmap_filter,
+        anisotropy_clamp,
+        border_color,
+        compare
+    );
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
@@ -269,6 +233,8 @@ pub fn p3d_uniform_target_animation(
 ) {
     let target = as_entity(mat);
     let group = as_entity(group);
-    let curve: u64 = unsafe { transmute(curve_key) };
-    cmds.material_valb.push(OpsUniformValB::targetanim(target, key.deref().clone(), group, curve));
+    // let curve: u64 = unsafe { transmute(curve_key) };
+
+    CommandsExchangeD3::p3d_uniform_target_animation(cmds, target, group, key.deref(), curve_key);
+    // cmds.material_valb.push(OpsUniformValB::targetanim(target, key.deref().clone(), group, curve));
 }

@@ -2,10 +2,19 @@ use crate::{animation::{EAmountMode, EAnimationGroupListen, EAnimeCurve, EAnimeP
 use pi_atom::Atom;
 use pi_scene_context::prelude::SpriteFrame;
 use serde::{Serialize, Deserialize};
+use pi_export_base::export::Engine;
+
+#[derive(Default)]
+pub(crate) enum ERecordMode {
+    #[default]
+    None,
+    Record,
+    Replay,
+}
 
 #[derive(Serialize, Deserialize)]
 pub(crate) enum ERecordCMD {
-    ENTITY()                        ,
+    ENTITY(f64)                        ,
     DISPOSE(f64)                       ,
     SCENE_DISPOSE(f64)                 ,
     LIGHTING_SHADOW_LIMIT(f64,f64,f64,f64,f64,f64,f64,f64)         ,

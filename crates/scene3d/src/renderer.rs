@@ -42,11 +42,9 @@ pub fn p3d_create_render(app: &mut Engine, cmds: &mut CommandsExchangeD3, viewer
 
     let id_renderer: Entity = app.world.entities().reserve_entity();
 
-    let recordinput = if let Some(recordinput) = recordinput { recordinput } else { true };
+    CommandsExchangeD3::p3d_create_render(app, cmds, viewer, id_renderer, name, pass_tag, transparent, recordinput, crossrender);
 
-    let crossrender = if let Some(crossrender) = crossrender { crossrender } else { false };
-    
-    cmds.renderer_create.push(OpsRendererCreate::ops(id_renderer, name.clone(), viewer, PassTag::new(pass_tag as u16), transparent, recordinput, crossrender));
+    // cmds.renderer_create.push(OpsRendererCreate::ops(id_renderer, name.clone(), viewer, PassTag::new(pass_tag as u16), transparent, recordinput, crossrender));
 
     as_f64(&id_renderer)
 }
@@ -57,7 +55,8 @@ pub fn p3d_render_enabled(cmds: &mut CommandsExchangeD3, renderer: f64, enable: 
 
     let renderer: Entity = as_entity(renderer);
     
-    cmds.renderer_modify.push(OpsRendererCommand::Active(renderer, enable));
+    let val = ERendererCommand::Active(enable);
+    CommandsExchangeD3::p3d_renderer_modify(cmds, renderer, val);
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
@@ -67,7 +66,8 @@ pub fn p3d_render_clear_link_mesh(cmds: &mut CommandsExchangeD3, renderer: f64, 
     let renderer: Entity = as_entity(renderer);
     let mesh: Entity = as_entity(mesh);
     
-    cmds.renderer_modify.push(OpsRendererCommand::ClearLinkMesh(renderer, mesh));
+    let val =  ERendererCommand::ClearLinkMesh( mesh);
+    CommandsExchangeD3::p3d_renderer_modify(cmds, renderer, val);
 }
 
 /// 
@@ -76,17 +76,22 @@ pub fn p3d_render_clear_link_mesh(cmds: &mut CommandsExchangeD3, renderer: f64, 
 #[pi_js_export]
 pub fn p3d_render_target_key(cmds: &mut CommandsExchangeD3, renderer: f64, keytarget: Option<f64>, use_as_out: Option<bool>, realtoscreen: Option<bool>) {
     let renderer: Entity = as_entity(renderer);
+
+    
+
     let use_as_out = if let Some(use_as_out) = use_as_out { use_as_out } else { false };
     let realtoscreen = if let Some(realtoscreen) = realtoscreen { realtoscreen } else { false };
-    match keytarget {
+    let val = match keytarget {
         Some(keytarget) => {
             let keytarget = unsafe { transmute(keytarget) };
-            cmds.renderer_target.push(OpsRendererTarget::Custom(renderer, KeyCustomRenderTarget::Custom(keytarget), use_as_out));
+            ERendererTarget::Custom(KeyCustomRenderTarget::Custom(keytarget), use_as_out)
         },
         None => {
-            cmds.renderer_target.push(OpsRendererTarget::Custom(renderer, KeyCustomRenderTarget::FinalRender(realtoscreen), use_as_out));
+            ERendererTarget::Custom(KeyCustomRenderTarget::FinalRender(realtoscreen), use_as_out)
         },
-    }
+    };
+
+    CommandsExchangeD3::p3d_render_target(cmds, renderer, val);
 }
 
 /// 
@@ -99,7 +104,9 @@ pub fn p3d_render_target_auto(cmds: &mut CommandsExchangeD3, renderer: f64, widt
     let depthstencilformat =  EngineConstants::render_depth_format(depthstencilformat);
 
     let force_allocate = if let Some(force_allocate) = force_allocate { force_allocate } else { true };
-    cmds.renderer_target.push(OpsRendererTarget::Auto(renderer, width as u16, height as u16, colorformat, depthstencilformat, force_allocate));
+
+    let val = ERendererTarget::Auto(width as u16, height as u16, colorformat, depthstencilformat, force_allocate);
+    CommandsExchangeD3::p3d_render_target(cmds, renderer, val);
 }
 
 /// 
@@ -109,7 +116,8 @@ pub fn p3d_render_target_auto(cmds: &mut CommandsExchangeD3, renderer: f64, widt
 pub fn p3d_render_auto_clear_color(cmds: &mut CommandsExchangeD3, renderer: f64, val: bool) {
     let renderer: Entity = as_entity(renderer);
 
-    cmds.renderer_modify.push(OpsRendererCommand::AutoClearColor(renderer, val));
+    let val = ERendererCommand::AutoClearColor( val);
+    CommandsExchangeD3::p3d_renderer_modify(cmds, renderer, val);
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
@@ -117,7 +125,8 @@ pub fn p3d_render_auto_clear_color(cmds: &mut CommandsExchangeD3, renderer: f64,
 pub fn p3d_render_auto_clear_depth(cmds: &mut CommandsExchangeD3, renderer: f64, val: bool) {
     let renderer: Entity = as_entity(renderer);
 
-    cmds.renderer_modify.push(OpsRendererCommand::AutoClearDepth(renderer, val));
+    let val = ERendererCommand::AutoClearDepth( val);
+    CommandsExchangeD3::p3d_renderer_modify(cmds, renderer, val);
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
@@ -125,7 +134,8 @@ pub fn p3d_render_auto_clear_depth(cmds: &mut CommandsExchangeD3, renderer: f64,
 pub fn p3d_render_auto_clear_stencil(cmds: &mut CommandsExchangeD3, renderer: f64, val: bool) {
     let renderer: Entity = as_entity(renderer);
 
-    cmds.renderer_modify.push(OpsRendererCommand::AutoClearStencil(renderer, val));
+    let val = ERendererCommand::AutoClearStencil( val);
+    CommandsExchangeD3::p3d_renderer_modify(cmds, renderer, val);
 }
 
 /// r g b a 数值为 0 ~ 255 u8
@@ -134,7 +144,8 @@ pub fn p3d_render_auto_clear_stencil(cmds: &mut CommandsExchangeD3, renderer: f6
 pub fn p3d_render_clear_color(cmds: &mut CommandsExchangeD3, renderer: f64, r: f64, g: f64, b: f64, a: f64) {
     let renderer: Entity = as_entity(renderer);
 
-    cmds.renderer_modify.push(OpsRendererCommand::ColorClear(renderer, RenderColorClear(r as u8, g as u8, b as u8, a as u8)));
+    let val = ERendererCommand::ColorClear( RenderColorClear(r as u8, g as u8, b as u8, a as u8));
+    CommandsExchangeD3::p3d_renderer_modify(cmds, renderer, val);
 }
 
 /// val 数值为 0.~1.
@@ -143,7 +154,8 @@ pub fn p3d_render_clear_color(cmds: &mut CommandsExchangeD3, renderer: f64, r: f
 pub fn p3d_render_clear_depth(cmds: &mut CommandsExchangeD3, renderer: f64, val: f64) {
     let renderer: Entity = as_entity(renderer);
 
-    cmds.renderer_modify.push(OpsRendererCommand::DepthClear(renderer, RenderDepthClear(val as f32)));
+    let val = ERendererCommand::DepthClear( RenderDepthClear(val as f32));
+    CommandsExchangeD3::p3d_renderer_modify(cmds, renderer, val);
 }
 ///
 /// val 数值为 u32
@@ -152,7 +164,8 @@ pub fn p3d_render_clear_depth(cmds: &mut CommandsExchangeD3, renderer: f64, val:
 pub fn p3d_render_clear_stencil(cmds: &mut CommandsExchangeD3, renderer: f64, val: f64) {
     let renderer: Entity = as_entity(renderer);
 
-    cmds.renderer_modify.push(OpsRendererCommand::StencilClear(renderer, RenderStencilClear(val as u32)));
+    let val = ERendererCommand::StencilClear( RenderStencilClear(val as u32));
+    CommandsExchangeD3::p3d_renderer_modify(cmds, renderer, val);
 }
 ///
 /// val 数值为 u32
@@ -163,7 +176,8 @@ pub fn p3d_render_viewport(cmds: &mut CommandsExchangeD3, renderer: f64, x: f64,
     let mindepth = if let Some(mindepth) = mindepth { mindepth as f32 } else { 0. };
     let maxdepth = if let Some(maxdepth) = maxdepth { maxdepth as f32 } else { 1. };
 
-    cmds.renderer_modify.push(OpsRendererCommand::Viewport(renderer, x as f32, y as f32, w as f32, h as f32, mindepth, maxdepth));
+    let val = ERendererCommand::Viewport( x as f32, y as f32, w as f32, h as f32, mindepth, maxdepth);
+    CommandsExchangeD3::p3d_renderer_modify(cmds, renderer, val);
 }
 
 ///
@@ -179,10 +193,9 @@ pub fn p3d_crossrender_link_drawlists(cmds: &mut CommandsExchangeD3, linkentity:
             let entity: Entity = as_entity(drawlistrenderers[i]);
             list.push(entity);
         }
-        cmds.crossdrawlistinfo.push((linkentity, list));
-    } else {
-        cmds.crossdrawlistinfo.push((linkentity, list));
     };
+
+    CommandsExchangeD3::p3d_crossrender_link_drawlists(cmds, linkentity, list);
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
@@ -190,4 +203,5 @@ pub fn p3d_crossrender_link_drawlists(cmds: &mut CommandsExchangeD3, linkentity:
 pub fn p3d_render_screenwithpostprocess(cmds: &mut CommandsExchangeD3, flag: bool) {
 
     cmds.screenwithpostprocess = flag;
+    CommandsExchangeD3::p3d_render_screenwithpostprocess(cmds, flag);
 }

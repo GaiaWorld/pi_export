@@ -18,10 +18,10 @@ pub fn p3d_trail(
     linked: f64,
 ) {
     let entity = as_entity(entity);
-    let id_scene = as_entity(scene);
+    let scene = as_entity(scene);
     let id_linked_transform = as_entity(linked);
 
-    cmds.trail_create.push(OpsTrail::ops(id_scene, id_linked_transform, entity));
+    CommandsExchangeD3::p3d_trail(cmds, scene, entity, id_linked_transform);
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
@@ -32,7 +32,7 @@ pub fn p3d_trail_age(
     age_ms: f64,
 ) {
     let entity = as_entity(entity);
-    let ms = age_ms as u32;
+    let age_ms = age_ms as u32;
 
-    cmds.trail_age.push(OpsTrailAgeControl::ops(entity, ms));
+    CommandsExchangeD3::p3d_trail_age(cmds, entity, age_ms);
 }
