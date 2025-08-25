@@ -42,12 +42,7 @@ pub fn p3d_scene(app: &mut Engine, cmds: &mut CommandsExchangeD3, cullingmode: f
         idx += 1;
     });
 
-    cmds.scene_create.push(OpsSceneCreation::ops(
-        scene,
-        cullingmode as u8,
-        collidermode as u8,
-        values
-    ));
+    CommandsExchangeD3::p3d_scene(cmds, scene, cullingmode, collidermode, values);
 
     as_f64(&scene)
 }
@@ -57,7 +52,8 @@ pub fn p3d_scene(app: &mut Engine, cmds: &mut CommandsExchangeD3, cullingmode: f
 pub fn p3d_scene_animation_enable(cmds: &mut CommandsExchangeD3, scene: f64, val: bool) {
     let scene: Entity = as_entity(scene);
 
-    cmds.scene_options.push(OpsSceneOption::anime(scene, val));
+    let val = ESceneOps::AnimEnable( val);
+    CommandsExchangeD3::p3d_scene_option(cmds, scene, val);
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
@@ -65,7 +61,8 @@ pub fn p3d_scene_animation_enable(cmds: &mut CommandsExchangeD3, scene: f64, val
 pub fn p3d_scene_time(cmds: &mut CommandsExchangeD3, scene: f64, val: f64) {
     let scene: Entity = as_entity(scene);
 
-    cmds.scene_options.push(OpsSceneOption::time(scene, val as u64));
+    let val = ESceneOps::Time( val as u64);
+    CommandsExchangeD3::p3d_scene_option(cmds, scene, val);
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
@@ -73,7 +70,8 @@ pub fn p3d_scene_time(cmds: &mut CommandsExchangeD3, scene: f64, val: f64) {
 pub fn p3d_scene_fogcolor(cmds: &mut CommandsExchangeD3, scene: f64, r: f64, g: f64, b: f64) {
     let scene: Entity = as_entity(scene);
 
-    cmds.scene_options.push(OpsSceneOption::fogcolor(scene, r as f32, g as f32, b as f32));
+    let val = ESceneOps::FogColor( r as f32, g as f32, b as f32);
+    CommandsExchangeD3::p3d_scene_option(cmds, scene, val);
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
@@ -93,7 +91,8 @@ pub fn p3d_scene_fogparam(cmds: &mut CommandsExchangeD3, scene: f64, mode: f64, 
     } else {
         FogParam::None
     };
-    cmds.scene_options.push(OpsSceneOption::fogparam(scene, param));
+    let val = ESceneOps::FogParam( param);
+    CommandsExchangeD3::p3d_scene_option(cmds, scene, val);
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
@@ -101,7 +100,8 @@ pub fn p3d_scene_fogparam(cmds: &mut CommandsExchangeD3, scene: f64, mode: f64, 
 pub fn p3d_scene_ambientcolor(cmds: &mut CommandsExchangeD3, scene: f64, r: f64, g: f64, b: f64) {
     let scene: Entity = as_entity(scene);
 
-    cmds.scene_options.push(OpsSceneOption::ambientcolor(scene, r as f32, g as f32, b as f32));
+    let val = ESceneOps::AmbientColor( r as f32, g as f32, b as f32);
+    CommandsExchangeD3::p3d_scene_option(cmds, scene, val);
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
@@ -109,7 +109,8 @@ pub fn p3d_scene_ambientcolor(cmds: &mut CommandsExchangeD3, scene: f64, r: f64,
 pub fn p3d_scene_ambientintensity(cmds: &mut CommandsExchangeD3, scene: f64, val: f64) {
     let scene: Entity = as_entity(scene);
 
-    cmds.scene_options.push(OpsSceneOption::ambientinstensity(scene, val as f32));
+    let val = ESceneOps::AmbientIntensity( val as f32);
+    CommandsExchangeD3::p3d_scene_option(cmds, scene, val);
 }
 
 ///
@@ -128,7 +129,8 @@ pub fn p3d_layermask(cmds: &mut CommandsExchangeD3, node: f64, val: f64) {
 pub fn p3d_scene_brdf_texture(cmds: &mut CommandsExchangeD3, scene: f64, url: &Atom, compressed: bool) {
     let scene: Entity = as_entity(scene);
 
-    cmds.scene_options.push(OpsSceneOption::brdf(scene, url.deref().clone(), compressed));
+    let val = ESceneOps::BRDF( url.deref().clone(), compressed);
+    CommandsExchangeD3::p3d_scene_option(cmds, scene, val);
 }
 
 ///
@@ -138,7 +140,8 @@ pub fn p3d_scene_env_texture(cmds: &mut CommandsExchangeD3, scene: f64, url: &At
     let scene: Entity = as_entity(scene);
 
     // if let Some(url) = url {
-        cmds.scene_options.push(OpsSceneOption::envtexture(scene, Some(url.deref().clone()), data_is_image));
+    let val = ESceneOps::EnvTexture( Some(url.deref().clone()), data_is_image);
+    CommandsExchangeD3::p3d_scene_option(cmds, scene, val);
     // } else {
     //     cmds.scene_env.push(OpsSceneEnvTexture::ops(scene, None, data_is_image));
     // }
@@ -150,12 +153,13 @@ pub fn p3d_scene_env_texture(cmds: &mut CommandsExchangeD3, scene: f64, url: &At
 pub fn p3d_scene_shadowmap(cmds: &mut CommandsExchangeD3, scene: f64, url: Option<f64>) {
     let scene: Entity = as_entity(scene);
 
-    if let Some(url) = url {
+    let val = if let Some(url) = url {
         let key = unsafe { transmute(url) };
-        cmds.scene_options.push(OpsSceneOption::shadowmap(scene, Some(key)));
+        ESceneOps::ShadowMap( Some(key))
     } else {
-        cmds.scene_options.push(OpsSceneOption::shadowmap(scene, None));
-    }
+        ESceneOps::ShadowMap( None)
+    };
+    CommandsExchangeD3::p3d_scene_option(cmds, scene, val);
 }
 
 ///
@@ -165,7 +169,7 @@ pub fn p3d_scene_boundingbox(cmds: &mut CommandsExchangeD3, scene: f64, display:
     let scene: Entity = as_entity(scene);
     let pass = EngineConstants::passtag(pass);
 
-    cmds.scene_boundingbox.push(OpsBoundingBoxDisplay::ops(scene, display, pass));
+    CommandsExchangeD3::p3d_scene_boundingbox(cmds, scene, display, pass);
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
@@ -180,7 +184,9 @@ pub fn p3d_collider(cmds: &mut CommandsExchangeD3, node: f64,
     // if (intersection_treshold + 0.2928932).abs() < 0.00001 {
     //     log::error!("Collider: {:?}", (node, (minx as f32, miny as f32, minz as f32), (maxx as f32, maxy as f32, maxz as f32), intersection_treshold as f32, alphaindex));
     // }
-    cmds.scene_collider.push(OpsCollider::new(node, (minx as f32, miny as f32, minz as f32), (maxx as f32, maxy as f32, maxz as f32), intersection_treshold as f32, alphaindex));
+
+    CommandsExchangeD3::p3d_collider(cmds, node, minx as f32, miny as f32, minz as f32, maxx as f32, maxy as f32, maxz as f32, intersection_treshold as f32, alphaindex as i32);
+    // cmds.scene_collider.push(OpsCollider::new(node, (minx as f32, miny as f32, minz as f32), (maxx as f32, maxy as f32, maxz as f32), intersection_treshold as f32, alphaindex));
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]

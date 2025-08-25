@@ -22,8 +22,7 @@ pub fn p3d_sprite(app: &mut Engine, cmds: &mut CommandsExchangeD3, source: f64, 
 
     let source = as_entity(source);
 
-    cmds.instance_create.push(OpsInstanceMeshCreation::ops(source, id));
-    cmds.sprite_create.push(OpsSpriteCreate::ops(source, id, atlas.to_string().asset_u64()));
+    CommandsExchangeD3::p3d_sprite(cmds, source, id, atlas.deref());
 
     as_f64(&id)
 }
@@ -31,16 +30,20 @@ pub fn p3d_sprite(app: &mut Engine, cmds: &mut CommandsExchangeD3, source: f64, 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_sprite_frame(cmds: &mut CommandsExchangeD3, sprite: f64, tilloffkey: &Atom, idxframe: f64) {
-    cmds.sprite_modify.push(OpsSpriteModify::ops(as_entity(sprite), SpriteModify::Idx(idxframe as IdxTextureFrame), tilloffkey.deref().clone()));
+    let sprite = as_entity(sprite);
+
+    CommandsExchangeD3::p3d_sprite_frame(cmds, sprite, tilloffkey.deref(), idxframe);
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_sprite_frame_data(cmds: &mut CommandsExchangeD3, sprite: f64, tilloffkey: &Atom, data: &[u16]) {
+    let sprite = as_entity(sprite);
     let data = [data[0], data[1], data[2], data[3], data[4], data[5], data[6], data[7], data[8], data[9],
         data[10], data[11], data[12], data[13],
     ];
-    cmds.sprite_modify.push(OpsSpriteModify::ops(as_entity(sprite), SpriteModify::Data(data), tilloffkey.deref().clone()));
+
+    CommandsExchangeD3::p3d_sprite_frame_data(cmds, sprite, tilloffkey.deref(), &data);
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]

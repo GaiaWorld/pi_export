@@ -81,7 +81,7 @@ pub fn p3d_remove_data_texture(param: &mut CommandsExchangeD3, key: &Atom) {
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
-pub fn p3d_create_texture_loader(app: &mut Engine, param: &mut ActionSetScene3D, isfile: bool, url: &Atom, cancombine: bool, compressed: bool, depth_or_array_layers: f64) -> f64 {
+pub fn p3d_create_texture_loader(app: &mut Engine, param: &mut ActionSetScene3D, cmds: &mut CommandsExchangeD3, isfile: bool, url: &Atom, cancombine: bool, compressed: bool, depth_or_array_layers: f64) -> f64 {
 	pi_export_base::export::await_last_frame(app);
 
     let mut resource = param.resource.get_mut(&mut app.world);
@@ -92,7 +92,7 @@ pub fn p3d_create_texture_loader(app: &mut Engine, param: &mut ActionSetScene3D,
 }
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
-pub fn p3d_query_texture_loader(app: &mut Engine, param: &mut ActionSetScene3D, loader: f64, info: &mut [u32]) {
+pub fn p3d_query_texture_loader(app: &mut Engine, param: &mut ActionSetScene3D, cmds: &mut CommandsExchangeD3, loader: f64, info: &mut [u32]) {
 	pi_export_base::export::await_last_frame(app);
 
     let mut resource = param.resource.get_mut(&mut app.world);
@@ -151,7 +151,7 @@ pub fn p3d_texture_combine_query(app: &mut Engine, success: &mut [u32], fail: &m
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
-pub fn p3d_texture_combine_param(app: &mut Engine, format: f64, maxlayer: f64, maxsize: f64, maxcount: f64) {
+pub fn p3d_texture_combine_param(app: &mut Engine, cmds: &mut CommandsExchangeD3, format: f64, maxlayer: f64, maxsize: f64, maxcount: f64) {
     pi_export_base::export::await_last_frame(app);
     let device = app.world.get_resource::<PiRenderDevice>().unwrap().0.clone();
     let format = EngineConstants::texture_format(format);

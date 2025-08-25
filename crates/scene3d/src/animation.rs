@@ -12,7 +12,7 @@ use pi_scene_context::prelude::*;
 use pi_slotmap::DefaultKey;
 use serde::{Serialize, Deserialize};
 pub use crate::engine::ActionSetScene3D;
-use crate::{as_entity, as_f64, as_f64_dk};
+use crate::{as_entity, as_f64, as_f64_dk, record::{ERecordCMD, ERecordMode}};
 pub use crate::commands::CommandsExchangeD3;
 
 
@@ -293,10 +293,11 @@ pub fn p3d_animation_group(
     scene: f64,
 ) -> f64 {
 	pi_export_base::export::await_last_frame(app);
+
     let id: Entity = app.world.spawn_empty_id();
     let scene: Entity = as_entity(scene);
 
-    cmds.anime_create.push(OpsAnimationGroupCreation::ops(scene, id));
+    CommandsExchangeD3::p3d_animation_group(cmds, scene, id);
 
     as_f64(&id)
 }
@@ -322,7 +323,7 @@ pub fn p3d_animation_group_weight(
 ) {
     let group = as_entity(group);
 
-    cmds.anime_action.push(OpsAnimationGroupAction::weight(group, weight as f32));
+    CommandsExchangeD3::p3d_animation_group_weight(cmds, group, weight as f32);
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
@@ -331,7 +332,7 @@ pub fn p3d_animation_group_weight(
 pub fn p3d_animation_group_target_reset(cmds: &mut CommandsExchangeD3, group: f64,) {
     let group = as_entity(group);
 
-    cmds.anime_reset_while_start.push(OpsAnimationGroupStartReset::ops(group));
+    CommandsExchangeD3::p3d_animation_group_target_reset(cmds, group);
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
@@ -355,56 +356,7 @@ pub fn p3d_anime_group_start(
 ) {
     let group_key = as_entity(group_key);
 
-    let amountcalc = match amount_mode {
-        EAmountMode::None           => AnimationAmountCalc::default(),
-        EAmountMode::BackIn         => AnimationAmountCalc::from_easing(EEasingMode::BackIn)    ,
-        EAmountMode::BackOut        => AnimationAmountCalc::from_easing(EEasingMode::BackOut)    ,
-        EAmountMode::BackInOut      => AnimationAmountCalc::from_easing(EEasingMode::BackInOut)    ,
-        EAmountMode::CircleIn       => AnimationAmountCalc::from_easing(EEasingMode::CircleIn)    ,
-        EAmountMode::CircleOut      => AnimationAmountCalc::from_easing(EEasingMode::CircleOut)    ,
-        EAmountMode::CircleInOut    => AnimationAmountCalc::from_easing(EEasingMode::CircleInOut)    ,
-        EAmountMode::CubicIn        => AnimationAmountCalc::from_easing(EEasingMode::CubicIn)    ,
-        EAmountMode::CubicOut       => AnimationAmountCalc::from_easing(EEasingMode::CubicOut)    ,
-        EAmountMode::CubicInOut     => AnimationAmountCalc::from_easing(EEasingMode::CubicInOut)    ,
-        EAmountMode::SineIn         => AnimationAmountCalc::from_easing(EEasingMode::SineIn)    ,
-        EAmountMode::SineOut        => AnimationAmountCalc::from_easing(EEasingMode::SineOut)    ,
-        EAmountMode::SineInOut      => AnimationAmountCalc::from_easing(EEasingMode::SineInOut)    ,
-        EAmountMode::QuadIn         => AnimationAmountCalc::from_easing(EEasingMode::QuadIn)    ,
-        EAmountMode::QuadOut        => AnimationAmountCalc::from_easing(EEasingMode::QuadOut)    ,
-        EAmountMode::QuadInOut      => AnimationAmountCalc::from_easing(EEasingMode::QuadInOut)    ,
-        EAmountMode::QuartIn        => AnimationAmountCalc::from_easing(EEasingMode::QuartIn)    ,
-        EAmountMode::QuartOut       => AnimationAmountCalc::from_easing(EEasingMode::QuartOut)    ,
-        EAmountMode::QuartInOut     => AnimationAmountCalc::from_easing(EEasingMode::QuartInOut)    ,
-        EAmountMode::QuintIn        => AnimationAmountCalc::from_easing(EEasingMode::QuintIn)    ,
-        EAmountMode::QuintOut       => AnimationAmountCalc::from_easing(EEasingMode::QuintOut)    ,
-        EAmountMode::QuintInOut     => AnimationAmountCalc::from_easing(EEasingMode::QuintInOut)    ,
-        EAmountMode::ExpoIn         => AnimationAmountCalc::from_easing(EEasingMode::ExpoIn)    ,
-        EAmountMode::ExpoOut        => AnimationAmountCalc::from_easing(EEasingMode::ExpoOut)    ,
-        EAmountMode::ExpoInOut      => AnimationAmountCalc::from_easing(EEasingMode::ExpoInOut)    ,
-        EAmountMode::ElasticIn      => AnimationAmountCalc::from_easing(EEasingMode::ElasticIn)    ,
-        EAmountMode::ElasticOut     => AnimationAmountCalc::from_easing(EEasingMode::ElasticOut)    ,
-        EAmountMode::ElasticInOut   => AnimationAmountCalc::from_easing(EEasingMode::ElasticInOut)    ,
-        EAmountMode::BounceIn       => AnimationAmountCalc::from_easing(EEasingMode::BounceIn)    ,
-        EAmountMode::BounceOut      => AnimationAmountCalc::from_easing(EEasingMode::BounceOut)    ,
-        EAmountMode::BounceInOut    => AnimationAmountCalc::from_easing(EEasingMode::BounceInOut)    ,
-        EAmountMode::JumpStart      => AnimationAmountCalc::from_steps(amount_param0 as FrameIndex, EStepMode::JumpStart    ),
-        EAmountMode::JumpEnd        => AnimationAmountCalc::from_steps(amount_param0 as FrameIndex, EStepMode::JumpEnd    ),
-        EAmountMode::JumpNone       => AnimationAmountCalc::from_steps(amount_param0 as FrameIndex, EStepMode::JumpNone    ),
-        EAmountMode::JumpBoth       => AnimationAmountCalc::from_steps(amount_param0 as FrameIndex, EStepMode::JumpBoth    ),
-        EAmountMode::CubicBezier    => AnimationAmountCalc::from_cubic_bezier(amount_param0 as f32, amount_param1 as f32, amount_param2 as f32, amount_param3 as f32),
-    };
-
-    let loop_count = if let Some(loop_count) = loop_count {
-        Some(loop_count as u32)
-    } else {
-        None
-    };
-
-    let loop_mode = loop_mode.val(loop_count);
-
-    let fillmode = unsafe { transmute(fillmode) };
-
-    cmds.anime_action.push(OpsAnimationGroupAction::Start(group_key, AnimationGroupParam::new(speed as f32, loop_mode, from as f32, to as f32, fps as FramePerSecond, amountcalc), delay_ms as KeyFrameCurveValue, fillmode));
+    CommandsExchangeD3::p3d_anime_group_start(cmds, group_key, speed, loop_mode, loop_count, from, to, fps, amount_mode, delay_ms, fillmode, amount_param0, amount_param1, amount_param2, amount_param3);
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
@@ -415,7 +367,7 @@ pub fn p3d_anime_group_pause(
 ) {
     let group_key = as_entity(group_key);
 
-    cmds.anime_action.push(OpsAnimationGroupAction::Pause(group_key));
+    CommandsExchangeD3::p3d_anime_group_pause(cmds, group_key);
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
@@ -426,7 +378,7 @@ pub fn p3d_anime_group_stop(
 ) {
     let group_key = as_entity(group_key);
 
-    cmds.anime_action.push(OpsAnimationGroupAction::Stop(group_key));
+    CommandsExchangeD3::p3d_anime_group_stop(cmds, group_key);
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
@@ -438,7 +390,7 @@ pub fn p3d_anime_group_goto(
 ) {
     let group_key = as_entity(group_key);
 
-    cmds.anime_goto.push(AnimationGroupGoto::ops(group_key, amount as KeyFrameCurveValue));
+    CommandsExchangeD3::p3d_anime_group_goto(cmds, group_key, amount as KeyFrameCurveValue);
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
@@ -486,8 +438,8 @@ pub fn p3d_animation_group_delete(
     group: f64,
 ) {
     let id_group = as_entity(group);
-    
-    cmds.anime_dispose.push(OpsAnimationGroupDispose::ops(id_group));
+
+    CommandsExchangeD3::p3d_animation_group_delete(cmds, id_group);
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
@@ -658,7 +610,7 @@ pub fn p3d_query_anime_events(
 //     curve
 // }
 
-fn curve<const N: usize, T: TValue<N> + FrameDataValue>(
+pub(crate) fn curve<const N: usize, T: TValue<N> + FrameDataValue>(
     data: &[f32],
     mode: EAnimeCurve,
 ) -> FrameCurve<T> {
@@ -804,137 +756,10 @@ pub fn p3d_anime_curve_query(app: &mut Engine, param: &mut ActionSetScene3D, key
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
-pub fn p3d_anime_curve_create(app: &mut Engine, param: &mut ActionSetScene3D, key: f64, property: EAnimePropertyID, data: &[f32], mode: EAnimeCurve) -> bool {
+pub fn p3d_anime_curve_create(app: &mut Engine, param: &mut ActionSetScene3D, cmds: &mut CommandsExchangeD3, key: f64, property: EAnimePropertyID, data: &[f32], mode: EAnimeCurve) -> bool {
     pi_export_base::export::await_last_frame(app);
-    let resource = param.resource.get_mut(&mut app.world);
-    let key: u64 = unsafe { transmute(key) };
-
-    let cmds = resource.anime_assets;
-
-    match property {
-        EAnimePropertyID::LocalPosition       => {
-            let v = curve::<3, LocalPosition>(data,  mode);
-            cmds.position.insert(key, TypeFrameCurve(v)).is_ok()
-        },
-        EAnimePropertyID::LocalScaling        => {
-            let v = curve::<3, LocalScaling>(data,  mode);
-            cmds.scaling.insert(key, TypeFrameCurve(v)).is_ok()
-        },
-        EAnimePropertyID::LocalRotation    => {
-            let v = curve::<4, LocalRotationQuaternion>(data,  mode);
-            cmds.quaternion.insert(key, TypeFrameCurve(v)).is_ok()
-        },
-        EAnimePropertyID::LocalEulerAngles    => {
-            let v = curve::<3, LocalEulerAngles>(data,  mode);
-            cmds.euler.insert(key, TypeFrameCurve(v)).is_ok()
-        },
-        EAnimePropertyID::Alpha               => {
-            let v = curve::<1, AnimatorableFloat>(data,  mode);
-            cmds.float.insert(key, TypeFrameCurve(v)).is_ok()
-        },
-        EAnimePropertyID::MainColor           => {
-            let v = curve::<3, AnimatorableVec3>(data,  mode);
-            cmds.vec3s.insert(key, TypeFrameCurve(v)).is_ok()
-        },
-        EAnimePropertyID::MainTexUScale       => {
-            let v = curve::<1, AnimatorableFloat>(data,  mode);
-            cmds.float.insert(key, TypeFrameCurve(v)).is_ok()
-        },
-        EAnimePropertyID::MainTexVScale       => {
-            let v = curve::<1, AnimatorableFloat>(data,  mode);
-            cmds.float.insert(key, TypeFrameCurve(v)).is_ok()
-        },
-        EAnimePropertyID::MainTexUOffset      => {
-            let v = curve::<1, AnimatorableFloat>(data,  mode);
-            cmds.float.insert(key, TypeFrameCurve(v)).is_ok()
-        },
-        EAnimePropertyID::MainTexVOffset      => {
-            let v = curve::<1, AnimatorableFloat>(data,  mode);
-            cmds.float.insert(key, TypeFrameCurve(v)).is_ok()
-        },
-        EAnimePropertyID::OpacityTexUScale    => {
-            let v = curve::<1, AnimatorableFloat>(data,  mode);
-            cmds.float.insert(key, TypeFrameCurve(v)).is_ok()
-        },
-        EAnimePropertyID::OpacityTexVScale    => {
-            let v = curve::<1, AnimatorableFloat>(data,  mode);
-            cmds.float.insert(key, TypeFrameCurve(v)).is_ok()
-        },
-        EAnimePropertyID::OpacityTexUOffset   => {
-            let v = curve::<1, AnimatorableFloat>(data,  mode);
-            cmds.float.insert(key, TypeFrameCurve(v)).is_ok()
-        },
-        EAnimePropertyID::OpacityTexVOffset   => {
-            let v = curve::<1, AnimatorableFloat>(data,  mode);
-            cmds.float.insert(key, TypeFrameCurve(v)).is_ok()
-        },
-        EAnimePropertyID::AlphaCutoff         => {
-            let v = curve::<1, AnimatorableFloat>(data,  mode);
-            cmds.float.insert(key, TypeFrameCurve(v)).is_ok()
-        },
-        EAnimePropertyID::CameraFov           => {
-            let v = curve::<1, CameraFov>(data,  mode);
-            cmds.camerafov.insert(key, TypeFrameCurve(v)).is_ok()
-        },
-        EAnimePropertyID::CameraOrthSize      => {
-            let v = curve::<1, CameraOrthSize>(data,  mode);
-            cmds.camerasize.insert(key, TypeFrameCurve(v)).is_ok()
-        },
-        EAnimePropertyID::LightDiffuse        => {
-            let v = curve::<3, AnimatorableVec3>(data,  mode);
-            cmds.vec3s.insert(key, TypeFrameCurve(v)).is_ok()
-        },
-        EAnimePropertyID::MaskTexUScale       => {
-            let v = curve::<1, AnimatorableFloat>(data,  mode);
-            cmds.float.insert(key, TypeFrameCurve(v)).is_ok()
-        },
-        EAnimePropertyID::MaskTexVScale       => {
-            let v = curve::<1, AnimatorableFloat>(data,  mode);
-            cmds.float.insert(key, TypeFrameCurve(v)).is_ok()
-        },
-        EAnimePropertyID::MaskTexUOffset      => {
-            let v = curve::<1, AnimatorableFloat>(data,  mode);
-            cmds.float.insert(key, TypeFrameCurve(v)).is_ok()
-        },
-        EAnimePropertyID::MaskTexVOffset      => {
-            let v = curve::<1, AnimatorableFloat>(data,  mode);
-            cmds.float.insert(key, TypeFrameCurve(v)).is_ok()
-        },
-        EAnimePropertyID::MaskCutoff          => {
-            let v = curve::<1, AnimatorableFloat>(data,  mode);
-            cmds.float.insert(key, TypeFrameCurve(v)).is_ok()
-        },
-        EAnimePropertyID::Enable            => {
-            let v = curve::<1, Enable>(data,  mode);
-            cmds.enable.insert(key, TypeFrameCurve(v)).is_ok()
-        },
-        EAnimePropertyID::BoneOffset          => {
-            let v = curve::<1, AnimatorableUint>(data,  mode);
-            cmds.uints.insert(key, TypeFrameCurve(v)).is_ok()
-        },
-        EAnimePropertyID::IndicesRange        => {
-            let v = curve::<2, IndiceRenderRange>(data,  mode);
-            cmds.indicerange_curves.insert(key, TypeFrameCurve(v)).is_ok()
-        },
-        EAnimePropertyID::Intensity => {
-            false
-        },
-        EAnimePropertyID::CellId => {
-            false
-        },
-        EAnimePropertyID::MainTexTilloff        => {
-            let v = curve::<4, AnimatorableVec4>(data,  mode);
-            cmds.vec4s.insert(key, TypeFrameCurve(v)).is_ok()
-        },
-        EAnimePropertyID::MaskTexTilloff        => {
-            let v = curve::<4, AnimatorableVec4>(data,  mode);
-            cmds.vec4s.insert(key, TypeFrameCurve(v)).is_ok()
-        },
-        EAnimePropertyID::OpacityTexTilloff        => {
-            let v = curve::<4, AnimatorableVec4>(data,  mode);
-            cmds.vec4s.insert(key, TypeFrameCurve(v)).is_ok()
-        },
-    }
+    
+    return CommandsExchangeD3::p3d_anime_curve_create(app, param, key, property, data, mode);
 }
 
 
@@ -948,133 +773,9 @@ pub fn p3d_property_target_animation(
     curve_target: f64,
 ) -> bool {
     let group = as_entity(group);
-    let anime_target = as_entity(curve_target);
+    let curve_target = as_entity(curve_target);
 
     let key: u64 = unsafe { transmute(curve_key) };
 
-    let info = match property {
-        EAnimePropertyID::LocalPosition => {
-            cmds.anime_property_targetanime.push(OpsPropertyTargetAnimation::ops(anime_target, group, EPropertyAnimationValueType::LocalPosition, key));
-        },
-        EAnimePropertyID::LocalScaling =>  {
-            cmds.anime_property_targetanime.push(OpsPropertyTargetAnimation::ops(anime_target, group, EPropertyAnimationValueType::LocalScaling, key));
-        },
-        EAnimePropertyID::LocalRotation =>  {
-            cmds.anime_property_targetanime.push(OpsPropertyTargetAnimation::ops(anime_target, group, EPropertyAnimationValueType::LocalQuaternion, key));
-        },
-        EAnimePropertyID::LocalEulerAngles =>  {
-            cmds.anime_property_targetanime.push(OpsPropertyTargetAnimation::ops(anime_target, group, EPropertyAnimationValueType::LocalEuler, key));
-        },
-        EAnimePropertyID::Enable =>  {
-            cmds.anime_property_targetanime.push(OpsPropertyTargetAnimation::ops(anime_target, group, EPropertyAnimationValueType::Enable, key));
-        },
-        EAnimePropertyID::IndicesRange =>  {
-            cmds.anime_property_targetanime.push(OpsPropertyTargetAnimation::ops(anime_target, group, EPropertyAnimationValueType::IndicesRange, key));
-        },
-        EAnimePropertyID::CameraFov => {
-            cmds.anime_property_targetanime.push(OpsPropertyTargetAnimation::ops(anime_target, group, EPropertyAnimationValueType::Fov, key));
-        },
-        EAnimePropertyID::CameraOrthSize => {
-            cmds.anime_property_targetanime.push(OpsPropertyTargetAnimation::ops(anime_target, group, EPropertyAnimationValueType::OrthSize, key));
-        },
-        EAnimePropertyID::CellId => {
-            return false;
-        },
-        EAnimePropertyID::Intensity => {
-            return false;
-        },
-        EAnimePropertyID::Alpha =>  {
-            // if let Some(curve) = resource.anime_assets.float.get(&key) {
-            //     resource.anime_contexts.float.ctx.create_animation(0, AssetTypeFrameCurve::from(curve))
-            // } else { return false; }
-        },
-        EAnimePropertyID::MainColor =>  {
-            // if let Some(curve) = resource.anime_assets.vec3s.get(&key) {
-            //     resource.anime_contexts.vec3s.ctx.create_animation(0, AssetTypeFrameCurve::from(curve))
-            // } else { return false; }
-        },
-        EAnimePropertyID::MainTexUScale =>  {
-            // if let Some(curve) = resource.anime_assets.float.get(&key) {
-            //     resource.anime_contexts.float.ctx.create_animation(0, AssetTypeFrameCurve::from(curve))
-            // } else { return false; }
-        },
-        EAnimePropertyID::MainTexVScale =>  {
-            // if let Some(curve) = resource.anime_assets.float.get(&key) {
-            //     resource.anime_contexts.float.ctx.create_animation(0, AssetTypeFrameCurve::from(curve))
-            // } else { return false; }
-        },
-        EAnimePropertyID::MainTexUOffset =>  {
-            // if let Some(curve) = resource.anime_assets.float.get(&key) {
-            //     resource.anime_contexts.float.ctx.create_animation(0, AssetTypeFrameCurve::from(curve))
-            // } else { return false; }
-        },
-        EAnimePropertyID::MainTexVOffset =>  {
-            // if let Some(curve) = resource.anime_assets.float.get(&key) {
-            //     resource.anime_contexts.float.ctx.create_animation(0, AssetTypeFrameCurve::from(curve))
-            // } else { return false; }
-        },
-        EAnimePropertyID::OpacityTexUScale =>  {
-            // if let Some(curve) = resource.anime_assets.float.get(&key) {
-            //     resource.anime_contexts.float.ctx.create_animation(0, AssetTypeFrameCurve::from(curve))
-            // } else { return false; }
-        },
-        EAnimePropertyID::OpacityTexVScale =>  {
-            // if let Some(curve) = resource.anime_assets.float.get(&key) {
-            //     resource.anime_contexts.float.ctx.create_animation(0, AssetTypeFrameCurve::from(curve))
-            // } else { return false; }
-        },
-        EAnimePropertyID::OpacityTexUOffset =>  {
-            // if let Some(curve) = resource.anime_assets.float.get(&key) {
-            //     resource.anime_contexts.float.ctx.create_animation(0, AssetTypeFrameCurve::from(curve))
-            // } else { return false; }
-        },
-        EAnimePropertyID::OpacityTexVOffset =>  {
-            // if let Some(curve) = resource.anime_assets.float.get(&key) {
-            //     resource.anime_contexts.float.ctx.create_animation(0, AssetTypeFrameCurve::from(curve))
-            // } else { return false; }
-        },
-        EAnimePropertyID::AlphaCutoff =>  {
-            // if let Some(curve) = resource.anime_assets.float.get(&key) {
-            //     resource.anime_contexts.float.ctx.create_animation(0, AssetTypeFrameCurve::from(curve))
-            // } else { return false; }
-        },
-        EAnimePropertyID::LightDiffuse =>  {
-            // if let Some(curve) = resource.anime_assets.vec3s.get(&key) {
-            //     resource.anime_contexts.vec3s.ctx.create_animation(0, AssetTypeFrameCurve::from(curve))
-            // } else { return false; }
-        },
-        EAnimePropertyID::MaskTexUScale =>  {
-            // if let Some(curve) = resource.anime_assets.float.get(&key) {
-            //     resource.anime_contexts.float.ctx.create_animation(0, AssetTypeFrameCurve::from(curve))
-            // } else { return false; }
-        },
-        EAnimePropertyID::MaskTexVScale =>  {
-            // if let Some(curve) = resource.anime_assets.float.get(&key) {
-            //     resource.anime_contexts.float.ctx.create_animation(0, AssetTypeFrameCurve::from(curve))
-            // } else { return false; }
-        },
-        EAnimePropertyID::MaskTexUOffset =>  {
-            // if let Some(curve) = resource.anime_assets.float.get(&key) {
-            //     resource.anime_contexts.float.ctx.create_animation(0, AssetTypeFrameCurve::from(curve))
-            // } else { return false; }
-        },
-        EAnimePropertyID::MaskTexVOffset =>  {
-            // if let Some(curve) = resource.anime_assets.float.get(&key) {
-            //     resource.anime_contexts.float.ctx.create_animation(0, AssetTypeFrameCurve::from(curve))
-            // } else { return false; }
-        },
-        EAnimePropertyID::MaskCutoff =>  {
-            // if let Some(curve) = resource.anime_assets.float.get(&key) {
-            //     resource.anime_contexts.float.ctx.create_animation(0, AssetTypeFrameCurve::from(curve))
-            // } else { return false; }
-        },
-        EAnimePropertyID::BoneOffset =>  {
-            // if let Some(curve) = resource.anime_assets.uints.get(&key) {
-            //     resource.anime_contexts.uints.ctx.create_animation(0, AssetTypeFrameCurve::from(curve))
-            // } else { return false; }
-        },
-        _ => {}
-    };
-
-    return true;
+    return CommandsExchangeD3::p3d_property_target_animation(cmds, key, property, group, curve_target);
 }

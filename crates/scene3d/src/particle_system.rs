@@ -1,7 +1,7 @@
 use std::ops::Deref;
 
 pub use pi_export_base::export::{Engine, Atom};
-use pi_particle_system::prelude::{OpsCPUParticleSystem, OpsCPUParticleSystemState, ParticleAttribute, EParticleAttributeType};
+use pi_particle_system::prelude::{ECPUParticleSystemState, EParticleAttributeType, OpsCPUParticleSystem, OpsCPUParticleSystemState, ParticleAttribute};
 use pi_render::asset::TAssetKeyU64;
 
 pub use crate::commands::CommandsExchangeD3;
@@ -32,18 +32,22 @@ pub fn p3d_particle_system(
     let entity = as_entity(entity);
     let trailmesh = as_entity(trailmesh);
     let trailgeo = as_entity(trailgeo);
-    let reosurce = param.resource.get_mut(&mut app.world);
-    if let Some(calculator) = reosurce.particlesys.calcultors.get(&key.asset_u64()) {
-        let attrs = vec![
-            ParticleAttribute { vtype: EParticleAttributeType::Matrix, attr: pi_atom::Atom::from("") },
-            ParticleAttribute { vtype: EParticleAttributeType::Color, attr: color_attr_key.deref().clone() },
-            ParticleAttribute { vtype: EParticleAttributeType::Tilloff, attr: tilloff_attr_key.deref().clone() },
-        ];
-        let update_buffer_interval_frame = if let Some(update_buffer_interval_frame) = update_buffer_interval_frame {
-            (update_buffer_interval_frame as u8)
-        } else { 0 };
-        cmds.parsys_create.push(OpsCPUParticleSystem::ops(scene, entity, trailmesh, trailgeo, calculator, attrs, update_buffer_interval_frame));
-    }
+    
+    CommandsExchangeD3::p3d_particle_system(app, param, cmds, scene, entity, trailmesh, trailgeo, key.deref(), color_attr_key.deref(), tilloff_attr_key.deref(), update_buffer_interval_frame);
+
+    // let reosurce = param.resource.get_mut(&mut app.world);
+    // if let Some(calculator) = reosurce.particlesys.calcultors.get(&key.asset_u64()) {
+    //     let attrs = vec![
+    //         ParticleAttribute { vtype: EParticleAttributeType::Matrix, attr: pi_atom::Atom::from("") },
+    //         ParticleAttribute { vtype: EParticleAttributeType::Color, attr: color_attr_key.deref().clone() },
+    //         ParticleAttribute { vtype: EParticleAttributeType::Tilloff, attr: tilloff_attr_key.deref().clone() },
+    //     ];
+    //     let update_buffer_interval_frame = if let Some(update_buffer_interval_frame) = update_buffer_interval_frame {
+    //         (update_buffer_interval_frame as u8)
+    //     } else { 0 };
+
+    //     cmds.parsys_create.push(OpsCPUParticleSystem::ops(scene, entity, trailmesh, trailgeo, calculator, attrs, update_buffer_interval_frame));
+    // }
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
@@ -65,15 +69,18 @@ pub fn p3d_particle_system_with_gltf(
         let entity = as_entity(entity);
         let trailmesh = as_entity(trailmesh);
         let trailgeo = as_entity(trailgeo);
-        let attrs = vec![
-            ParticleAttribute { vtype: EParticleAttributeType::Matrix, attr: pi_atom::Atom::from("") },
-            ParticleAttribute { vtype: EParticleAttributeType::Color, attr: color_attr_key.deref().clone() },
-            ParticleAttribute { vtype: EParticleAttributeType::Tilloff, attr: tilloff_attr_key.deref().clone() },
-        ];
-        let update_buffer_interval_frame = if let Some(update_buffer_interval_frame) = update_buffer_interval_frame {
-            (update_buffer_interval_frame as u8)
-        } else { 0 };
-        cmds.parsys_create.push(OpsCPUParticleSystem::ops(scene, entity, trailmesh, trailgeo, calculator.clone(), attrs, update_buffer_interval_frame));
+
+        CommandsExchangeD3::p3d_particle_system_with_gltf(cmds, scene, entity, trailmesh, trailgeo, gltf, index_calculator, color_attr_key.deref(), tilloff_attr_key.deref(), update_buffer_interval_frame);
+
+        // let attrs = vec![
+        //     ParticleAttribute { vtype: EParticleAttributeType::Matrix, attr: pi_atom::Atom::from("") },
+        //     ParticleAttribute { vtype: EParticleAttributeType::Color, attr: color_attr_key.deref().clone() },
+        //     ParticleAttribute { vtype: EParticleAttributeType::Tilloff, attr: tilloff_attr_key.deref().clone() },
+        // ];
+        // let update_buffer_interval_frame = if let Some(update_buffer_interval_frame) = update_buffer_interval_frame {
+        //     (update_buffer_interval_frame as u8)
+        // } else { 0 };
+        // cmds.parsys_create.push(OpsCPUParticleSystem::ops(scene, entity, trailmesh, trailgeo, calculator.clone(), attrs, update_buffer_interval_frame));
     }
 }
 
@@ -84,8 +91,9 @@ pub fn p3d_particle_system_start(
     entity: f64,
 ) {
     let entity = as_entity(entity);
-    
-    cmds.parsys_state.push(OpsCPUParticleSystemState::ops_start(entity));
+
+    let val = ECPUParticleSystemState::Start();
+    CommandsExchangeD3::p3d_particle_system_state(cmds, entity, val);
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
@@ -97,7 +105,8 @@ pub fn p3d_particle_system_timescale(
 ) {
     let entity = as_entity(entity);
     
-    cmds.parsys_state.push(OpsCPUParticleSystemState::ops_speed(entity, speed as f32));
+    let val = ECPUParticleSystemState::TimeScale(speed as f32);
+    CommandsExchangeD3::p3d_particle_system_state(cmds, entity, val);
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
@@ -108,5 +117,6 @@ pub fn p3d_particle_system_stop(
 ) {
     let entity = as_entity(entity);
     
-    cmds.parsys_state.push(OpsCPUParticleSystemState::ops_stop(entity));
+    let val = ECPUParticleSystemState::Stop();
+    CommandsExchangeD3::p3d_particle_system_state(cmds, entity, val);
 }

@@ -1,5 +1,6 @@
-use std::ops::Deref;
+use std::{mem::transmute, ops::{Deref, Range}};
 
+use pi_3d::ActionSets;
 use pi_export_base::{asset::ActionListCustomBuffer, export::{update_data_texture, DataTextureCmds}};
 use pi_gltf2_load::GLTF;
 use pi_scene_shell::prelude::*;
@@ -7,8 +8,20 @@ pub use pi_export_base::export::Engine;
 use pi_particle_system::prelude::*;
 use pi_scene_context::prelude::*;
 use pi_trail_renderer::*;
-
+use pi_hash::XHashMap;
+use pi_curves::curve::frame::KeyFrameCurveValue;
 pub use crate::engine::ActionSetScene3D;
+use crate::{animation::{EAmountMode, EFillMode, ELoopMode}, cmd_call::_amountcalc, engine::{gltf_particle_calculator, GLTFRes}, mesh::{GeometryMeta, VInstanceAttributes}, node_materials::{MaterialUniformDefines, NodeMaterialBlock, NodematerialIncludes, P3DShaderMeta, P3DShaderVaryings}, record::{ERecordCMD, ERecordMode}};
+use crate::animation::EAnimePropertyID;
+use crate::animation::EAnimeCurve;
+use crate::animation::curve;
+use crate::constants::EngineConstants;
+use pi_export_base::constants::ContextConstants;
+use pi_mesh_builder::{quad::QuadBuilder, cube::CubeBuilder};
+use pi_node_materials::prelude::NodeMaterialBuilder;
+use pi_node_materials::NodeMaterialBlocks;
+use pi_slotmap::Key;
+use pi_export_base::export::DataTextureSubData;
 
 #[cfg(target_arch = "wasm32")]
 use wasm_bindgen::prelude::wasm_bindgen;
@@ -18,6 +31,11 @@ use js_proxy_gen_macro::pi_js_export;
 #[pi_js_export]
 #[derive(Default)]
 pub struct CommandsExchangeD3 {
+    pub(crate) frame: u64,
+    pub(crate) recordmode: ERecordMode,
+    pub(crate) recordframes: Vec<(u32, Vec<ERecordCMD>)>,
+    pub(crate) replayentities: XHashMap<Entity, Entity>,
+
     pub(crate) scene_create: ActionListSceneCreate,
     pub(crate) scene_options: ActionListSceneOption,
     pub(crate) scene_dispose: ActionListSceneDispose,
@@ -327,7 +345,1021 @@ impl CommandsExchangeD3 {
         // cmds.spritecreate.exchange( self.sprite_create.exchange(vec![]) );
         // cmds.spritemodify.exchange( self.sprite_modify.exchange(vec![]) );
     }
+    pub fn p3d_animation_curve_id_bygltf(
+        cmds: &CommandsExchangeD3,
+        gltf: &GLTFRes,
+        group_index: usize,
+        channel_index: usize,
+    ) -> f64 {
+        if let Some(gltf) = cmds.gltfs.get(&gltf.0) {
+            let key = gltf.key_anime_curve(group_index as usize, channel_index as usize);
+            unsafe { transmute(key) }
+        } else {
+            0.
+        }
+    }
+    pub(crate) fn p3d_entity(app: &mut Engine) -> Entity {
+        app.world.entities().reserve_entity()
+    }
+    pub(crate) fn p3d_dispose(&mut self, entity: Entity) {
+        self.obj_dispose.push(OpsDispose::ops(entity));
+    }
+    pub(crate) fn p3d_scene_dispose(&mut self, scene: Entity) {
+        self.scene_dispose.push(OpsSceneDispose::ops(scene));
+    }
+    pub(crate) fn p3d_lighting_shadow_limit(
+        app: &mut Engine, param: &mut ActionSetScene3D,
+        scene_max_direct_light_count: u16,
+        scene_max_point_light_count: u16,
+        scene_max_spot_light_count: u16,
+        scene_max_hemi_light_count: u16,
+        scene_max_shadow_count: u16,
+        model_max_direct_light_count: u16,
+        model_max_point_light_count: u16,
+        model_max_spot_light_count: u16,
+        model_max_hemi_light_count: u16,
+    ) {
+        let mut resource = param.resource.get_mut(&mut app.world);
+
+        resource.scene_lighting_limit.0.max_direct_light_count = scene_max_direct_light_count as u16;
+        resource.scene_lighting_limit.0.max_point_light_count = scene_max_point_light_count as u16;
+        resource.scene_lighting_limit.0.max_spot_light_count = scene_max_spot_light_count as u16;
+        resource.scene_lighting_limit.0.max_hemi_light_count = scene_max_hemi_light_count as u16;
+        
+        resource.scene_shadow_limit.0.max_count = scene_max_shadow_count as u16;
+
+        resource.model_lighting_limit.0.max_direct_light_count = model_max_direct_light_count as u16;
+        resource.model_lighting_limit.0.max_point_light_count = model_max_point_light_count as u16;
+        resource.model_lighting_limit.0.max_spot_light_count = model_max_spot_light_count as u16;
+        resource.model_lighting_limit.0.max_hemi_light_count = model_max_hemi_light_count as u16;
+    }
+    pub fn p3d_engine_state(app: &mut Engine, param: &mut ActionSetScene3D, active: bool) {
+        let mut cmds = param.state.get_mut(&mut app.world);
+        cmds.stateengine.active = active;
+    }
+    pub fn p3d_render_graphic(&mut self, before: Entity, after: Entity, isdisconnect: bool) {
+        self.renderer_connect.push(OpsRendererConnect::ops(before, after, isdisconnect));
+    }
+    pub fn p3d_engine_debug(app: &mut Engine, param: &mut ActionSetScene3D, debug: bool) {
+        let mut cmds = param.state.get_mut(&mut app.world);
+        cmds.performance.debug = debug;
+        cmds.psperformance.debug = debug;
+    }
+    pub fn p3d_create_gltf_load(app: &mut Engine, param: &mut ActionSetScene3D, entity: Entity, baseurl: pi_atom::Atom, dyndesc: String) {
+        let resource = param.resource.get_mut(&mut app.world);
+        let param = baseurl;
+        resource.gltf2_loader.create_load(entity, param);
+    }
+    pub fn p3d_get_gltf(&mut self, app: &mut Engine, param: &mut ActionSetScene3D, entity: Entity) -> Option<GLTFRes> {
+        let mut resource = param.resource.get_mut(&mut app.world);
+        if let Some(val) = resource.gltf2_loader.get_success(entity) {
+            let id = self.gltfcounter;
+            self.gltfcounter += 1;
+            self.gltfs.insert(id, val);
+            Some(GLTFRes(id))
+        } else {
+            None
+        }
+    }
+    pub fn p3d_dispose_gltf(&mut self, entity: &GLTFRes) {
+        self.gltfs.remove(&entity.0);
+    }
+    pub fn _create_image_load(app: &mut Engine, param: &mut ActionSetScene3D, url: pi_atom::Atom, cancombine: bool, compressed: bool, depth_or_array_layers: f64) -> f64 {
+        let mut resource = param.resource.get_mut(&mut app.world);
+        let id = resource.imgtex_loader.create_load(KeyImageTextureFrame { 
+            url,
+            file: true,
+            compressed,
+            cancombine
+        });
+        unsafe { transmute(id) }
+    }
+    pub fn p3d_animation_group(&mut self, scene: Entity, id: Entity) {
+        self.anime_create.push(OpsAnimationGroupCreation::ops(scene, id));
+    }
+    pub fn p3d_animation_group_weight(&mut self, group: Entity, weight: f32) {
+        self.anime_action.push(OpsAnimationGroupAction::weight(group, weight as f32));
+    }
+    pub fn p3d_animation_group_target_reset(cmds: &mut CommandsExchangeD3, group: Entity) {
+        cmds.anime_reset_while_start.push(OpsAnimationGroupStartReset::ops(group));
+    }
+    pub fn p3d_anime_group_start(
+        &mut self,
+        group_key: Entity,
+        speed: f64,
+        loop_mode: ELoopMode,
+        loop_count: Option<f64>,
+        from: f64,
+        to: f64,
+        fps: f64,
+        amount_mode: EAmountMode,
+        delay_ms: f64,
+        fillmode: EFillMode,
+        amount_param0: f64,
+        amount_param1: f64,
+        amount_param2: f64,
+        amount_param3: f64,
+    ) {
+        let amountcalc = _amountcalc(amount_mode, amount_param0, amount_param1, amount_param2, amount_param3);
+    
+        let loop_count = if let Some(loop_count) = loop_count {
+            Some(loop_count as u32)
+        } else { None };
+        let loop_mode = loop_mode.val(loop_count);
+        let fillmode = unsafe { transmute(fillmode) };
+        self.anime_action.push(OpsAnimationGroupAction::Start(group_key, AnimationGroupParam::new(speed as f32, loop_mode, from as f32, to as f32, fps as FramePerSecond, amountcalc), delay_ms as KeyFrameCurveValue, fillmode));
+    }
+    pub fn p3d_anime_group_pause(
+        cmds: &mut CommandsExchangeD3,
+        group_key: Entity,
+    ) {
+        cmds.anime_action.push(OpsAnimationGroupAction::Pause(group_key));
+    }
+    pub fn p3d_anime_group_stop(
+        cmds: &mut CommandsExchangeD3,
+        group_key: Entity,
+    ) {
+        cmds.anime_action.push(OpsAnimationGroupAction::Stop(group_key));
+    }
+    pub fn p3d_anime_group_goto(
+        cmds: &mut CommandsExchangeD3,
+        group_key: Entity,
+        amount: KeyFrameCurveValue,
+    ) {
+        cmds.anime_goto.push(AnimationGroupGoto::ops(group_key, amount));
+    }
+    pub fn p3d_animation_group_delete(
+        cmds: &mut CommandsExchangeD3,
+        group: Entity,
+    ) {
+        cmds.anime_dispose.push(OpsAnimationGroupDispose::ops(group));
+    }
+    pub fn p3d_anime_curve_create(app: &mut Engine, param: &mut ActionSetScene3D, key: f64, property: EAnimePropertyID, data: &[f32], mode: EAnimeCurve) -> bool {
+        let resource = param.resource.get_mut(&mut app.world);
+        let key: u64 = unsafe { transmute(key) };
+
+        let cmds = resource.anime_assets;
+
+        match property {
+            EAnimePropertyID::LocalPosition       => {
+                let v = curve::<3, LocalPosition>(data,  mode);
+                cmds.position.insert(key, TypeFrameCurve(v)).is_ok()
+            },
+            EAnimePropertyID::LocalScaling        => {
+                let v = curve::<3, LocalScaling>(data,  mode);
+                cmds.scaling.insert(key, TypeFrameCurve(v)).is_ok()
+            },
+            EAnimePropertyID::LocalRotation    => {
+                let v = curve::<4, LocalRotationQuaternion>(data,  mode);
+                cmds.quaternion.insert(key, TypeFrameCurve(v)).is_ok()
+            },
+            EAnimePropertyID::LocalEulerAngles    => {
+                let v = curve::<3, LocalEulerAngles>(data,  mode);
+                cmds.euler.insert(key, TypeFrameCurve(v)).is_ok()
+            },
+            EAnimePropertyID::Alpha               => {
+                let v = curve::<1, AnimatorableFloat>(data,  mode);
+                cmds.float.insert(key, TypeFrameCurve(v)).is_ok()
+            },
+            EAnimePropertyID::MainColor           => {
+                let v = curve::<3, AnimatorableVec3>(data,  mode);
+                cmds.vec3s.insert(key, TypeFrameCurve(v)).is_ok()
+            },
+            EAnimePropertyID::MainTexUScale       => {
+                let v = curve::<1, AnimatorableFloat>(data,  mode);
+                cmds.float.insert(key, TypeFrameCurve(v)).is_ok()
+            },
+            EAnimePropertyID::MainTexVScale       => {
+                let v = curve::<1, AnimatorableFloat>(data,  mode);
+                cmds.float.insert(key, TypeFrameCurve(v)).is_ok()
+            },
+            EAnimePropertyID::MainTexUOffset      => {
+                let v = curve::<1, AnimatorableFloat>(data,  mode);
+                cmds.float.insert(key, TypeFrameCurve(v)).is_ok()
+            },
+            EAnimePropertyID::MainTexVOffset      => {
+                let v = curve::<1, AnimatorableFloat>(data,  mode);
+                cmds.float.insert(key, TypeFrameCurve(v)).is_ok()
+            },
+            EAnimePropertyID::OpacityTexUScale    => {
+                let v = curve::<1, AnimatorableFloat>(data,  mode);
+                cmds.float.insert(key, TypeFrameCurve(v)).is_ok()
+            },
+            EAnimePropertyID::OpacityTexVScale    => {
+                let v = curve::<1, AnimatorableFloat>(data,  mode);
+                cmds.float.insert(key, TypeFrameCurve(v)).is_ok()
+            },
+            EAnimePropertyID::OpacityTexUOffset   => {
+                let v = curve::<1, AnimatorableFloat>(data,  mode);
+                cmds.float.insert(key, TypeFrameCurve(v)).is_ok()
+            },
+            EAnimePropertyID::OpacityTexVOffset   => {
+                let v = curve::<1, AnimatorableFloat>(data,  mode);
+                cmds.float.insert(key, TypeFrameCurve(v)).is_ok()
+            },
+            EAnimePropertyID::AlphaCutoff         => {
+                let v = curve::<1, AnimatorableFloat>(data,  mode);
+                cmds.float.insert(key, TypeFrameCurve(v)).is_ok()
+            },
+            EAnimePropertyID::CameraFov           => {
+                let v = curve::<1, CameraFov>(data,  mode);
+                cmds.camerafov.insert(key, TypeFrameCurve(v)).is_ok()
+            },
+            EAnimePropertyID::CameraOrthSize      => {
+                let v = curve::<1, CameraOrthSize>(data,  mode);
+                cmds.camerasize.insert(key, TypeFrameCurve(v)).is_ok()
+            },
+            EAnimePropertyID::LightDiffuse        => {
+                let v = curve::<3, AnimatorableVec3>(data,  mode);
+                cmds.vec3s.insert(key, TypeFrameCurve(v)).is_ok()
+            },
+            EAnimePropertyID::MaskTexUScale       => {
+                let v = curve::<1, AnimatorableFloat>(data,  mode);
+                cmds.float.insert(key, TypeFrameCurve(v)).is_ok()
+            },
+            EAnimePropertyID::MaskTexVScale       => {
+                let v = curve::<1, AnimatorableFloat>(data,  mode);
+                cmds.float.insert(key, TypeFrameCurve(v)).is_ok()
+            },
+            EAnimePropertyID::MaskTexUOffset      => {
+                let v = curve::<1, AnimatorableFloat>(data,  mode);
+                cmds.float.insert(key, TypeFrameCurve(v)).is_ok()
+            },
+            EAnimePropertyID::MaskTexVOffset      => {
+                let v = curve::<1, AnimatorableFloat>(data,  mode);
+                cmds.float.insert(key, TypeFrameCurve(v)).is_ok()
+            },
+            EAnimePropertyID::MaskCutoff          => {
+                let v = curve::<1, AnimatorableFloat>(data,  mode);
+                cmds.float.insert(key, TypeFrameCurve(v)).is_ok()
+            },
+            EAnimePropertyID::Enable            => {
+                let v = curve::<1, Enable>(data,  mode);
+                cmds.enable.insert(key, TypeFrameCurve(v)).is_ok()
+            },
+            EAnimePropertyID::BoneOffset          => {
+                let v = curve::<1, AnimatorableUint>(data,  mode);
+                cmds.uints.insert(key, TypeFrameCurve(v)).is_ok()
+            },
+            EAnimePropertyID::IndicesRange        => {
+                let v = curve::<2, IndiceRenderRange>(data,  mode);
+                cmds.indicerange_curves.insert(key, TypeFrameCurve(v)).is_ok()
+            },
+            EAnimePropertyID::Intensity => {
+                false
+            },
+            EAnimePropertyID::CellId => {
+                false
+            },
+            EAnimePropertyID::MainTexTilloff        => {
+                let v = curve::<4, AnimatorableVec4>(data,  mode);
+                cmds.vec4s.insert(key, TypeFrameCurve(v)).is_ok()
+            },
+            EAnimePropertyID::MaskTexTilloff        => {
+                let v = curve::<4, AnimatorableVec4>(data,  mode);
+                cmds.vec4s.insert(key, TypeFrameCurve(v)).is_ok()
+            },
+            EAnimePropertyID::OpacityTexTilloff        => {
+                let v = curve::<4, AnimatorableVec4>(data,  mode);
+                cmds.vec4s.insert(key, TypeFrameCurve(v)).is_ok()
+            },
+        }
+    }
+    pub fn p3d_property_target_animation(
+        cmds: &mut CommandsExchangeD3,
+        key: u64,
+        property: EAnimePropertyID,
+        group: Entity,
+        curve_target: Entity,
+    ) -> bool {
+        let info = match property {
+            EAnimePropertyID::LocalPosition => {
+                cmds.anime_property_targetanime.push(OpsPropertyTargetAnimation::ops(curve_target, group, EPropertyAnimationValueType::LocalPosition, key));
+            },
+            EAnimePropertyID::LocalScaling =>  {
+                cmds.anime_property_targetanime.push(OpsPropertyTargetAnimation::ops(curve_target, group, EPropertyAnimationValueType::LocalScaling, key));
+            },
+            EAnimePropertyID::LocalRotation =>  {
+                cmds.anime_property_targetanime.push(OpsPropertyTargetAnimation::ops(curve_target, group, EPropertyAnimationValueType::LocalQuaternion, key));
+            },
+            EAnimePropertyID::LocalEulerAngles =>  {
+                cmds.anime_property_targetanime.push(OpsPropertyTargetAnimation::ops(curve_target, group, EPropertyAnimationValueType::LocalEuler, key));
+            },
+            EAnimePropertyID::Enable =>  {
+                cmds.anime_property_targetanime.push(OpsPropertyTargetAnimation::ops(curve_target, group, EPropertyAnimationValueType::Enable, key));
+            },
+            EAnimePropertyID::IndicesRange =>  {
+                cmds.anime_property_targetanime.push(OpsPropertyTargetAnimation::ops(curve_target, group, EPropertyAnimationValueType::IndicesRange, key));
+            },
+            EAnimePropertyID::CameraFov => {
+                cmds.anime_property_targetanime.push(OpsPropertyTargetAnimation::ops(curve_target, group, EPropertyAnimationValueType::Fov, key));
+            },
+            EAnimePropertyID::CameraOrthSize => {
+                cmds.anime_property_targetanime.push(OpsPropertyTargetAnimation::ops(curve_target, group, EPropertyAnimationValueType::OrthSize, key));
+            },
+            EAnimePropertyID::CellId => {
+                return false;
+            },
+            EAnimePropertyID::Intensity => {
+                return false;
+            },
+            EAnimePropertyID::Alpha =>  {
+                // if let Some(curve) = resource.anime_assets.float.get(&key) {
+                //     resource.anime_contexts.float.ctx.create_animation(0, AssetTypeFrameCurve::from(curve))
+                // } else { return false; }
+            },
+            EAnimePropertyID::MainColor =>  {
+                // if let Some(curve) = resource.anime_assets.vec3s.get(&key) {
+                //     resource.anime_contexts.vec3s.ctx.create_animation(0, AssetTypeFrameCurve::from(curve))
+                // } else { return false; }
+            },
+            EAnimePropertyID::MainTexUScale =>  {
+                // if let Some(curve) = resource.anime_assets.float.get(&key) {
+                //     resource.anime_contexts.float.ctx.create_animation(0, AssetTypeFrameCurve::from(curve))
+                // } else { return false; }
+            },
+            EAnimePropertyID::MainTexVScale =>  {
+                // if let Some(curve) = resource.anime_assets.float.get(&key) {
+                //     resource.anime_contexts.float.ctx.create_animation(0, AssetTypeFrameCurve::from(curve))
+                // } else { return false; }
+            },
+            EAnimePropertyID::MainTexUOffset =>  {
+                // if let Some(curve) = resource.anime_assets.float.get(&key) {
+                //     resource.anime_contexts.float.ctx.create_animation(0, AssetTypeFrameCurve::from(curve))
+                // } else { return false; }
+            },
+            EAnimePropertyID::MainTexVOffset =>  {
+                // if let Some(curve) = resource.anime_assets.float.get(&key) {
+                //     resource.anime_contexts.float.ctx.create_animation(0, AssetTypeFrameCurve::from(curve))
+                // } else { return false; }
+            },
+            EAnimePropertyID::OpacityTexUScale =>  {
+                // if let Some(curve) = resource.anime_assets.float.get(&key) {
+                //     resource.anime_contexts.float.ctx.create_animation(0, AssetTypeFrameCurve::from(curve))
+                // } else { return false; }
+            },
+            EAnimePropertyID::OpacityTexVScale =>  {
+                // if let Some(curve) = resource.anime_assets.float.get(&key) {
+                //     resource.anime_contexts.float.ctx.create_animation(0, AssetTypeFrameCurve::from(curve))
+                // } else { return false; }
+            },
+            EAnimePropertyID::OpacityTexUOffset =>  {
+                // if let Some(curve) = resource.anime_assets.float.get(&key) {
+                //     resource.anime_contexts.float.ctx.create_animation(0, AssetTypeFrameCurve::from(curve))
+                // } else { return false; }
+            },
+            EAnimePropertyID::OpacityTexVOffset =>  {
+                // if let Some(curve) = resource.anime_assets.float.get(&key) {
+                //     resource.anime_contexts.float.ctx.create_animation(0, AssetTypeFrameCurve::from(curve))
+                // } else { return false; }
+            },
+            EAnimePropertyID::AlphaCutoff =>  {
+                // if let Some(curve) = resource.anime_assets.float.get(&key) {
+                //     resource.anime_contexts.float.ctx.create_animation(0, AssetTypeFrameCurve::from(curve))
+                // } else { return false; }
+            },
+            EAnimePropertyID::LightDiffuse =>  {
+                // if let Some(curve) = resource.anime_assets.vec3s.get(&key) {
+                //     resource.anime_contexts.vec3s.ctx.create_animation(0, AssetTypeFrameCurve::from(curve))
+                // } else { return false; }
+            },
+            EAnimePropertyID::MaskTexUScale =>  {
+                // if let Some(curve) = resource.anime_assets.float.get(&key) {
+                //     resource.anime_contexts.float.ctx.create_animation(0, AssetTypeFrameCurve::from(curve))
+                // } else { return false; }
+            },
+            EAnimePropertyID::MaskTexVScale =>  {
+                // if let Some(curve) = resource.anime_assets.float.get(&key) {
+                //     resource.anime_contexts.float.ctx.create_animation(0, AssetTypeFrameCurve::from(curve))
+                // } else { return false; }
+            },
+            EAnimePropertyID::MaskTexUOffset =>  {
+                // if let Some(curve) = resource.anime_assets.float.get(&key) {
+                //     resource.anime_contexts.float.ctx.create_animation(0, AssetTypeFrameCurve::from(curve))
+                // } else { return false; }
+            },
+            EAnimePropertyID::MaskTexVOffset =>  {
+                // if let Some(curve) = resource.anime_assets.float.get(&key) {
+                //     resource.anime_contexts.float.ctx.create_animation(0, AssetTypeFrameCurve::from(curve))
+                // } else { return false; }
+            },
+            EAnimePropertyID::MaskCutoff =>  {
+                // if let Some(curve) = resource.anime_assets.float.get(&key) {
+                //     resource.anime_contexts.float.ctx.create_animation(0, AssetTypeFrameCurve::from(curve))
+                // } else { return false; }
+            },
+            EAnimePropertyID::BoneOffset =>  {
+                // if let Some(curve) = resource.anime_assets.uints.get(&key) {
+                //     resource.anime_contexts.uints.ctx.create_animation(0, AssetTypeFrameCurve::from(curve))
+                // } else { return false; }
+            },
+            _ => {}
+        };
+
+        return true;
+    }
+
+    pub fn p3d_camera(cmds: &mut CommandsExchangeD3, scene: Entity, id: Entity, graph: Entity) {
+        cmds.transform_tree.push(OpsTransformNodeParent::ops(id, scene));
+        cmds.camera_create.push(OpsCameraCreation::ops(scene, id, graph));
+    }
+    pub fn p3d_camera_param(cmds: &mut CommandsExchangeD3, camera: Entity, val: ECameraModify) {
+        cmds.camera_param.push(OpsCameraModify::ops(camera, val));
+    }
+    pub fn p3d_camera_target(cmds: &mut CommandsExchangeD3, camera: Entity, x: f32, y: f32, z: f32) {
+        cmds.camera_target.push(OpsCameraTarget::ops(camera, x as f32, y as f32, z as f32));
+    }
+    pub fn p3d_viewer_force_include(cmds: &mut CommandsExchangeD3, viewer: Entity, entity: Entity, add: bool) {
+        cmds.camera_forceinclude.push(OpsViewerForceInclude::ops(viewer, entity, add));
+    }
+    pub fn p3d_create_vertex_buffer(cmds: &mut CommandsExchangeD3, key: String, data: Vec<u8> ) {
+        let key = KeyVertexBuffer::from(key.as_str());
+        cmds.verticesbuffers.push((key, data));
+    }
+    pub fn p3d_create_indices_buffer(cmds: &mut CommandsExchangeD3, key: String, data: Vec<u8>) {
+        let key = KeyVertexBuffer::from(key.as_str());
+        cmds.indicesbuffers.push((key, data));
+    }
+    pub fn p3d_instance_mesh(cmds: &mut CommandsExchangeD3, source: Entity, id: Entity) {
+        cmds.instance_create.push(OpsInstanceMeshCreation::ops(source, id));
+    }
+    pub fn p3d_instance_attr(cmds: &mut CommandsExchangeD3, instance: Entity, attr: EInstanceAttr, key: pi_atom::Atom) {
+        cmds.instance_attr.push(OpsInstanceAttr::ops(instance, attr, key ));
+    }
+    pub fn p3d_mesh_bone_offset(cmds: &mut CommandsExchangeD3, instance: Entity, val: u32) {
+        cmds.mesh_valuestate.push(OpsAbstructMeshValueStateModify::ops(instance, EMeshValueStateModify::BoneOffset(val as u32)));
+    }
+    pub fn p3d_light(app: &mut Engine, cmds: &mut CommandsExchangeD3, scene: Entity, id: Entity, ltype: f64) {
+        cmds.transform_tree.push(OpsTransformNodeParent::ops(id, scene));
+        cmds.light_create.push(OpsLightCreate::ops(scene, id, EngineConstants::light(ltype)));
+    }
+    pub fn p3d_light_param(cmds: &mut CommandsExchangeD3, light: Entity, val: ELightModify) {
+        cmds.light_param.push(OpsLightParam::ops(light, val ));
+    }
+    pub fn p3d_light_forceinclude(cmds: &mut CommandsExchangeD3, light: Entity, mesh_or_instance: Entity, val: EMeshForceLighting) {
+        cmds.forcelighting.push(OpsMeshForceLighting::ops(mesh_or_instance, light, val));
+    }
+    pub fn p3d_material_shader(cmds: &mut CommandsExchangeD3, mat: Entity, shader: &pi_atom::Atom, usematarray: bool) {
+        cmds.material_create.push(OpsMaterialCreate::ops(mat, shader.as_str(), usematarray));
+    }
+    pub fn p3d_material_apply(cmds: &mut CommandsExchangeD3, mat: Entity, mesh: Entity, pass: f64) {
+        let pass = EngineConstants::passtag(pass);
+        cmds.material_usemat.push(OpsMaterialUse::ops(mesh, mat, pass));
+    }
+    pub fn p3d_material_uniform_value(cmds: &mut CommandsExchangeD3, entity: Entity, val: EUniformVal) {
+        cmds.material_val.push( OpsUniformVal::ops( entity, val ) );
+    }
+    pub fn p3d_material_uniform_mat(cmds: &mut CommandsExchangeD3, mat: Entity,  key: &pi_atom::Atom, val: [f32;16]) {
+        cmds.material_valb.push( OpsUniformValB::mat4(mat, key.clone(), val) );
+    }
+    pub fn p3d_material_uniform_tex(
+        cmds: &mut CommandsExchangeD3, mat: Entity,  key: &pi_atom::Atom,
+        url: &pi_atom::Atom,
+        srgb: bool,
+        compressed: bool,
+        filter: bool,
+        address_mode_u: f64,
+        address_mode_v: f64,
+        address_mode_w: f64,
+        mag_filter: f64,
+        min_filter: f64,
+        mipmap_filter: f64,
+        anisotropy_clamp: f64,
+        border_color: f64,
+        isfile: bool,
+        cancombine: bool,
+        compare: Option<f64>,
+    ) {
+
+        let address_mode_u = EngineConstants::address_mode(address_mode_u);
+        let address_mode_v = EngineConstants::address_mode(address_mode_v);
+        let address_mode_w = EngineConstants::address_mode(address_mode_w);
+        let mag_filter = ContextConstants::filter_mode(mag_filter as u32);
+        let min_filter = ContextConstants::filter_mode(min_filter as u32);
+        let mipmap_filter = ContextConstants::filter_mode(mipmap_filter as u32);
+        let compare = if let Some(compare) = compare { Some(ContextConstants::compare_function(compare as u32).val2()) } else { None };
+        let anisotropy_clamp = EngineConstants::anisotropy_clamp(anisotropy_clamp);
+        let border_color = EngineConstants::border_color(border_color);
+        cmds.material_valb.push(
+            OpsUniformValB::texture(
+                mat,
+                UniformTextureWithSamplerParam {
+                    slotname: key.clone(),
+                    wrapu: address_mode_u,
+                    wrapv: address_mode_v,
+                    wrapw: address_mode_w,
+                    sample: pi_export_base::constants::sampler_desc(
+                        EAddressMode::ClampToEdge,
+                        EAddressMode::ClampToEdge,
+                        EAddressMode::ClampToEdge,
+                        mag_filter,
+                        min_filter,
+                        mipmap_filter,
+                        compare,
+                        anisotropy_clamp,
+                        border_color,
+                    ),
+                    url: EKeyTexture::ImageFrame(KeyImageTextureViewFrame::new(
+                        KeyImageTextureFrame { url: pi_atom::Atom::from(url.to_string()), cancombine, file: isfile, compressed },
+                        TextureViewDesc {
+                            // aspect: wgpu::TextureAspect::All,
+                            base_mip_level: 0,
+                            mip_level_count: None,
+                            base_array_layer: 0,
+                            array_layer_count: None,
+                        }
+                    )),
+                    texture_sample: wgpu::TextureSampleType::Float { filterable: true },
+                    sampler_bind_type: if filter { wgpu::SamplerBindingType::Filtering } else { wgpu::SamplerBindingType::NonFiltering },
+                }
+            )
+        );
+    }
+    
+    pub fn p3d_material_uniform_tex_from_render_target(
+        cmds: &mut CommandsExchangeD3, mat: Entity, key: &pi_atom::Atom, key_tilloff: &pi_atom::Atom, url: f64,
+        filter: bool,
+        address_mode_u: f64,
+        address_mode_v: f64,
+        address_mode_w: f64,
+        mag_filter: f64,
+        min_filter: f64,
+        mipmap_filter: f64,
+        anisotropy_clamp: f64,
+        border_color: f64,
+        compare: Option<f64>,
+    ) {
+        let address_mode_u = EngineConstants::address_mode(address_mode_u);
+        let address_mode_v = EngineConstants::address_mode(address_mode_v);
+        let address_mode_w = EngineConstants::address_mode(address_mode_w);
+        let mag_filter = ContextConstants::filter_mode(mag_filter as u32);
+        let min_filter = ContextConstants::filter_mode(min_filter as u32);
+        let mipmap_filter = ContextConstants::filter_mode(mipmap_filter as u32);
+        let compare = if let Some(compare) = compare { Some(ContextConstants::compare_function(compare as u32).val2()) } else { None };
+        let anisotropy_clamp = EngineConstants::anisotropy_clamp(anisotropy_clamp);
+        let border_color = EngineConstants::border_color(border_color);
+        let texparam = UniformTextureWithSamplerParam { 
+            slotname: key.clone(),
+            wrapu: address_mode_u,
+            wrapv: address_mode_v,
+            wrapw: address_mode_w,
+            sample: pi_export_base::constants::sampler_desc(
+                EAddressMode::ClampToEdge,
+                EAddressMode::ClampToEdge,
+                EAddressMode::ClampToEdge,
+                mag_filter,
+                min_filter,
+                mipmap_filter,
+                compare,
+                anisotropy_clamp,
+                border_color,
+            ),
+            texture_sample: wgpu::TextureSampleType::Float { filterable: true },
+            sampler_bind_type: if filter { wgpu::SamplerBindingType::Filtering } else { wgpu::SamplerBindingType::NonFiltering },
+            ..Default::default()
+        };
+        let key = unsafe { transmute(url) };
+        cmds.material_valb.push(OpsUniformValB::texture_from_target(mat, texparam, key, key_tilloff.clone()));
+    }
+    pub fn p3d_node_material_block_regist(app: &mut Engine, param: &mut ActionSetScene3D, block: &NodeMaterialBlock) {
+
+        let mut resource = param.resource.get_mut(&mut app.world);
+        resource.node_material_blocks.0.insert(block.0.clone(), block.1.clone());
+    }
+    pub fn p3d_material_uniform_tex_from_renderer(
+        cmds: &mut CommandsExchangeD3, mat: Entity, key: &pi_atom::Atom, key_tilloff: &pi_atom::Atom, url: Entity,
+        filter: bool,
+        address_mode_u: f64,
+        address_mode_v: f64,
+        address_mode_w: f64,
+        mag_filter: f64,
+        min_filter: f64,
+        mipmap_filter: f64,
+        anisotropy_clamp: f64,
+        border_color: f64,
+        compare: Option<f64>,
+    ) {
+        let address_mode_u = EngineConstants::address_mode(address_mode_u);
+        let address_mode_v = EngineConstants::address_mode(address_mode_v);
+        let address_mode_w = EngineConstants::address_mode(address_mode_w);
+        let mag_filter = ContextConstants::filter_mode(mag_filter as u32);
+        let min_filter = ContextConstants::filter_mode(min_filter as u32);
+        let mipmap_filter = ContextConstants::filter_mode(mipmap_filter as u32);
+        let compare = if let Some(compare) = compare { Some(ContextConstants::compare_function(compare as u32).val2()) } else { None };
+        let anisotropy_clamp = EngineConstants::anisotropy_clamp(anisotropy_clamp);
+        let border_color = EngineConstants::border_color(border_color);
+        let texparam = UniformTextureWithSamplerParam { 
+            slotname: key.clone(),
+            wrapu: address_mode_u,
+            wrapv: address_mode_v,
+            wrapw: address_mode_w,
+            sample: pi_export_base::constants::sampler_desc(
+                EAddressMode::ClampToEdge,
+                EAddressMode::ClampToEdge,
+                EAddressMode::ClampToEdge,
+                mag_filter,
+                min_filter,
+                mipmap_filter,
+                compare,
+                anisotropy_clamp,
+                border_color,
+            ),
+            texture_sample: wgpu::TextureSampleType::Float { filterable: true },
+            sampler_bind_type: if filter { wgpu::SamplerBindingType::Filtering } else { wgpu::SamplerBindingType::NonFiltering },
+            ..Default::default()
+        };
+        cmds.material_valb.push(OpsUniformValB::texture_from_renderer(mat, texparam, url, key_tilloff.clone()));
+    }
+    
+    pub fn p3d_uniform_target_animation(
+        cmds: &mut CommandsExchangeD3,
+        target: Entity,
+        group: Entity,
+        key: &pi_atom::Atom,
+        curve_key: f64,
+    ) {
+        let curve: u64 = unsafe { transmute(curve_key) };
+        cmds.material_valb.push(OpsUniformValB::targetanim(target, key.clone(), group, curve));
+    }
+    pub fn p3d_load_texture(cmds: &mut CommandsExchangeD3, url: &pi_atom::Atom, compressed: bool, isfile: bool, cancombine: bool) {
+        let key = KeyImageTextureFrame { url: pi_atom::Atom::from(url.to_string()), cancombine, file: isfile, compressed };
+        cmds.loadtextures.push(key);
+    }
+    pub fn p3d_mesh(cmds: &mut CommandsExchangeD3, scene: Entity, id: Entity, instancestate: &VInstanceAttributes, instance_use_single_buffer: bool) {
+        cmds.transform_tree.push(OpsTransformNodeParent::ops(id, scene));
+        let state = MeshInstanceState { instances: instancestate.1.clone(), instance_matrix: instancestate.0, use_single_instancebuffer: instance_use_single_buffer };
+        cmds.mesh_create.push(OpsMeshCreation::ops(scene, id, state));
+    }
+    pub fn p3d_mesh_geometry(cmds: &mut CommandsExchangeD3, mesh: Entity, geometa: &GeometryMeta, geoid: Entity) {
+
+        let geo: Entity = geoid;
+        // log::error!("MeshGeo: {:?}", geometa.0);
+        let mut vertices = vec![];
+        let mut indices = None;
+        match &geometa.0 {
+            crate::geometry::EGeometry::Vec(vbmetas) => {
+                vbmetas.iter().for_each(|vb| {
+                    vertices.push( VertexBufferDesc::new(vb.key.clone(), vb.range.clone(), vb.attrs(), vb.instance) );
+                });
+                
+                indices = if let Some(indice) = &geometa.1 {
+                    let range = if let (Some(start), Some(end)) = (indice.1, indice.2) {
+                        Some(Range { start: start as u32, end: end as u32 })
+                    } else {
+                        None
+                    };
+
+                    let ib = IndicesBufferDesc {
+                        format: if indice.3 { wgpu::IndexFormat::Uint16 } else { wgpu::IndexFormat::Uint32 },
+                        buffer_range: range,
+                        buffer: KeyVertexBuffer::from(indice.0.as_str()),
+                    };
+                    Some(ib)
+                } else { None };
+            },
+            crate::geometry::EGeometry::Quad => {
+                vertices = QuadBuilder::attrs_meta();
+                indices = None;
+            },
+            crate::geometry::EGeometry::Cube => {
+                vertices = CubeBuilder::attrs_meta();
+                indices = CubeBuilder::indices_meta();
+            },
+        }
+
+        cmds.geometry_create.push(OpsGeomeryCreate::ops(mesh, geo, vertices, indices));
+    }
+    
+    pub fn p3d_mesh_valuestate(cmds: &mut CommandsExchangeD3, mesh: Entity, val: EMeshValueStateModify) {
+        cmds.mesh_valuestate.push(OpsAbstructMeshValueStateModify::ops(mesh, val));
+    }
+    pub fn p3d_mesh_render_state(cmds: &mut CommandsExchangeD3, mesh: Entity, val: ERenderState) {
+        cmds.mesh_render_state.push(OpsRenderState::ops(mesh, val));
+    }
+    pub fn p3d_mesh_state(cmds: &mut CommandsExchangeD3, mesh: Entity, val: EMeshStateModify) {
+        cmds.mesh_state.push(OpsMeshStateModify::ops(mesh, val));
+    }
+    pub fn p3d_mesh_bounding_box(
+        cmds: &mut CommandsExchangeD3, mesh: Entity,
+        minx: f64, miny: f64, minz: f64,
+        maxx: f64, maxy: f64, maxz: f64
+    ) {
+        cmds.mesh_bounding.push(OpsMeshBounding::ops(mesh, (minx as f32, miny as f32, minz as f32), (maxx as f32, maxy as f32, maxz as f32)));
+    }
+    pub fn p3d_attribute_target_animation(
+        cmds: &mut CommandsExchangeD3,
+        target: Entity,
+        group: Entity,
+        key: &pi_atom::Atom,
+        curve_key: u64,
+    ) {
+        let curve: u64 = unsafe { transmute(curve_key) };
+        cmds.instance_targetanime.push(OpsTargetAnimationAttribute::ops(target, key.clone(), group, curve));
+    }
+    pub fn p3d_abstruct_pose_matrix(
+        cmds: &mut CommandsExchangeD3, mesh: Entity, data: Vec<Number>) {
+        cmds.mesh_pose.push(OpsAbstractMeshPose::ops(mesh, Matrix::from_column_slice(&data)));
+    }
+    pub fn p3d_regist_material(
+        app: &Engine,
+        key: &str,
+        uniforms: &MaterialUniformDefines,
+        vs_define_code: &str,
+        fs_define_code: &str,
+        vs_code: &str,
+        fs_code: &str,
+        includes: &NodematerialIncludes,
+        instance_code: &str,
+        varyings: &P3DShaderVaryings,
+        binds_defines_base: Option<f64>,
+    ) -> Option<P3DShaderMeta> {
+        let mut nodemat = NodeMaterialBuilder::new();
+        varyings.0.iter().for_each(|v| { nodemat.varyings.0.push(v.clone()) });
+
+        if let Some(binds_defines_base) = binds_defines_base {
+            nodemat.binddefines = binds_defines_base as BindDefine;
+        }
+        nodemat.material_instance_code = String::from(instance_code);
+
+        nodemat.values = uniforms.0.clone();
+        nodemat.textures = uniforms.1.clone();
+
+        let node_material_blocks = app.world.get_resource::<NodeMaterialBlocks>().unwrap();
+        let shader_metas = app.world.get_resource::<ShareAssetMgr::<ShaderEffectMeta>>().unwrap();
+        let enginopt = app.world.get_resource::<EngineCustomPlugins>().unwrap();
+        
+        includes.0.iter().for_each(|val| {
+            nodemat.include(val, node_material_blocks);
+        });
+
+        // log::warn!("Material {:?}", key);
+
+        nodemat.vs_define += vs_define_code;
+        nodemat.fs_define += fs_define_code;
+        nodemat.vs = String::from(vs_code);
+        nodemat.fs = String::from(fs_code);
+
+        // log::error!("Material {:?} {:?}", key, &nodemat.fs);
+        ActionMaterial::regist_material_meta(shader_metas, KeyShaderMeta::from(key), nodemat.meta(enginopt));
+
+        if let Some(data) = shader_metas.get(&KeyShaderMeta::from(key)) {
+            Some(P3DShaderMeta(data))
+        } else { None }
+    }
+    pub fn p3d_particle_system(
+        app: &mut Engine,
+        param: &mut ActionSetScene3D,
+        cmds: &mut CommandsExchangeD3,
+        scene: Entity,
+        entity: Entity,
+        trailmesh: Entity,
+        trailgeo: Entity,
+        key: &pi_atom::Atom,
+        color_attr_key: &pi_atom::Atom,
+        tilloff_attr_key: &pi_atom::Atom,
+        update_buffer_interval_frame: Option<f64>,
+    ) {
+        let reosurce = param.resource.get_mut(&mut app.world);
+        if let Some(calculator) = reosurce.particlesys.calcultors.get(&key.asset_u64()) {
+            let attrs = vec![
+                ParticleAttribute { vtype: EParticleAttributeType::Matrix, attr: pi_atom::Atom::from("") },
+                ParticleAttribute { vtype: EParticleAttributeType::Color, attr: color_attr_key.clone() },
+                ParticleAttribute { vtype: EParticleAttributeType::Tilloff, attr: tilloff_attr_key.clone() },
+            ];
+            let update_buffer_interval_frame = if let Some(update_buffer_interval_frame) = update_buffer_interval_frame {
+                update_buffer_interval_frame as u8
+            } else { 0 };
+            cmds.parsys_create.push(OpsCPUParticleSystem::ops(scene, entity, trailmesh, trailgeo, calculator, attrs, update_buffer_interval_frame));
+        }
+    }
+    pub fn p3d_particle_system_with_gltf(
+        cmds: &mut CommandsExchangeD3,
+        scene: Entity,
+        entity: Entity,
+        trailmesh: Entity,
+        trailgeo: Entity,
+        gltf: &GLTFRes,
+        index_calculator: f64,
+        color_attr_key: &pi_atom::Atom,
+        tilloff_attr_key: &pi_atom::Atom,
+        update_buffer_interval_frame: Option<f64>,
+    ) {
+        if let Some(calculator) = gltf_particle_calculator(&cmds, gltf, index_calculator) {
+            let attrs = vec![
+                ParticleAttribute { vtype: EParticleAttributeType::Matrix, attr: pi_atom::Atom::from("") },
+                ParticleAttribute { vtype: EParticleAttributeType::Color, attr: color_attr_key.clone() },
+                ParticleAttribute { vtype: EParticleAttributeType::Tilloff, attr: tilloff_attr_key.clone() },
+            ];
+            let update_buffer_interval_frame = if let Some(update_buffer_interval_frame) = update_buffer_interval_frame {
+                update_buffer_interval_frame as u8
+            } else { 0 };
+            cmds.parsys_create.push(OpsCPUParticleSystem::ops(scene, entity, trailmesh, trailgeo, calculator.clone(), attrs, update_buffer_interval_frame));
+        }
+    }
+    pub fn p3d_particle_system_state(cmds: &mut CommandsExchangeD3, entity: Entity, val: ECPUParticleSystemState) {
+        cmds.parsys_state.push( OpsCPUParticleSystemState::ops(entity, val) );
+    }
+    pub fn p3d_create_render_target(app: &mut Engine, param: &mut ActionSetScene3D, color_format: f64, depth_stencil_format: f64, width: f64, height: f64, filter: f64, address: f64, anisotropy_clamp: f64) -> Option<f64> {
+        let mut resource = param.resource.get_mut(&mut app.world);
+        
+        let filter = ContextConstants::filter_mode(filter as u32);
+        let address = EngineConstants::address_mode(address);
+        let anisotropy_clamp = EngineConstants::anisotropy_clamp(anisotropy_clamp );
+        let sampler = KeySampler {
+            address_mode_u: address, address_mode_v: address, address_mode_w: address, 
+            mag_filter: filter, min_filter: filter, mipmap_filter: filter,
+            border_color: None, anisotropy_clamp, compare: None
+        };
+        let color_format = EngineConstants::render_color_format(color_format);
+        let depth_stencil_format = EngineConstants::render_depth_format(depth_stencil_format);
+
+        if let Some(key) = resource.render_targets.create(
+            sampler, color_format, depth_stencil_format, width as u32, height as u32
+        ) {
+            Some(unsafe { transmute(key) })
+        } else {
+            None
+        }
+    }
+    pub fn p3d_dispose_render_target(app: &mut Engine, param: &mut ActionSetScene3D, key: f64) {
+        let mut resource = param.resource.get_mut(&mut app.world);
+        resource.render_targets.delete(unsafe { transmute(key) });
+    }
+    pub fn p3d_create_render_subgraph(app: &mut Engine, cmds: &mut CommandsExchangeD3, id_renderer: Entity, name: String) {
+        cmds.renderer_subgraph.push(OpsSubGraphCreate::ops(id_renderer, name.clone()));
+    }
+    pub fn p3d_create_render(app: &mut Engine, cmds: &mut CommandsExchangeD3, viewer: Entity, id_renderer: Entity, name: String, pass_tag: f64, transparent: bool, recordinput: Option<bool>, crossrender: Option<bool>) {
+        let recordinput = if let Some(recordinput) = recordinput { recordinput } else { true };
+        let crossrender = if let Some(crossrender) = crossrender { crossrender } else { false };
+        cmds.renderer_create.push(OpsRendererCreate::ops(id_renderer, name.clone(), viewer, PassTag::new(pass_tag as u16), transparent, recordinput, crossrender));
+    }
+    pub fn p3d_renderer_modify(cmds: &mut CommandsExchangeD3, renderer: Entity, val: ERendererCommand) {
+        cmds.renderer_modify.push(OpsRendererCommand::ops(renderer, val));
+    }
+    pub fn p3d_render_target(cmds: &mut CommandsExchangeD3, renderer: Entity, val: ERendererTarget) {
+        cmds.renderer_target.push(OpsRendererTarget::new(renderer, val));
+    }
+    pub fn p3d_crossrender_link_drawlists(cmds: &mut CommandsExchangeD3, linkentity: Entity, drawlistrenderers: Vec<Entity>) {
+        cmds.crossdrawlistinfo.push((linkentity, drawlistrenderers));
+    }
+    pub fn p3d_render_screenwithpostprocess(cmds: &mut CommandsExchangeD3, flag: bool) {
+        cmds.screenwithpostprocess = flag;
+    }
+    pub fn p3d_scene(cmds: &mut CommandsExchangeD3, scene: Entity, cullingmode: f64, collidermode: f64, values: [i32; 9]) {
+        cmds.scene_create.push(OpsSceneCreation::ops(scene, cullingmode as u8, collidermode as u8, values));
+    }
+    pub fn p3d_scene_option(cmds: &mut CommandsExchangeD3, scene: Entity, val: ESceneOps) {
+        cmds.scene_options.push(OpsSceneOption::ops(scene, val));
+    }
+    pub fn p3d_layermask(cmds: &mut CommandsExchangeD3, node: Entity, val: u32) {
+        cmds.mesh_layermask.push(OpsLayerMask::ops(node, val));
+    }
+    pub fn p3d_scene_boundingbox(cmds: &mut CommandsExchangeD3, scene: Entity, display: bool, pass: PassTag) {
+        cmds.scene_boundingbox.push(OpsBoundingBoxDisplay::ops(scene, display, pass));
+    }
+    pub fn p3d_collider(cmds: &mut CommandsExchangeD3, node: Entity,
+        minx: f32, miny: f32, minz: f32,
+        maxx: f32, maxy: f32, maxz: f32,
+        intersection_treshold: f32, alphaindex: i32
+    ) {
+        cmds.scene_collider.push(OpsCollider::new(node, (minx as f32, miny as f32, minz as f32), (maxx as f32, maxy as f32, maxz as f32), intersection_treshold as f32, alphaindex));
+    }
+    pub fn p3d_shadow_generator(cmds: &mut CommandsExchangeD3, scene: Entity, light: Entity, id: Entity, pass_tag: u16, graph: Entity) {
+        cmds.shadow_create.push(OpsShadowGenerator::ops(id, scene, light, PassTag::new(pass_tag as u16), graph));
+        cmds.renderer_create.push(OpsRendererCreate::ops(id, String::from("Shadow") + id.index().to_string().as_str(), id, PassTag::new(pass_tag as u16), false, false, false));
+    }
+    pub fn p3d_shadow_base_param(cmds: &mut CommandsExchangeD3, shadow: Entity, val: EShadowGeneratorParam) {
+        cmds.shadow_param.push(OpsShadowGeneratorParam(shadow, val));
+    }
+    pub fn p3d_skeleton(cmds: &mut CommandsExchangeD3, id: Entity, bonespervertex: u8, root: Entity, bones: &[Entity], bonecount: f64, cacheframe: f64) {
+        let state = match (bonespervertex as u8) {
+            1 => ESkinBonesPerVertex::One,
+            2 => ESkinBonesPerVertex::Two,
+            3 => ESkinBonesPerVertex::Three,
+            _ => ESkinBonesPerVertex::Four
+        };
+
+        cmds.skin_create.push(OpsSkinCreation::ops(id, state, root, &bones, cacheframe as u16, None));
+    }
+    pub fn p3d_bone(cmds: &mut CommandsExchangeD3, id: Entity, scene: Entity) {
+        cmds.skin_bonecreate.push(OpsBoneCreation::ops(id, scene));
+    }
+    pub fn p3d_bone_link(cmds: &mut CommandsExchangeD3, bone: Entity, link: Entity) {
+        cmds.skin_use.push(OpsSkinUse::bone_link(bone, link));
+    }
+    pub fn p3d_bone_pose(cmds: &mut CommandsExchangeD3, bone: Entity, data: &[f32]) {
+        let matrix = Matrix::new(
+            data[0], data[1], data[2], data[3], data[4], data[5], data[6], data[7],
+            data[8], data[9], data[10], data[11], data[12], data[13], data[14], data[15]
+        );
+        cmds.skin_bonepose.push(OpsBonePose::ops(bone, matrix));
+    }
+    pub fn p3d_skin_use(cmds: &mut CommandsExchangeD3, id_mesh: Entity, skin: Entity) {
+        cmds.skin_use.push(OpsSkinUse::ops(id_mesh, skin));
+    }
+    pub fn p3d_sprite(cmds: &mut CommandsExchangeD3, source: Entity, id: Entity, atlas: &pi_atom::Atom) {
+        cmds.instance_create.push(OpsInstanceMeshCreation::ops(source, id));
+        cmds.sprite_create.push(OpsSpriteCreate::ops(source, id, atlas.to_string().asset_u64()));
+    }
+    pub fn p3d_sprite_frame(cmds: &mut CommandsExchangeD3, sprite: Entity, tilloffkey: &pi_atom::Atom, idxframe: f64) {
+        cmds.sprite_modify.push(OpsSpriteModify::ops(sprite, SpriteModify::Idx(idxframe as IdxTextureFrame), tilloffkey.clone()));
+    }
+    pub fn p3d_sprite_frame_data(cmds: &mut CommandsExchangeD3, sprite: Entity, tilloffkey: &pi_atom::Atom, data: &[u16]) {
+        let data = [data[0], data[1], data[2], data[3], data[4], data[5], data[6], data[7], data[8], data[9],
+            data[10], data[11], data[12], data[13],
+        ];
+        cmds.sprite_modify.push(OpsSpriteModify::ops(sprite, SpriteModify::Data(data), tilloffkey.clone()));
+    }
+    pub fn p3d_create_data_texture(param: &mut CommandsExchangeD3, key: &pi_atom::Atom, width: u32, height: u32, format: f64, aspect: Option<f64>) {
+        let format = EngineConstants::texture_format(format);
+        let width = width as u32;
+        let height = height as u32;
+        let dimension = wgpu::TextureViewDimension::D2;
+        let is_opacity = true;
+        let useage = wgpu::TextureUsages::COPY_DST | wgpu::TextureUsages::TEXTURE_BINDING;
+        let texkey = KeyImageTextureFrame { url: key.clone(), file: false, compressed: false, cancombine: false };
+
+        let info = DataTextureSubData {
+            data: None,
+            dataoffset: 0,
+            xoffset: 0,
+            yoffset: 0,
+            width, height,
+            aspect: None,
+            depth_or_array_layers: 0
+        };
+        param.datatexcmd.createdata.insert(key.clone(), (info, format, dimension, texkey));
+    }
+    pub fn p3d_update_data_texture(param: &mut CommandsExchangeD3, key: &pi_atom::Atom, data:&[u8], xoffset: u32, yoffset: u32, width: u32, height: u32, aspect: Option<f64>) {
+
+        let key = key.clone();
+        if param.datatexcmd.updatedata.contains_key(&key) == false {
+            param.datatexcmd.updatedata.insert(key.clone(), vec![]);
+        }
+        if let Some(list) = param.datatexcmd.updatedata.get_mut(&key) {
+            list.push(DataTextureSubData {
+                data: Some(data.to_vec()),
+                dataoffset: 0,
+                xoffset: xoffset as u32,
+                yoffset: yoffset as u32,
+                width: width as u32, height: height as u32,
+                aspect: None,
+                depth_or_array_layers: 0
+            });
+        }
+    }
+    pub fn p3d_remove_data_texture(param: &mut CommandsExchangeD3, key: &pi_atom::Atom) {
+        param.datatexcmd.createdata.remove(key);
+        param.datatexcmd.updatedata.remove(key);
+        param.datatexcmd.record.remove(key);
+    }
+    pub fn p3d_texture_combine_param(app: &mut Engine, format: f64, maxlayer: f64, maxsize: f64, maxcount: f64) {
+        let device = app.world.get_resource::<PiRenderDevice>().unwrap().0.clone();
+        let format = EngineConstants::texture_format(format);
+        let cmds = app.world.get_resource_mut::<ResTextureCombineAtlas2DMgr>().unwrap();
+        cmds.append_desc(KeyAtlasDesc { format }, &device, maxlayer as u32, maxsize as u32, maxcount as usize);
+        // let loader = app.world.get_resource_mut::<pi_scene_shell::prelude::ImageTextureLoader>().unwrap();
+        // loader.test.push(String::from("assets/qian_01.astc.ktx"));
+        // loader.test.push(String::from("assets/plant1_0.astc.ktx"));
+        // loader.test.push(String::from("assets/player_001.astc.ktx"));
+        // loader.test.push(String::from("assets/plant3_0.astc.ktx"));
+        // loader.test.push(String::from("assets/plant4_1.astc.ktx"));
+        // loader.test.push(String::from("assets/plant4_0.astc.ktx"));
+        // loader.test.push(String::from("assets/qian_03.astc.ktx"));
+        // loader.test.push(String::from("assets/mutou_02.astc.ktx"));
+        // loader.test.push(String::from("assets/meigui_1.astc.ktx"));
+        // loader.test.push(String::from("assets/meigui_2.astc.ktx"));
+        // loader.test.push(String::from("assets/qiezi_4.astc.ktx"));
+        // loader.test.push(String::from("assets/qiezi_3.astc.ktx"));
+        // loader.test.push(String::from("assets/meigui_4.astc.ktx"));
+        // loader.test.push(String::from("assets/citiehua_2.astc.ktx"));
+        // loader.test.push(String::from("assets/citiehua_3.astc.ktx"));
+    }
+    
+    pub fn p3d_trail(cmds: &mut CommandsExchangeD3, scene: Entity, entity: Entity, linked: Entity) {
+        cmds.trail_create.push(OpsTrail::ops(scene, linked, entity));
+    }
+    pub fn p3d_trail_age(cmds: &mut CommandsExchangeD3, entity: Entity, age_ms: u32) {
+        cmds.trail_age.push(OpsTrailAgeControl::ops(entity, age_ms));
+    }
+    pub fn p3d_transform_node(cmds: &mut CommandsExchangeD3, scene: Entity, id: Entity) {
+        cmds.transform_tree.push(OpsTransformNodeParent::ops(id, scene));
+        cmds.transform_create.push(OpsTransformNode::ops(scene, id));
+    }
+    pub fn p3d_transform_node_parent(cmds: &mut CommandsExchangeD3, node: Entity, parent: Entity) {
+        cmds.transform_tree.push(OpsTransformNodeParent::ops(node, parent));
+    }
+    pub fn p3d_node_enable(cmds: &mut CommandsExchangeD3, node: Entity, val: bool) {
+        cmds.transform_enable.push(OpsNodeEnable::ops(node, val));
+    }
+    pub fn p3d_local_srt(cmds: &mut CommandsExchangeD3, node: Entity, val: ETransformSRT) {
+        cmds.transform_localsrt.push(OpsTransformNodeLocal::ops(node, val));
+    }
+    pub fn p3d_local_quaternion(cmds: &mut CommandsExchangeD3, node: Entity, x: f32, y: f32, z: f32, w: f32) {
+        cmds.transform_localrotq.push(OpsTransformNodeLocalRotationQuaternion::ops(node, x as f32, y as f32, z as f32, w as f32));
+    }
 }
+
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]

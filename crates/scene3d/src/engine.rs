@@ -282,8 +282,10 @@ impl ActionSetScene3D {
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
-pub fn p3d_entity(app: &mut Engine) -> f64 {
-    let id: Entity = app.world.entities().reserve_entity();
+pub fn p3d_entity(app: &mut Engine, cmds: &mut CommandsExchangeD3) -> f64 {
+
+    let id: Entity = CommandsExchangeD3::p3d_entity(app);
+
     as_f64(&id)
 }
 
@@ -292,7 +294,7 @@ pub fn p3d_entity(app: &mut Engine) -> f64 {
 pub fn p3d_dispose(cmds: &mut CommandsExchangeD3, entity: f64) {
     let entity: Entity = as_entity(entity);
 
-    cmds.obj_dispose.push(OpsDispose::ops(entity));
+    CommandsExchangeD3::p3d_dispose(cmds, entity);
 }
 
 
@@ -301,7 +303,7 @@ pub fn p3d_dispose(cmds: &mut CommandsExchangeD3, entity: f64) {
 pub fn p3d_scene_dispose(cmds: &mut CommandsExchangeD3, scene: f64) {
     let entity: Entity = as_entity(scene);
 
-    cmds.scene_dispose.push(OpsSceneDispose::ops(entity));
+    CommandsExchangeD3::p3d_scene_dispose(cmds, entity);
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
@@ -320,19 +322,17 @@ pub fn p3d_lighting_shadow_limit(app: &mut Engine, param: &mut ActionSetScene3D,
 
 	pi_export_base::export::await_last_frame(app);
     
-    let mut resource = param.resource.get_mut(&mut app.world);
-
-    resource.scene_lighting_limit.0.max_direct_light_count = scene_max_direct_light_count as u16;
-    resource.scene_lighting_limit.0.max_point_light_count = scene_max_point_light_count as u16;
-    resource.scene_lighting_limit.0.max_spot_light_count = scene_max_spot_light_count as u16;
-    resource.scene_lighting_limit.0.max_hemi_light_count = scene_max_hemi_light_count as u16;
-    
-    resource.scene_shadow_limit.0.max_count = scene_max_shadow_count as u16;
-
-    resource.model_lighting_limit.0.max_direct_light_count = model_max_direct_light_count as u16;
-    resource.model_lighting_limit.0.max_point_light_count = model_max_point_light_count as u16;
-    resource.model_lighting_limit.0.max_spot_light_count = model_max_spot_light_count as u16;
-    resource.model_lighting_limit.0.max_hemi_light_count = model_max_hemi_light_count as u16;
+    CommandsExchangeD3::p3d_lighting_shadow_limit(app, param,  
+        scene_max_direct_light_count as u16,
+        scene_max_point_light_count as u16,
+        scene_max_spot_light_count as u16,
+        scene_max_hemi_light_count as u16,
+        scene_max_shadow_count as u16,
+        model_max_direct_light_count as u16,
+        model_max_point_light_count as u16,
+        model_max_spot_light_count as u16,
+        model_max_hemi_light_count as u16,
+    );
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
@@ -341,7 +341,7 @@ pub fn p3d_render_graphic(cmds: &mut CommandsExchangeD3, before: f64, after: f64
     let before: Entity = as_entity(before);
     let after: Entity = as_entity(after);
 
-    cmds.renderer_connect.push(OpsRendererConnect::ops(before, after, isdisconnect));
+    CommandsExchangeD3::p3d_render_graphic(cmds, before, after, isdisconnect);
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
@@ -442,19 +442,14 @@ pub fn p3d_query_scene_state(app: &mut Engine, param: &mut ActionSetScene3D, ent
 pub fn p3d_engine_state(app: &mut Engine, param: &mut ActionSetScene3D, active: bool) {
 	pi_export_base::export::await_last_frame(app);
     
-    let mut cmds = param.state.get_mut(&mut app.world);
-    cmds.stateengine.active = active;
-    // log::error!("stateengine {:?}", cmds.stateengine.active);
+    CommandsExchangeD3::p3d_engine_state(app, param, active);
 }
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_engine_debug(app: &mut Engine, param: &mut ActionSetScene3D, debug: bool) {
 	pi_export_base::export::await_last_frame(app);
     
-    let mut cmds = param.state.get_mut(&mut app.world);
-    cmds.performance.debug = debug;
-    cmds.psperformance.debug = debug;
-    // log::error!("stateengine {:?}", cmds.stateengine.active);
+    CommandsExchangeD3::p3d_engine_debug(app, param, debug);
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
@@ -830,7 +825,7 @@ pub fn p3d_query_viewproject_matrix(app: &mut Engine, param: &mut ActionSetScene
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
-pub struct GLTFRes(u64);
+pub struct GLTFRes(pub(crate) u64);
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
@@ -851,12 +846,7 @@ pub fn p3d_animation_curve_id_bygltf(
     group_index: f64,
     channel_index: f64,
 ) -> f64 {
-    if let Some(gltf) = cmds.gltfs.get(&gltf.0) {
-        let key = gltf.key_anime_curve(group_index as usize, channel_index as usize);
-        unsafe { transmute(key) }
-    } else {
-        0.
-    }
+    return CommandsExchangeD3::p3d_animation_curve_id_bygltf(cmds, gltf, group_index as usize, channel_index as usize);
 }
 
 pub fn gltf_particle_calculator<'a>(
@@ -873,13 +863,11 @@ pub fn gltf_particle_calculator<'a>(
 #[pi_js_export]
 pub fn p3d_create_gltf_load(app: &mut Engine, param: &mut ActionSetScene3D, entity: f64, baseurl: &Atom, dyndesc: String) {
     pi_export_base::export::await_last_frame(app);
-    let resource = param.resource.get_mut(&mut app.world);
 
     let entity: Entity = as_entity(entity);
+    let baseurl = baseurl.deref().clone();
 
-    let param = baseurl.deref().clone();
-
-    resource.gltf2_loader.create_load(entity, param);
+    CommandsExchangeD3::p3d_create_gltf_load(app, param, entity, baseurl, dyndesc);
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
@@ -921,22 +909,15 @@ pub fn p3d_query_gltf_load(app: &mut Engine, param: &mut ActionSetScene3D, succe
 #[pi_js_export]
 pub fn p3d_get_gltf(app: &mut Engine, param: &mut ActionSetScene3D, cmds: &mut CommandsExchangeD3, entity: f64) -> Option<GLTFRes> {
 	pi_export_base::export::await_last_frame(app);
-    let mut resource = param.resource.get_mut(&mut app.world);
     let entity: Entity = as_entity(entity);
-    if let Some(val) = resource.gltf2_loader.get_success(entity) {
-        let id = cmds.gltfcounter;
-        cmds.gltfcounter += 1;
-        cmds.gltfs.insert(id, val);
-        Some(GLTFRes(id))
-    } else {
-        None
-    }
+
+    return CommandsExchangeD3::p3d_get_gltf(cmds, app, param, entity);
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_dispose_gltf(cmds: &mut CommandsExchangeD3, entity: &GLTFRes) {
-	cmds.gltfs.remove(&entity.0);
+    CommandsExchangeD3::p3d_dispose_gltf(cmds, entity);
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
@@ -950,7 +931,7 @@ pub fn p3d_get_gltf_fail_reason(app: &mut Engine, param: &mut ActionSetScene3D, 
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
-pub fn p3d_create_image_load(app: &mut Engine, param: &mut ActionSetScene3D, url: &Atom, cancombine: bool, compressed: bool, depth_or_array_layers: f64) -> f64 {
+pub fn p3d_create_image_load(app: &mut Engine, param: &mut ActionSetScene3D, cmds: &mut CommandsExchangeD3, url: &Atom, cancombine: bool, compressed: bool, depth_or_array_layers: f64) -> f64 {
 	pi_export_base::export::await_last_frame(app);
     let mut resource = param.resource.get_mut(&mut app.world);
 

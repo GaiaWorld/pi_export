@@ -155,8 +155,11 @@ pub fn p3d_create_vertex_buffer(
     key: String, data: &[f32], length: f64
 ) {
     let length = length as usize;
-    let key = KeyVertexBuffer::from(key.as_str());
-    cmds.verticesbuffers.push((key, bytemuck::cast_slice::<f32, u8>(&data[0..length]).to_vec()));
+
+    CommandsExchangeD3::p3d_create_vertex_buffer(cmds, key, bytemuck::cast_slice::<f32, u8>(&data[0..length]).to_vec());
+
+    // let key = KeyVertexBuffer::from(key.as_str());
+    // cmds.verticesbuffers.push((key, bytemuck::cast_slice::<f32, u8>(&data[0..length]).to_vec()));
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
@@ -166,8 +169,11 @@ pub fn p3d_create_indices_buffer(
     key: String, data: &[u16], length: f64
 ) {
     let length = length as usize;
-    let key = KeyVertexBuffer::from(key.as_str());
-    cmds.indicesbuffers.push((key, bytemuck::cast_slice::<u16, u8>(&data[0..length]).to_vec()));
+
+    CommandsExchangeD3::p3d_create_indices_buffer(cmds, key, bytemuck::cast_slice::<u16, u8>(&data[0..length]).to_vec());
+
+    // let key = KeyVertexBuffer::from(key.as_str());
+    // cmds.indicesbuffers.push((key, bytemuck::cast_slice::<u16, u8>(&data[0..length]).to_vec()));
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
@@ -177,8 +183,11 @@ pub fn p3d_create_indices_buffer_u32(
     key: String, data: &[u32], length: f64
 ) {
     let length = length as usize;
-    let key = KeyVertexBuffer::from(key.as_str());
-    cmds.indicesbuffers.push((key, bytemuck::cast_slice::<u32, u8>(&data[0..length]).to_vec()));
+
+    CommandsExchangeD3::p3d_create_indices_buffer(cmds, key, bytemuck::cast_slice::<u32, u8>(&data[0..length]).to_vec());
+
+    // let key = KeyVertexBuffer::from(key.as_str());
+    // cmds.indicesbuffers.push((key, bytemuck::cast_slice::<u32, u8>(&data[0..length]).to_vec()));
 }
 
 // #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
