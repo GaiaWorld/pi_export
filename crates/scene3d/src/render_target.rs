@@ -2,11 +2,13 @@
 use std::mem::transmute;
 
 use js_proxy_gen_macro::pi_js_export;
+#[cfg(feature = "record")]
+use pi_export_base::record::ERecord3D;
 use pi_scene_shell::prelude::*;
 use pi_export_base::constants::ContextConstants;
 pub use pi_export_base::constants::*;
 
-use crate::{as_dk, as_f64_dk, constants::EngineConstants, mesh::CommandsExchangeD3};
+use crate::{as_dk, as_f64_dk, constants::EngineConstants, mesh::CommandsExchangeD3, record::ERecordCMD};
 pub use crate::{as_entity, as_f64};
 #[cfg(target_arch = "wasm32")]
 use wasm_bindgen::prelude::wasm_bindgen;
@@ -17,9 +19,19 @@ pub use crate::engine::ActionSetScene3D;
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_create_render_target(app: &mut Engine, param: &mut ActionSetScene3D, cmds: &mut CommandsExchangeD3, color_format: f64, depth_stencil_format: f64, width: f64, height: f64, filter: f64, address: f64, anisotropy_clamp: f64) -> Option<f64> {
+    
+    #[cfg(feature = "replay")]
+    return None;
+
     pi_export_base::export::await_last_frame(app);
 
-    CommandsExchangeD3::p3d_create_render_target(app, param, color_format, depth_stencil_format, width, height, filter, address, anisotropy_clamp)
+    let mut resource = param.resource.get_mut(&mut app.world);
+    let key = CommandsExchangeD3::p3d_create_render_target(&mut resource.render_targets, color_format, depth_stencil_format, width, height, filter, address, anisotropy_clamp);
+
+    #[cfg(feature = "record")]
+    cmds.record2(ERecord3D::CreateRenderTarget(key, color_format, depth_stencil_format, width, height, filter, address, anisotropy_clamp));
+
+    key
 
     // let mut resource = param.resource.get_mut(&mut app.world);
     
@@ -46,9 +58,16 @@ pub fn p3d_create_render_target(app: &mut Engine, param: &mut ActionSetScene3D, 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_dispose_render_target(app: &mut Engine, param: &mut ActionSetScene3D, cmds: &mut CommandsExchangeD3, key: f64) {
+    #[cfg(feature = "replay")]
+    return ;
+
     pi_export_base::export::await_last_frame(app);
 
-    CommandsExchangeD3::p3d_dispose_render_target(app, param, key);
+    #[cfg(feature = "record")]
+    cmds.record2(ERecord3D::DisposeRenderTarget(key));
+
+    let mut resource = param.resource.get_mut(&mut app.world);
+    CommandsExchangeD3::p3d_dispose_render_target(&mut resource, key);
 
     // let mut resource = param.resource.get_mut(&mut app.world);
     // resource.render_targets.delete(unsafe { transmute(key) });

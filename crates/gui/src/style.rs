@@ -22,7 +22,8 @@ pub mod style_macro {
     };
     use smallvec::SmallVec;
     pub use pi_export_base::export::{Atom, Engine};
-    pub use crate::index::{OffsetDocument, Size, Gui};
+    pub use crate::index::{OffsetDocument, Size};
+    pub use pi_export_base::gui::Gui;
     use pi_ui_render::resource::animation_sheet::KeyFramesSheet;
     #[cfg(target_arch = "wasm32")]
     use wasm_bindgen::prelude::wasm_bindgen;
@@ -41,59 +42,59 @@ pub mod style_macro {
     #[allow(unused_attributes)]
     pub fn set_align_content(gui: &mut Gui, node_id: f64, v: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, AlignContentType(unsafe { transmute(v as u8) }));
+        gui.commands_mut().set_style(node_id, AlignContentType(unsafe { transmute(v as u8) }));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_align_content(gui: &mut Gui, node_id: f64, v: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, AlignContentType(unsafe { transmute(v as u8) }));
+        gui.commands_mut().set_style(node_id, AlignContentType(unsafe { transmute(v as u8) }));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn reset_align_content(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetAlignContentType);
+        gui.commands_mut().set_style(node_id, ResetAlignContentType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_align_content(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetAlignContentType);
+        gui.commands_mut().set_style(node_id, ResetAlignContentType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn set_align_items(gui: &mut Gui, node_id: f64, v: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, AlignItemsType(unsafe { transmute(v as u8) }));
+        gui.commands_mut().set_style(node_id, AlignItemsType(unsafe { transmute(v as u8) }));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_align_items(gui: &mut Gui, node_id: f64, v: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, AlignItemsType(unsafe { transmute(v as u8) }));
+        gui.commands_mut().set_style(node_id, AlignItemsType(unsafe { transmute(v as u8) }));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn reset_align_items(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetAlignItemsType);
+        gui.commands_mut().set_style(node_id, ResetAlignItemsType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_align_items(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetAlignItemsType);
+        gui.commands_mut().set_style(node_id, ResetAlignItemsType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn set_justify_content(gui: &mut Gui, node_id: f64, v: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands
+        gui.commands_mut()
             .set_style(node_id, JustifyContentType(unsafe { transmute(v as u8) }));
     }
     #[cfg(target_arch = "wasm32")]
@@ -101,27 +102,27 @@ pub mod style_macro {
     #[allow(unused_attributes)]
     pub fn set_justify_content(gui: &mut Gui, node_id: f64, v: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands
+        gui.commands_mut()
             .set_style(node_id, JustifyContentType(unsafe { transmute(v as u8) }));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn reset_justify_content(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetJustifyContentType);
+        gui.commands_mut().set_style(node_id, ResetJustifyContentType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_justify_content(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetJustifyContentType);
+        gui.commands_mut().set_style(node_id, ResetJustifyContentType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn set_flex_direction(gui: &mut Gui, node_id: f64, v: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands
+        gui.commands_mut()
             .set_style(node_id, FlexDirectionType(unsafe { transmute(v as u8) }));
     }
     #[cfg(target_arch = "wasm32")]
@@ -129,697 +130,697 @@ pub mod style_macro {
     #[allow(unused_attributes)]
     pub fn set_flex_direction(gui: &mut Gui, node_id: f64, v: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands
+        gui.commands_mut()
             .set_style(node_id, FlexDirectionType(unsafe { transmute(v as u8) }));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn reset_flex_direction(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetFlexDirectionType);
+        gui.commands_mut().set_style(node_id, ResetFlexDirectionType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_flex_direction(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetFlexDirectionType);
+        gui.commands_mut().set_style(node_id, ResetFlexDirectionType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn set_flex_wrap(gui: &mut Gui, node_id: f64, v: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, FlexWrapType(unsafe { transmute(v as u8) }));
+        gui.commands_mut().set_style(node_id, FlexWrapType(unsafe { transmute(v as u8) }));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_flex_wrap(gui: &mut Gui, node_id: f64, v: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, FlexWrapType(unsafe { transmute(v as u8) }));
+        gui.commands_mut().set_style(node_id, FlexWrapType(unsafe { transmute(v as u8) }));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn reset_flex_wrap(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetFlexWrapType);
+        gui.commands_mut().set_style(node_id, ResetFlexWrapType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_flex_wrap(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetFlexWrapType);
+        gui.commands_mut().set_style(node_id, ResetFlexWrapType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn set_align_self(gui: &mut Gui, node_id: f64, v: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, AlignSelfType(unsafe { transmute(v as u8) }));
+        gui.commands_mut().set_style(node_id, AlignSelfType(unsafe { transmute(v as u8) }));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_align_self(gui: &mut Gui, node_id: f64, v: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, AlignSelfType(unsafe { transmute(v as u8) }));
+        gui.commands_mut().set_style(node_id, AlignSelfType(unsafe { transmute(v as u8) }));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn reset_align_self(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetAlignSelfType);
+        gui.commands_mut().set_style(node_id, ResetAlignSelfType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_align_self(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetAlignSelfType);
+        gui.commands_mut().set_style(node_id, ResetAlignSelfType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn set_position_type(gui: &mut Gui, node_id: f64, v: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, PositionTypeType(unsafe { transmute(v as u8) }));
+        gui.commands_mut().set_style(node_id, PositionTypeType(unsafe { transmute(v as u8) }));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_position_type(gui: &mut Gui, node_id: f64, v: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, PositionTypeType(unsafe { transmute(v as u8) }));
+        gui.commands_mut().set_style(node_id, PositionTypeType(unsafe { transmute(v as u8) }));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn reset_position_type(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetPositionTypeType);
+        gui.commands_mut().set_style(node_id, ResetPositionTypeType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_position_type(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetPositionTypeType);
+        gui.commands_mut().set_style(node_id, ResetPositionTypeType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn set_flex_grow(gui: &mut Gui, node_id: f64, v: f32) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, FlexGrowType(v));
+        gui.commands_mut().set_style(node_id, FlexGrowType(v));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_flex_grow(gui: &mut Gui, node_id: f64, v: f32) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, FlexGrowType(v));
+        gui.commands_mut().set_style(node_id, FlexGrowType(v));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn reset_flex_grow(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetFlexGrowType);
+        gui.commands_mut().set_style(node_id, ResetFlexGrowType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_flex_grow(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetFlexGrowType);
+        gui.commands_mut().set_style(node_id, ResetFlexGrowType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn set_flex_shrink(gui: &mut Gui, node_id: f64, v: f32) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, FlexGrowType(v));
+        gui.commands_mut().set_style(node_id, FlexGrowType(v));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_flex_shrink(gui: &mut Gui, node_id: f64, v: f32) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, FlexGrowType(v));
+        gui.commands_mut().set_style(node_id, FlexGrowType(v));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn reset_flex_shrink(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetFlexGrowType);
+        gui.commands_mut().set_style(node_id, ResetFlexGrowType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_flex_shrink(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetFlexGrowType);
+        gui.commands_mut().set_style(node_id, ResetFlexGrowType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn set_flex_basis_percent(gui: &mut Gui, node_id: f64, v: f32) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, FlexBasisType(Dimension::Percent(v)));
+        gui.commands_mut().set_style(node_id, FlexBasisType(Dimension::Percent(v)));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_flex_basis_percent(gui: &mut Gui, node_id: f64, v: f32) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, FlexBasisType(Dimension::Percent(v)));
+        gui.commands_mut().set_style(node_id, FlexBasisType(Dimension::Percent(v)));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn reset_flex_basis_percent(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetFlexBasisType);
+        gui.commands_mut().set_style(node_id, ResetFlexBasisType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_flex_basis_percent(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetFlexBasisType);
+        gui.commands_mut().set_style(node_id, ResetFlexBasisType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn set_flex_basis(gui: &mut Gui, node_id: f64, v: f32) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, FlexBasisType(Dimension::Points(v)));
+        gui.commands_mut().set_style(node_id, FlexBasisType(Dimension::Points(v)));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_flex_basis(gui: &mut Gui, node_id: f64, v: f32) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, FlexBasisType(Dimension::Points(v)));
+        gui.commands_mut().set_style(node_id, FlexBasisType(Dimension::Points(v)));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn reset_flex_basis(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetFlexBasisType);
+        gui.commands_mut().set_style(node_id, ResetFlexBasisType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_flex_basis(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetFlexBasisType);
+        gui.commands_mut().set_style(node_id, ResetFlexBasisType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn set_flex_basis_auto(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, FlexBasisType(Dimension::Auto));
+        gui.commands_mut().set_style(node_id, FlexBasisType(Dimension::Auto));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_flex_basis_auto(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, FlexBasisType(Dimension::Auto));
+        gui.commands_mut().set_style(node_id, FlexBasisType(Dimension::Auto));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn reset_flex_basis_auto(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetFlexBasisType);
+        gui.commands_mut().set_style(node_id, ResetFlexBasisType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_flex_basis_auto(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetFlexBasisType);
+        gui.commands_mut().set_style(node_id, ResetFlexBasisType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn set_width_percent(gui: &mut Gui, node_id: f64, v: f32) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, WidthType(Dimension::Percent(v)));
+        gui.commands_mut().set_style(node_id, WidthType(Dimension::Percent(v)));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_width_percent(gui: &mut Gui, node_id: f64, v: f32) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, WidthType(Dimension::Percent(v)));
+        gui.commands_mut().set_style(node_id, WidthType(Dimension::Percent(v)));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn reset_width_percent(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetWidthType);
+        gui.commands_mut().set_style(node_id, ResetWidthType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_width_percent(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetWidthType);
+        gui.commands_mut().set_style(node_id, ResetWidthType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn set_width(gui: &mut Gui, node_id: f64, v: f32) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, WidthType(Dimension::Points(v)));
+        gui.commands_mut().set_style(node_id, WidthType(Dimension::Points(v)));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_width(gui: &mut Gui, node_id: f64, v: f32) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, WidthType(Dimension::Points(v)));
+        gui.commands_mut().set_style(node_id, WidthType(Dimension::Points(v)));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn reset_width(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetWidthType);
+        gui.commands_mut().set_style(node_id, ResetWidthType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_width(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetWidthType);
+        gui.commands_mut().set_style(node_id, ResetWidthType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn set_width_auto(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, WidthType(Dimension::Auto));
+        gui.commands_mut().set_style(node_id, WidthType(Dimension::Auto));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_width_auto(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, WidthType(Dimension::Auto));
+        gui.commands_mut().set_style(node_id, WidthType(Dimension::Auto));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn reset_width_auto(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetWidthType);
+        gui.commands_mut().set_style(node_id, ResetWidthType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_width_auto(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetWidthType);
+        gui.commands_mut().set_style(node_id, ResetWidthType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn set_height_percent(gui: &mut Gui, node_id: f64, v: f32) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, HeightType(Dimension::Percent(v)));
+        gui.commands_mut().set_style(node_id, HeightType(Dimension::Percent(v)));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_height_percent(gui: &mut Gui, node_id: f64, v: f32) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, HeightType(Dimension::Percent(v)));
+        gui.commands_mut().set_style(node_id, HeightType(Dimension::Percent(v)));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn reset_height_percent(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetHeightType);
+        gui.commands_mut().set_style(node_id, ResetHeightType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_height_percent(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetHeightType);
+        gui.commands_mut().set_style(node_id, ResetHeightType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn set_height(gui: &mut Gui, node_id: f64, v: f32) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, HeightType(Dimension::Points(v)));
+        gui.commands_mut().set_style(node_id, HeightType(Dimension::Points(v)));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_height(gui: &mut Gui, node_id: f64, v: f32) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, HeightType(Dimension::Points(v)));
+        gui.commands_mut().set_style(node_id, HeightType(Dimension::Points(v)));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn reset_height(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetHeightType);
+        gui.commands_mut().set_style(node_id, ResetHeightType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_height(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetHeightType);
+        gui.commands_mut().set_style(node_id, ResetHeightType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn set_height_auto(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, HeightType(Dimension::Auto));
+        gui.commands_mut().set_style(node_id, HeightType(Dimension::Auto));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_height_auto(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, HeightType(Dimension::Auto));
+        gui.commands_mut().set_style(node_id, HeightType(Dimension::Auto));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn reset_height_auto(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetHeightType);
+        gui.commands_mut().set_style(node_id, ResetHeightType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_height_auto(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetHeightType);
+        gui.commands_mut().set_style(node_id, ResetHeightType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn set_min_width_percent(gui: &mut Gui, node_id: f64, v: f32) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, MinWidthType(Dimension::Percent(v)));
+        gui.commands_mut().set_style(node_id, MinWidthType(Dimension::Percent(v)));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_min_width_percent(gui: &mut Gui, node_id: f64, v: f32) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, MinWidthType(Dimension::Percent(v)));
+        gui.commands_mut().set_style(node_id, MinWidthType(Dimension::Percent(v)));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn reset_min_width_percent(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetMinWidthType);
+        gui.commands_mut().set_style(node_id, ResetMinWidthType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_min_width_percent(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetMinWidthType);
+        gui.commands_mut().set_style(node_id, ResetMinWidthType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn set_min_width(gui: &mut Gui, node_id: f64, v: f32) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, MinWidthType(Dimension::Points(v)));
+        gui.commands_mut().set_style(node_id, MinWidthType(Dimension::Points(v)));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_min_width(gui: &mut Gui, node_id: f64, v: f32) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, MinWidthType(Dimension::Points(v)));
+        gui.commands_mut().set_style(node_id, MinWidthType(Dimension::Points(v)));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn reset_min_width(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetMinWidthType);
+        gui.commands_mut().set_style(node_id, ResetMinWidthType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_min_width(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetMinWidthType);
+        gui.commands_mut().set_style(node_id, ResetMinWidthType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn set_min_width_auto(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, MinWidthType(Dimension::Auto));
+        gui.commands_mut().set_style(node_id, MinWidthType(Dimension::Auto));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_min_width_auto(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, MinWidthType(Dimension::Auto));
+        gui.commands_mut().set_style(node_id, MinWidthType(Dimension::Auto));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn reset_min_width_auto(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetMinWidthType);
+        gui.commands_mut().set_style(node_id, ResetMinWidthType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_min_width_auto(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetMinWidthType);
+        gui.commands_mut().set_style(node_id, ResetMinWidthType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn set_min_height_percent(gui: &mut Gui, node_id: f64, v: f32) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, MinHeightType(Dimension::Percent(v)));
+        gui.commands_mut().set_style(node_id, MinHeightType(Dimension::Percent(v)));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_min_height_percent(gui: &mut Gui, node_id: f64, v: f32) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, MinHeightType(Dimension::Percent(v)));
+        gui.commands_mut().set_style(node_id, MinHeightType(Dimension::Percent(v)));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn reset_min_height_percent(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetMinHeightType);
+        gui.commands_mut().set_style(node_id, ResetMinHeightType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_min_height_percent(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetMinHeightType);
+        gui.commands_mut().set_style(node_id, ResetMinHeightType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn set_min_height(gui: &mut Gui, node_id: f64, v: f32) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, MinHeightType(Dimension::Points(v)));
+        gui.commands_mut().set_style(node_id, MinHeightType(Dimension::Points(v)));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_min_height(gui: &mut Gui, node_id: f64, v: f32) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, MinHeightType(Dimension::Points(v)));
+        gui.commands_mut().set_style(node_id, MinHeightType(Dimension::Points(v)));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn reset_min_height(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetMinHeightType);
+        gui.commands_mut().set_style(node_id, ResetMinHeightType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_min_height(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetMinHeightType);
+        gui.commands_mut().set_style(node_id, ResetMinHeightType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn set_min_height_auto(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, MinHeightType(Dimension::Auto));
+        gui.commands_mut().set_style(node_id, MinHeightType(Dimension::Auto));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_min_height_auto(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, MinHeightType(Dimension::Auto));
+        gui.commands_mut().set_style(node_id, MinHeightType(Dimension::Auto));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn reset_min_height_auto(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetMinHeightType);
+        gui.commands_mut().set_style(node_id, ResetMinHeightType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_min_height_auto(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetMinHeightType);
+        gui.commands_mut().set_style(node_id, ResetMinHeightType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn set_max_width_percent(gui: &mut Gui, node_id: f64, v: f32) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, MaxWidthType(Dimension::Percent(v)));
+        gui.commands_mut().set_style(node_id, MaxWidthType(Dimension::Percent(v)));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_max_width_percent(gui: &mut Gui, node_id: f64, v: f32) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, MaxWidthType(Dimension::Percent(v)));
+        gui.commands_mut().set_style(node_id, MaxWidthType(Dimension::Percent(v)));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn reset_max_width_percent(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetMaxWidthType);
+        gui.commands_mut().set_style(node_id, ResetMaxWidthType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_max_width_percent(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetMaxWidthType);
+        gui.commands_mut().set_style(node_id, ResetMaxWidthType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn set_max_width(gui: &mut Gui, node_id: f64, v: f32) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, MaxWidthType(Dimension::Points(v)));
+        gui.commands_mut().set_style(node_id, MaxWidthType(Dimension::Points(v)));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_max_width(gui: &mut Gui, node_id: f64, v: f32) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, MaxWidthType(Dimension::Points(v)));
+        gui.commands_mut().set_style(node_id, MaxWidthType(Dimension::Points(v)));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn reset_max_width(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetMaxWidthType);
+        gui.commands_mut().set_style(node_id, ResetMaxWidthType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_max_width(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetMaxWidthType);
+        gui.commands_mut().set_style(node_id, ResetMaxWidthType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn set_max_width_auto(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, MaxWidthType(Dimension::Auto));
+        gui.commands_mut().set_style(node_id, MaxWidthType(Dimension::Auto));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_max_width_auto(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, MaxWidthType(Dimension::Auto));
+        gui.commands_mut().set_style(node_id, MaxWidthType(Dimension::Auto));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn reset_max_width_auto(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetMaxWidthType);
+        gui.commands_mut().set_style(node_id, ResetMaxWidthType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_max_width_auto(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetMaxWidthType);
+        gui.commands_mut().set_style(node_id, ResetMaxWidthType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn set_max_height_percent(gui: &mut Gui, node_id: f64, v: f32) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, MaxHeightType(Dimension::Percent(v)));
+        gui.commands_mut().set_style(node_id, MaxHeightType(Dimension::Percent(v)));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_max_height_percent(gui: &mut Gui, node_id: f64, v: f32) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, MaxHeightType(Dimension::Percent(v)));
+        gui.commands_mut().set_style(node_id, MaxHeightType(Dimension::Percent(v)));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn reset_max_height_percent(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetMaxHeightType);
+        gui.commands_mut().set_style(node_id, ResetMaxHeightType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_max_height_percent(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetMaxHeightType);
+        gui.commands_mut().set_style(node_id, ResetMaxHeightType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn set_max_height(gui: &mut Gui, node_id: f64, v: f32) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, MaxHeightType(Dimension::Points(v)));
+        gui.commands_mut().set_style(node_id, MaxHeightType(Dimension::Points(v)));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_max_height(gui: &mut Gui, node_id: f64, v: f32) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, MaxHeightType(Dimension::Points(v)));
+        gui.commands_mut().set_style(node_id, MaxHeightType(Dimension::Points(v)));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn reset_max_height(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetMaxHeightType);
+        gui.commands_mut().set_style(node_id, ResetMaxHeightType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_max_height(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetMaxHeightType);
+        gui.commands_mut().set_style(node_id, ResetMaxHeightType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn set_max_height_auto(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, MaxHeightType(Dimension::Auto));
+        gui.commands_mut().set_style(node_id, MaxHeightType(Dimension::Auto));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_max_height_auto(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, MaxHeightType(Dimension::Auto));
+        gui.commands_mut().set_style(node_id, MaxHeightType(Dimension::Auto));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn reset_max_height_auto(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetMaxHeightType);
+        gui.commands_mut().set_style(node_id, ResetMaxHeightType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_max_height_auto(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetMaxHeightType);
+        gui.commands_mut().set_style(node_id, ResetMaxHeightType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
@@ -827,16 +828,16 @@ pub mod style_macro {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
         match unsafe { transmute(edge as u8) } {
             Edge::Top => {
-                gui.commands.set_style(node_id, PaddingTopType(Dimension::Percent(v)))
+                gui.commands_mut().set_style(node_id, PaddingTopType(Dimension::Percent(v)))
             }
             Edge::Right => {
-                gui.commands.set_style(node_id, PaddingRightType(Dimension::Percent(v)))
+                gui.commands_mut().set_style(node_id, PaddingRightType(Dimension::Percent(v)))
             }
             Edge::Bottom => {
-                gui.commands.set_style(node_id, PaddingBottomType(Dimension::Percent(v)))
+                gui.commands_mut().set_style(node_id, PaddingBottomType(Dimension::Percent(v)))
             }
             Edge::Left => {
-                gui.commands.set_style(node_id, PaddingLeftType(Dimension::Percent(v)))
+                gui.commands_mut().set_style(node_id, PaddingLeftType(Dimension::Percent(v)))
             }
             _ => return,
         };
@@ -848,16 +849,16 @@ pub mod style_macro {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
         match unsafe { transmute(edge as u8) } {
             Edge::Top => {
-                gui.commands.set_style(node_id, PaddingTopType(Dimension::Percent(v)))
+                gui.commands_mut().set_style(node_id, PaddingTopType(Dimension::Percent(v)))
             }
             Edge::Right => {
-                gui.commands.set_style(node_id, PaddingRightType(Dimension::Percent(v)))
+                gui.commands_mut().set_style(node_id, PaddingRightType(Dimension::Percent(v)))
             }
             Edge::Bottom => {
-                gui.commands.set_style(node_id, PaddingBottomType(Dimension::Percent(v)))
+                gui.commands_mut().set_style(node_id, PaddingBottomType(Dimension::Percent(v)))
             }
             Edge::Left => {
-                gui.commands.set_style(node_id, PaddingLeftType(Dimension::Percent(v)))
+                gui.commands_mut().set_style(node_id, PaddingLeftType(Dimension::Percent(v)))
             }
             _ => return,
         };
@@ -867,10 +868,10 @@ pub mod style_macro {
     pub fn reset_padding_percent(gui: &mut Gui, node_id: f64, edge: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
         match unsafe { transmute(edge as u8) } {
-            Edge::Top => gui.commands.set_style(node_id, ResetPaddingTopType),
-            Edge::Right => gui.commands.set_style(node_id, ResetPaddingRightType),
-            Edge::Bottom => gui.commands.set_style(node_id, ResetPaddingBottomType),
-            Edge::Left => gui.commands.set_style(node_id, ResetPaddingLeftType),
+            Edge::Top => gui.commands_mut().set_style(node_id, ResetPaddingTopType),
+            Edge::Right => gui.commands_mut().set_style(node_id, ResetPaddingRightType),
+            Edge::Bottom => gui.commands_mut().set_style(node_id, ResetPaddingBottomType),
+            Edge::Left => gui.commands_mut().set_style(node_id, ResetPaddingLeftType),
             _ => return,
         };
     }
@@ -880,10 +881,10 @@ pub mod style_macro {
     pub fn reset_padding_percent(gui: &mut Gui, node_id: f64, edge: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
         match unsafe { transmute(edge as u8) } {
-            Edge::Top => gui.commands.set_style(node_id, ResetPaddingTopType),
-            Edge::Right => gui.commands.set_style(node_id, ResetPaddingRightType),
-            Edge::Bottom => gui.commands.set_style(node_id, ResetPaddingBottomType),
-            Edge::Left => gui.commands.set_style(node_id, ResetPaddingLeftType),
+            Edge::Top => gui.commands_mut().set_style(node_id, ResetPaddingTopType),
+            Edge::Right => gui.commands_mut().set_style(node_id, ResetPaddingRightType),
+            Edge::Bottom => gui.commands_mut().set_style(node_id, ResetPaddingBottomType),
+            Edge::Left => gui.commands_mut().set_style(node_id, ResetPaddingLeftType),
             _ => return,
         };
     }
@@ -893,16 +894,16 @@ pub mod style_macro {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
         match unsafe { transmute(edge as u8) } {
             Edge::Top => {
-                gui.commands.set_style(node_id, PaddingTopType(Dimension::Points(v)))
+                gui.commands_mut().set_style(node_id, PaddingTopType(Dimension::Points(v)))
             }
             Edge::Right => {
-                gui.commands.set_style(node_id, PaddingRightType(Dimension::Points(v)))
+                gui.commands_mut().set_style(node_id, PaddingRightType(Dimension::Points(v)))
             }
             Edge::Bottom => {
-                gui.commands.set_style(node_id, PaddingBottomType(Dimension::Points(v)))
+                gui.commands_mut().set_style(node_id, PaddingBottomType(Dimension::Points(v)))
             }
             Edge::Left => {
-                gui.commands.set_style(node_id, PaddingLeftType(Dimension::Points(v)))
+                gui.commands_mut().set_style(node_id, PaddingLeftType(Dimension::Points(v)))
             }
             _ => return,
         };
@@ -914,16 +915,16 @@ pub mod style_macro {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
         match unsafe { transmute(edge as u8) } {
             Edge::Top => {
-                gui.commands.set_style(node_id, PaddingTopType(Dimension::Points(v)))
+                gui.commands_mut().set_style(node_id, PaddingTopType(Dimension::Points(v)))
             }
             Edge::Right => {
-                gui.commands.set_style(node_id, PaddingRightType(Dimension::Points(v)))
+                gui.commands_mut().set_style(node_id, PaddingRightType(Dimension::Points(v)))
             }
             Edge::Bottom => {
-                gui.commands.set_style(node_id, PaddingBottomType(Dimension::Points(v)))
+                gui.commands_mut().set_style(node_id, PaddingBottomType(Dimension::Points(v)))
             }
             Edge::Left => {
-                gui.commands.set_style(node_id, PaddingLeftType(Dimension::Points(v)))
+                gui.commands_mut().set_style(node_id, PaddingLeftType(Dimension::Points(v)))
             }
             _ => return,
         };
@@ -933,10 +934,10 @@ pub mod style_macro {
     pub fn reset_padding(gui: &mut Gui, node_id: f64, edge: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
         match unsafe { transmute(edge as u8) } {
-            Edge::Top => gui.commands.set_style(node_id, ResetPaddingTopType),
-            Edge::Right => gui.commands.set_style(node_id, ResetPaddingRightType),
-            Edge::Bottom => gui.commands.set_style(node_id, ResetPaddingBottomType),
-            Edge::Left => gui.commands.set_style(node_id, ResetPaddingLeftType),
+            Edge::Top => gui.commands_mut().set_style(node_id, ResetPaddingTopType),
+            Edge::Right => gui.commands_mut().set_style(node_id, ResetPaddingRightType),
+            Edge::Bottom => gui.commands_mut().set_style(node_id, ResetPaddingBottomType),
+            Edge::Left => gui.commands_mut().set_style(node_id, ResetPaddingLeftType),
             _ => return,
         };
     }
@@ -946,10 +947,10 @@ pub mod style_macro {
     pub fn reset_padding(gui: &mut Gui, node_id: f64, edge: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
         match unsafe { transmute(edge as u8) } {
-            Edge::Top => gui.commands.set_style(node_id, ResetPaddingTopType),
-            Edge::Right => gui.commands.set_style(node_id, ResetPaddingRightType),
-            Edge::Bottom => gui.commands.set_style(node_id, ResetPaddingBottomType),
-            Edge::Left => gui.commands.set_style(node_id, ResetPaddingLeftType),
+            Edge::Top => gui.commands_mut().set_style(node_id, ResetPaddingTopType),
+            Edge::Right => gui.commands_mut().set_style(node_id, ResetPaddingRightType),
+            Edge::Bottom => gui.commands_mut().set_style(node_id, ResetPaddingBottomType),
+            Edge::Left => gui.commands_mut().set_style(node_id, ResetPaddingLeftType),
             _ => return,
         };
     }
@@ -958,15 +959,15 @@ pub mod style_macro {
     pub fn set_padding_auto(gui: &mut Gui, node_id: f64, edge: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
         match unsafe { transmute(edge as u8) } {
-            Edge::Top => gui.commands.set_style(node_id, PaddingTopType(Dimension::Auto)),
+            Edge::Top => gui.commands_mut().set_style(node_id, PaddingTopType(Dimension::Auto)),
             Edge::Right => {
-                gui.commands.set_style(node_id, PaddingRightType(Dimension::Auto))
+                gui.commands_mut().set_style(node_id, PaddingRightType(Dimension::Auto))
             }
             Edge::Bottom => {
-                gui.commands.set_style(node_id, PaddingBottomType(Dimension::Auto))
+                gui.commands_mut().set_style(node_id, PaddingBottomType(Dimension::Auto))
             }
             Edge::Left => {
-                gui.commands.set_style(node_id, PaddingLeftType(Dimension::Auto))
+                gui.commands_mut().set_style(node_id, PaddingLeftType(Dimension::Auto))
             }
             _ => return,
         };
@@ -977,15 +978,15 @@ pub mod style_macro {
     pub fn set_padding_auto(gui: &mut Gui, node_id: f64, edge: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
         match unsafe { transmute(edge as u8) } {
-            Edge::Top => gui.commands.set_style(node_id, PaddingTopType(Dimension::Auto)),
+            Edge::Top => gui.commands_mut().set_style(node_id, PaddingTopType(Dimension::Auto)),
             Edge::Right => {
-                gui.commands.set_style(node_id, PaddingRightType(Dimension::Auto))
+                gui.commands_mut().set_style(node_id, PaddingRightType(Dimension::Auto))
             }
             Edge::Bottom => {
-                gui.commands.set_style(node_id, PaddingBottomType(Dimension::Auto))
+                gui.commands_mut().set_style(node_id, PaddingBottomType(Dimension::Auto))
             }
             Edge::Left => {
-                gui.commands.set_style(node_id, PaddingLeftType(Dimension::Auto))
+                gui.commands_mut().set_style(node_id, PaddingLeftType(Dimension::Auto))
             }
             _ => return,
         };
@@ -995,10 +996,10 @@ pub mod style_macro {
     pub fn reset_padding_auto(gui: &mut Gui, node_id: f64, edge: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
         match unsafe { transmute(edge as u8) } {
-            Edge::Top => gui.commands.set_style(node_id, ResetPaddingTopType),
-            Edge::Right => gui.commands.set_style(node_id, ResetPaddingRightType),
-            Edge::Bottom => gui.commands.set_style(node_id, ResetPaddingBottomType),
-            Edge::Left => gui.commands.set_style(node_id, ResetPaddingLeftType),
+            Edge::Top => gui.commands_mut().set_style(node_id, ResetPaddingTopType),
+            Edge::Right => gui.commands_mut().set_style(node_id, ResetPaddingRightType),
+            Edge::Bottom => gui.commands_mut().set_style(node_id, ResetPaddingBottomType),
+            Edge::Left => gui.commands_mut().set_style(node_id, ResetPaddingLeftType),
             _ => return,
         };
     }
@@ -1008,10 +1009,10 @@ pub mod style_macro {
     pub fn reset_padding_auto(gui: &mut Gui, node_id: f64, edge: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
         match unsafe { transmute(edge as u8) } {
-            Edge::Top => gui.commands.set_style(node_id, ResetPaddingTopType),
-            Edge::Right => gui.commands.set_style(node_id, ResetPaddingRightType),
-            Edge::Bottom => gui.commands.set_style(node_id, ResetPaddingBottomType),
-            Edge::Left => gui.commands.set_style(node_id, ResetPaddingLeftType),
+            Edge::Top => gui.commands_mut().set_style(node_id, ResetPaddingTopType),
+            Edge::Right => gui.commands_mut().set_style(node_id, ResetPaddingRightType),
+            Edge::Bottom => gui.commands_mut().set_style(node_id, ResetPaddingBottomType),
+            Edge::Left => gui.commands_mut().set_style(node_id, ResetPaddingLeftType),
             _ => return,
         };
     }
@@ -1021,16 +1022,16 @@ pub mod style_macro {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
         match unsafe { transmute(edge as u8) } {
             Edge::Top => {
-                gui.commands.set_style(node_id, MarginTopType(Dimension::Percent(v)))
+                gui.commands_mut().set_style(node_id, MarginTopType(Dimension::Percent(v)))
             }
             Edge::Right => {
-                gui.commands.set_style(node_id, MarginRightType(Dimension::Percent(v)))
+                gui.commands_mut().set_style(node_id, MarginRightType(Dimension::Percent(v)))
             }
             Edge::Bottom => {
-                gui.commands.set_style(node_id, MarginBottomType(Dimension::Percent(v)))
+                gui.commands_mut().set_style(node_id, MarginBottomType(Dimension::Percent(v)))
             }
             Edge::Left => {
-                gui.commands.set_style(node_id, MarginLeftType(Dimension::Percent(v)))
+                gui.commands_mut().set_style(node_id, MarginLeftType(Dimension::Percent(v)))
             }
             _ => return,
         };
@@ -1042,16 +1043,16 @@ pub mod style_macro {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
         match unsafe { transmute(edge as u8) } {
             Edge::Top => {
-                gui.commands.set_style(node_id, MarginTopType(Dimension::Percent(v)))
+                gui.commands_mut().set_style(node_id, MarginTopType(Dimension::Percent(v)))
             }
             Edge::Right => {
-                gui.commands.set_style(node_id, MarginRightType(Dimension::Percent(v)))
+                gui.commands_mut().set_style(node_id, MarginRightType(Dimension::Percent(v)))
             }
             Edge::Bottom => {
-                gui.commands.set_style(node_id, MarginBottomType(Dimension::Percent(v)))
+                gui.commands_mut().set_style(node_id, MarginBottomType(Dimension::Percent(v)))
             }
             Edge::Left => {
-                gui.commands.set_style(node_id, MarginLeftType(Dimension::Percent(v)))
+                gui.commands_mut().set_style(node_id, MarginLeftType(Dimension::Percent(v)))
             }
             _ => return,
         };
@@ -1061,10 +1062,10 @@ pub mod style_macro {
     pub fn reset_margin_percent(gui: &mut Gui, node_id: f64, edge: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
         match unsafe { transmute(edge as u8) } {
-            Edge::Top => gui.commands.set_style(node_id, ResetMarginTopType),
-            Edge::Right => gui.commands.set_style(node_id, ResetMarginRightType),
-            Edge::Bottom => gui.commands.set_style(node_id, ResetMarginBottomType),
-            Edge::Left => gui.commands.set_style(node_id, ResetMarginLeftType),
+            Edge::Top => gui.commands_mut().set_style(node_id, ResetMarginTopType),
+            Edge::Right => gui.commands_mut().set_style(node_id, ResetMarginRightType),
+            Edge::Bottom => gui.commands_mut().set_style(node_id, ResetMarginBottomType),
+            Edge::Left => gui.commands_mut().set_style(node_id, ResetMarginLeftType),
             _ => return,
         };
     }
@@ -1074,10 +1075,10 @@ pub mod style_macro {
     pub fn reset_margin_percent(gui: &mut Gui, node_id: f64, edge: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
         match unsafe { transmute(edge as u8) } {
-            Edge::Top => gui.commands.set_style(node_id, ResetMarginTopType),
-            Edge::Right => gui.commands.set_style(node_id, ResetMarginRightType),
-            Edge::Bottom => gui.commands.set_style(node_id, ResetMarginBottomType),
-            Edge::Left => gui.commands.set_style(node_id, ResetMarginLeftType),
+            Edge::Top => gui.commands_mut().set_style(node_id, ResetMarginTopType),
+            Edge::Right => gui.commands_mut().set_style(node_id, ResetMarginRightType),
+            Edge::Bottom => gui.commands_mut().set_style(node_id, ResetMarginBottomType),
+            Edge::Left => gui.commands_mut().set_style(node_id, ResetMarginLeftType),
             _ => return,
         };
     }
@@ -1087,16 +1088,16 @@ pub mod style_macro {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
         match unsafe { transmute(edge as u8) } {
             Edge::Top => {
-                gui.commands.set_style(node_id, MarginTopType(Dimension::Points(v)))
+                gui.commands_mut().set_style(node_id, MarginTopType(Dimension::Points(v)))
             }
             Edge::Right => {
-                gui.commands.set_style(node_id, MarginRightType(Dimension::Points(v)))
+                gui.commands_mut().set_style(node_id, MarginRightType(Dimension::Points(v)))
             }
             Edge::Bottom => {
-                gui.commands.set_style(node_id, MarginBottomType(Dimension::Points(v)))
+                gui.commands_mut().set_style(node_id, MarginBottomType(Dimension::Points(v)))
             }
             Edge::Left => {
-                gui.commands.set_style(node_id, MarginLeftType(Dimension::Points(v)))
+                gui.commands_mut().set_style(node_id, MarginLeftType(Dimension::Points(v)))
             }
             _ => return,
         };
@@ -1108,16 +1109,16 @@ pub mod style_macro {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
         match unsafe { transmute(edge as u8) } {
             Edge::Top => {
-                gui.commands.set_style(node_id, MarginTopType(Dimension::Points(v)))
+                gui.commands_mut().set_style(node_id, MarginTopType(Dimension::Points(v)))
             }
             Edge::Right => {
-                gui.commands.set_style(node_id, MarginRightType(Dimension::Points(v)))
+                gui.commands_mut().set_style(node_id, MarginRightType(Dimension::Points(v)))
             }
             Edge::Bottom => {
-                gui.commands.set_style(node_id, MarginBottomType(Dimension::Points(v)))
+                gui.commands_mut().set_style(node_id, MarginBottomType(Dimension::Points(v)))
             }
             Edge::Left => {
-                gui.commands.set_style(node_id, MarginLeftType(Dimension::Points(v)))
+                gui.commands_mut().set_style(node_id, MarginLeftType(Dimension::Points(v)))
             }
             _ => return,
         };
@@ -1127,10 +1128,10 @@ pub mod style_macro {
     pub fn reset_margin(gui: &mut Gui, node_id: f64, edge: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
         match unsafe { transmute(edge as u8) } {
-            Edge::Top => gui.commands.set_style(node_id, ResetMarginTopType),
-            Edge::Right => gui.commands.set_style(node_id, ResetMarginRightType),
-            Edge::Bottom => gui.commands.set_style(node_id, ResetMarginBottomType),
-            Edge::Left => gui.commands.set_style(node_id, ResetMarginLeftType),
+            Edge::Top => gui.commands_mut().set_style(node_id, ResetMarginTopType),
+            Edge::Right => gui.commands_mut().set_style(node_id, ResetMarginRightType),
+            Edge::Bottom => gui.commands_mut().set_style(node_id, ResetMarginBottomType),
+            Edge::Left => gui.commands_mut().set_style(node_id, ResetMarginLeftType),
             _ => return,
         };
     }
@@ -1140,10 +1141,10 @@ pub mod style_macro {
     pub fn reset_margin(gui: &mut Gui, node_id: f64, edge: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
         match unsafe { transmute(edge as u8) } {
-            Edge::Top => gui.commands.set_style(node_id, ResetMarginTopType),
-            Edge::Right => gui.commands.set_style(node_id, ResetMarginRightType),
-            Edge::Bottom => gui.commands.set_style(node_id, ResetMarginBottomType),
-            Edge::Left => gui.commands.set_style(node_id, ResetMarginLeftType),
+            Edge::Top => gui.commands_mut().set_style(node_id, ResetMarginTopType),
+            Edge::Right => gui.commands_mut().set_style(node_id, ResetMarginRightType),
+            Edge::Bottom => gui.commands_mut().set_style(node_id, ResetMarginBottomType),
+            Edge::Left => gui.commands_mut().set_style(node_id, ResetMarginLeftType),
             _ => return,
         };
     }
@@ -1152,15 +1153,15 @@ pub mod style_macro {
     pub fn set_margin_auto(gui: &mut Gui, node_id: f64, edge: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
         match unsafe { transmute(edge as u8) } {
-            Edge::Top => gui.commands.set_style(node_id, MarginTopType(Dimension::Auto)),
+            Edge::Top => gui.commands_mut().set_style(node_id, MarginTopType(Dimension::Auto)),
             Edge::Right => {
-                gui.commands.set_style(node_id, MarginRightType(Dimension::Auto))
+                gui.commands_mut().set_style(node_id, MarginRightType(Dimension::Auto))
             }
             Edge::Bottom => {
-                gui.commands.set_style(node_id, MarginBottomType(Dimension::Auto))
+                gui.commands_mut().set_style(node_id, MarginBottomType(Dimension::Auto))
             }
             Edge::Left => {
-                gui.commands.set_style(node_id, MarginLeftType(Dimension::Auto))
+                gui.commands_mut().set_style(node_id, MarginLeftType(Dimension::Auto))
             }
             _ => return,
         };
@@ -1171,15 +1172,15 @@ pub mod style_macro {
     pub fn set_margin_auto(gui: &mut Gui, node_id: f64, edge: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
         match unsafe { transmute(edge as u8) } {
-            Edge::Top => gui.commands.set_style(node_id, MarginTopType(Dimension::Auto)),
+            Edge::Top => gui.commands_mut().set_style(node_id, MarginTopType(Dimension::Auto)),
             Edge::Right => {
-                gui.commands.set_style(node_id, MarginRightType(Dimension::Auto))
+                gui.commands_mut().set_style(node_id, MarginRightType(Dimension::Auto))
             }
             Edge::Bottom => {
-                gui.commands.set_style(node_id, MarginBottomType(Dimension::Auto))
+                gui.commands_mut().set_style(node_id, MarginBottomType(Dimension::Auto))
             }
             Edge::Left => {
-                gui.commands.set_style(node_id, MarginLeftType(Dimension::Auto))
+                gui.commands_mut().set_style(node_id, MarginLeftType(Dimension::Auto))
             }
             _ => return,
         };
@@ -1189,10 +1190,10 @@ pub mod style_macro {
     pub fn reset_margin_auto(gui: &mut Gui, node_id: f64, edge: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
         match unsafe { transmute(edge as u8) } {
-            Edge::Top => gui.commands.set_style(node_id, ResetMarginTopType),
-            Edge::Right => gui.commands.set_style(node_id, ResetMarginRightType),
-            Edge::Bottom => gui.commands.set_style(node_id, ResetMarginBottomType),
-            Edge::Left => gui.commands.set_style(node_id, ResetMarginLeftType),
+            Edge::Top => gui.commands_mut().set_style(node_id, ResetMarginTopType),
+            Edge::Right => gui.commands_mut().set_style(node_id, ResetMarginRightType),
+            Edge::Bottom => gui.commands_mut().set_style(node_id, ResetMarginBottomType),
+            Edge::Left => gui.commands_mut().set_style(node_id, ResetMarginLeftType),
             _ => return,
         };
     }
@@ -1202,10 +1203,10 @@ pub mod style_macro {
     pub fn reset_margin_auto(gui: &mut Gui, node_id: f64, edge: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
         match unsafe { transmute(edge as u8) } {
-            Edge::Top => gui.commands.set_style(node_id, ResetMarginTopType),
-            Edge::Right => gui.commands.set_style(node_id, ResetMarginRightType),
-            Edge::Bottom => gui.commands.set_style(node_id, ResetMarginBottomType),
-            Edge::Left => gui.commands.set_style(node_id, ResetMarginLeftType),
+            Edge::Top => gui.commands_mut().set_style(node_id, ResetMarginTopType),
+            Edge::Right => gui.commands_mut().set_style(node_id, ResetMarginRightType),
+            Edge::Bottom => gui.commands_mut().set_style(node_id, ResetMarginBottomType),
+            Edge::Left => gui.commands_mut().set_style(node_id, ResetMarginLeftType),
             _ => return,
         };
     }
@@ -1215,16 +1216,16 @@ pub mod style_macro {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
         match unsafe { transmute(edge as u8) } {
             Edge::Top => {
-                gui.commands.set_style(node_id, BorderTopType(Dimension::Percent(v)))
+                gui.commands_mut().set_style(node_id, BorderTopType(Dimension::Percent(v)))
             }
             Edge::Right => {
-                gui.commands.set_style(node_id, BorderRightType(Dimension::Percent(v)))
+                gui.commands_mut().set_style(node_id, BorderRightType(Dimension::Percent(v)))
             }
             Edge::Bottom => {
-                gui.commands.set_style(node_id, BorderBottomType(Dimension::Percent(v)))
+                gui.commands_mut().set_style(node_id, BorderBottomType(Dimension::Percent(v)))
             }
             Edge::Left => {
-                gui.commands.set_style(node_id, BorderLeftType(Dimension::Percent(v)))
+                gui.commands_mut().set_style(node_id, BorderLeftType(Dimension::Percent(v)))
             }
             _ => return,
         };
@@ -1236,16 +1237,16 @@ pub mod style_macro {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
         match unsafe { transmute(edge as u8) } {
             Edge::Top => {
-                gui.commands.set_style(node_id, BorderTopType(Dimension::Percent(v)))
+                gui.commands_mut().set_style(node_id, BorderTopType(Dimension::Percent(v)))
             }
             Edge::Right => {
-                gui.commands.set_style(node_id, BorderRightType(Dimension::Percent(v)))
+                gui.commands_mut().set_style(node_id, BorderRightType(Dimension::Percent(v)))
             }
             Edge::Bottom => {
-                gui.commands.set_style(node_id, BorderBottomType(Dimension::Percent(v)))
+                gui.commands_mut().set_style(node_id, BorderBottomType(Dimension::Percent(v)))
             }
             Edge::Left => {
-                gui.commands.set_style(node_id, BorderLeftType(Dimension::Percent(v)))
+                gui.commands_mut().set_style(node_id, BorderLeftType(Dimension::Percent(v)))
             }
             _ => return,
         };
@@ -1255,10 +1256,10 @@ pub mod style_macro {
     pub fn reset_border_percent(gui: &mut Gui, node_id: f64, edge: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
         match unsafe { transmute(edge as u8) } {
-            Edge::Top => gui.commands.set_style(node_id, ResetBorderTopType),
-            Edge::Right => gui.commands.set_style(node_id, ResetBorderRightType),
-            Edge::Bottom => gui.commands.set_style(node_id, ResetBorderBottomType),
-            Edge::Left => gui.commands.set_style(node_id, ResetBorderLeftType),
+            Edge::Top => gui.commands_mut().set_style(node_id, ResetBorderTopType),
+            Edge::Right => gui.commands_mut().set_style(node_id, ResetBorderRightType),
+            Edge::Bottom => gui.commands_mut().set_style(node_id, ResetBorderBottomType),
+            Edge::Left => gui.commands_mut().set_style(node_id, ResetBorderLeftType),
             _ => return,
         };
     }
@@ -1268,10 +1269,10 @@ pub mod style_macro {
     pub fn reset_border_percent(gui: &mut Gui, node_id: f64, edge: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
         match unsafe { transmute(edge as u8) } {
-            Edge::Top => gui.commands.set_style(node_id, ResetBorderTopType),
-            Edge::Right => gui.commands.set_style(node_id, ResetBorderRightType),
-            Edge::Bottom => gui.commands.set_style(node_id, ResetBorderBottomType),
-            Edge::Left => gui.commands.set_style(node_id, ResetBorderLeftType),
+            Edge::Top => gui.commands_mut().set_style(node_id, ResetBorderTopType),
+            Edge::Right => gui.commands_mut().set_style(node_id, ResetBorderRightType),
+            Edge::Bottom => gui.commands_mut().set_style(node_id, ResetBorderBottomType),
+            Edge::Left => gui.commands_mut().set_style(node_id, ResetBorderLeftType),
             _ => return,
         };
     }
@@ -1281,16 +1282,16 @@ pub mod style_macro {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
         match unsafe { transmute(edge as u8) } {
             Edge::Top => {
-                gui.commands.set_style(node_id, BorderTopType(Dimension::Points(v)))
+                gui.commands_mut().set_style(node_id, BorderTopType(Dimension::Points(v)))
             }
             Edge::Right => {
-                gui.commands.set_style(node_id, BorderRightType(Dimension::Points(v)))
+                gui.commands_mut().set_style(node_id, BorderRightType(Dimension::Points(v)))
             }
             Edge::Bottom => {
-                gui.commands.set_style(node_id, BorderBottomType(Dimension::Points(v)))
+                gui.commands_mut().set_style(node_id, BorderBottomType(Dimension::Points(v)))
             }
             Edge::Left => {
-                gui.commands.set_style(node_id, BorderLeftType(Dimension::Points(v)))
+                gui.commands_mut().set_style(node_id, BorderLeftType(Dimension::Points(v)))
             }
             _ => return,
         };
@@ -1302,16 +1303,16 @@ pub mod style_macro {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
         match unsafe { transmute(edge as u8) } {
             Edge::Top => {
-                gui.commands.set_style(node_id, BorderTopType(Dimension::Points(v)))
+                gui.commands_mut().set_style(node_id, BorderTopType(Dimension::Points(v)))
             }
             Edge::Right => {
-                gui.commands.set_style(node_id, BorderRightType(Dimension::Points(v)))
+                gui.commands_mut().set_style(node_id, BorderRightType(Dimension::Points(v)))
             }
             Edge::Bottom => {
-                gui.commands.set_style(node_id, BorderBottomType(Dimension::Points(v)))
+                gui.commands_mut().set_style(node_id, BorderBottomType(Dimension::Points(v)))
             }
             Edge::Left => {
-                gui.commands.set_style(node_id, BorderLeftType(Dimension::Points(v)))
+                gui.commands_mut().set_style(node_id, BorderLeftType(Dimension::Points(v)))
             }
             _ => return,
         };
@@ -1321,10 +1322,10 @@ pub mod style_macro {
     pub fn reset_border(gui: &mut Gui, node_id: f64, edge: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
         match unsafe { transmute(edge as u8) } {
-            Edge::Top => gui.commands.set_style(node_id, ResetBorderTopType),
-            Edge::Right => gui.commands.set_style(node_id, ResetBorderRightType),
-            Edge::Bottom => gui.commands.set_style(node_id, ResetBorderBottomType),
-            Edge::Left => gui.commands.set_style(node_id, ResetBorderLeftType),
+            Edge::Top => gui.commands_mut().set_style(node_id, ResetBorderTopType),
+            Edge::Right => gui.commands_mut().set_style(node_id, ResetBorderRightType),
+            Edge::Bottom => gui.commands_mut().set_style(node_id, ResetBorderBottomType),
+            Edge::Left => gui.commands_mut().set_style(node_id, ResetBorderLeftType),
             _ => return,
         };
     }
@@ -1334,10 +1335,10 @@ pub mod style_macro {
     pub fn reset_border(gui: &mut Gui, node_id: f64, edge: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
         match unsafe { transmute(edge as u8) } {
-            Edge::Top => gui.commands.set_style(node_id, ResetBorderTopType),
-            Edge::Right => gui.commands.set_style(node_id, ResetBorderRightType),
-            Edge::Bottom => gui.commands.set_style(node_id, ResetBorderBottomType),
-            Edge::Left => gui.commands.set_style(node_id, ResetBorderLeftType),
+            Edge::Top => gui.commands_mut().set_style(node_id, ResetBorderTopType),
+            Edge::Right => gui.commands_mut().set_style(node_id, ResetBorderRightType),
+            Edge::Bottom => gui.commands_mut().set_style(node_id, ResetBorderBottomType),
+            Edge::Left => gui.commands_mut().set_style(node_id, ResetBorderLeftType),
             _ => return,
         };
     }
@@ -1346,15 +1347,15 @@ pub mod style_macro {
     pub fn set_border_auto(gui: &mut Gui, node_id: f64, edge: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
         match unsafe { transmute(edge as u8) } {
-            Edge::Top => gui.commands.set_style(node_id, BorderTopType(Dimension::Auto)),
+            Edge::Top => gui.commands_mut().set_style(node_id, BorderTopType(Dimension::Auto)),
             Edge::Right => {
-                gui.commands.set_style(node_id, BorderRightType(Dimension::Auto))
+                gui.commands_mut().set_style(node_id, BorderRightType(Dimension::Auto))
             }
             Edge::Bottom => {
-                gui.commands.set_style(node_id, BorderBottomType(Dimension::Auto))
+                gui.commands_mut().set_style(node_id, BorderBottomType(Dimension::Auto))
             }
             Edge::Left => {
-                gui.commands.set_style(node_id, BorderLeftType(Dimension::Auto))
+                gui.commands_mut().set_style(node_id, BorderLeftType(Dimension::Auto))
             }
             _ => return,
         };
@@ -1365,15 +1366,15 @@ pub mod style_macro {
     pub fn set_border_auto(gui: &mut Gui, node_id: f64, edge: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
         match unsafe { transmute(edge as u8) } {
-            Edge::Top => gui.commands.set_style(node_id, BorderTopType(Dimension::Auto)),
+            Edge::Top => gui.commands_mut().set_style(node_id, BorderTopType(Dimension::Auto)),
             Edge::Right => {
-                gui.commands.set_style(node_id, BorderRightType(Dimension::Auto))
+                gui.commands_mut().set_style(node_id, BorderRightType(Dimension::Auto))
             }
             Edge::Bottom => {
-                gui.commands.set_style(node_id, BorderBottomType(Dimension::Auto))
+                gui.commands_mut().set_style(node_id, BorderBottomType(Dimension::Auto))
             }
             Edge::Left => {
-                gui.commands.set_style(node_id, BorderLeftType(Dimension::Auto))
+                gui.commands_mut().set_style(node_id, BorderLeftType(Dimension::Auto))
             }
             _ => return,
         };
@@ -1383,10 +1384,10 @@ pub mod style_macro {
     pub fn reset_border_auto(gui: &mut Gui, node_id: f64, edge: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
         match unsafe { transmute(edge as u8) } {
-            Edge::Top => gui.commands.set_style(node_id, ResetBorderTopType),
-            Edge::Right => gui.commands.set_style(node_id, ResetBorderRightType),
-            Edge::Bottom => gui.commands.set_style(node_id, ResetBorderBottomType),
-            Edge::Left => gui.commands.set_style(node_id, ResetBorderLeftType),
+            Edge::Top => gui.commands_mut().set_style(node_id, ResetBorderTopType),
+            Edge::Right => gui.commands_mut().set_style(node_id, ResetBorderRightType),
+            Edge::Bottom => gui.commands_mut().set_style(node_id, ResetBorderBottomType),
+            Edge::Left => gui.commands_mut().set_style(node_id, ResetBorderLeftType),
             _ => return,
         };
     }
@@ -1396,10 +1397,10 @@ pub mod style_macro {
     pub fn reset_border_auto(gui: &mut Gui, node_id: f64, edge: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
         match unsafe { transmute(edge as u8) } {
-            Edge::Top => gui.commands.set_style(node_id, ResetBorderTopType),
-            Edge::Right => gui.commands.set_style(node_id, ResetBorderRightType),
-            Edge::Bottom => gui.commands.set_style(node_id, ResetBorderBottomType),
-            Edge::Left => gui.commands.set_style(node_id, ResetBorderLeftType),
+            Edge::Top => gui.commands_mut().set_style(node_id, ResetBorderTopType),
+            Edge::Right => gui.commands_mut().set_style(node_id, ResetBorderRightType),
+            Edge::Bottom => gui.commands_mut().set_style(node_id, ResetBorderBottomType),
+            Edge::Left => gui.commands_mut().set_style(node_id, ResetBorderLeftType),
             _ => return,
         };
     }
@@ -1409,17 +1410,17 @@ pub mod style_macro {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
         match unsafe { transmute(edge as u8) } {
             Edge::Top => {
-                gui.commands.set_style(node_id, PositionTopType(Dimension::Percent(v)))
+                gui.commands_mut().set_style(node_id, PositionTopType(Dimension::Percent(v)))
             }
             Edge::Right => {
-                gui.commands.set_style(node_id, PositionRightType(Dimension::Percent(v)))
+                gui.commands_mut().set_style(node_id, PositionRightType(Dimension::Percent(v)))
             }
             Edge::Bottom => {
-                gui.commands
+                gui.commands_mut()
                     .set_style(node_id, PositionBottomType(Dimension::Percent(v)))
             }
             Edge::Left => {
-                gui.commands.set_style(node_id, PositionLeftType(Dimension::Percent(v)))
+                gui.commands_mut().set_style(node_id, PositionLeftType(Dimension::Percent(v)))
             }
             _ => return,
         };
@@ -1431,17 +1432,17 @@ pub mod style_macro {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
         match unsafe { transmute(edge as u8) } {
             Edge::Top => {
-                gui.commands.set_style(node_id, PositionTopType(Dimension::Percent(v)))
+                gui.commands_mut().set_style(node_id, PositionTopType(Dimension::Percent(v)))
             }
             Edge::Right => {
-                gui.commands.set_style(node_id, PositionRightType(Dimension::Percent(v)))
+                gui.commands_mut().set_style(node_id, PositionRightType(Dimension::Percent(v)))
             }
             Edge::Bottom => {
-                gui.commands
+                gui.commands_mut()
                     .set_style(node_id, PositionBottomType(Dimension::Percent(v)))
             }
             Edge::Left => {
-                gui.commands.set_style(node_id, PositionLeftType(Dimension::Percent(v)))
+                gui.commands_mut().set_style(node_id, PositionLeftType(Dimension::Percent(v)))
             }
             _ => return,
         };
@@ -1451,10 +1452,10 @@ pub mod style_macro {
     pub fn reset_position_percent(gui: &mut Gui, node_id: f64, edge: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
         match unsafe { transmute(edge as u8) } {
-            Edge::Top => gui.commands.set_style(node_id, ResetPositionTopType),
-            Edge::Right => gui.commands.set_style(node_id, ResetPositionRightType),
-            Edge::Bottom => gui.commands.set_style(node_id, ResetPositionBottomType),
-            Edge::Left => gui.commands.set_style(node_id, ResetPositionLeftType),
+            Edge::Top => gui.commands_mut().set_style(node_id, ResetPositionTopType),
+            Edge::Right => gui.commands_mut().set_style(node_id, ResetPositionRightType),
+            Edge::Bottom => gui.commands_mut().set_style(node_id, ResetPositionBottomType),
+            Edge::Left => gui.commands_mut().set_style(node_id, ResetPositionLeftType),
             _ => return,
         };
     }
@@ -1464,10 +1465,10 @@ pub mod style_macro {
     pub fn reset_position_percent(gui: &mut Gui, node_id: f64, edge: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
         match unsafe { transmute(edge as u8) } {
-            Edge::Top => gui.commands.set_style(node_id, ResetPositionTopType),
-            Edge::Right => gui.commands.set_style(node_id, ResetPositionRightType),
-            Edge::Bottom => gui.commands.set_style(node_id, ResetPositionBottomType),
-            Edge::Left => gui.commands.set_style(node_id, ResetPositionLeftType),
+            Edge::Top => gui.commands_mut().set_style(node_id, ResetPositionTopType),
+            Edge::Right => gui.commands_mut().set_style(node_id, ResetPositionRightType),
+            Edge::Bottom => gui.commands_mut().set_style(node_id, ResetPositionBottomType),
+            Edge::Left => gui.commands_mut().set_style(node_id, ResetPositionLeftType),
             _ => return,
         };
     }
@@ -1477,16 +1478,16 @@ pub mod style_macro {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
         match unsafe { transmute(edge as u8) } {
             Edge::Top => {
-                gui.commands.set_style(node_id, PositionTopType(Dimension::Points(v)))
+                gui.commands_mut().set_style(node_id, PositionTopType(Dimension::Points(v)))
             }
             Edge::Right => {
-                gui.commands.set_style(node_id, PositionRightType(Dimension::Points(v)))
+                gui.commands_mut().set_style(node_id, PositionRightType(Dimension::Points(v)))
             }
             Edge::Bottom => {
-                gui.commands.set_style(node_id, PositionBottomType(Dimension::Points(v)))
+                gui.commands_mut().set_style(node_id, PositionBottomType(Dimension::Points(v)))
             }
             Edge::Left => {
-                gui.commands.set_style(node_id, PositionLeftType(Dimension::Points(v)))
+                gui.commands_mut().set_style(node_id, PositionLeftType(Dimension::Points(v)))
             }
             _ => return,
         };
@@ -1498,16 +1499,16 @@ pub mod style_macro {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
         match unsafe { transmute(edge as u8) } {
             Edge::Top => {
-                gui.commands.set_style(node_id, PositionTopType(Dimension::Points(v)))
+                gui.commands_mut().set_style(node_id, PositionTopType(Dimension::Points(v)))
             }
             Edge::Right => {
-                gui.commands.set_style(node_id, PositionRightType(Dimension::Points(v)))
+                gui.commands_mut().set_style(node_id, PositionRightType(Dimension::Points(v)))
             }
             Edge::Bottom => {
-                gui.commands.set_style(node_id, PositionBottomType(Dimension::Points(v)))
+                gui.commands_mut().set_style(node_id, PositionBottomType(Dimension::Points(v)))
             }
             Edge::Left => {
-                gui.commands.set_style(node_id, PositionLeftType(Dimension::Points(v)))
+                gui.commands_mut().set_style(node_id, PositionLeftType(Dimension::Points(v)))
             }
             _ => return,
         };
@@ -1517,10 +1518,10 @@ pub mod style_macro {
     pub fn reset_position(gui: &mut Gui, node_id: f64, edge: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
         match unsafe { transmute(edge as u8) } {
-            Edge::Top => gui.commands.set_style(node_id, ResetPositionTopType),
-            Edge::Right => gui.commands.set_style(node_id, ResetPositionRightType),
-            Edge::Bottom => gui.commands.set_style(node_id, ResetPositionBottomType),
-            Edge::Left => gui.commands.set_style(node_id, ResetPositionLeftType),
+            Edge::Top => gui.commands_mut().set_style(node_id, ResetPositionTopType),
+            Edge::Right => gui.commands_mut().set_style(node_id, ResetPositionRightType),
+            Edge::Bottom => gui.commands_mut().set_style(node_id, ResetPositionBottomType),
+            Edge::Left => gui.commands_mut().set_style(node_id, ResetPositionLeftType),
             _ => return,
         };
     }
@@ -1530,10 +1531,10 @@ pub mod style_macro {
     pub fn reset_position(gui: &mut Gui, node_id: f64, edge: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
         match unsafe { transmute(edge as u8) } {
-            Edge::Top => gui.commands.set_style(node_id, ResetPositionTopType),
-            Edge::Right => gui.commands.set_style(node_id, ResetPositionRightType),
-            Edge::Bottom => gui.commands.set_style(node_id, ResetPositionBottomType),
-            Edge::Left => gui.commands.set_style(node_id, ResetPositionLeftType),
+            Edge::Top => gui.commands_mut().set_style(node_id, ResetPositionTopType),
+            Edge::Right => gui.commands_mut().set_style(node_id, ResetPositionRightType),
+            Edge::Bottom => gui.commands_mut().set_style(node_id, ResetPositionBottomType),
+            Edge::Left => gui.commands_mut().set_style(node_id, ResetPositionLeftType),
             _ => return,
         };
     }
@@ -1543,16 +1544,16 @@ pub mod style_macro {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
         match unsafe { transmute(edge as u8) } {
             Edge::Top => {
-                gui.commands.set_style(node_id, PositionTopType(Dimension::Auto))
+                gui.commands_mut().set_style(node_id, PositionTopType(Dimension::Auto))
             }
             Edge::Right => {
-                gui.commands.set_style(node_id, PositionRightType(Dimension::Auto))
+                gui.commands_mut().set_style(node_id, PositionRightType(Dimension::Auto))
             }
             Edge::Bottom => {
-                gui.commands.set_style(node_id, PositionBottomType(Dimension::Auto))
+                gui.commands_mut().set_style(node_id, PositionBottomType(Dimension::Auto))
             }
             Edge::Left => {
-                gui.commands.set_style(node_id, PositionLeftType(Dimension::Auto))
+                gui.commands_mut().set_style(node_id, PositionLeftType(Dimension::Auto))
             }
             _ => return,
         };
@@ -1564,16 +1565,16 @@ pub mod style_macro {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
         match unsafe { transmute(edge as u8) } {
             Edge::Top => {
-                gui.commands.set_style(node_id, PositionTopType(Dimension::Auto))
+                gui.commands_mut().set_style(node_id, PositionTopType(Dimension::Auto))
             }
             Edge::Right => {
-                gui.commands.set_style(node_id, PositionRightType(Dimension::Auto))
+                gui.commands_mut().set_style(node_id, PositionRightType(Dimension::Auto))
             }
             Edge::Bottom => {
-                gui.commands.set_style(node_id, PositionBottomType(Dimension::Auto))
+                gui.commands_mut().set_style(node_id, PositionBottomType(Dimension::Auto))
             }
             Edge::Left => {
-                gui.commands.set_style(node_id, PositionLeftType(Dimension::Auto))
+                gui.commands_mut().set_style(node_id, PositionLeftType(Dimension::Auto))
             }
             _ => return,
         };
@@ -1583,10 +1584,10 @@ pub mod style_macro {
     pub fn reset_position_auto(gui: &mut Gui, node_id: f64, edge: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
         match unsafe { transmute(edge as u8) } {
-            Edge::Top => gui.commands.set_style(node_id, ResetPositionTopType),
-            Edge::Right => gui.commands.set_style(node_id, ResetPositionRightType),
-            Edge::Bottom => gui.commands.set_style(node_id, ResetPositionBottomType),
-            Edge::Left => gui.commands.set_style(node_id, ResetPositionLeftType),
+            Edge::Top => gui.commands_mut().set_style(node_id, ResetPositionTopType),
+            Edge::Right => gui.commands_mut().set_style(node_id, ResetPositionRightType),
+            Edge::Bottom => gui.commands_mut().set_style(node_id, ResetPositionBottomType),
+            Edge::Left => gui.commands_mut().set_style(node_id, ResetPositionLeftType),
             _ => return,
         };
     }
@@ -1596,10 +1597,10 @@ pub mod style_macro {
     pub fn reset_position_auto(gui: &mut Gui, node_id: f64, edge: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
         match unsafe { transmute(edge as u8) } {
-            Edge::Top => gui.commands.set_style(node_id, ResetPositionTopType),
-            Edge::Right => gui.commands.set_style(node_id, ResetPositionRightType),
-            Edge::Bottom => gui.commands.set_style(node_id, ResetPositionBottomType),
-            Edge::Left => gui.commands.set_style(node_id, ResetPositionLeftType),
+            Edge::Top => gui.commands_mut().set_style(node_id, ResetPositionTopType),
+            Edge::Right => gui.commands_mut().set_style(node_id, ResetPositionRightType),
+            Edge::Bottom => gui.commands_mut().set_style(node_id, ResetPositionBottomType),
+            Edge::Left => gui.commands_mut().set_style(node_id, ResetPositionLeftType),
             _ => return,
         };
     }
@@ -1614,7 +1615,7 @@ pub mod style_macro {
         a: f32,
     ) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands
+        gui.commands_mut()
             .set_style(
                 node_id,
                 BackgroundColorType(Color::RGBA(CgColor::new(r, g, b, a))),
@@ -1632,7 +1633,7 @@ pub mod style_macro {
         a: f32,
     ) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands
+        gui.commands_mut()
             .set_style(
                 node_id,
                 BackgroundColorType(Color::RGBA(CgColor::new(r, g, b, a))),
@@ -1642,14 +1643,14 @@ pub mod style_macro {
     #[allow(unused_attributes)]
     pub fn reset_background_rgba_color(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetBackgroundColorType);
+        gui.commands_mut().set_style(node_id, ResetBackgroundColorType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_background_rgba_color(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetBackgroundColorType);
+        gui.commands_mut().set_style(node_id, ResetBackgroundColorType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
@@ -1660,7 +1661,7 @@ pub mod style_macro {
         color_and_positions: Vec<f32>,
     ) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands
+        gui.commands_mut()
             .set_style(
                 node_id,
                 BackgroundColorType(
@@ -1683,7 +1684,7 @@ pub mod style_macro {
         color_and_positions: Vec<f32>,
     ) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands
+        gui.commands_mut()
             .set_style(
                 node_id,
                 BackgroundColorType(
@@ -1700,14 +1701,14 @@ pub mod style_macro {
     #[allow(unused_attributes)]
     pub fn reset_background_linear_color(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetBackgroundColorType);
+        gui.commands_mut().set_style(node_id, ResetBackgroundColorType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_background_linear_color(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetBackgroundColorType);
+        gui.commands_mut().set_style(node_id, ResetBackgroundColorType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
@@ -1720,7 +1721,7 @@ pub mod style_macro {
         a: f32,
     ) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, BorderColorType(CgColor::new(r, g, b, a)));
+        gui.commands_mut().set_style(node_id, BorderColorType(CgColor::new(r, g, b, a)));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
@@ -1734,26 +1735,26 @@ pub mod style_macro {
         a: f32,
     ) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, BorderColorType(CgColor::new(r, g, b, a)));
+        gui.commands_mut().set_style(node_id, BorderColorType(CgColor::new(r, g, b, a)));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn reset_border_color(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetBorderColorType);
+        gui.commands_mut().set_style(node_id, ResetBorderColorType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_border_color(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetBorderColorType);
+        gui.commands_mut().set_style(node_id, ResetBorderColorType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn set_border_radius(gui: &mut Gui, node_id: f64, s: &str) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands
+        gui.commands_mut()
             .set_style(
                 node_id,
                 BorderRadiusType({
@@ -1775,7 +1776,7 @@ pub mod style_macro {
     #[allow(unused_attributes)]
     pub fn set_border_radius(gui: &mut Gui, node_id: f64, s: &str) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands
+        gui.commands_mut()
             .set_style(
                 node_id,
                 BorderRadiusType({
@@ -1796,14 +1797,14 @@ pub mod style_macro {
     #[allow(unused_attributes)]
     pub fn reset_border_radius(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetBorderRadiusType);
+        gui.commands_mut().set_style(node_id, ResetBorderRadiusType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_border_radius(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetBorderRadiusType);
+        gui.commands_mut().set_style(node_id, ResetBorderRadiusType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
@@ -1820,7 +1821,7 @@ pub mod style_macro {
         a: f32,
     ) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands
+        gui.commands_mut()
             .set_style(
                 node_id,
                 BoxShadowType(BoxShadow {
@@ -1848,7 +1849,7 @@ pub mod style_macro {
         a: f32,
     ) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands
+        gui.commands_mut()
             .set_style(
                 node_id,
                 BoxShadowType(BoxShadow {
@@ -1864,46 +1865,46 @@ pub mod style_macro {
     #[allow(unused_attributes)]
     pub fn reset_box_shadow(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetBoxShadowType);
+        gui.commands_mut().set_style(node_id, ResetBoxShadowType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_box_shadow(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetBoxShadowType);
+        gui.commands_mut().set_style(node_id, ResetBoxShadowType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn set_object_fit(gui: &mut Gui, node_id: f64, v: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ObjectFitType(unsafe { transmute(v as u8) }));
+        gui.commands_mut().set_style(node_id, ObjectFitType(unsafe { transmute(v as u8) }));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_object_fit(gui: &mut Gui, node_id: f64, v: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ObjectFitType(unsafe { transmute(v as u8) }));
+        gui.commands_mut().set_style(node_id, ObjectFitType(unsafe { transmute(v as u8) }));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn reset_object_fit(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetObjectFitType);
+        gui.commands_mut().set_style(node_id, ResetObjectFitType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_object_fit(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetObjectFitType);
+        gui.commands_mut().set_style(node_id, ResetObjectFitType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn set_background_repeat(gui: &mut Gui, node_id: f64, x: u8, y: u8) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands
+        gui.commands_mut()
             .set_style(
                 node_id,
                 BackgroundRepeatType(ImageRepeat {
@@ -1917,7 +1918,7 @@ pub mod style_macro {
     #[allow(unused_attributes)]
     pub fn set_background_repeat(gui: &mut Gui, node_id: f64, x: u8, y: u8) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands
+        gui.commands_mut()
             .set_style(
                 node_id,
                 BackgroundRepeatType(ImageRepeat {
@@ -1930,14 +1931,14 @@ pub mod style_macro {
     #[allow(unused_attributes)]
     pub fn reset_background_repeat(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetBackgroundRepeatType);
+        gui.commands_mut().set_style(node_id, ResetBackgroundRepeatType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_background_repeat(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetBackgroundRepeatType);
+        gui.commands_mut().set_style(node_id, ResetBackgroundRepeatType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
@@ -1948,7 +1949,7 @@ pub mod style_macro {
         color_and_positions: Vec<f32>,
     ) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands
+        gui.commands_mut()
             .set_style(
                 node_id,
                 MaskImageType(
@@ -1971,7 +1972,7 @@ pub mod style_macro {
         color_and_positions: Vec<f32>,
     ) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands
+        gui.commands_mut()
             .set_style(
                 node_id,
                 MaskImageType(
@@ -1988,14 +1989,14 @@ pub mod style_macro {
     #[allow(unused_attributes)]
     pub fn reset_mask_image_linear(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetMaskImageType);
+        gui.commands_mut().set_style(node_id, ResetMaskImageType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_mask_image_linear(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetMaskImageType);
+        gui.commands_mut().set_style(node_id, ResetMaskImageType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
@@ -2008,7 +2009,7 @@ pub mod style_macro {
         v2: f32,
     ) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands
+        gui.commands_mut()
             .set_style(
                 node_id,
                 BackgroundImageClipType(
@@ -2033,7 +2034,7 @@ pub mod style_macro {
         v2: f32,
     ) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands
+        gui.commands_mut()
             .set_style(
                 node_id,
                 BackgroundImageClipType(
@@ -2050,14 +2051,14 @@ pub mod style_macro {
     #[allow(unused_attributes)]
     pub fn reset_image_clip(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetBackgroundImageClipType);
+        gui.commands_mut().set_style(node_id, ResetBackgroundImageClipType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_image_clip(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetBackgroundImageClipType);
+        gui.commands_mut().set_style(node_id, ResetBackgroundImageClipType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
@@ -2070,7 +2071,7 @@ pub mod style_macro {
         v2: f32,
     ) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands
+        gui.commands_mut()
             .set_style(
                 node_id,
                 MaskImageClipType(
@@ -2095,7 +2096,7 @@ pub mod style_macro {
         v2: f32,
     ) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands
+        gui.commands_mut()
             .set_style(
                 node_id,
                 MaskImageClipType(
@@ -2112,14 +2113,14 @@ pub mod style_macro {
     #[allow(unused_attributes)]
     pub fn reset_mask_image_clip(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetMaskImageClipType);
+        gui.commands_mut().set_style(node_id, ResetMaskImageClipType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_mask_image_clip(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetMaskImageClipType);
+        gui.commands_mut().set_style(node_id, ResetMaskImageClipType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
@@ -2132,7 +2133,7 @@ pub mod style_macro {
         v2: f32,
     ) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands
+        gui.commands_mut()
             .set_style(
                 node_id,
                 BorderImageClipType(
@@ -2157,7 +2158,7 @@ pub mod style_macro {
         v2: f32,
     ) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands
+        gui.commands_mut()
             .set_style(
                 node_id,
                 BorderImageClipType(
@@ -2174,14 +2175,14 @@ pub mod style_macro {
     #[allow(unused_attributes)]
     pub fn reset_border_image_clip(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetBorderImageClipType);
+        gui.commands_mut().set_style(node_id, ResetBorderImageClipType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_border_image_clip(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetBorderImageClipType);
+        gui.commands_mut().set_style(node_id, ResetBorderImageClipType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
@@ -2195,7 +2196,7 @@ pub mod style_macro {
         fill: bool,
     ) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands
+        gui.commands_mut()
             .set_style(
                 node_id,
                 BorderImageSliceType(BorderImageSlice {
@@ -2220,7 +2221,7 @@ pub mod style_macro {
         fill: bool,
     ) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands
+        gui.commands_mut()
             .set_style(
                 node_id,
                 BorderImageSliceType(BorderImageSlice {
@@ -2236,14 +2237,14 @@ pub mod style_macro {
     #[allow(unused_attributes)]
     pub fn reset_border_image_slice(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetBorderImageSliceType);
+        gui.commands_mut().set_style(node_id, ResetBorderImageSliceType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_border_image_slice(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetBorderImageSliceType);
+        gui.commands_mut().set_style(node_id, ResetBorderImageSliceType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
@@ -2254,7 +2255,7 @@ pub mod style_macro {
         horizontal: u8,
     ) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands
+        gui.commands_mut()
             .set_style(
                 node_id,
                 BorderImageRepeatType(ImageRepeat {
@@ -2273,7 +2274,7 @@ pub mod style_macro {
         horizontal: u8,
     ) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands
+        gui.commands_mut()
             .set_style(
                 node_id,
                 BorderImageRepeatType(ImageRepeat {
@@ -2286,202 +2287,202 @@ pub mod style_macro {
     #[allow(unused_attributes)]
     pub fn reset_border_image_repeat(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetBorderImageRepeatType);
+        gui.commands_mut().set_style(node_id, ResetBorderImageRepeatType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_border_image_repeat(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetBorderImageRepeatType);
+        gui.commands_mut().set_style(node_id, ResetBorderImageRepeatType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn set_overflow(gui: &mut Gui, node_id: f64, v: bool) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, OverflowType(v));
+        gui.commands_mut().set_style(node_id, OverflowType(v));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_overflow(gui: &mut Gui, node_id: f64, v: bool) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, OverflowType(v));
+        gui.commands_mut().set_style(node_id, OverflowType(v));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn reset_overflow(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetOverflowType);
+        gui.commands_mut().set_style(node_id, ResetOverflowType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_overflow(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetOverflowType);
+        gui.commands_mut().set_style(node_id, ResetOverflowType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn set_opacity(gui: &mut Gui, node_id: f64, v: f32) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, OpacityType(v));
+        gui.commands_mut().set_style(node_id, OpacityType(v));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_opacity(gui: &mut Gui, node_id: f64, v: f32) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, OpacityType(v));
+        gui.commands_mut().set_style(node_id, OpacityType(v));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn reset_opacity(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetOpacityType);
+        gui.commands_mut().set_style(node_id, ResetOpacityType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_opacity(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetOpacityType);
+        gui.commands_mut().set_style(node_id, ResetOpacityType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn set_display(gui: &mut Gui, node_id: f64, v: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, DisplayType(unsafe { transmute(v as u8) }));
+        gui.commands_mut().set_style(node_id, DisplayType(unsafe { transmute(v as u8) }));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_display(gui: &mut Gui, node_id: f64, v: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, DisplayType(unsafe { transmute(v as u8) }));
+        gui.commands_mut().set_style(node_id, DisplayType(unsafe { transmute(v as u8) }));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn reset_display(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetDisplayType);
+        gui.commands_mut().set_style(node_id, ResetDisplayType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_display(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetDisplayType);
+        gui.commands_mut().set_style(node_id, ResetDisplayType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn set_visibility(gui: &mut Gui, node_id: f64, v: bool) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, VisibilityType(v));
+        gui.commands_mut().set_style(node_id, VisibilityType(v));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_visibility(gui: &mut Gui, node_id: f64, v: bool) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, VisibilityType(v));
+        gui.commands_mut().set_style(node_id, VisibilityType(v));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn reset_visibility(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetVisibilityType);
+        gui.commands_mut().set_style(node_id, ResetVisibilityType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_visibility(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetVisibilityType);
+        gui.commands_mut().set_style(node_id, ResetVisibilityType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn set_enable(gui: &mut Gui, node_id: f64, v: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, EnableType(unsafe { transmute(v as u8) }));
+        gui.commands_mut().set_style(node_id, EnableType(unsafe { transmute(v as u8) }));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_enable(gui: &mut Gui, node_id: f64, v: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, EnableType(unsafe { transmute(v as u8) }));
+        gui.commands_mut().set_style(node_id, EnableType(unsafe { transmute(v as u8) }));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn reset_enable(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetEnableType);
+        gui.commands_mut().set_style(node_id, ResetEnableType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_enable(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetEnableType);
+        gui.commands_mut().set_style(node_id, ResetEnableType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn set_blend_mode(gui: &mut Gui, node_id: f64, v: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, BlendModeType(unsafe { transmute(v as u8) }));
+        gui.commands_mut().set_style(node_id, BlendModeType(unsafe { transmute(v as u8) }));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_blend_mode(gui: &mut Gui, node_id: f64, v: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, BlendModeType(unsafe { transmute(v as u8) }));
+        gui.commands_mut().set_style(node_id, BlendModeType(unsafe { transmute(v as u8) }));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn reset_blend_mode(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetBlendModeType);
+        gui.commands_mut().set_style(node_id, ResetBlendModeType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_blend_mode(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetBlendModeType);
+        gui.commands_mut().set_style(node_id, ResetBlendModeType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn set_zindex(gui: &mut Gui, node_id: f64, v: i32) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ZIndexType(v as isize));
+        gui.commands_mut().set_style(node_id, ZIndexType(v as isize));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_zindex(gui: &mut Gui, node_id: f64, v: i32) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ZIndexType(v as isize));
+        gui.commands_mut().set_style(node_id, ZIndexType(v as isize));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn reset_zindex(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetZIndexType);
+        gui.commands_mut().set_style(node_id, ResetZIndexType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_zindex(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetZIndexType);
+        gui.commands_mut().set_style(node_id, ResetZIndexType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn set_as_image(gui: &mut Gui, node_id: f64, value: &str) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands
+        gui.commands_mut()
             .set_style(
                 node_id,
                 AsImageType({
@@ -2490,7 +2491,7 @@ pub mod style_macro {
                     match parse_as_image(&mut parse) {
                         Ok(r) => r,
                         Err(e) => {
-                            ();
+                            (/*ERROR*/);
                             return;
                         }
                     }
@@ -2502,7 +2503,7 @@ pub mod style_macro {
     #[allow(unused_attributes)]
     pub fn set_as_image(gui: &mut Gui, node_id: f64, value: &str) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands
+        gui.commands_mut()
             .set_style(
                 node_id,
                 AsImageType({
@@ -2511,7 +2512,7 @@ pub mod style_macro {
                     match parse_as_image(&mut parse) {
                         Ok(r) => r,
                         Err(e) => {
-                            ();
+                            (/*ERROR*/);
                             return;
                         }
                     }
@@ -2522,72 +2523,72 @@ pub mod style_macro {
     #[allow(unused_attributes)]
     pub fn reset_as_image(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetAsImageType);
+        gui.commands_mut().set_style(node_id, ResetAsImageType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_as_image(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetAsImageType);
+        gui.commands_mut().set_style(node_id, ResetAsImageType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn set_filter_blur(gui: &mut Gui, node_id: f64, v: f32) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, BlurType(v));
+        gui.commands_mut().set_style(node_id, BlurType(v));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_filter_blur(gui: &mut Gui, node_id: f64, v: f32) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, BlurType(v));
+        gui.commands_mut().set_style(node_id, BlurType(v));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn reset_filter_blur(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetBlurType);
+        gui.commands_mut().set_style(node_id, ResetBlurType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_filter_blur(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetBlurType);
+        gui.commands_mut().set_style(node_id, ResetBlurType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn set_transform_will_change(gui: &mut Gui, node_id: f64, v: bool) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, TransformWillChangeType(v));
+        gui.commands_mut().set_style(node_id, TransformWillChangeType(v));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_transform_will_change(gui: &mut Gui, node_id: f64, v: bool) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, TransformWillChangeType(v));
+        gui.commands_mut().set_style(node_id, TransformWillChangeType(v));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn reset_transform_will_change(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetTransformWillChangeType);
+        gui.commands_mut().set_style(node_id, ResetTransformWillChangeType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_transform_will_change(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetTransformWillChangeType);
+        gui.commands_mut().set_style(node_id, ResetTransformWillChangeType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn set_filter_hsi(gui: &mut Gui, node_id: f64, h: f32, s: f32, _i: f32) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands
+        gui.commands_mut()
             .set_style(
                 node_id,
                 HsiType({
@@ -2620,7 +2621,7 @@ pub mod style_macro {
     #[allow(unused_attributes)]
     pub fn set_filter_hsi(gui: &mut Gui, node_id: f64, h: f32, s: f32, _i: f32) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands
+        gui.commands_mut()
             .set_style(
                 node_id,
                 HsiType({
@@ -2652,20 +2653,20 @@ pub mod style_macro {
     #[allow(unused_attributes)]
     pub fn reset_filter_hsi(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetHsiType);
+        gui.commands_mut().set_style(node_id, ResetHsiType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_filter_hsi(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetHsiType);
+        gui.commands_mut().set_style(node_id, ResetHsiType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn set_translate(gui: &mut Gui, node_id: f64, s: &str) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands
+        gui.commands_mut()
             .set_style(
                 node_id,
                 TranslateType({
@@ -2689,7 +2690,7 @@ pub mod style_macro {
     #[allow(unused_attributes)]
     pub fn set_translate(gui: &mut Gui, node_id: f64, s: &str) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands
+        gui.commands_mut()
             .set_style(
                 node_id,
                 TranslateType({
@@ -2712,20 +2713,20 @@ pub mod style_macro {
     #[allow(unused_attributes)]
     pub fn reset_translate(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetTranslateType);
+        gui.commands_mut().set_style(node_id, ResetTranslateType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_translate(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetTranslateType);
+        gui.commands_mut().set_style(node_id, ResetTranslateType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn set_scale(gui: &mut Gui, node_id: f64, s: &str) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands
+        gui.commands_mut()
             .set_style(
                 node_id,
                 ScaleType({
@@ -2745,7 +2746,7 @@ pub mod style_macro {
     #[allow(unused_attributes)]
     pub fn set_scale(gui: &mut Gui, node_id: f64, s: &str) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands
+        gui.commands_mut()
             .set_style(
                 node_id,
                 ScaleType({
@@ -2764,20 +2765,20 @@ pub mod style_macro {
     #[allow(unused_attributes)]
     pub fn reset_scale(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetScaleType);
+        gui.commands_mut().set_style(node_id, ResetScaleType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_scale(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetScaleType);
+        gui.commands_mut().set_style(node_id, ResetScaleType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn set_rotate(gui: &mut Gui, node_id: f64, s: &str) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands
+        gui.commands_mut()
             .set_style(
                 node_id,
                 RotateType({
@@ -2793,7 +2794,7 @@ pub mod style_macro {
     #[allow(unused_attributes)]
     pub fn set_rotate(gui: &mut Gui, node_id: f64, s: &str) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands
+        gui.commands_mut()
             .set_style(
                 node_id,
                 RotateType({
@@ -2808,20 +2809,20 @@ pub mod style_macro {
     #[allow(unused_attributes)]
     pub fn reset_rotate(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetRotateType);
+        gui.commands_mut().set_style(node_id, ResetRotateType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_rotate(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetRotateType);
+        gui.commands_mut().set_style(node_id, ResetRotateType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn set_transform(gui: &mut Gui, node_id: f64, s: &str) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands
+        gui.commands_mut()
             .set_style(
                 node_id,
                 TransformType({
@@ -2841,7 +2842,7 @@ pub mod style_macro {
     #[allow(unused_attributes)]
     pub fn set_transform(gui: &mut Gui, node_id: f64, s: &str) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands
+        gui.commands_mut()
             .set_style(
                 node_id,
                 TransformType({
@@ -2860,20 +2861,20 @@ pub mod style_macro {
     #[allow(unused_attributes)]
     pub fn reset_transform(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetTransformType);
+        gui.commands_mut().set_style(node_id, ResetTransformType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_transform(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetTransformType);
+        gui.commands_mut().set_style(node_id, ResetTransformType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn set_text_overflow(gui: &mut Gui, node_id: f64, s: &str) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands
+        gui.commands_mut()
             .set_style(
                 node_id,
                 TextOverflowType({
@@ -2893,7 +2894,7 @@ pub mod style_macro {
     #[allow(unused_attributes)]
     pub fn set_text_overflow(gui: &mut Gui, node_id: f64, s: &str) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands
+        gui.commands_mut()
             .set_style(
                 node_id,
                 TextOverflowType({
@@ -2912,20 +2913,20 @@ pub mod style_macro {
     #[allow(unused_attributes)]
     pub fn reset_text_overflow(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetTextOverflowType);
+        gui.commands_mut().set_style(node_id, ResetTextOverflowType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_text_overflow(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetTextOverflowType);
+        gui.commands_mut().set_style(node_id, ResetTextOverflowType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn set_overflow_wrap(gui: &mut Gui, node_id: f64, s: &str) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands
+        gui.commands_mut()
             .set_style(
                 node_id,
                 OverflowWrapType({
@@ -2947,7 +2948,7 @@ pub mod style_macro {
     #[allow(unused_attributes)]
     pub fn set_overflow_wrap(gui: &mut Gui, node_id: f64, s: &str) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands
+        gui.commands_mut()
             .set_style(
                 node_id,
                 OverflowWrapType({
@@ -2968,14 +2969,14 @@ pub mod style_macro {
     #[allow(unused_attributes)]
     pub fn reset_overflow_wrap(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetOverflowWrapType);
+        gui.commands_mut().set_style(node_id, ResetOverflowWrapType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_overflow_wrap(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetOverflowWrapType);
+        gui.commands_mut().set_style(node_id, ResetOverflowWrapType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
@@ -2988,7 +2989,7 @@ pub mod style_macro {
         y: f32,
     ) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands
+        gui.commands_mut()
             .set_style(
                 node_id,
                 TransformOriginType({
@@ -3018,7 +3019,7 @@ pub mod style_macro {
         y: f32,
     ) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands
+        gui.commands_mut()
             .set_style(
                 node_id,
                 TransformOriginType({
@@ -3040,66 +3041,66 @@ pub mod style_macro {
     #[allow(unused_attributes)]
     pub fn reset_transform_origin(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetTransformOriginType);
+        gui.commands_mut().set_style(node_id, ResetTransformOriginType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_transform_origin(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetTransformOriginType);
+        gui.commands_mut().set_style(node_id, ResetTransformOriginType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn set_letter_spacing(gui: &mut Gui, node_id: f64, v: f32) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, LetterSpacingType(v));
+        gui.commands_mut().set_style(node_id, LetterSpacingType(v));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_letter_spacing(gui: &mut Gui, node_id: f64, v: f32) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, LetterSpacingType(v));
+        gui.commands_mut().set_style(node_id, LetterSpacingType(v));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn reset_letter_spacing(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetLetterSpacingType);
+        gui.commands_mut().set_style(node_id, ResetLetterSpacingType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_letter_spacing(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetLetterSpacingType);
+        gui.commands_mut().set_style(node_id, ResetLetterSpacingType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn set_word_spacing(gui: &mut Gui, node_id: f64, v: f32) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, WordSpacingType(v));
+        gui.commands_mut().set_style(node_id, WordSpacingType(v));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_word_spacing(gui: &mut Gui, node_id: f64, v: f32) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, WordSpacingType(v));
+        gui.commands_mut().set_style(node_id, WordSpacingType(v));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn reset_word_spacing(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetWordSpacingType);
+        gui.commands_mut().set_style(node_id, ResetWordSpacingType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_word_spacing(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetWordSpacingType);
+        gui.commands_mut().set_style(node_id, ResetWordSpacingType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
@@ -3112,7 +3113,7 @@ pub mod style_macro {
         a: f32,
     ) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands
+        gui.commands_mut()
             .set_style(node_id, ColorType(Color::RGBA(CgColor::new(r, g, b, a))));
     }
     #[cfg(target_arch = "wasm32")]
@@ -3127,21 +3128,21 @@ pub mod style_macro {
         a: f32,
     ) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands
+        gui.commands_mut()
             .set_style(node_id, ColorType(Color::RGBA(CgColor::new(r, g, b, a))));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn reset_text_rgba_color(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetColorType);
+        gui.commands_mut().set_style(node_id, ResetColorType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_text_rgba_color(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetColorType);
+        gui.commands_mut().set_style(node_id, ResetColorType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
@@ -3152,7 +3153,7 @@ pub mod style_macro {
         color_and_positions: Vec<f32>,
     ) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands
+        gui.commands_mut()
             .set_style(
                 node_id,
                 ColorType(
@@ -3175,7 +3176,7 @@ pub mod style_macro {
         color_and_positions: Vec<f32>,
     ) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands
+        gui.commands_mut()
             .set_style(
                 node_id,
                 ColorType(
@@ -3192,118 +3193,118 @@ pub mod style_macro {
     #[allow(unused_attributes)]
     pub fn reset_text_linear_gradient_color(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetColorType);
+        gui.commands_mut().set_style(node_id, ResetColorType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_text_linear_gradient_color(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetColorType);
+        gui.commands_mut().set_style(node_id, ResetColorType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn set_line_height_normal(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, LineHeightType(LineHeight::Normal));
+        gui.commands_mut().set_style(node_id, LineHeightType(LineHeight::Normal));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_line_height_normal(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, LineHeightType(LineHeight::Normal));
+        gui.commands_mut().set_style(node_id, LineHeightType(LineHeight::Normal));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn reset_line_height_normal(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetLineHeightType);
+        gui.commands_mut().set_style(node_id, ResetLineHeightType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_line_height_normal(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetLineHeightType);
+        gui.commands_mut().set_style(node_id, ResetLineHeightType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn set_line_height(gui: &mut Gui, node_id: f64, value: f32) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, LineHeightType(LineHeight::Length(value)));
+        gui.commands_mut().set_style(node_id, LineHeightType(LineHeight::Length(value)));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_line_height(gui: &mut Gui, node_id: f64, value: f32) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, LineHeightType(LineHeight::Length(value)));
+        gui.commands_mut().set_style(node_id, LineHeightType(LineHeight::Length(value)));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn reset_line_height(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetLineHeightType);
+        gui.commands_mut().set_style(node_id, ResetLineHeightType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_line_height(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetLineHeightType);
+        gui.commands_mut().set_style(node_id, ResetLineHeightType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn set_line_height_percent(gui: &mut Gui, node_id: f64, value: f32) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, LineHeightType(LineHeight::Percent(value)));
+        gui.commands_mut().set_style(node_id, LineHeightType(LineHeight::Percent(value)));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_line_height_percent(gui: &mut Gui, node_id: f64, value: f32) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, LineHeightType(LineHeight::Percent(value)));
+        gui.commands_mut().set_style(node_id, LineHeightType(LineHeight::Percent(value)));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn reset_line_height_percent(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetLineHeightType);
+        gui.commands_mut().set_style(node_id, ResetLineHeightType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_line_height_percent(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetLineHeightType);
+        gui.commands_mut().set_style(node_id, ResetLineHeightType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn set_text_indent(gui: &mut Gui, node_id: f64, v: f32) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, TextIndentType(v));
+        gui.commands_mut().set_style(node_id, TextIndentType(v));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_text_indent(gui: &mut Gui, node_id: f64, v: f32) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, TextIndentType(v));
+        gui.commands_mut().set_style(node_id, TextIndentType(v));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn reset_text_indent(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetTextIndentType);
+        gui.commands_mut().set_style(node_id, ResetTextIndentType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_text_indent(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetTextIndentType);
+        gui.commands_mut().set_style(node_id, ResetTextIndentType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
@@ -3311,8 +3312,8 @@ pub mod style_macro {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
         {
             let v: TextAlign = unsafe { transmute(v as u8) };
-            gui.commands.set_style(node_id, TextAlignType(v));
-            gui.commands
+            gui.commands_mut().set_style(node_id, TextAlignType(v));
+            gui.commands_mut()
                 .set_style(
                     node_id,
                     JustifyContentType(
@@ -3333,8 +3334,8 @@ pub mod style_macro {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
         {
             let v: TextAlign = unsafe { transmute(v as u8) };
-            gui.commands.set_style(node_id, TextAlignType(v));
-            gui.commands
+            gui.commands_mut().set_style(node_id, TextAlignType(v));
+            gui.commands_mut()
                 .set_style(
                     node_id,
                     JustifyContentType(
@@ -3353,8 +3354,8 @@ pub mod style_macro {
     pub fn reset_text_align(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
         {
-            gui.commands.set_style(node_id, ResetTextAlignType);
-            gui.commands.set_style(node_id, ResetJustifyContentType);
+            gui.commands_mut().set_style(node_id, ResetTextAlignType);
+            gui.commands_mut().set_style(node_id, ResetJustifyContentType);
         };
     }
     #[cfg(target_arch = "wasm32")]
@@ -3363,8 +3364,8 @@ pub mod style_macro {
     pub fn reset_text_align(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
         {
-            gui.commands.set_style(node_id, ResetTextAlignType);
-            gui.commands.set_style(node_id, ResetJustifyContentType);
+            gui.commands_mut().set_style(node_id, ResetTextAlignType);
+            gui.commands_mut().set_style(node_id, ResetJustifyContentType);
         };
     }
     #[cfg(feature = "pi_js_export")]
@@ -3373,8 +3374,8 @@ pub mod style_macro {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
         {
             let v: VerticalAlign = unsafe { transmute(v as u8) };
-            gui.commands.set_style(node_id, VerticalAlignType(v));
-            gui.commands
+            gui.commands_mut().set_style(node_id, VerticalAlignType(v));
+            gui.commands_mut()
                 .set_style(
                     node_id,
                     AlignSelfType(
@@ -3394,8 +3395,8 @@ pub mod style_macro {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
         {
             let v: VerticalAlign = unsafe { transmute(v as u8) };
-            gui.commands.set_style(node_id, VerticalAlignType(v));
-            gui.commands
+            gui.commands_mut().set_style(node_id, VerticalAlignType(v));
+            gui.commands_mut()
                 .set_style(
                     node_id,
                     AlignSelfType(
@@ -3413,8 +3414,8 @@ pub mod style_macro {
     pub fn reset_vertical_align(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
         {
-            gui.commands.set_style(node_id, ResetVerticalAlignType);
-            gui.commands.set_style(node_id, ResetAlignSelfType);
+            gui.commands_mut().set_style(node_id, ResetVerticalAlignType);
+            gui.commands_mut().set_style(node_id, ResetAlignSelfType);
         };
     }
     #[cfg(target_arch = "wasm32")]
@@ -3423,8 +3424,8 @@ pub mod style_macro {
     pub fn reset_vertical_align(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
         {
-            gui.commands.set_style(node_id, ResetVerticalAlignType);
-            gui.commands.set_style(node_id, ResetAlignSelfType);
+            gui.commands_mut().set_style(node_id, ResetVerticalAlignType);
+            gui.commands_mut().set_style(node_id, ResetAlignSelfType);
         };
     }
     #[cfg(feature = "pi_js_export")]
@@ -3439,7 +3440,7 @@ pub mod style_macro {
         a: f32,
     ) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands
+        gui.commands_mut()
             .set_style(
                 node_id,
                 TextStrokeType(Stroke {
@@ -3461,7 +3462,7 @@ pub mod style_macro {
         a: f32,
     ) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands
+        gui.commands_mut()
             .set_style(
                 node_id,
                 TextStrokeType(Stroke {
@@ -3474,176 +3475,176 @@ pub mod style_macro {
     #[allow(unused_attributes)]
     pub fn reset_text_stroke(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetTextStrokeType);
+        gui.commands_mut().set_style(node_id, ResetTextStrokeType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_text_stroke(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetTextStrokeType);
+        gui.commands_mut().set_style(node_id, ResetTextStrokeType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn set_white_space(gui: &mut Gui, node_id: f64, v: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, WhiteSpaceType(unsafe { transmute(v as u8) }));
+        gui.commands_mut().set_style(node_id, WhiteSpaceType(unsafe { transmute(v as u8) }));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_white_space(gui: &mut Gui, node_id: f64, v: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, WhiteSpaceType(unsafe { transmute(v as u8) }));
+        gui.commands_mut().set_style(node_id, WhiteSpaceType(unsafe { transmute(v as u8) }));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn reset_white_space(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetWhiteSpaceType);
+        gui.commands_mut().set_style(node_id, ResetWhiteSpaceType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_white_space(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetWhiteSpaceType);
+        gui.commands_mut().set_style(node_id, ResetWhiteSpaceType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn set_font_style(gui: &mut Gui, node_id: f64, v: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, FontStyleType(unsafe { transmute(v as u8) }));
+        gui.commands_mut().set_style(node_id, FontStyleType(unsafe { transmute(v as u8) }));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_font_style(gui: &mut Gui, node_id: f64, v: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, FontStyleType(unsafe { transmute(v as u8) }));
+        gui.commands_mut().set_style(node_id, FontStyleType(unsafe { transmute(v as u8) }));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn reset_font_style(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetFontStyleType);
+        gui.commands_mut().set_style(node_id, ResetFontStyleType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_font_style(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetFontStyleType);
+        gui.commands_mut().set_style(node_id, ResetFontStyleType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn set_font_weight(gui: &mut Gui, node_id: f64, v: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, FontWeightType(v as usize));
+        gui.commands_mut().set_style(node_id, FontWeightType(v as usize));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_font_weight(gui: &mut Gui, node_id: f64, v: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, FontWeightType(v as usize));
+        gui.commands_mut().set_style(node_id, FontWeightType(v as usize));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn reset_font_weight(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetFontWeightType);
+        gui.commands_mut().set_style(node_id, ResetFontWeightType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_font_weight(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetFontWeightType);
+        gui.commands_mut().set_style(node_id, ResetFontWeightType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn set_font_size_none(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, FontSizeType(FontSize::None));
+        gui.commands_mut().set_style(node_id, FontSizeType(FontSize::None));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_font_size_none(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, FontSizeType(FontSize::None));
+        gui.commands_mut().set_style(node_id, FontSizeType(FontSize::None));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn reset_font_size_none(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetFontSizeType);
+        gui.commands_mut().set_style(node_id, ResetFontSizeType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_font_size_none(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetFontSizeType);
+        gui.commands_mut().set_style(node_id, ResetFontSizeType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn set_font_size(gui: &mut Gui, node_id: f64, value: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, FontSizeType(FontSize::Length(value as usize)));
+        gui.commands_mut().set_style(node_id, FontSizeType(FontSize::Length(value as usize)));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_font_size(gui: &mut Gui, node_id: f64, value: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, FontSizeType(FontSize::Length(value as usize)));
+        gui.commands_mut().set_style(node_id, FontSizeType(FontSize::Length(value as usize)));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn reset_font_size(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetFontSizeType);
+        gui.commands_mut().set_style(node_id, ResetFontSizeType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_font_size(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetFontSizeType);
+        gui.commands_mut().set_style(node_id, ResetFontSizeType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn set_font_size_percent(gui: &mut Gui, node_id: f64, value: f32) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, FontSizeType(FontSize::Percent(value)));
+        gui.commands_mut().set_style(node_id, FontSizeType(FontSize::Percent(value)));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_font_size_percent(gui: &mut Gui, node_id: f64, value: f32) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, FontSizeType(FontSize::Percent(value)));
+        gui.commands_mut().set_style(node_id, FontSizeType(FontSize::Percent(value)));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn reset_font_size_percent(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetFontSizeType);
+        gui.commands_mut().set_style(node_id, ResetFontSizeType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_font_size_percent(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetFontSizeType);
+        gui.commands_mut().set_style(node_id, ResetFontSizeType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn set_text_content_utf8(gui: &mut Gui, node_id: f64, content: Vec<u8>) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands
+        gui.commands_mut()
             .set_style(
                 node_id,
                 TextContentType({
@@ -3657,7 +3658,7 @@ pub mod style_macro {
     #[allow(unused_attributes)]
     pub fn set_text_content_utf8(gui: &mut Gui, node_id: f64, content: Vec<u8>) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands
+        gui.commands_mut()
             .set_style(
                 node_id,
                 TextContentType({
@@ -3670,20 +3671,20 @@ pub mod style_macro {
     #[allow(unused_attributes)]
     pub fn reset_text_content_utf8(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetTextContentType);
+        gui.commands_mut().set_style(node_id, ResetTextContentType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_text_content_utf8(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetTextContentType);
+        gui.commands_mut().set_style(node_id, ResetTextContentType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn set_clip_path_str(gui: &mut Gui, node_id: f64, value: &str) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands
+        gui.commands_mut()
             .set_style(
                 node_id,
                 ClipPathType({
@@ -3692,7 +3693,7 @@ pub mod style_macro {
                     match BaseShape::parse(&mut parse) {
                         Ok(r) => r,
                         Err(e) => {
-                            ();
+                            (/*ERROR*/);
                             return;
                         }
                     }
@@ -3704,7 +3705,7 @@ pub mod style_macro {
     #[allow(unused_attributes)]
     pub fn set_clip_path_str(gui: &mut Gui, node_id: f64, value: &str) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands
+        gui.commands_mut()
             .set_style(
                 node_id,
                 ClipPathType({
@@ -3713,7 +3714,7 @@ pub mod style_macro {
                     match BaseShape::parse(&mut parse) {
                         Ok(r) => r,
                         Err(e) => {
-                            ();
+                            (/*ERROR*/);
                             return;
                         }
                     }
@@ -3724,20 +3725,20 @@ pub mod style_macro {
     #[allow(unused_attributes)]
     pub fn reset_clip_path_str(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetClipPathType);
+        gui.commands_mut().set_style(node_id, ResetClipPathType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_clip_path_str(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetClipPathType);
+        gui.commands_mut().set_style(node_id, ResetClipPathType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn set_animation_duration(gui: &mut Gui, node_id: f64, name: Vec<usize>) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands
+        gui.commands_mut()
             .set_style(
                 node_id,
                 AnimationDurationType(unsafe {
@@ -3750,7 +3751,7 @@ pub mod style_macro {
     #[allow(unused_attributes)]
     pub fn set_animation_duration(gui: &mut Gui, node_id: f64, name: Vec<usize>) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands
+        gui.commands_mut()
             .set_style(
                 node_id,
                 AnimationDurationType(unsafe {
@@ -3762,20 +3763,20 @@ pub mod style_macro {
     #[allow(unused_attributes)]
     pub fn reset_animation_duration(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetAnimationDurationType);
+        gui.commands_mut().set_style(node_id, ResetAnimationDurationType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_animation_duration(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetAnimationDurationType);
+        gui.commands_mut().set_style(node_id, ResetAnimationDurationType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn set_animation_delay(gui: &mut Gui, node_id: f64, name: Vec<usize>) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands
+        gui.commands_mut()
             .set_style(
                 node_id,
                 AnimationDelayType(unsafe {
@@ -3788,7 +3789,7 @@ pub mod style_macro {
     #[allow(unused_attributes)]
     pub fn set_animation_delay(gui: &mut Gui, node_id: f64, name: Vec<usize>) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands
+        gui.commands_mut()
             .set_style(
                 node_id,
                 AnimationDelayType(unsafe {
@@ -3800,20 +3801,20 @@ pub mod style_macro {
     #[allow(unused_attributes)]
     pub fn reset_animation_delay(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetAnimationDelayType);
+        gui.commands_mut().set_style(node_id, ResetAnimationDelayType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_animation_delay(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetAnimationDelayType);
+        gui.commands_mut().set_style(node_id, ResetAnimationDelayType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn set_animation_iteration_count(gui: &mut Gui, node_id: f64, name: Vec<f32>) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands
+        gui.commands_mut()
             .set_style(
                 node_id,
                 AnimationIterationCountType(unsafe {
@@ -3826,7 +3827,7 @@ pub mod style_macro {
     #[allow(unused_attributes)]
     pub fn set_animation_iteration_count(gui: &mut Gui, node_id: f64, name: Vec<f32>) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands
+        gui.commands_mut()
             .set_style(
                 node_id,
                 AnimationIterationCountType(unsafe {
@@ -3838,20 +3839,20 @@ pub mod style_macro {
     #[allow(unused_attributes)]
     pub fn reset_animation_iteration_count(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetAnimationIterationCountType);
+        gui.commands_mut().set_style(node_id, ResetAnimationIterationCountType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_animation_iteration_count(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetAnimationIterationCountType);
+        gui.commands_mut().set_style(node_id, ResetAnimationIterationCountType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn set_animation_direction(gui: &mut Gui, node_id: f64, name: Vec<u8>) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands
+        gui.commands_mut()
             .set_style(
                 node_id,
                 AnimationDirectionType(unsafe {
@@ -3864,7 +3865,7 @@ pub mod style_macro {
     #[allow(unused_attributes)]
     pub fn set_animation_direction(gui: &mut Gui, node_id: f64, name: Vec<u8>) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands
+        gui.commands_mut()
             .set_style(
                 node_id,
                 AnimationDirectionType(unsafe {
@@ -3876,20 +3877,20 @@ pub mod style_macro {
     #[allow(unused_attributes)]
     pub fn reset_animation_direction(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetAnimationDirectionType);
+        gui.commands_mut().set_style(node_id, ResetAnimationDirectionType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_animation_direction(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetAnimationDirectionType);
+        gui.commands_mut().set_style(node_id, ResetAnimationDirectionType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn set_animation_fill_mode(gui: &mut Gui, node_id: f64, name: Vec<u8>) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands
+        gui.commands_mut()
             .set_style(
                 node_id,
                 AnimationFillModeType(unsafe {
@@ -3902,7 +3903,7 @@ pub mod style_macro {
     #[allow(unused_attributes)]
     pub fn set_animation_fill_mode(gui: &mut Gui, node_id: f64, name: Vec<u8>) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands
+        gui.commands_mut()
             .set_style(
                 node_id,
                 AnimationFillModeType(unsafe {
@@ -3914,20 +3915,20 @@ pub mod style_macro {
     #[allow(unused_attributes)]
     pub fn reset_animation_fill_mode(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetAnimationFillModeType);
+        gui.commands_mut().set_style(node_id, ResetAnimationFillModeType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_animation_fill_mode(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetAnimationFillModeType);
+        gui.commands_mut().set_style(node_id, ResetAnimationFillModeType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn set_animation_play_state(gui: &mut Gui, node_id: f64, name: Vec<u8>) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands
+        gui.commands_mut()
             .set_style(
                 node_id,
                 AnimationPlayStateType(unsafe {
@@ -3940,7 +3941,7 @@ pub mod style_macro {
     #[allow(unused_attributes)]
     pub fn set_animation_play_state(gui: &mut Gui, node_id: f64, name: Vec<u8>) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands
+        gui.commands_mut()
             .set_style(
                 node_id,
                 AnimationPlayStateType(unsafe {
@@ -3952,14 +3953,14 @@ pub mod style_macro {
     #[allow(unused_attributes)]
     pub fn reset_animation_play_state(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetAnimationPlayStateType);
+        gui.commands_mut().set_style(node_id, ResetAnimationPlayStateType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_animation_play_state(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetAnimationPlayStateType);
+        gui.commands_mut().set_style(node_id, ResetAnimationPlayStateType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
@@ -3970,22 +3971,19 @@ pub mod style_macro {
         scope_hash: u32,
     ) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands
+        gui.commands_mut()
             .set_style(
                 node_id,
                 AnimationNameType({
                     let mut input = cssparser::ParserInput::new(value);
                     let mut parse = cssparser::Parser::new(&mut input);
-                    let value = if let Ok(value)
-                        = parse_comma_separated::<
-                            _,
-                            _,
-                        >(
-                            &mut parse,
-                            |input| Ok(
-                                pi_atom::Atom::from(input.expect_ident()?.as_ref()),
-                            ),
-                        ) {
+                    let value = if let Ok(value) = parse_comma_separated::<
+                        _,
+                        _,
+                    >(
+                        &mut parse,
+                        |input| Ok(pi_atom::Atom::from(input.expect_ident()?.as_ref())),
+                    ) {
                         value
                     } else {
                         Default::default()
@@ -4007,22 +4005,19 @@ pub mod style_macro {
         scope_hash: u32,
     ) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands
+        gui.commands_mut()
             .set_style(
                 node_id,
                 AnimationNameType({
                     let mut input = cssparser::ParserInput::new(value);
                     let mut parse = cssparser::Parser::new(&mut input);
-                    let value = if let Ok(value)
-                        = parse_comma_separated::<
-                            _,
-                            _,
-                        >(
-                            &mut parse,
-                            |input| Ok(
-                                pi_atom::Atom::from(input.expect_ident()?.as_ref()),
-                            ),
-                        ) {
+                    let value = if let Ok(value) = parse_comma_separated::<
+                        _,
+                        _,
+                    >(
+                        &mut parse,
+                        |input| Ok(pi_atom::Atom::from(input.expect_ident()?.as_ref())),
+                    ) {
                         value
                     } else {
                         Default::default()
@@ -4038,14 +4033,14 @@ pub mod style_macro {
     #[allow(unused_attributes)]
     pub fn reset_animation_name_str(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetAnimationNameType);
+        gui.commands_mut().set_style(node_id, ResetAnimationNameType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_animation_name_str(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetAnimationNameType);
+        gui.commands_mut().set_style(node_id, ResetAnimationNameType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
@@ -4057,7 +4052,7 @@ pub mod style_macro {
         scope_hash: u32,
     ) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands
+        gui.commands_mut()
             .add_runtime_animation(node_id, animation, key_frames, scope_hash as usize);
     }
     #[cfg(target_arch = "wasm32")]
@@ -4071,7 +4066,7 @@ pub mod style_macro {
         scope_hash: u32,
     ) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands
+        gui.commands_mut()
             .add_runtime_animation(node_id, animation, key_frames, scope_hash as usize);
     }
     #[cfg(feature = "pi_js_export")]
@@ -4109,7 +4104,7 @@ pub mod style_macro {
     #[allow(unused_attributes)]
     pub fn set_mask_image(gui: &mut Gui, node_id: f64, image_hash: &Atom) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands
+        gui.commands_mut()
             .set_style(node_id, MaskImageType(MaskImage::Path((**image_hash).clone())));
     }
     #[cfg(target_arch = "wasm32")]
@@ -4117,79 +4112,79 @@ pub mod style_macro {
     #[allow(unused_attributes)]
     pub fn set_mask_image(gui: &mut Gui, node_id: f64, image_hash: &Atom) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands
+        gui.commands_mut()
             .set_style(node_id, MaskImageType(MaskImage::Path((**image_hash).clone())));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn reset_mask_image(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetMaskImageType);
+        gui.commands_mut().set_style(node_id, ResetMaskImageType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_mask_image(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetMaskImageType);
+        gui.commands_mut().set_style(node_id, ResetMaskImageType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn set_background_image(gui: &mut Gui, node_id: f64, image_hash: &Atom) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, BackgroundImageType((**image_hash).clone()));
+        gui.commands_mut().set_style(node_id, BackgroundImageType((**image_hash).clone()));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_background_image(gui: &mut Gui, node_id: f64, image_hash: &Atom) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, BackgroundImageType((**image_hash).clone()));
+        gui.commands_mut().set_style(node_id, BackgroundImageType((**image_hash).clone()));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn reset_background_image(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetBackgroundImageType);
+        gui.commands_mut().set_style(node_id, ResetBackgroundImageType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_background_image(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetBackgroundImageType);
+        gui.commands_mut().set_style(node_id, ResetBackgroundImageType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn set_border_image(gui: &mut Gui, node_id: f64, image_hash: &Atom) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, BorderImageType((**image_hash).clone()));
+        gui.commands_mut().set_style(node_id, BorderImageType((**image_hash).clone()));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_border_image(gui: &mut Gui, node_id: f64, image_hash: &Atom) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, BorderImageType((**image_hash).clone()));
+        gui.commands_mut().set_style(node_id, BorderImageType((**image_hash).clone()));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn reset_border_image(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetBorderImageType);
+        gui.commands_mut().set_style(node_id, ResetBorderImageType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_border_image(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetBorderImageType);
+        gui.commands_mut().set_style(node_id, ResetBorderImageType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn set_text_shadow(gui: &mut Gui, node_id: f64, s: &str) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands
+        gui.commands_mut()
             .set_style(
                 node_id,
                 TextShadowType({
@@ -4205,7 +4200,7 @@ pub mod style_macro {
     #[allow(unused_attributes)]
     pub fn set_text_shadow(gui: &mut Gui, node_id: f64, s: &str) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands
+        gui.commands_mut()
             .set_style(
                 node_id,
                 TextShadowType({
@@ -4220,20 +4215,20 @@ pub mod style_macro {
     #[allow(unused_attributes)]
     pub fn reset_text_shadow(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetTextShadowType);
+        gui.commands_mut().set_style(node_id, ResetTextShadowType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_text_shadow(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetTextShadowType);
+        gui.commands_mut().set_style(node_id, ResetTextShadowType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn set_text_outer_glow(gui: &mut Gui, node_id: f64, value: &str) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands
+        gui.commands_mut()
             .set_style(
                 node_id,
                 TextOuterGlowType({
@@ -4252,7 +4247,7 @@ pub mod style_macro {
     #[allow(unused_attributes)]
     pub fn set_text_outer_glow(gui: &mut Gui, node_id: f64, value: &str) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands
+        gui.commands_mut()
             .set_style(
                 node_id,
                 TextOuterGlowType({
@@ -4270,46 +4265,46 @@ pub mod style_macro {
     #[allow(unused_attributes)]
     pub fn reset_text_outer_glow(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetTextOuterGlowType);
+        gui.commands_mut().set_style(node_id, ResetTextOuterGlowType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_text_outer_glow(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetTextOuterGlowType);
+        gui.commands_mut().set_style(node_id, ResetTextOuterGlowType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn set_font_family(gui: &mut Gui, node_id: f64, name: &Atom) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, FontFamilyType((**name).clone()));
+        gui.commands_mut().set_style(node_id, FontFamilyType((**name).clone()));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_font_family(gui: &mut Gui, node_id: f64, name: &Atom) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, FontFamilyType((**name).clone()));
+        gui.commands_mut().set_style(node_id, FontFamilyType((**name).clone()));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn reset_font_family(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetFontFamilyType);
+        gui.commands_mut().set_style(node_id, ResetFontFamilyType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_font_family(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetFontFamilyType);
+        gui.commands_mut().set_style(node_id, ResetFontFamilyType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn set_text_content(gui: &mut Gui, node_id: f64, content: String) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands
+        gui.commands_mut()
             .set_style(
                 node_id,
                 TextContentType(TextContent(content, pi_atom::Atom::from(""))),
@@ -4320,7 +4315,7 @@ pub mod style_macro {
     #[allow(unused_attributes)]
     pub fn set_text_content(gui: &mut Gui, node_id: f64, content: String) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands
+        gui.commands_mut()
             .set_style(
                 node_id,
                 TextContentType(TextContent(content, pi_atom::Atom::from(""))),
@@ -4330,30 +4325,29 @@ pub mod style_macro {
     #[allow(unused_attributes)]
     pub fn reset_text_content(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetTextContentType);
+        gui.commands_mut().set_style(node_id, ResetTextContentType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_text_content(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetTextContentType);
+        gui.commands_mut().set_style(node_id, ResetTextContentType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn set_animation_timing_function_str(gui: &mut Gui, node_id: f64, value: &str) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands
+        gui.commands_mut()
             .set_style(
                 node_id,
                 AnimationTimingFunctionType({
                     let mut input = cssparser::ParserInput::new(value);
                     let mut parse = cssparser::Parser::new(&mut input);
-                    if let Ok(value)
-                        = parse_comma_separated(
-                            &mut parse,
-                            <AnimationTimingFunction as StyleParse>::parse,
-                        ) {
+                    if let Ok(value) = parse_comma_separated(
+                        &mut parse,
+                        <AnimationTimingFunction as StyleParse>::parse,
+                    ) {
                         value
                     } else {
                         Default::default()
@@ -4366,17 +4360,16 @@ pub mod style_macro {
     #[allow(unused_attributes)]
     pub fn set_animation_timing_function_str(gui: &mut Gui, node_id: f64, value: &str) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands
+        gui.commands_mut()
             .set_style(
                 node_id,
                 AnimationTimingFunctionType({
                     let mut input = cssparser::ParserInput::new(value);
                     let mut parse = cssparser::Parser::new(&mut input);
-                    if let Ok(value)
-                        = parse_comma_separated(
-                            &mut parse,
-                            <AnimationTimingFunction as StyleParse>::parse,
-                        ) {
+                    if let Ok(value) = parse_comma_separated(
+                        &mut parse,
+                        <AnimationTimingFunction as StyleParse>::parse,
+                    ) {
                         value
                     } else {
                         Default::default()
@@ -4388,39 +4381,39 @@ pub mod style_macro {
     #[allow(unused_attributes)]
     pub fn reset_animation_timing_function_str(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetAnimationTimingFunctionType);
+        gui.commands_mut().set_style(node_id, ResetAnimationTimingFunctionType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_animation_timing_function_str(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetAnimationTimingFunctionType);
+        gui.commands_mut().set_style(node_id, ResetAnimationTimingFunctionType);
     }
     #[cfg(feature = "pi_js_export")]
     pub fn set_default_style(gui: &mut Gui, value: &str) {
         {
-            gui.commands.set_default_style_by_str(value, 0);
+            gui.commands_mut().set_default_style_by_str(value, 0);
         }
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     pub fn set_default_style(gui: &mut Gui, value: &str) {
         {
-            gui.commands.set_default_style_by_str(value, 0);
+            gui.commands_mut().set_default_style_by_str(value, 0);
         }
     }
     #[cfg(feature = "pi_js_export")]
     pub fn create_class_by_str(gui: &mut Gui, css: &str, scope_hash: u32) {
         {
-            gui.commands.add_css(css, scope_hash as usize);
+            gui.commands_mut().add_css(css, scope_hash as usize);
         }
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     pub fn create_class_by_str(gui: &mut Gui, css: &str, scope_hash: u32) {
         {
-            gui.commands.add_css(css, scope_hash as usize);
+            gui.commands_mut().add_css(css, scope_hash as usize);
         }
     }
     #[cfg(feature = "pi_js_export")]
@@ -4431,7 +4424,7 @@ pub mod style_macro {
             for i in class_name.iter() {
                 s.push(*i as usize);
             }
-            gui.commands.set_class(node, ClassName(s));
+            gui.commands_mut().set_class(node, ClassName(s));
         }
     }
     #[cfg(target_arch = "wasm32")]
@@ -4443,7 +4436,7 @@ pub mod style_macro {
             for i in class_name.iter() {
                 s.push(*i as usize);
             }
-            gui.commands.set_class(node, ClassName(s));
+            gui.commands_mut().set_class(node, ClassName(s));
         }
     }
     #[cfg(feature = "pi_js_export")]
@@ -4457,7 +4450,7 @@ pub mod style_macro {
     ) {
         {
             let root = unsafe { transmute::<f64, Entity>(root) };
-            gui.commands
+            gui.commands_mut()
                 .set_view_port(
                     root,
                     pi_ui_render::components::user::Viewport(
@@ -4481,7 +4474,7 @@ pub mod style_macro {
     ) {
         {
             let root = unsafe { transmute::<f64, Entity>(root) };
-            gui.commands
+            gui.commands_mut()
                 .set_view_port(
                     root,
                     pi_ui_render::components::user::Viewport(
@@ -4506,7 +4499,7 @@ pub mod style_macro {
                 Some(brush) => unsafe { transmute::<f64, Entity>(brush) }
                 None => Entity::null(),
             };
-            gui.commands
+            gui.commands_mut()
                 .push_cmd(
                     pi_ui_render::resource::CanvasCmd(
                         brush,
@@ -4530,7 +4523,7 @@ pub mod style_macro {
                 Some(brush) => unsafe { transmute::<f64, Entity>(brush) }
                 None => Entity::null(),
             };
-            gui.commands
+            gui.commands_mut()
                 .push_cmd(
                     pi_ui_render::resource::CanvasCmd(
                         brush,
@@ -4554,7 +4547,7 @@ pub mod style_macro {
     ) {
         {
             let node = unsafe { transmute::<f64, Entity>(node) };
-            gui.commands
+            gui.commands_mut()
                 .push_cmd(
                     NodeCmd(
                         RadialWave(pi_postprocess::prelude::RadialWave {
@@ -4586,7 +4579,7 @@ pub mod style_macro {
     ) {
         {
             let node = unsafe { transmute::<f64, Entity>(node) };
-            gui.commands
+            gui.commands_mut()
                 .push_cmd(
                     NodeCmd(
                         RadialWave(pi_postprocess::prelude::RadialWave {
@@ -4607,7 +4600,7 @@ pub mod style_macro {
     pub fn set_rendertarget_type(gui: &mut Gui, node: f64, target_ty: u8) {
         {
             let node = unsafe { transmute::<f64, Entity>(node) };
-            gui.commands
+            gui.commands_mut()
                 .set_target_type(
                     node,
                     unsafe {
@@ -4624,7 +4617,7 @@ pub mod style_macro {
     pub fn set_rendertarget_type(gui: &mut Gui, node: f64, target_ty: u8) {
         {
             let node = unsafe { transmute::<f64, Entity>(node) };
-            gui.commands
+            gui.commands_mut()
                 .set_target_type(
                     node,
                     unsafe {
@@ -4639,24 +4632,24 @@ pub mod style_macro {
     #[cfg(feature = "pi_js_export")]
     pub fn set_clear_color(gui: &mut Gui, r: f32, g: f32, b: f32, a: f32) {
         {
-            gui.commands.set_clear_color(CgColor::new(r, g, b, a));
+            gui.commands_mut().set_clear_color(CgColor::new(r, g, b, a));
         }
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     pub fn set_clear_color(gui: &mut Gui, r: f32, g: f32, b: f32, a: f32) {
         {
-            gui.commands.set_clear_color(CgColor::new(r, g, b, a));
+            gui.commands_mut().set_clear_color(CgColor::new(r, g, b, a));
         }
     }
     #[cfg(feature = "pi_js_export")]
     pub fn create_class_by_bin(gui: &mut Gui, bin: &[u8]) {
         match postcard::from_bytes::<Vec<pi_style::style_parse::ClassMap>>(bin) {
             Ok(r) => {
-                gui.commands.add_css_bin(pi_ui_render::resource::ExtendCssCmd(r));
+                gui.commands_mut().add_css_bin(pi_ui_render::resource::ExtendCssCmd(r));
             }
             Err(e) => {
-                ();
+                (/*ERROR*/);
                 return;
             }
         }
@@ -4666,10 +4659,10 @@ pub mod style_macro {
     pub fn create_class_by_bin(gui: &mut Gui, bin: &[u8]) {
         match postcard::from_bytes::<Vec<pi_style::style_parse::ClassMap>>(bin) {
             Ok(r) => {
-                gui.commands.add_css_bin(pi_ui_render::resource::ExtendCssCmd(r));
+                gui.commands_mut().add_css_bin(pi_ui_render::resource::ExtendCssCmd(r));
             }
             Err(e) => {
-                ();
+                (/*ERROR*/);
                 return;
             }
         }
@@ -4678,7 +4671,7 @@ pub mod style_macro {
     pub fn set_render_dirty(gui: &mut Gui, root: f64) {
         {
             let node: Entity = unsafe { transmute::<f64, Entity>(root) };
-            gui.commands
+            gui.commands_mut()
                 .set_render_dirty(
                     node,
                     pi_ui_render::resource::RenderDirty(true, true, true),
@@ -4690,7 +4683,7 @@ pub mod style_macro {
     pub fn set_render_dirty(gui: &mut Gui, root: f64) {
         {
             let node: Entity = unsafe { transmute::<f64, Entity>(root) };
-            gui.commands
+            gui.commands_mut()
                 .set_render_dirty(
                     node,
                     pi_ui_render::resource::RenderDirty(true, true, true),
@@ -4922,10 +4915,9 @@ pub mod style_macro {
         let node = unsafe { unsafe { transmute::<f64, Entity>(node) } };
         {
             pi_export_base::export::await_last_frame(engine);
-            if let Ok(is_show)
-                = gui
-                    .entitys
-                    .get_component_by_index::<IsShow>(node, gui.is_show_component)
+            if let Ok(is_show) = gui
+                .entitys()
+                .get_component_by_index::<IsShow>(node, gui.is_show_component())
             {
                 is_show.get_enable()
             } else {
@@ -4939,10 +4931,9 @@ pub mod style_macro {
         let node = unsafe { unsafe { transmute::<f64, Entity>(node) } };
         {
             pi_export_base::export::await_last_frame(engine);
-            if let Ok(is_show)
-                = gui
-                    .entitys
-                    .get_component_by_index::<IsShow>(node, gui.is_show_component)
+            if let Ok(is_show) = gui
+                .entitys()
+                .get_component_by_index::<IsShow>(node, gui.is_show_component())
             {
                 is_show.get_enable()
             } else {
@@ -4955,23 +4946,20 @@ pub mod style_macro {
         let node = unsafe { unsafe { transmute::<f64, Entity>(node) } };
         {
             let mut r = 0.0;
-            if let Ok(parent)
-                = gui.entitys.get_component_by_index::<Up>(node, gui.up_component)
+            if let Ok(parent) = gui
+                .entitys()
+                .get_component_by_index::<Up>(node, gui.up_component())
             {
-                if let Ok(parent_layout)
-                    = gui
-                        .entitys
-                        .get_component_by_index::<
-                            LayoutResult,
-                        >(node, gui.layout_component)
+                if let Ok(parent_layout) = gui
+                    .entitys()
+                    .get_component_by_index::<LayoutResult>(node, gui.layout_component())
                 {
                     r += parent_layout.padding.top + parent_layout.border.top;
                 }
             }
-            if let Ok(layout)
-                = gui
-                    .entitys
-                    .get_component_by_index::<LayoutResult>(node, gui.layout_component)
+            if let Ok(layout) = gui
+                .entitys()
+                .get_component_by_index::<LayoutResult>(node, gui.layout_component())
             {
                 r += layout.rect.top;
             }
@@ -4984,23 +4972,20 @@ pub mod style_macro {
         let node = unsafe { unsafe { transmute::<f64, Entity>(node) } };
         {
             let mut r = 0.0;
-            if let Ok(parent)
-                = gui.entitys.get_component_by_index::<Up>(node, gui.up_component)
+            if let Ok(parent) = gui
+                .entitys()
+                .get_component_by_index::<Up>(node, gui.up_component())
             {
-                if let Ok(parent_layout)
-                    = gui
-                        .entitys
-                        .get_component_by_index::<
-                            LayoutResult,
-                        >(node, gui.layout_component)
+                if let Ok(parent_layout) = gui
+                    .entitys()
+                    .get_component_by_index::<LayoutResult>(node, gui.layout_component())
                 {
                     r += parent_layout.padding.top + parent_layout.border.top;
                 }
             }
-            if let Ok(layout)
-                = gui
-                    .entitys
-                    .get_component_by_index::<LayoutResult>(node, gui.layout_component)
+            if let Ok(layout) = gui
+                .entitys()
+                .get_component_by_index::<LayoutResult>(node, gui.layout_component())
             {
                 r += layout.rect.top;
             }
@@ -5012,23 +4997,20 @@ pub mod style_macro {
         let node = unsafe { unsafe { transmute::<f64, Entity>(node) } };
         {
             let mut r = 0.0;
-            if let Ok(parent)
-                = gui.entitys.get_component_by_index::<Up>(node, gui.up_component)
+            if let Ok(parent) = gui
+                .entitys()
+                .get_component_by_index::<Up>(node, gui.up_component())
             {
-                if let Ok(parent_layout)
-                    = gui
-                        .entitys
-                        .get_component_by_index::<
-                            LayoutResult,
-                        >(node, gui.layout_component)
+                if let Ok(parent_layout) = gui
+                    .entitys()
+                    .get_component_by_index::<LayoutResult>(node, gui.layout_component())
                 {
                     r += parent_layout.padding.left + parent_layout.border.left;
                 }
             }
-            if let Ok(layout)
-                = gui
-                    .entitys
-                    .get_component_by_index::<LayoutResult>(node, gui.layout_component)
+            if let Ok(layout) = gui
+                .entitys()
+                .get_component_by_index::<LayoutResult>(node, gui.layout_component())
             {
                 r += layout.rect.left;
             }
@@ -5041,23 +5023,20 @@ pub mod style_macro {
         let node = unsafe { unsafe { transmute::<f64, Entity>(node) } };
         {
             let mut r = 0.0;
-            if let Ok(parent)
-                = gui.entitys.get_component_by_index::<Up>(node, gui.up_component)
+            if let Ok(parent) = gui
+                .entitys()
+                .get_component_by_index::<Up>(node, gui.up_component())
             {
-                if let Ok(parent_layout)
-                    = gui
-                        .entitys
-                        .get_component_by_index::<
-                            LayoutResult,
-                        >(node, gui.layout_component)
+                if let Ok(parent_layout) = gui
+                    .entitys()
+                    .get_component_by_index::<LayoutResult>(node, gui.layout_component())
                 {
                     r += parent_layout.padding.left + parent_layout.border.left;
                 }
             }
-            if let Ok(layout)
-                = gui
-                    .entitys
-                    .get_component_by_index::<LayoutResult>(node, gui.layout_component)
+            if let Ok(layout) = gui
+                .entitys()
+                .get_component_by_index::<LayoutResult>(node, gui.layout_component())
             {
                 r += layout.rect.left;
             }
@@ -5068,10 +5047,9 @@ pub mod style_macro {
     pub fn offset_width(gui: &mut Gui, engine: &Engine, node: f64) -> u32 {
         let node = unsafe { unsafe { transmute::<f64, Entity>(node) } };
         {
-            let r = if let Ok(layout)
-                = gui
-                    .entitys
-                    .get_component_by_index::<LayoutResult>(node, gui.layout_component)
+            let r = if let Ok(layout) = gui
+                .entitys()
+                .get_component_by_index::<LayoutResult>(node, gui.layout_component())
             {
                 layout.rect.right - layout.rect.left
             } else {
@@ -5085,10 +5063,9 @@ pub mod style_macro {
     pub fn offset_width(gui: &mut Gui, engine: &Engine, node: f64) -> u32 {
         let node = unsafe { unsafe { transmute::<f64, Entity>(node) } };
         {
-            let r = if let Ok(layout)
-                = gui
-                    .entitys
-                    .get_component_by_index::<LayoutResult>(node, gui.layout_component)
+            let r = if let Ok(layout) = gui
+                .entitys()
+                .get_component_by_index::<LayoutResult>(node, gui.layout_component())
             {
                 layout.rect.right - layout.rect.left
             } else {
@@ -5101,10 +5078,9 @@ pub mod style_macro {
     pub fn offset_height(gui: &mut Gui, engine: &Engine, node: f64) -> u32 {
         let node = unsafe { unsafe { transmute::<f64, Entity>(node) } };
         {
-            let r = if let Ok(layout)
-                = gui
-                    .entitys
-                    .get_component_by_index::<LayoutResult>(node, gui.layout_component)
+            let r = if let Ok(layout) = gui
+                .entitys()
+                .get_component_by_index::<LayoutResult>(node, gui.layout_component())
             {
                 layout.rect.bottom - layout.rect.top
             } else {
@@ -5118,10 +5094,9 @@ pub mod style_macro {
     pub fn offset_height(gui: &mut Gui, engine: &Engine, node: f64) -> u32 {
         let node = unsafe { unsafe { transmute::<f64, Entity>(node) } };
         {
-            let r = if let Ok(layout)
-                = gui
-                    .entitys
-                    .get_component_by_index::<LayoutResult>(node, gui.layout_component)
+            let r = if let Ok(layout) = gui
+                .entitys()
+                .get_component_by_index::<LayoutResult>(node, gui.layout_component())
             {
                 layout.rect.bottom - layout.rect.top
             } else {
@@ -5136,8 +5111,8 @@ pub mod style_macro {
         {
             pi_export_base::export::await_last_frame(engine);
             let value = match gui
-                .entitys
-                .get_component_by_index::<ClassName>(node, gui.class_name_component)
+                .entitys()
+                .get_component_by_index::<ClassName>(node, gui.class_name_component())
             {
                 Ok(r) => Some(&r.0),
                 _ => None,
@@ -5152,8 +5127,8 @@ pub mod style_macro {
         {
             pi_export_base::export::await_last_frame(engine);
             let value = match gui
-                .entitys
-                .get_component_by_index::<ClassName>(node, gui.class_name_component)
+                .entitys()
+                .get_component_by_index::<ClassName>(node, gui.class_name_component())
             {
                 Ok(r) => Some(&r.0),
                 _ => None,
@@ -5166,8 +5141,8 @@ pub mod style_macro {
         let node = unsafe { unsafe { transmute::<f64, Entity>(node) } };
         {
             let value = match gui
-                .entitys
-                .get_component_by_index::<Quad>(node, gui.quad_component)
+                .entitys()
+                .get_component_by_index::<Quad>(node, gui.quad_component())
             {
                 Ok(quad) => {
                     OffsetDocument {
@@ -5195,8 +5170,8 @@ pub mod style_macro {
         let node = unsafe { unsafe { transmute::<f64, Entity>(node) } };
         {
             let value = match gui
-                .entitys
-                .get_component_by_index::<Quad>(node, gui.quad_component)
+                .entitys()
+                .get_component_by_index::<Quad>(node, gui.quad_component())
             {
                 Ok(quad) => {
                     OffsetDocument {
@@ -5223,8 +5198,8 @@ pub mod style_macro {
         let node = unsafe { unsafe { transmute::<f64, Entity>(node) } };
         {
             let mut cur_child = match gui
-                .entitys
-                .get_component_by_index::<Down>(node, gui.down_component)
+                .entitys()
+                .get_component_by_index::<Down>(node, gui.down_component())
             {
                 Ok(down) => down.head(),
                 _ => {
@@ -5240,10 +5215,10 @@ pub mod style_macro {
             );
             while !EntityKey(cur_child).is_null() {
                 let l = match gui
-                    .entitys
+                    .entitys()
                     .get_component_by_index::<
                         LayoutResult,
-                    >(cur_child, gui.layout_component)
+                    >(cur_child, gui.layout_component())
                 {
                     Ok(r) => r,
                     _ => break,
@@ -5263,8 +5238,8 @@ pub mod style_macro {
                     top = l.rect.top;
                 }
                 cur_child = match gui
-                    .entitys
-                    .get_component_by_index::<Up>(cur_child, gui.up_component)
+                    .entitys()
+                    .get_component_by_index::<Up>(cur_child, gui.up_component())
                 {
                     Ok(r) => r.next(),
                     _ => break,
@@ -5285,8 +5260,8 @@ pub mod style_macro {
         let node = unsafe { unsafe { transmute::<f64, Entity>(node) } };
         {
             let mut cur_child = match gui
-                .entitys
-                .get_component_by_index::<Down>(node, gui.down_component)
+                .entitys()
+                .get_component_by_index::<Down>(node, gui.down_component())
             {
                 Ok(down) => down.head(),
                 _ => {
@@ -5302,10 +5277,10 @@ pub mod style_macro {
             );
             while !EntityKey(cur_child).is_null() {
                 let l = match gui
-                    .entitys
+                    .entitys()
                     .get_component_by_index::<
                         LayoutResult,
-                    >(cur_child, gui.layout_component)
+                    >(cur_child, gui.layout_component())
                 {
                     Ok(r) => r,
                     _ => break,
@@ -5325,8 +5300,8 @@ pub mod style_macro {
                     top = l.rect.top;
                 }
                 cur_child = match gui
-                    .entitys
-                    .get_component_by_index::<Up>(cur_child, gui.up_component)
+                    .entitys()
+                    .get_component_by_index::<Up>(cur_child, gui.up_component())
                 {
                     Ok(r) => r.next(),
                     _ => break,
@@ -5370,7 +5345,7 @@ pub mod style_macro {
             for (group_id, ty, count) in events.iter() {
                 match map.get(*group_id) {
                     Some(r) => {
-                        ();
+                        (/*ERROR*/);
                         arr[i] = r.0.index() as u32;
                         arr[i + 1] = r.0.data().version() as u32;
                         match &r.1 {
@@ -5416,7 +5391,7 @@ pub mod style_macro {
             for (group_id, ty, count) in events.iter() {
                 match map.get(*group_id) {
                     Some(r) => {
-                        ();
+                        (/*ERROR*/);
                         arr[i] = r.0.index() as u32;
                         arr[i + 1] = r.0.data().version() as u32;
                         match &r.1 {
@@ -5540,50 +5515,50 @@ pub mod style_macro {
         let mut animations = match parse_animation(&mut parse) {
             Ok(r) => r,
             Err(e) => {
-                ();
+                (/*ERROR*/);
                 return;
             }
         };
         animations.name.scope_hash = scope_hash as usize;
-        ();
+        (/*ERROR*/);
         if animations.name.value.len() > 0 {
-            gui.commands.set_style(node_id, AnimationNameType(animations.name));
-            gui.commands.set_style(node_id, AnimationDurationType(animations.duration));
-            gui.commands
+            gui.commands_mut().set_style(node_id, AnimationNameType(animations.name));
+            gui.commands_mut().set_style(node_id, AnimationDurationType(animations.duration));
+            gui.commands_mut()
                 .set_style(
                     node_id,
                     AnimationTimingFunctionType(animations.timing_function),
                 );
-            gui.commands
+            gui.commands_mut()
                 .set_style(
                     node_id,
                     AnimationIterationCountType(animations.iteration_count),
                 );
-            gui.commands.set_style(node_id, AnimationDelayType(animations.delay));
-            gui.commands
+            gui.commands_mut().set_style(node_id, AnimationDelayType(animations.delay));
+            gui.commands_mut()
                 .set_style(node_id, AnimationDirectionType(animations.direction));
-            gui.commands.set_style(node_id, AnimationFillModeType(animations.fill_mode));
-            gui.commands
+            gui.commands_mut().set_style(node_id, AnimationFillModeType(animations.fill_mode));
+            gui.commands_mut()
                 .set_style(node_id, AnimationPlayStateType(animations.play_state));
         }
     }
     #[inline]
     fn reset_animation_str_inner(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetAnimationNameType);
-        gui.commands.set_style(node_id, ResetAnimationDurationType);
-        gui.commands.set_style(node_id, ResetAnimationIterationCountType);
-        gui.commands.set_style(node_id, ResetAnimationDelayType);
-        gui.commands.set_style(node_id, ResetAnimationDirectionType);
-        gui.commands.set_style(node_id, ResetAnimationFillModeType);
-        gui.commands.set_style(node_id, ResetAnimationPlayStateType);
+        gui.commands_mut().set_style(node_id, ResetAnimationNameType);
+        gui.commands_mut().set_style(node_id, ResetAnimationDurationType);
+        gui.commands_mut().set_style(node_id, ResetAnimationIterationCountType);
+        gui.commands_mut().set_style(node_id, ResetAnimationDelayType);
+        gui.commands_mut().set_style(node_id, ResetAnimationDirectionType);
+        gui.commands_mut().set_style(node_id, ResetAnimationFillModeType);
+        gui.commands_mut().set_style(node_id, ResetAnimationPlayStateType);
     }
     pub mod debug {}
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn set_svg_fill_color(gui: &mut Gui, node_id: f64, fill_color: &[f32]) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands
+        gui.commands_mut()
             .set_style(
                 node_id,
                 SvgColorType(
@@ -5605,7 +5580,7 @@ pub mod style_macro {
     #[allow(unused_attributes)]
     pub fn set_svg_fill_color(gui: &mut Gui, node_id: f64, fill_color: &[f32]) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands
+        gui.commands_mut()
             .set_style(
                 node_id,
                 SvgColorType(
@@ -5626,20 +5601,20 @@ pub mod style_macro {
     #[allow(unused_attributes)]
     pub fn reset_svg_fill_color(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetSvgColorType);
+        gui.commands_mut().set_style(node_id, ResetSvgColorType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_svg_fill_color(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetSvgColorType);
+        gui.commands_mut().set_style(node_id, ResetSvgColorType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn set_svg_fill_color_id(gui: &mut Gui, node_id: f64, fill_color_url: &str) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands
+        gui.commands_mut()
             .set_style(
                 node_id,
                 SvgColorType({
@@ -5655,7 +5630,7 @@ pub mod style_macro {
     #[allow(unused_attributes)]
     pub fn set_svg_fill_color_id(gui: &mut Gui, node_id: f64, fill_color_url: &str) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands
+        gui.commands_mut()
             .set_style(
                 node_id,
                 SvgColorType({
@@ -5670,20 +5645,20 @@ pub mod style_macro {
     #[allow(unused_attributes)]
     pub fn reset_svg_fill_color_id(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetSvgColorType);
+        gui.commands_mut().set_style(node_id, ResetSvgColorType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_svg_fill_color_id(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetSvgColorType);
+        gui.commands_mut().set_style(node_id, ResetSvgColorType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn set_svg_storke_color(gui: &mut Gui, node_id: f64, storke_color: &[f32]) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands
+        gui.commands_mut()
             .set_style(
                 node_id,
                 SvgColorType(
@@ -5705,7 +5680,7 @@ pub mod style_macro {
     #[allow(unused_attributes)]
     pub fn set_svg_storke_color(gui: &mut Gui, node_id: f64, storke_color: &[f32]) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands
+        gui.commands_mut()
             .set_style(
                 node_id,
                 SvgColorType(
@@ -5726,20 +5701,20 @@ pub mod style_macro {
     #[allow(unused_attributes)]
     pub fn reset_svg_storke_color(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetSvgColorType);
+        gui.commands_mut().set_style(node_id, ResetSvgColorType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_svg_storke_color(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetSvgColorType);
+        gui.commands_mut().set_style(node_id, ResetSvgColorType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn set_svg_storke_width(gui: &mut Gui, node_id: f64, width: f32) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands
+        gui.commands_mut()
             .set_style(
                 node_id,
                 SvgStrokeWidthType(unsafe { NotNan::new_unchecked(width) }),
@@ -5750,7 +5725,7 @@ pub mod style_macro {
     #[allow(unused_attributes)]
     pub fn set_svg_storke_width(gui: &mut Gui, node_id: f64, width: f32) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands
+        gui.commands_mut()
             .set_style(
                 node_id,
                 SvgStrokeWidthType(unsafe { NotNan::new_unchecked(width) }),
@@ -5760,176 +5735,176 @@ pub mod style_macro {
     #[allow(unused_attributes)]
     pub fn reset_svg_storke_width(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetSvgStrokeWidthType);
+        gui.commands_mut().set_style(node_id, ResetSvgStrokeWidthType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_svg_storke_width(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetSvgStrokeWidthType);
+        gui.commands_mut().set_style(node_id, ResetSvgStrokeWidthType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn set_svg_shape_width(gui: &mut Gui, node_id: f64, width: f32) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, SvgShapeWidthType(width));
+        gui.commands_mut().set_style(node_id, SvgShapeWidthType(width));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_svg_shape_width(gui: &mut Gui, node_id: f64, width: f32) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, SvgShapeWidthType(width));
+        gui.commands_mut().set_style(node_id, SvgShapeWidthType(width));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn reset_svg_shape_width(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetSvgShapeWidthType);
+        gui.commands_mut().set_style(node_id, ResetSvgShapeWidthType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_svg_shape_width(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetSvgShapeWidthType);
+        gui.commands_mut().set_style(node_id, ResetSvgShapeWidthType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn set_svg_shape_height(gui: &mut Gui, node_id: f64, height: f32) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, SvgShapeHeightType(height));
+        gui.commands_mut().set_style(node_id, SvgShapeHeightType(height));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_svg_shape_height(gui: &mut Gui, node_id: f64, height: f32) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, SvgShapeHeightType(height));
+        gui.commands_mut().set_style(node_id, SvgShapeHeightType(height));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn reset_svg_shape_height(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetSvgShapeHeightType);
+        gui.commands_mut().set_style(node_id, ResetSvgShapeHeightType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_svg_shape_height(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetSvgShapeHeightType);
+        gui.commands_mut().set_style(node_id, ResetSvgShapeHeightType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn set_svg_shape_x(gui: &mut Gui, node_id: f64, x: f32) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, SvgShapeXType(x));
+        gui.commands_mut().set_style(node_id, SvgShapeXType(x));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_svg_shape_x(gui: &mut Gui, node_id: f64, x: f32) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, SvgShapeXType(x));
+        gui.commands_mut().set_style(node_id, SvgShapeXType(x));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn reset_svg_shape_x(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetSvgShapeXType);
+        gui.commands_mut().set_style(node_id, ResetSvgShapeXType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_svg_shape_x(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetSvgShapeXType);
+        gui.commands_mut().set_style(node_id, ResetSvgShapeXType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn set_svg_shape_y(gui: &mut Gui, node_id: f64, y: f32) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, SvgShapeYType(y));
+        gui.commands_mut().set_style(node_id, SvgShapeYType(y));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_svg_shape_y(gui: &mut Gui, node_id: f64, y: f32) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, SvgShapeYType(y));
+        gui.commands_mut().set_style(node_id, SvgShapeYType(y));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn reset_svg_shape_y(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetSvgShapeYType);
+        gui.commands_mut().set_style(node_id, ResetSvgShapeYType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_svg_shape_y(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetSvgShapeYType);
+        gui.commands_mut().set_style(node_id, ResetSvgShapeYType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn set_svg_width(gui: &mut Gui, node_id: f64, width: f32) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, SvgWidthType(width));
+        gui.commands_mut().set_style(node_id, SvgWidthType(width));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_svg_width(gui: &mut Gui, node_id: f64, width: f32) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, SvgWidthType(width));
+        gui.commands_mut().set_style(node_id, SvgWidthType(width));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn reset_svg_width(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetSvgWidthType);
+        gui.commands_mut().set_style(node_id, ResetSvgWidthType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_svg_width(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetSvgWidthType);
+        gui.commands_mut().set_style(node_id, ResetSvgWidthType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn set_svg_height(gui: &mut Gui, node_id: f64, height: f32) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, SvgHeightType(height));
+        gui.commands_mut().set_style(node_id, SvgHeightType(height));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_svg_height(gui: &mut Gui, node_id: f64, height: f32) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, SvgHeightType(height));
+        gui.commands_mut().set_style(node_id, SvgHeightType(height));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn reset_svg_height(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetSvgHeightType);
+        gui.commands_mut().set_style(node_id, ResetSvgHeightType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_svg_height(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetSvgHeightType);
+        gui.commands_mut().set_style(node_id, ResetSvgHeightType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn set_svg_shape(gui: &mut Gui, node_id: f64, shape: f32) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands
+        gui.commands_mut()
             .set_style(
                 node_id,
                 SvgShapeType(unsafe { std::mem::transmute(shape as u8) }),
@@ -5940,7 +5915,7 @@ pub mod style_macro {
     #[allow(unused_attributes)]
     pub fn set_svg_shape(gui: &mut Gui, node_id: f64, shape: f32) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands
+        gui.commands_mut()
             .set_style(
                 node_id,
                 SvgShapeType(unsafe { std::mem::transmute(shape as u8) }),
@@ -5950,274 +5925,274 @@ pub mod style_macro {
     #[allow(unused_attributes)]
     pub fn reset_svg_shape(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetSvgShapeType);
+        gui.commands_mut().set_style(node_id, ResetSvgShapeType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_svg_shape(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetSvgShapeType);
+        gui.commands_mut().set_style(node_id, ResetSvgShapeType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn set_svg_shape_cx(gui: &mut Gui, node_id: f64, center_x: f32) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, SvgShapeCXType(center_x));
+        gui.commands_mut().set_style(node_id, SvgShapeCXType(center_x));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_svg_shape_cx(gui: &mut Gui, node_id: f64, center_x: f32) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, SvgShapeCXType(center_x));
+        gui.commands_mut().set_style(node_id, SvgShapeCXType(center_x));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn reset_svg_shape_cx(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetSvgShapeCXType);
+        gui.commands_mut().set_style(node_id, ResetSvgShapeCXType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_svg_shape_cx(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetSvgShapeCXType);
+        gui.commands_mut().set_style(node_id, ResetSvgShapeCXType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn set_svg_shape_cy(gui: &mut Gui, node_id: f64, center_y: f32) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, SvgShapeCYType(center_y));
+        gui.commands_mut().set_style(node_id, SvgShapeCYType(center_y));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_svg_shape_cy(gui: &mut Gui, node_id: f64, center_y: f32) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, SvgShapeCYType(center_y));
+        gui.commands_mut().set_style(node_id, SvgShapeCYType(center_y));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn reset_svg_shape_cy(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetSvgShapeCYType);
+        gui.commands_mut().set_style(node_id, ResetSvgShapeCYType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_svg_shape_cy(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetSvgShapeCYType);
+        gui.commands_mut().set_style(node_id, ResetSvgShapeCYType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn set_svg_shape_radius(gui: &mut Gui, node_id: f64, radius: f32) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, SvgShapeRadiusType(radius));
+        gui.commands_mut().set_style(node_id, SvgShapeRadiusType(radius));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_svg_shape_radius(gui: &mut Gui, node_id: f64, radius: f32) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, SvgShapeRadiusType(radius));
+        gui.commands_mut().set_style(node_id, SvgShapeRadiusType(radius));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn reset_svg_shape_radius(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetSvgShapeRadiusType);
+        gui.commands_mut().set_style(node_id, ResetSvgShapeRadiusType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_svg_shape_radius(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetSvgShapeRadiusType);
+        gui.commands_mut().set_style(node_id, ResetSvgShapeRadiusType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn set_svg_shape_radius_x(gui: &mut Gui, node_id: f64, radius_x: f32) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, SvgShapeRadiusXType(radius_x));
+        gui.commands_mut().set_style(node_id, SvgShapeRadiusXType(radius_x));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_svg_shape_radius_x(gui: &mut Gui, node_id: f64, radius_x: f32) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, SvgShapeRadiusXType(radius_x));
+        gui.commands_mut().set_style(node_id, SvgShapeRadiusXType(radius_x));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn reset_svg_shape_radius_x(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetSvgShapeRadiusXType);
+        gui.commands_mut().set_style(node_id, ResetSvgShapeRadiusXType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_svg_shape_radius_x(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetSvgShapeRadiusXType);
+        gui.commands_mut().set_style(node_id, ResetSvgShapeRadiusXType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn set_svg_shape_radius_y(gui: &mut Gui, node_id: f64, radius_y: f32) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, SvgShapeRadiusYType(radius_y));
+        gui.commands_mut().set_style(node_id, SvgShapeRadiusYType(radius_y));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_svg_shape_radius_y(gui: &mut Gui, node_id: f64, radius_y: f32) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, SvgShapeRadiusYType(radius_y));
+        gui.commands_mut().set_style(node_id, SvgShapeRadiusYType(radius_y));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn reset_svg_shape_radius_y(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetSvgShapeRadiusYType);
+        gui.commands_mut().set_style(node_id, ResetSvgShapeRadiusYType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_svg_shape_radius_y(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetSvgShapeRadiusYType);
+        gui.commands_mut().set_style(node_id, ResetSvgShapeRadiusYType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn set_svg_shape_ax(gui: &mut Gui, node_id: f64, ax: f32) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, SvgShapeAXType(ax));
+        gui.commands_mut().set_style(node_id, SvgShapeAXType(ax));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_svg_shape_ax(gui: &mut Gui, node_id: f64, ax: f32) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, SvgShapeAXType(ax));
+        gui.commands_mut().set_style(node_id, SvgShapeAXType(ax));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn reset_svg_shape_ax(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetSvgShapeAXType);
+        gui.commands_mut().set_style(node_id, ResetSvgShapeAXType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_svg_shape_ax(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetSvgShapeAXType);
+        gui.commands_mut().set_style(node_id, ResetSvgShapeAXType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn set_svg_shape_ay(gui: &mut Gui, node_id: f64, ay: f32) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, SvgShapeAYType(ay));
+        gui.commands_mut().set_style(node_id, SvgShapeAYType(ay));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_svg_shape_ay(gui: &mut Gui, node_id: f64, ay: f32) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, SvgShapeAYType(ay));
+        gui.commands_mut().set_style(node_id, SvgShapeAYType(ay));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn reset_svg_shape_ay(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetSvgShapeAYType);
+        gui.commands_mut().set_style(node_id, ResetSvgShapeAYType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_svg_shape_ay(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetSvgShapeAYType);
+        gui.commands_mut().set_style(node_id, ResetSvgShapeAYType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn set_svg_shape_bx(gui: &mut Gui, node_id: f64, bx: f32) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, SvgShapeBXType(bx));
+        gui.commands_mut().set_style(node_id, SvgShapeBXType(bx));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_svg_shape_bx(gui: &mut Gui, node_id: f64, bx: f32) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, SvgShapeBXType(bx));
+        gui.commands_mut().set_style(node_id, SvgShapeBXType(bx));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn reset_svg_shape_bx(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetSvgShapeBXType);
+        gui.commands_mut().set_style(node_id, ResetSvgShapeBXType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_svg_shape_bx(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetSvgShapeBXType);
+        gui.commands_mut().set_style(node_id, ResetSvgShapeBXType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn set_svg_shape_by(gui: &mut Gui, node_id: f64, by: f32) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, SvgShapeBYType(by));
+        gui.commands_mut().set_style(node_id, SvgShapeBYType(by));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_svg_shape_by(gui: &mut Gui, node_id: f64, by: f32) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, SvgShapeBYType(by));
+        gui.commands_mut().set_style(node_id, SvgShapeBYType(by));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn reset_svg_shape_by(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetSvgShapeBYType);
+        gui.commands_mut().set_style(node_id, ResetSvgShapeBYType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_svg_shape_by(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetSvgShapeBYType);
+        gui.commands_mut().set_style(node_id, ResetSvgShapeBYType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn set_svg_shape_points(gui: &mut Gui, node_id: f64, points: &[f32]) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, SvgShapePointsType(points.to_vec()));
+        gui.commands_mut().set_style(node_id, SvgShapePointsType(points.to_vec()));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_svg_shape_points(gui: &mut Gui, node_id: f64, points: &[f32]) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, SvgShapePointsType(points.to_vec()));
+        gui.commands_mut().set_style(node_id, SvgShapePointsType(points.to_vec()));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn reset_svg_shape_points(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetSvgShapePointsType);
+        gui.commands_mut().set_style(node_id, ResetSvgShapePointsType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_svg_shape_points(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetSvgShapePointsType);
+        gui.commands_mut().set_style(node_id, ResetSvgShapePointsType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
@@ -6228,7 +6203,7 @@ pub mod style_macro {
         points: &[f32],
     ) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands
+        gui.commands_mut()
             .set_style(
                 node_id,
                 SvgShapePathType((
@@ -6247,7 +6222,7 @@ pub mod style_macro {
         points: &[f32],
     ) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands
+        gui.commands_mut()
             .set_style(
                 node_id,
                 SvgShapePathType((
@@ -6260,14 +6235,14 @@ pub mod style_macro {
     #[allow(unused_attributes)]
     pub fn reset_svg_shape_path(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetSvgShapePathType);
+        gui.commands_mut().set_style(node_id, ResetSvgShapePathType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_svg_shape_path(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetSvgShapePathType);
+        gui.commands_mut().set_style(node_id, ResetSvgShapePathType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
@@ -6277,7 +6252,7 @@ pub mod style_macro {
         stroke_dasharray: &[f32],
     ) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands
+        gui.commands_mut()
             .set_style(
                 node_id,
                 StrokeDasharrayType(StrokeDasharray {
@@ -6295,7 +6270,7 @@ pub mod style_macro {
         stroke_dasharray: &[f32],
     ) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands
+        gui.commands_mut()
             .set_style(
                 node_id,
                 StrokeDasharrayType(StrokeDasharray {
@@ -6308,98 +6283,98 @@ pub mod style_macro {
     #[allow(unused_attributes)]
     pub fn reset_svg_stroke_dasharray(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetStrokeDasharrayType);
+        gui.commands_mut().set_style(node_id, ResetStrokeDasharrayType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_svg_stroke_dasharray(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetStrokeDasharrayType);
+        gui.commands_mut().set_style(node_id, ResetStrokeDasharrayType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn set_svg_shadow_offset_dx(gui: &mut Gui, node_id: f64, x: f32) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, SvgShadowOffsetXType(x));
+        gui.commands_mut().set_style(node_id, SvgShadowOffsetXType(x));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_svg_shadow_offset_dx(gui: &mut Gui, node_id: f64, x: f32) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, SvgShadowOffsetXType(x));
+        gui.commands_mut().set_style(node_id, SvgShadowOffsetXType(x));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn reset_svg_shadow_offset_dx(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetSvgShadowOffsetXType);
+        gui.commands_mut().set_style(node_id, ResetSvgShadowOffsetXType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_svg_shadow_offset_dx(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetSvgShadowOffsetXType);
+        gui.commands_mut().set_style(node_id, ResetSvgShadowOffsetXType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn set_svg_shadow_offset_dy(gui: &mut Gui, node_id: f64, y: f32) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, SvgShadowOffsetYType(y));
+        gui.commands_mut().set_style(node_id, SvgShadowOffsetYType(y));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_svg_shadow_offset_dy(gui: &mut Gui, node_id: f64, y: f32) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, SvgShadowOffsetYType(y));
+        gui.commands_mut().set_style(node_id, SvgShadowOffsetYType(y));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn reset_svg_shadow_offset_dy(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetSvgShadowOffsetYType);
+        gui.commands_mut().set_style(node_id, ResetSvgShadowOffsetYType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_svg_shadow_offset_dy(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetSvgShadowOffsetYType);
+        gui.commands_mut().set_style(node_id, ResetSvgShadowOffsetYType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn set_svg_blur_level(gui: &mut Gui, node_id: f64, level: f32) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, SvgShadowBlurLevelType(level));
+        gui.commands_mut().set_style(node_id, SvgShadowBlurLevelType(level));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_svg_blur_level(gui: &mut Gui, node_id: f64, level: f32) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, SvgShadowBlurLevelType(level));
+        gui.commands_mut().set_style(node_id, SvgShadowBlurLevelType(level));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn reset_svg_blur_level(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetSvgShadowBlurLevelType);
+        gui.commands_mut().set_style(node_id, ResetSvgShadowBlurLevelType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_svg_blur_level(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetSvgShadowBlurLevelType);
+        gui.commands_mut().set_style(node_id, ResetSvgShadowBlurLevelType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn set_svg_filter(gui: &mut Gui, node_id: f64, other_id: &str) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands
+        gui.commands_mut()
             .set_style(
                 node_id,
                 SvgFilterType({
@@ -6415,7 +6390,7 @@ pub mod style_macro {
     #[allow(unused_attributes)]
     pub fn set_svg_filter(gui: &mut Gui, node_id: f64, other_id: &str) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands
+        gui.commands_mut()
             .set_style(
                 node_id,
                 SvgFilterType({
@@ -6430,20 +6405,20 @@ pub mod style_macro {
     #[allow(unused_attributes)]
     pub fn reset_svg_filter(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetSvgFilterType);
+        gui.commands_mut().set_style(node_id, ResetSvgFilterType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_svg_filter(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetSvgFilterType);
+        gui.commands_mut().set_style(node_id, ResetSvgFilterType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn set_svg_filter_id(gui: &mut Gui, node_id: f64, other_id: &str) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands
+        gui.commands_mut()
             .set_style(
                 node_id,
                 SvgFilterIDType({
@@ -6459,7 +6434,7 @@ pub mod style_macro {
     #[allow(unused_attributes)]
     pub fn set_svg_filter_id(gui: &mut Gui, node_id: f64, other_id: &str) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands
+        gui.commands_mut()
             .set_style(
                 node_id,
                 SvgFilterIDType({
@@ -6474,20 +6449,20 @@ pub mod style_macro {
     #[allow(unused_attributes)]
     pub fn reset_svg_filter_id(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetSvgFilterIDType);
+        gui.commands_mut().set_style(node_id, ResetSvgFilterIDType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_svg_filter_id(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetSvgFilterIDType);
+        gui.commands_mut().set_style(node_id, ResetSvgFilterIDType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn set_svg_gradient_stop(gui: &mut Gui, node_id: f64, color: &[f32]) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands
+        gui.commands_mut()
             .set_style(
                 node_id,
                 SvgGradientStopColorType(
@@ -6500,7 +6475,7 @@ pub mod style_macro {
     #[allow(unused_attributes)]
     pub fn set_svg_gradient_stop(gui: &mut Gui, node_id: f64, color: &[f32]) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands
+        gui.commands_mut()
             .set_style(
                 node_id,
                 SvgGradientStopColorType(
@@ -6512,46 +6487,46 @@ pub mod style_macro {
     #[allow(unused_attributes)]
     pub fn reset_svg_gradient_stop(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetSvgGradientStopColorType);
+        gui.commands_mut().set_style(node_id, ResetSvgGradientStopColorType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_svg_gradient_stop(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetSvgGradientStopColorType);
+        gui.commands_mut().set_style(node_id, ResetSvgGradientStopColorType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn set_svg_gradient_offset(gui: &mut Gui, node_id: f64, offset: f32) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, SvgGradientStopOffsetType(offset));
+        gui.commands_mut().set_style(node_id, SvgGradientStopOffsetType(offset));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_svg_gradient_offset(gui: &mut Gui, node_id: f64, offset: f32) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, SvgGradientStopOffsetType(offset));
+        gui.commands_mut().set_style(node_id, SvgGradientStopOffsetType(offset));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn reset_svg_gradient_offset(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetSvgGradientStopOffsetType);
+        gui.commands_mut().set_style(node_id, ResetSvgGradientStopOffsetType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_svg_gradient_offset(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetSvgGradientStopOffsetType);
+        gui.commands_mut().set_style(node_id, ResetSvgGradientStopOffsetType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn set_svg_gradient(gui: &mut Gui, node_id: f64, other_id: &str) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands
+        gui.commands_mut()
             .set_style(
                 node_id,
                 SvgLinerGradientType({
@@ -6567,7 +6542,7 @@ pub mod style_macro {
     #[allow(unused_attributes)]
     pub fn set_svg_gradient(gui: &mut Gui, node_id: f64, other_id: &str) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands
+        gui.commands_mut()
             .set_style(
                 node_id,
                 SvgLinerGradientType({
@@ -6582,20 +6557,20 @@ pub mod style_macro {
     #[allow(unused_attributes)]
     pub fn reset_svg_gradient(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetSvgLinerGradientType);
+        gui.commands_mut().set_style(node_id, ResetSvgLinerGradientType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_svg_gradient(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetSvgLinerGradientType);
+        gui.commands_mut().set_style(node_id, ResetSvgLinerGradientType);
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
     pub fn set_svg_shadow_color(gui: &mut Gui, node_id: f64, color: &[f32]) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands
+        gui.commands_mut()
             .set_style(
                 node_id,
                 SvgShadowColorType(CgColor::new(color[0], color[1], color[2], color[3])),
@@ -6606,7 +6581,7 @@ pub mod style_macro {
     #[allow(unused_attributes)]
     pub fn set_svg_shadow_color(gui: &mut Gui, node_id: f64, color: &[f32]) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands
+        gui.commands_mut()
             .set_style(
                 node_id,
                 SvgShadowColorType(CgColor::new(color[0], color[1], color[2], color[3])),
@@ -6616,14 +6591,14 @@ pub mod style_macro {
     #[allow(unused_attributes)]
     pub fn reset_svg_shadow_color(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetSvgShadowColorType);
+        gui.commands_mut().set_style(node_id, ResetSvgShadowColorType);
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn reset_svg_shadow_color(gui: &mut Gui, node_id: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands.set_style(node_id, ResetSvgShadowColorType);
+        gui.commands_mut().set_style(node_id, ResetSvgShadowColorType);
     }
 }
 

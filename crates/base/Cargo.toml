@@ -5,10 +5,12 @@ authors = ["suncy <suncy@gmail.com>"]
 edition = "2021"
 
 [features]
-default = ["pi_js_export", "wasm_bindgen"]
+default = ["pi_js_export", "wasm_bindgen", "record"]
 pi_js_export = []
 wasm_bindgen = ["pi_export_assets_mgr/wasm_bindgen"]
 allow_not_run = []
+record 			        = []
+replay 			        = []
 # system_graph = [] # 提供接口，返回system的日程图
 
 [dependencies]
@@ -21,6 +23,7 @@ pi_atom = "0.6"
 pi_hash="0.1"
 log = "0.4"
 serde_json = "1.0"
+serde                   = { version = "1.0", features = ["derive"] }
 derive-deref-rs = "0.1"
 smallvec                = "1.9"
 pi_export_macro = {path="../macro"}
@@ -33,6 +36,11 @@ pi_time = {version = "0.5", features = ["high_performance"]}
 # bevy_app = {version = "0.11", default_features = false}
 # bevy_a11y = "0.11"
 # bevy_window = {version = "0.1", registry = "yn", package = "pi_bevy_window" }
+postcard = {version = "1.0", features = ["use-std"]}
+pi_flex_layout = "0.4"
+pi_spatial = "0.6"
+pi_slotmap              = "0.2"
+pi_null = "0.1"
 pi_world = "0.2"
 pi_bevy_asset = {version = "0.3", registry = "yn"}
 pi_bevy_render_plugin = {version = "0.3", registry = "yn"}
@@ -50,6 +58,8 @@ wgpu = {version = "0.3", registry = "yn", package="pi_wgpu"}
 tracing = "0.1"
 pi_winit = {version = "0.28", registry="yn", package="winit"}
 backtrace = "0.3"
+pi_ui_render = {version = "0.2", registry = "yn"}
+pi_style = {version = "0.3", registry = "yn"}
 pi_3d 		            = { version = "1.3.*", registry = "yn" }
 pi_scene_shell 		    = { version = "1.3.*", registry = "yn" }
 pi_node_materials 		= { version = "1.3.*", registry = "yn" }
@@ -58,6 +68,9 @@ pi_mesh_builder 		= { version = "1.3.*", registry = "yn" }
 pi_gltf2_load           = { version = "1.3.*", registry = "yn" }
 pi_particle_system      = { version = "1.3.*", registry = "yn" }
 pi_trail_renderer       = { version = "1.3.*", registry = "yn" }
+pi_scene_math           = { version = "0.0.*", registry = "yn" }
+pi_animation            = { version = "0.2", registry = "yn" }
+pi_curves               = { version = "0.1", registry = "yn" }
 
 [target.'cfg(target_arch = "wasm32")'.dependencies]
 wasm-bindgen = { version = "0.2", features = ["serde-serialize"]}

@@ -5,42 +5,39 @@ use std::any::Any;
 
 use pi_bevy_asset::ShareAssetMgr;
 use pi_export_base::export::await_last_frame;
+use pi_export_base::gui::Gui;
 use pi_flex_layout::{prelude::CharNode, style::{PositionType, FlexWrap, FlexDirection, AlignContent, AlignItems, AlignSelf, JustifyContent, Display, Dimension}};
 use pi_render::rhi::asset::TextureRes;
 use pi_share::Share;
 use pi_slotmap::DefaultKey;
-use pi_ui_render::components::user::ClassName;
 #[cfg(debug_assertions)]
 use pi_ui_render::resource::DebugEntity;
 pub use pi_export_base::export::Engine;
 // pub use pi_export_system::blob::Blob;
 use pi_null::Null;
 use pi_ui_render::resource::PostProcessCmd;
-use pi_ui_render::system::system_set::UiSchedule;
 use pi_ui_render::{
     components::{
-        calc::{InPassId, IsShow, LayoutResult, Quad, WorldMatrix, ZRange, EntityKey},
+        calc::{InPassId, IsShow, Quad, WorldMatrix, ZRange, EntityKey},
         pass_2d::ParentPassId,
         user::{Overflow, Point2, NodeState, Vector4},
     },
-    prelude::UserCommands,
-    resource::{QuadTree, fragment::NodeTag},
+    resource::{QuadTree},
 };
-use pi_ui_render::system::RunState;
-use pi_bevy_render_plugin::FrameState;
 
-use pi_world::editor::EntityEditor;
 use pi_world::prelude::Entity;
 use pi_bevy_ecs_extend::prelude::{Down, Layer, Up};
 use pi_style::{style::{Aabb2, FitType, ImageRepeatOption, TextAlign, VerticalAlign, WhiteSpace, FontStyle, LineHeight, Color}, style_parse::Attribute};
-use pi_world::world::ComponentIndex;
 use serde::{Serialize, Deserialize};
 use js_proxy_gen_macro::pi_js_export;
 #[cfg(feature="record")]
-pub use pi_ui_render::system::base::node::cmd_play::{Records, CmdNodeCreate, PlayState, TraceOption };
-pub use pi_export_base::export::Atom as Atom1;
+pub use pi_ui_render::system::base::node::cmd_play::{CmdNodeCreate};
+pub use pi_bevy_render_plugin::cmd_play::{ PlayState, TraceOption};
+
 use pi_ui_render::system::res_load::ResSuccess;
 // pub use pi_export_system::blob::Blob;
+pub use pi_export_base::gui::*;
+pub use pi_export_base::export::Atom as Atom1;
 
 
 #[cfg(target_arch = "wasm32")]
@@ -48,192 +45,65 @@ use pi_async_rt::prelude::{LocalTaskRunner, LocalTaskRuntime};
 use pi_spatial::quad_helper::intersects;
 #[cfg(target_arch = "wasm32")]
 use wasm_bindgen::prelude::wasm_bindgen;
-#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
-#[pi_js_export]
-pub struct Gui {
-    pub(crate) entitys: EntityEditor<'static>, // 需要保证World在内存中不被移动和销毁
-    pub(crate) commands: UserCommands,
-	#[cfg(feature="record")]
-	pub(crate) node_cmd: CmdNodeCreate,
-	#[cfg(feature="record")]
-	pub(crate) record_option: TraceOption,
-
-    pub(crate) down_component: ComponentIndex,
-    pub(crate) up_component: ComponentIndex,
-    pub(crate) is_show_component: ComponentIndex,
-    pub(crate) layout_component: ComponentIndex,
-    pub(crate) quad_component: ComponentIndex,
-    pub(crate) zrange_component: ComponentIndex,
-    pub(crate) inpass_component: ComponentIndex,
-    pub(crate) layer_component: ComponentIndex,
-    pub(crate) parentpass_component: ComponentIndex,
-    pub(crate) overflow_component: ComponentIndex,
-    pub(crate) nodestate_component: ComponentIndex,
-    pub(crate) class_name_component: ComponentIndex,
-
-    // pub(crate) query_state: SystemState<(
-    //     Res<'static, QuadTree>,
-    //     Query<'static, 'static, (&'static Layer, &'static IsShow, &'static ZRange, &'static InPassId)>,
-    //     Query<'static, 'static, (&'static ParentPassId, &'static Quad, OrDefault<Overflow>)>,
-    // )>,
-	pub (crate) res_await_list: Vec<pi_atom::Atom>,
-
-	// pub(crate) depth_query: QueryState<&'static ZRange>,
-	// pub(crate) layer_query: QueryState<&'static Layer>,
-    // pub(crate) matrix_query: QueryState<&'static WorldMatrix>,
-    // pub(crate) overflow_query: QueryState<(&'static ParentPassId, &'static Quad, OrDefault<Overflow>)>,
-    // pub(crate) in_pass2d_query: QueryState<&'static InPassId>,
-    // pub(crate) graph_id: QueryState<&'static GraphId>,
-}
-
-impl Gui {
-	pub fn new(
-		engine: &mut Engine,
-	) -> Self {
-		pi_export_base::export::await_last_frame(engine);
-		Gui {
-            down_component: engine.world.init_component::<Down>(),
-            up_component: engine.world.init_component::<Up>(),
-            is_show_component: engine.world.init_component::<IsShow>(),
-            layout_component: engine.world.init_component::<LayoutResult>(),
-            quad_component: engine.world.init_component::<Quad>(),
-            zrange_component: engine.world.init_component::<ZRange>(),
-            inpass_component: engine.world.init_component::<InPassId>(),
-            layer_component: engine.world.init_component::<Layer>(),
-            parentpass_component: engine.world.init_component::<ParentPassId>(),
-            overflow_component: engine.world.init_component::<Overflow>(),
-            nodestate_component: engine.world.init_component::<NodeState>(),
-            class_name_component: engine.world.init_component::<ClassName>(),
-
-            entitys: unsafe { transmute(engine.world.make_entity_editor())}, // 需要保证World在内存中不被移动和销毁
-			commands: UserCommands::default(),
-			#[cfg(feature="record")]
-			node_cmd: CmdNodeCreate::default(),
-			#[cfg(feature="record")]
-			record_option: TraceOption::default(),
-			res_await_list: Vec::default(),
-		}
-	}
-	pub fn entitys(&mut self) -> &mut  EntityEditor<'static> {
-		&mut self.entitys
-	}
-
-	pub fn commands(&self) -> &UserCommands {
-		&self.commands
-	}
-
-	pub fn commands_mut(&mut self) -> &mut UserCommands {
-		&mut self.commands
-	}
-}
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn create_node(gui: &mut Gui) -> f64 {
-	let entity = gui.entitys.alloc_entity();
-
-	#[cfg(feature="record")]
-    if let TraceOption::Record = gui.record_option {
-        gui.node_cmd.0.push(entity);
-    }
-	
-
-	gui.commands.init_node(entity, NodeTag::Div);
-	// log::warn!("entity :{:?}", entity);
-	unsafe { transmute(entity) }
+	Gui::create_node(gui)
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn create_vnode(gui: &mut Gui) -> f64 {
-	let entity = gui.entitys.alloc_entity();
-
-	#[cfg(feature="record")]
-    if let TraceOption::Record = gui.record_option {
-	    gui.node_cmd.0.push(entity);
-    }
-
-	gui.commands.init_node(entity, NodeTag::VNode);
-	unsafe { transmute(entity) }
+    Gui::create_vnode(gui)
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn create_text_node(gui: &mut Gui) -> f64 {
-	let entity = gui.entitys.alloc_entity();
-
-	#[cfg(feature="record")]
-    if let TraceOption::Record = gui.record_option {
-	    gui.node_cmd.0.push(entity);
-    }
-
-	gui.commands.init_node(entity, NodeTag::Span);
-	unsafe { transmute(entity) }
+    Gui::create_text_node(gui)
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn create_image_node(gui: &mut Gui) -> f64 {
-	let entity = gui.entitys.alloc_entity();
-
-	#[cfg(feature="record")]
-    if let TraceOption::Record = gui.record_option {
-	    gui.node_cmd.0.push(entity);
-    }
-
-	gui.commands.init_node(entity, NodeTag::Image);
-	unsafe { transmute(entity) }
+    Gui::create_image_node(gui)
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn create_canvas_node(gui: &mut Gui) -> f64 {
-	let entity = gui.entitys.alloc_entity();
-
-	#[cfg(feature="record")]
-    if let TraceOption::Record = gui.record_option {
-	    gui.node_cmd.0.push(entity);
-    }
-
-	gui.commands.init_node(entity, NodeTag::Canvas);
-	unsafe { transmute(entity) }
+    Gui::create_canvas_node(gui)
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn destroy_node(gui: &mut Gui, node: f64) {
-	let node = unsafe {transmute::<f64, Entity>(node)};
-	gui.commands.destroy_node(node);
+    Gui::destroy_node(gui, node);
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn remove_node(gui: &mut Gui, node: f64) {
-	let node = unsafe {transmute::<f64, Entity>(node)};
-	gui.commands.remove_node(node);
+    Gui::remove_node(gui, node);
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn insert_as_root(gui: &mut Gui, node_id: f64) {
-	let node = unsafe {transmute::<f64, Entity>(node_id)};
-	gui.commands.append(node, unsafe { transmute(EntityKey::null())});
+    Gui::insert_as_root(gui, node_id);
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn append_child(gui: &mut Gui, node: f64, parent: f64) {
-	let node = unsafe {transmute::<f64, Entity>(node)};
-	let parent = unsafe {transmute::<f64, Entity>(parent)};
-	gui.commands.append(node, parent);
+    Gui::append_child(gui, node, parent);
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn insert_before(gui: &mut Gui, node: f64, borther: f64) {
-	let node = unsafe {transmute::<f64, Entity>(node)};
-	let borther = unsafe { transmute::<_, Entity>(borther) };
-	gui.commands.insert_before(node,borther,);
+    Gui::insert_before(gui, node, borther);
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
@@ -241,7 +111,7 @@ pub fn insert_before(gui: &mut Gui, node: f64, borther: f64) {
 pub fn create_fragment_by_bin(gui: &mut Gui, bin: &[u8]) {
 	match postcard::from_bytes::<pi_ui_render::resource::fragment::Fragments>(bin) {
 		Ok(r) => {
-			gui.commands
+			gui.commands_mut()
 				.extend_fragment_bin(pi_ui_render::resource::ExtendFragmentCmd(r));
 		}
 		Err(e) => {
@@ -255,39 +125,8 @@ pub fn create_fragment_by_bin(gui: &mut Gui, bin: &[u8]) {
 #[pi_js_export]
 pub fn render_gui(gui: &mut Gui, engine: &mut Engine) {
 	await_last_frame(engine);
-	#[cfg(feature="record")]
-	if let TraceOption::Play = gui.record_option {
-		loop {
-			let records = engine.world.get_single_res::<Records>().unwrap();
-			let play_state = engine.world.get_single_res::<PlayState>().unwrap();
-			let cur_frame_count = play_state.cur_frame_count + 1;
-			let next_state_index = play_state.next_state_index;
-				
-			if next_state_index < records.run_state.len() {
-				let state = &records.run_state[play_state.next_state_index];
-				if state.1 >= cur_frame_count {
-					match state.0 {
-						RunState::LAYOUT => calc_layout(gui, engine),
-						RunState::MATRIX => calc_geo(gui, engine),
-						_ => break,
-					};
-				} else {
-					break;
-				}
-			} else {
-				break;
-			}
-			
-			
-			let play_state = engine.world.get_single_res_mut::<PlayState>().unwrap();
-			play_state.next_state_index += 1;
-		}
-	}
-	
-	#[cfg(feature = "trace")]
-	let _span = tracing::warn_span!("flush").entered();
-	// pi_world::prelude::CommandQueue::default().apply(&mut engine.world); 实体缓冲刷新
-	flush_data(gui, engine);
+    
+	pi_export_base::gui::render_gui(gui, engine);
 }
 
 
@@ -295,15 +134,7 @@ pub fn render_gui(gui: &mut Gui, engine: &mut Engine) {
 #[pi_js_export]
 pub fn calc(gui: &mut Gui, engine: &mut Engine) {
 	await_last_frame(engine);
-
-	#[cfg(feature = "trace")]
-	let _span = tracing::warn_span!("calc").entered();
-	// pi_world::prelude::CommandQueue::default().apply(&mut engine.world); //实体缓冲刷新
-	flush_data(gui, engine);
-	// *engine.world.get_single_res_mut::<RunState>().unwrap() = RunState::MATRIX;
-	// *engine.world.get_single_res_mut::<FrameState>().unwrap() = FrameState::UnActive;
-	engine.run_schedule(UiSchedule::Calc);
-    // *engine.world.get_single_res_mut::<RunState>().unwrap() = RunState::NONE;
+	pi_export_base::gui::calc(gui, engine);
 }
 
 
@@ -311,28 +142,14 @@ pub fn calc(gui: &mut Gui, engine: &mut Engine) {
 #[pi_js_export]
 pub fn calc_layout(gui: &mut Gui, engine: &mut Engine) {
 	await_last_frame(engine);
-	#[cfg(feature = "trace")]
-	let _span = tracing::warn_span!("calc_layout").entered();
-	// pi_world::prelude::CommandQueue::default().apply(&mut engine.world); //实体缓冲刷新
-	flush_data(gui, engine);
-	// *engine.world.get_single_res_mut::<RunState>().unwrap() = RunState::LAYOUT;
-	// *engine.world.get_single_res_mut::<FrameState>().unwrap() = FrameState::UnActive;
-	engine.run_schedule(UiSchedule::Layout);
-    // *engine.world.get_single_res_mut::<RunState>().unwrap() = RunState::NONE;
+	pi_export_base::gui::calc_layout(gui, engine);
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn calc_geo(gui: &mut Gui, engine: &mut Engine) {
 	await_last_frame(engine);
-	#[cfg(feature = "trace")]
-	let _span = tracing::warn_span!("calc_geo").entered();
-	// pi_world::prelude::CommandQueue::default().apply(&mut engine.world); //实体缓冲刷新
-	flush_data(gui, engine);
-	// *engine.world.get_single_res_mut::<RunState>().unwrap() = RunState::MATRIX;
-	// *engine.world.get_single_res_mut::<FrameState>().unwrap() = FrameState::UnActive;
-	engine.run_schedule(UiSchedule::Geo);
-    // *engine.world.get_single_res_mut::<RunState>().unwrap() = RunState::NONE;
+	pi_export_base::gui::calc_geo(gui, engine);
 }
 
 // 取到keyframes(应该在每帧开始前取上一帧产生的事件， 因为在本地平台帧推被异步出去，合适完成帧推目前没有设计回调， 因此事件总是延迟一帧，但应该问题不大)
@@ -368,108 +185,6 @@ pub fn set_is_run(engine: &mut Engine, value: bool) {
 	// #[cfg(feature = "debug")]
 	engine.world.get_single_res_mut::<pi_ui_render::resource::IsRun>().unwrap().0 = value;
 }
-
-// 每帧取record
-#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
-#[pi_js_export]
-pub fn get_record(engine: &mut Engine) -> Vec<u8> {
-	pi_export_base::export::await_last_frame(engine);
-	#[cfg(feature="record")]
-	{
-		let records = engine.world.get_single_res_mut::<Records>().unwrap();
-
-		let r = &*records;
-		let r = match postcard::to_stdvec::<Records>(r) {
-			Ok(bin) => bin,
-			Err(r) =>{
-				log::error!("serialize fail!!, {:?}", r);
-				Vec::<u8>::default()
-			},
-		};
-		records.clear();
-		r
-	}
-	#[cfg(not(feature="record"))]
-	Vec::<u8>::default()
-}
-
-// 取record长度, 单位：字节， 高层可根据长度来决定是否将record全部取出
-#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
-#[pi_js_export]
-pub fn get_record_len(engine: &mut Engine) -> u32 {
-	pi_export_base::export::await_last_frame(engine);
-	#[cfg(feature="record")]
-	{
-		let records = engine.world.get_single_res_mut::<Records>().unwrap();
-		records.len() as u32
-	}
-	#[cfg(not(feature="record"))]
-	0
-}
-
-// 设置下一帧的指令记录
-#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
-#[pi_js_export]
-pub fn set_next_record(engine: &mut Engine, bin: &[u8]) {
-    // use pi_ui_render::system::base::node::cmd_play::PlayState;
-	#[cfg(feature="record")]
-	{
-		match postcard::from_bytes::<Records>(bin) {
-			Ok(r) => {
-                engine.world.init_single_res::<Records>();
-                let records = engine.world.get_single_res_mut::<Records>().unwrap();
-                **records = r;
-                // log::warn!("set_next_record===={:?}", r.list.len());
-				// 重设播放状态
-				let play_state = engine.world.get_single_res_mut::<PlayState>().unwrap();
-				play_state.is_running = true;
-				play_state.next_reord_index = 0;
-				play_state.next_state_index = 0;
-				play_state.cur_frame_count = 0;
-				
-			}
-			Err(_e) => {
-				();
-				return;
-			}
-		}
-	}
-	
-}
-
-// 设置下一帧的指令记录为最后一次设置的记录（重复播放最后一次）
-#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
-#[pi_js_export]
-pub fn set_next_record_last(engine: &mut Engine) {
-    #[cfg(feature="record")]
-    {
-        let records = engine.world.get_single_res_mut::<Records>().unwrap();
-        records.cur_frame_count = 0;
-        // log::warn!("set_next_record===={:?}", r.list.len());
-        // 重设播放状态
-        let play_state = engine.world.get_single_res_mut::<PlayState>().unwrap();
-        play_state.is_running = true;
-        play_state.next_reord_index = 0;
-        play_state.next_state_index = 0;
-        play_state.cur_frame_count = 0;
-    }
-}
-
-
-#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
-#[pi_js_export]
-pub fn is_play_end(engine: &mut Engine) -> bool {
-	pi_export_base::export::await_last_frame(engine);
-	#[cfg(feature="record")]
-	match engine.world.get_single_res_mut::<PlayState>() {
-		Some(r) => {
-            !r.is_running},
-		None => false,
-	}
-	#[cfg(not(feature="record"))]
-	false
-}
-
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
@@ -525,7 +240,7 @@ pub fn add_sdf_font(gui: &mut Gui, bin: &[u8]) {
 			return;
 		}
 	};
-	gui.commands.add_sdf_font(cfg);
+	gui.commands_mut().add_sdf_font(cfg);
 	// font_sheet = 
 	// let mut v = Vec::new();
 	// for i in buffer.iter() {
@@ -538,7 +253,7 @@ pub fn add_sdf_font(gui: &mut Gui, bin: &[u8]) {
 #[cfg(not(target_arch="wasm32"))]
 #[pi_js_export]
 pub fn add_sdf2_font(gui: &mut Gui, font_name: &Atom1, blob: &[u8]) {
-	gui.commands.add_sdf2_font((**font_name).clone(), Share::new(blob.to_vec()));
+	gui.commands_mut().add_sdf2_font((**font_name).clone(), Share::new(blob.to_vec()));
 	// font_sheet = 
 	// let mut v = Vec::new();
 	// for i in buffer.iter() {
@@ -551,7 +266,7 @@ pub fn add_sdf2_font(gui: &mut Gui, font_name: &Atom1, blob: &[u8]) {
 #[cfg(target_arch="wasm32")]
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 pub fn add_sdf2_font(gui: &mut Gui, font_name: &Atom1, blob: Vec<u8>) {
-	gui.commands.add_sdf2_font((**font_name).clone(), Share::new(blob.clone()));
+	gui.commands_mut().add_sdf2_font((**font_name).clone(), Share::new(blob.clone()));
 	// font_sheet = 
 	// let mut v = Vec::new();
 	// for i in buffer.iter() {
@@ -650,7 +365,7 @@ pub fn set_custom_post(gui: &mut Gui, node_id: f64, post_id: Option<f64>) {
         Some(post_id) => unsafe { transmute::<f64, Entity>(post_id) },
         None => Entity::null(),
     } ;
-	gui.commands.push_cmd(PostProcessCmd(
+	gui.commands_mut().push_cmd(PostProcessCmd(
         EntityKey(post),
         node,
     ));
@@ -667,7 +382,7 @@ pub struct ResHandle(Share<dyn Any + Send + Sync + 'static>);
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn load_res(gui: &mut Gui, path: &Atom1) {
-	gui.res_await_list.push((**path).clone());
+	gui.res_await_list_mut().push((**path).clone());
 }
 
 /// 获取已经加载成功的资源
@@ -829,7 +544,7 @@ pub fn get_text_pos1(gui: &mut Gui, engine: &mut Engine, node: Entity, index: us
 		y:0.0,
 	};
 
-	let node_state = match gui.entitys.get_component_by_index::<NodeState>(node, gui.nodestate_component) {
+	let node_state = match gui.entitys().get_component_by_index::<NodeState>(node, gui.nodestate_component()) {
 		Ok(r) => r,
 		_ => return char_pos,
 	};
@@ -1022,10 +737,10 @@ fn calc_text_pos(char: &CharNode, text: &Vec<CharNode>) -> (f32, f32, f32, f32) 
 fn ab_query_func(arg: &mut AbQueryArgs, id: EntityKey, aabb: &Aabb2, _bind: &()) {
 	// log::warn!("ab_query_func======={:?}", id);
     let (z_range, inpass) = match (
-        arg.gui.entitys.get_component_by_index::<Layer>(*id, arg.gui.layer_component), 
-        arg.gui.entitys.get_component_by_index::<IsShow>(*id, arg.gui.is_show_component), 
-        arg.gui.entitys.get_component_by_index::<ZRange>(*id, arg.gui.zrange_component), 
-        arg.gui.entitys.get_component_by_index::<InPassId>(*id, arg.gui.inpass_component),
+        arg.gui.entitys().get_component_by_index::<Layer>(*id, arg.gui.layer_component()), 
+        arg.gui.entitys().get_component_by_index::<IsShow>(*id, arg.gui.is_show_component()), 
+        arg.gui.entitys().get_component_by_index::<ZRange>(*id, arg.gui.zrange_component()), 
+        arg.gui.entitys().get_component_by_index::<InPassId>(*id, arg.gui.inpass_component()),
     ) {
         // 如果enable false 表示不接收事件, visibility为false， 也无法接收事件、不在树上也不能接收事件
         (Ok(r0), Ok(r1), Ok(r2), Ok(r3)) if (r0.layer() != 0 && r1.get_enable() && r1.get_visibility() && r1.get_display()) => (r2, r3),
@@ -1039,11 +754,11 @@ fn ab_query_func(arg: &mut AbQueryArgs, id: EntityKey, aabb: &Aabb2, _bind: &())
             while !inpass.is_null() {
                 // log::warn!("inpass======={:?}", (inpass, id));
                 if let (Ok(parent), Ok(quad)) = (
-                    arg.gui.entitys.get_component_by_index::<ParentPassId>(inpass, arg.gui.parentpass_component),
-                    arg.gui.entitys.get_component_by_index::<Quad>(inpass, arg.gui.quad_component),
+                    arg.gui.entitys().get_component_by_index::<ParentPassId>(inpass, arg.gui.parentpass_component()),
+                    arg.gui.entitys().get_component_by_index::<Quad>(inpass, arg.gui.quad_component()),
                 ){
                     inpass = parent.0;
-                    if let Ok(oveflow) = arg.gui.entitys.get_component_by_index::<Overflow>(inpass, arg.gui.overflow_component) {
+                    if let Ok(oveflow) = arg.gui.entitys().get_component_by_index::<Overflow>(inpass, arg.gui.overflow_component()) {
                         if oveflow.0 {
                             if !intersects(&arg.aabb, quad) {
                                 return; // 如果不想交，直接返回，该点不能命中该节点
@@ -1063,16 +778,16 @@ fn ab_query_func(arg: &mut AbQueryArgs, id: EntityKey, aabb: &Aabb2, _bind: &())
 #[inline]
 fn flush_data(gui: &mut Gui, engine: &mut Engine) {
 	let com = engine.world.get_single_res_mut::<pi_ui_render::prelude::UserCommands>().unwrap();
-	std::mem::swap(&mut gui.commands, &mut *com);
+	std::mem::swap(gui.commands_mut(), &mut *com);
 
 	if let Some(com) = engine.world.get_single_res_mut::<pi_ui_render::system::res_load::ResList>() {
-		std::mem::swap(&mut gui.res_await_list, &mut com.await_list);
+		std::mem::swap(gui.res_await_list_mut(), &mut com.await_list);
 	};
 	
 	#[cfg(feature="record")]
-	if let TraceOption::Record = gui.record_option {
+	if let TraceOption::Record = gui.record_option() {
 		if let Some(node_cmd) =  engine.world.get_single_res_mut::<pi_ui_render::system::base::node::cmd_play::CmdNodeCreate>() {
-			std::mem::swap(&mut gui.node_cmd, &mut *node_cmd);
+			std::mem::swap(gui.node_cmd(), &mut *node_cmd);
 		}
 	}
 }

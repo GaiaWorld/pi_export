@@ -1,11 +1,13 @@
 use std::ops::Deref;
 
+use pi_export_base::engine::gltf_particle_calculator;
 pub use pi_export_base::export::{Engine, Atom};
 use pi_particle_system::prelude::{ECPUParticleSystemState, EParticleAttributeType, OpsCPUParticleSystem, OpsCPUParticleSystemState, ParticleAttribute};
 use pi_render::asset::TAssetKeyU64;
 
 pub use crate::commands::CommandsExchangeD3;
-pub use crate::{engine::{ActionSetScene3D, GLTFRes, gltf_particle_calculator}, as_entity};
+use crate::record::ERecordCMD;
+pub use crate::{engine::{ActionSetScene3D, GLTFRes}, as_entity};
 
 #[cfg(target_arch = "wasm32")]
 use wasm_bindgen::prelude::wasm_bindgen;
@@ -27,13 +29,22 @@ pub fn p3d_particle_system(
     tilloff_attr_key: &Atom,
     update_buffer_interval_frame: Option<f64>,
 ) {
+    #[cfg(feature = "replay")]
+    return ;
+
 	pi_export_base::export::await_last_frame(app);
+
+    #[cfg(feature = "record")]
+    cmds.record(ERecordCMD::PARTICLESYS(scene, entity, trailmesh, trailgeo, 
+        key.deref().asset_u64(), color_attr_key.deref().clone(), tilloff_attr_key.deref().clone(), update_buffer_interval_frame
+    ));
+
+    let mut resource = param.resource.get_mut(&mut app.world);
     let scene = as_entity(scene);
     let entity = as_entity(entity);
     let trailmesh = as_entity(trailmesh);
     let trailgeo = as_entity(trailgeo);
-    
-    CommandsExchangeD3::p3d_particle_system(app, param, cmds, scene, entity, trailmesh, trailgeo, key.deref(), color_attr_key.deref(), tilloff_attr_key.deref(), update_buffer_interval_frame);
+    CommandsExchangeD3::p3d_particle_system(cmds, scene, entity, trailmesh, trailgeo, key.deref().asset_u64(), color_attr_key.deref(), tilloff_attr_key.deref(), update_buffer_interval_frame);
 
     // let reosurce = param.resource.get_mut(&mut app.world);
     // if let Some(calculator) = reosurce.particlesys.calcultors.get(&key.asset_u64()) {
@@ -64,13 +75,20 @@ pub fn p3d_particle_system_with_gltf(
     tilloff_attr_key: &Atom,
     update_buffer_interval_frame: Option<f64>,
 ) {
+    #[cfg(feature = "replay")]
+    return ;
+
     if let Some(calculator) = gltf_particle_calculator(&cmds, gltf, index_calculator) {
+        let calculator =  *calculator.key();
+        #[cfg(feature = "record")]
+        cmds.record(ERecordCMD::PARTICLESYS(scene, entity, trailmesh, trailgeo, calculator, color_attr_key.deref().clone(), tilloff_attr_key.deref().clone(), update_buffer_interval_frame));
+
         let scene = as_entity(scene);
         let entity = as_entity(entity);
         let trailmesh = as_entity(trailmesh);
         let trailgeo = as_entity(trailgeo);
 
-        CommandsExchangeD3::p3d_particle_system_with_gltf(cmds, scene, entity, trailmesh, trailgeo, gltf, index_calculator, color_attr_key.deref(), tilloff_attr_key.deref(), update_buffer_interval_frame);
+        CommandsExchangeD3::p3d_particle_system(cmds, scene, entity, trailmesh, trailgeo, calculator, color_attr_key.deref(), tilloff_attr_key.deref(), update_buffer_interval_frame);
 
         // let attrs = vec![
         //     ParticleAttribute { vtype: EParticleAttributeType::Matrix, attr: pi_atom::Atom::from("") },
@@ -90,9 +108,15 @@ pub fn p3d_particle_system_start(
     cmds: &mut CommandsExchangeD3,
     entity: f64,
 ) {
-    let entity = as_entity(entity);
+    #[cfg(feature = "replay")]
+    return ;
 
     let val = ECPUParticleSystemState::Start();
+
+    #[cfg(feature = "record")]
+    cmds.record(ERecordCMD::ParticlesysState(entity, val));
+
+    let entity = as_entity(entity);
     CommandsExchangeD3::p3d_particle_system_state(cmds, entity, val);
 }
 
@@ -103,9 +127,16 @@ pub fn p3d_particle_system_timescale(
     entity: f64,
     speed: f64
 ) {
+    #[cfg(feature = "replay")]
+    return ;
+
+    let val = ECPUParticleSystemState::TimeScale(speed as f32);
+
+    #[cfg(feature = "record")]
+    cmds.record(ERecordCMD::ParticlesysState(entity, val));
+
     let entity = as_entity(entity);
     
-    let val = ECPUParticleSystemState::TimeScale(speed as f32);
     CommandsExchangeD3::p3d_particle_system_state(cmds, entity, val);
 }
 
@@ -115,8 +146,15 @@ pub fn p3d_particle_system_stop(
     cmds: &mut CommandsExchangeD3,
     entity: f64,
 ) {
+    #[cfg(feature = "replay")]
+    return ;
+
+    let val = ECPUParticleSystemState::Stop();
+    
+    #[cfg(feature = "record")]
+    cmds.record(ERecordCMD::ParticlesysState(entity, val));
+
     let entity = as_entity(entity);
     
-    let val = ECPUParticleSystemState::Stop();
     CommandsExchangeD3::p3d_particle_system_state(cmds, entity, val);
 }

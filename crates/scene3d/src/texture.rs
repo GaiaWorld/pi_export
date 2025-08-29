@@ -1,9 +1,8 @@
 use std::{mem::transmute, ops::Deref};
 use pi_assets::asset::{Handle, Size};
 use pi_bevy_render_plugin::PiRenderDevice;
-use pi_export_base::export::DataTextureSubData;
 use pi_hash::XHashMap;
-use pi_scene_context::pass::{KeyAtlasDesc, KeyImageTextureFrame, TextureCombineCmds, WorldResourceTemp};
+use pi_scene_context::pass::{DataTextureSubData, KeyAtlasDesc, KeyImageTextureFrame, TextureCombineCmds, WorldResourceTemp};
 use pi_scene_shell::prelude::{ResImageTexture, KeyImageTexture};
 pub use pi_export_base::{export::{Engine, Atom}, constants::*};
 use pi_scene_shell::prelude::ResTextureCombineAtlas2DMgr;
@@ -46,7 +45,7 @@ pub fn p3d_create_data_texture(param: &mut CommandsExchangeD3, key: &Atom, width
         aspect: None,
         depth_or_array_layers: 0
     };
-    param.datatexcmd.createdata.insert(key.clone(), (info, format, dimension, texkey));
+    param.datatexcmd().createdata.insert(key.clone(), (info, format, dimension, texkey));
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
@@ -54,10 +53,10 @@ pub fn p3d_create_data_texture(param: &mut CommandsExchangeD3, key: &Atom, width
 pub fn p3d_update_data_texture(param: &mut CommandsExchangeD3, key: &Atom, data:&[u8], xoffset: f64, yoffset: f64, width: f64, height: f64, aspect: Option<f64>) {
 
     let key = key.deref().clone();
-    if param.datatexcmd.updatedata.contains_key(&key) == false {
-        param.datatexcmd.updatedata.insert(key.clone(), vec![]);
+    if param.datatexcmd().updatedata.contains_key(&key) == false {
+        param.datatexcmd().updatedata.insert(key.clone(), vec![]);
     }
-    if let Some(list) = param.datatexcmd.updatedata.get_mut(&key) {
+    if let Some(list) = param.datatexcmd().updatedata.get_mut(&key) {
         list.push(DataTextureSubData {
             data: Some(data.to_vec()),
             dataoffset: 0,
@@ -74,9 +73,9 @@ pub fn p3d_update_data_texture(param: &mut CommandsExchangeD3, key: &Atom, data:
 #[pi_js_export]
 pub fn p3d_remove_data_texture(param: &mut CommandsExchangeD3, key: &Atom) {
     let key = key.deref().clone();
-    param.datatexcmd.createdata.remove(&key);
-    param.datatexcmd.updatedata.remove(&key);
-    param.datatexcmd.record.remove(&key);
+    param.datatexcmd().createdata.remove(&key);
+    param.datatexcmd().updatedata.remove(&key);
+    param.datatexcmd().record.remove(&key);
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
@@ -117,10 +116,10 @@ pub fn p3d_texture_combine_add_frame(cmd: &mut CommandsExchangeD3, requestid: f6
     let requestid = requestid as u32;
     let targetkey = targetkey.deref().clone();
     let file = file.deref().clone();
-    if cmd.combinecmds.contains_key(&requestid) == false {
-        cmd.combinecmds.insert(requestid, (targetkey.clone(), XHashMap::default()));
+    if cmd.combinecmds().contains_key(&requestid) == false {
+        cmd.combinecmds().insert(requestid, (targetkey.clone(), XHashMap::default()));
     }
-    if let Some(cmd) = cmd.combinecmds.get_mut(&requestid) {
+    if let Some(cmd) = cmd.combinecmds().get_mut(&requestid) {
         cmd.1.insert(file, (requestid, idx as u16, iscompress, xoffset as u32, yoffset as u32, width as u32, height as u32));
     }
 }
@@ -128,7 +127,7 @@ pub fn p3d_texture_combine_add_frame(cmd: &mut CommandsExchangeD3, requestid: f6
 #[pi_js_export]
 pub fn p3d_texture_combine_remove(app: &mut Engine, cmd: &mut CommandsExchangeD3, requestid: f64, targetkey: &Atom) {
     pi_export_base::export::await_last_frame(app);
-    cmd.combinecmds.remove(&(requestid as u32));
+    cmd.combinecmds().remove(&(requestid as u32));
     app.world.get_resource_mut::<TextureCombineCmds>().unwrap().remove(requestid as u32, targetkey.deref().clone());
 }
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]

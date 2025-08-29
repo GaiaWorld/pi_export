@@ -4,6 +4,7 @@ use std::ops::Deref;
 use pi_scene_shell::prelude::*;
 use pi_scene_context::prelude::*;
 
+use crate::record::ERecordCMD;
 use crate::{constants::EngineConstants};
 pub use crate::commands::CommandsExchangeD3;
 pub use crate::{as_entity, as_f64};
@@ -16,10 +17,18 @@ use js_proxy_gen_macro::pi_js_export;
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_instance_mesh(app: &mut Engine, cmds: &mut CommandsExchangeD3, source: f64) -> f64 {
+    #[cfg(feature = "replay")]
+    return as_f64(&Entity::null());
+
     let id: Entity = CommandsExchangeD3::p3d_entity(app);
 
-    let source: Entity = as_entity(source);
+    #[cfg(feature = "record")]
+    CommandsExchangeD3::record_create(&mut app.world, as_f64(&id));
 
+    #[cfg(feature = "record")]
+    cmds.record(ERecordCMD::InstanceMesh(source, as_f64(&id)));
+
+    let source: Entity = as_entity(source);
     CommandsExchangeD3::p3d_instance_mesh(cmds, source, id);
 
     // cmds.instance_create.push(OpsInstanceMeshCreation::ops(source, id));
@@ -31,9 +40,17 @@ pub fn p3d_instance_mesh(app: &mut Engine, cmds: &mut CommandsExchangeD3, source
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_instance_mesh_vec4(cmds: &mut CommandsExchangeD3, instance: f64, uscale: f64, vscale: f64, uoffset: f64, voffset: f64, key: &Atom) {
+    #[cfg(feature = "replay")]
+    return ;
+
+    
+    let attr = EInstanceAttr::Vec4([uscale as f32, vscale as f32, uoffset as f32, voffset as f32]);
+
+    #[cfg(feature = "record")]
+    cmds.record(ERecordCMD::InstanceAttr(instance, attr, key.deref().clone()));
+    
     let instance: Entity = as_entity(instance);
 
-    let attr = EInstanceAttr::Vec4([uscale as f32, vscale as f32, uoffset as f32, voffset as f32]);
 
     CommandsExchangeD3::p3d_instance_attr(cmds, instance, attr, key.deref().clone());
     // cmds.instance_attr.push(OpsInstanceAttr::ops(instance, attr, key.deref().clone() ));
@@ -42,10 +59,16 @@ pub fn p3d_instance_mesh_vec4(cmds: &mut CommandsExchangeD3, instance: f64, usca
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_instance_mesh_vec3(cmds: &mut CommandsExchangeD3, instance: f64, r: f64, g: f64, b: f64, key: &Atom) {
-    let instance: Entity = as_entity(instance);
+    #[cfg(feature = "replay")]
+    return ;
+
 
     let attr = EInstanceAttr::Vec3([r as f32, g as f32, b as f32]);
 
+    #[cfg(feature = "record")]
+    cmds.record(ERecordCMD::InstanceAttr(instance, attr, key.deref().clone()));
+
+    let instance: Entity = as_entity(instance);
     CommandsExchangeD3::p3d_instance_attr(cmds, instance, attr, key.deref().clone());
     // cmds.instance_attr.push(OpsInstanceAttr::ops(instance, attr, key.deref().clone() ));
 }
@@ -53,9 +76,16 @@ pub fn p3d_instance_mesh_vec3(cmds: &mut CommandsExchangeD3, instance: f64, r: f
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_instance_mesh_vec2(cmds: &mut CommandsExchangeD3, instance: f64, x: f64, y: f64, key: &Atom) {
-    let instance: Entity = as_entity(instance);
+    #[cfg(feature = "replay")]
+    return ;
+
 
     let attr = EInstanceAttr::Vec2([x as f32, y as f32]);
+
+    #[cfg(feature = "record")]
+    cmds.record(ERecordCMD::InstanceAttr(instance, attr, key.deref().clone()));
+
+    let instance: Entity = as_entity(instance);
 
     CommandsExchangeD3::p3d_instance_attr(cmds, instance, attr, key.deref().clone());
     // cmds.instance_attr.push(OpsInstanceAttr::ops(instance, attr, key.deref().clone() ));
@@ -66,9 +96,16 @@ pub fn p3d_instance_mesh_vec2(cmds: &mut CommandsExchangeD3, instance: f64, x: f
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_instance_mesh_float(cmds: &mut CommandsExchangeD3, instance: f64, val: f64, key: &Atom) {
-    let instance: Entity = as_entity(instance);
+    #[cfg(feature = "replay")]
+    return ;
+
 
     let attr = EInstanceAttr::Float(val as f32);
+
+    #[cfg(feature = "record")]
+    cmds.record(ERecordCMD::InstanceAttr(instance, attr, key.deref().clone()));
+
+    let instance: Entity = as_entity(instance);
 
     CommandsExchangeD3::p3d_instance_attr(cmds, instance, attr, key.deref().clone());
     // cmds.instance_attr.push(OpsInstanceAttr::ops(instance, attr, key.deref().clone() ));
@@ -77,9 +114,16 @@ pub fn p3d_instance_mesh_float(cmds: &mut CommandsExchangeD3, instance: f64, val
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_instance_mesh_sint(cmds: &mut CommandsExchangeD3, instance: f64, x: f64, key: &Atom) {
-    let instance: Entity = as_entity(instance);
+    #[cfg(feature = "replay")]
+    return ;
+
     
     let attr = EInstanceAttr::Int(x as i32);
+
+    #[cfg(feature = "record")]
+    cmds.record(ERecordCMD::InstanceAttr(instance, attr, key.deref().clone()));
+
+    let instance: Entity = as_entity(instance);
     
     CommandsExchangeD3::p3d_instance_attr(cmds, instance, attr, key.deref().clone());
     // cmds.instance_attr.push(OpsInstanceAttr::ops(instance, attr, key.deref().clone() ));
@@ -89,9 +133,16 @@ pub fn p3d_instance_mesh_sint(cmds: &mut CommandsExchangeD3, instance: f64, x: f
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_instance_mesh_uint(cmds: &mut CommandsExchangeD3, instance: f64, x: f64, key: &Atom) {
-    let instance: Entity = as_entity(instance);
+    #[cfg(feature = "replay")]
+    return ;
+
     
     let attr = EInstanceAttr::Uint(x as u32);
+
+    #[cfg(feature = "record")]
+    cmds.record(ERecordCMD::InstanceAttr(instance, attr, key.deref().clone()));
+
+    let instance: Entity = as_entity(instance);
     
     CommandsExchangeD3::p3d_instance_attr(cmds, instance, attr, key.deref().clone());
     // cmds.instance_attr.push(OpsInstanceAttr::ops(instance, attr, key.deref().clone() ));
@@ -102,9 +153,16 @@ pub fn p3d_instance_mesh_uint(cmds: &mut CommandsExchangeD3, instance: f64, x: f
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_instance_mesh_ivec4(cmds: &mut CommandsExchangeD3, instance: f64, x: f64, y: f64, z: f64, w: f64, key: &Atom) {
-    let instance: Entity = as_entity(instance);
+    #[cfg(feature = "replay")]
+    return ;
+
     
     let attr = EInstanceAttr::IVec4([x as i32, y as i32, z as i32, w as i32]);
+
+    #[cfg(feature = "record")]
+    cmds.record(ERecordCMD::InstanceAttr(instance, attr, key.deref().clone()));
+
+    let instance: Entity = as_entity(instance);
     
     CommandsExchangeD3::p3d_instance_attr(cmds, instance, attr, key.deref().clone());
     // cmds.instance_attr.push(OpsInstanceAttr::ops(instance, attr, key.deref().clone() ));
@@ -113,9 +171,16 @@ pub fn p3d_instance_mesh_ivec4(cmds: &mut CommandsExchangeD3, instance: f64, x: 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_instance_mesh_u16x2(cmds: &mut CommandsExchangeD3, instance: f64, x: f64, y: f64, key: &Atom) {
-    let instance: Entity = as_entity(instance);
+    #[cfg(feature = "replay")]
+    return ;
+
     
     let attr = EInstanceAttr::U16x2([x as u16, y as u16]);
+
+    #[cfg(feature = "record")]
+    cmds.record(ERecordCMD::InstanceAttr(instance, attr, key.deref().clone()));
+
+    let instance: Entity = as_entity(instance);
     
     CommandsExchangeD3::p3d_instance_attr(cmds, instance, attr, key.deref().clone());
     // cmds.instance_attr.push(OpsInstanceAttr::ops(instance, attr, key.deref().clone() ));
@@ -125,9 +190,16 @@ pub fn p3d_instance_mesh_u16x2(cmds: &mut CommandsExchangeD3, instance: f64, x: 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_instance_mesh_u16x4(cmds: &mut CommandsExchangeD3, instance: f64, x: f64, y: f64, z: f64, w: f64, key: &Atom) {
-    let instance: Entity = as_entity(instance);
+    #[cfg(feature = "replay")]
+    return ;
+
     
     let attr = EInstanceAttr::U16x4([x as u16, y as u16, z as u16, w as u16]);
+
+    #[cfg(feature = "record")]
+    cmds.record(ERecordCMD::InstanceAttr(instance, attr, key.deref().clone()));
+
+    let instance: Entity = as_entity(instance);
     
     CommandsExchangeD3::p3d_instance_attr(cmds, instance, attr, key.deref().clone());
     // cmds.instance_attr.push(OpsInstanceAttr::ops(instance, attr, key.deref().clone() ));
@@ -137,9 +209,16 @@ pub fn p3d_instance_mesh_u16x4(cmds: &mut CommandsExchangeD3, instance: f64, x: 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_instance_mesh_u8x4(cmds: &mut CommandsExchangeD3, instance: f64, x: f64, y: f64, z: f64, w: f64, key: &Atom) {
-    let instance: Entity = as_entity(instance);
+    #[cfg(feature = "replay")]
+    return ;
+
     
     let attr = EInstanceAttr::U8x4([x as u8, y as u8, z as u8, w as u8]);
+
+    #[cfg(feature = "record")]
+    cmds.record(ERecordCMD::InstanceAttr(instance, attr, key.deref().clone()));
+
+    let instance: Entity = as_entity(instance);
     
     CommandsExchangeD3::p3d_instance_attr(cmds, instance, attr, key.deref().clone());
     // cmds.instance_attr.push(OpsInstanceAttr::ops(instance, attr, key.deref().clone() ));
@@ -163,23 +242,36 @@ pub fn p3d_instance_mesh_u8x4(cmds: &mut CommandsExchangeD3, instance: f64, x: f
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_mesh_bone_offset(cmds: &mut CommandsExchangeD3, instance: f64, val: f64) {
-    let instance: Entity = as_entity(instance);
+    #[cfg(feature = "replay")]
+    return ;
 
+
+    #[cfg(feature = "record")]
+    cmds.record(ERecordCMD::MeshBoneOffset(instance, val));
+
+    let instance: Entity = as_entity(instance);
     CommandsExchangeD3::p3d_mesh_bone_offset(cmds, instance, val as u32);
     // cmds.mesh_valuestate.push(OpsAbstructMeshValueStateModify::ops(instance, EMeshValueStateModify::BoneOffset(val as u32)));
 }
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_mesh_bone_offset_arr(cmds: &mut CommandsExchangeD3, data: &[f64], len: f64) {
+    #[cfg(feature = "replay")]
+    return ;
+
     // let instance: Entity = as_entity(instance);    // cmds.abstructmeshcmds_boneoffset.push(OpsBoneOffset::ops(instance, val as u32));
 
     let len = len as usize;
     let size = 2;
     let count = len / size;
     for i in 0..count {
-        let instance: Entity = as_entity(data[i * size + 0]);
+        let instance = data[i * size + 0];
         let val = data[i * size + 1];
+
+        #[cfg(feature = "record")]
+        cmds.record(ERecordCMD::MeshBoneOffset(instance, val));
         
+        let instance: Entity = as_entity(data[i * size + 0]);
         CommandsExchangeD3::p3d_mesh_bone_offset(cmds, instance, val as u32);
         // cmds.mesh_valuestate.push(OpsAbstructMeshValueStateModify::ops(instance, EMeshValueStateModify::BoneOffset(val as u32)));
     }

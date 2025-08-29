@@ -5,7 +5,7 @@ use pi_scene_context::prelude::*;
 use pi_slotmap::Key;
 
 pub use crate::commands::CommandsExchangeD3;
-use crate::{as_entity, as_f64};
+use crate::{as_entity, as_f64, record::ERecordCMD};
 #[cfg(target_arch = "wasm32")]
 use wasm_bindgen::prelude::wasm_bindgen;
 
@@ -23,8 +23,19 @@ pub use pi_export_base::export::Engine;
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_shadow_generator(app: &mut Engine, cmds: &mut CommandsExchangeD3, scene: f64, light: f64, pass_tag: f64, graph: Option<f64>) -> f64 {
+    #[cfg(feature = "replay")]
+    return as_f64(&Entity::null());
+
 
     let id: Entity = app.world.entities().reserve_entity();
+
+    #[cfg(feature = "record")]
+    CommandsExchangeD3::record_create(&mut app.world, as_f64(&id));
+    
+
+    #[cfg(feature = "record")]
+    cmds.record(ERecordCMD::ShadowGenerator(scene, light, as_f64(&id), pass_tag, graph));
+
     let scene: Entity = as_entity(scene);
     let light: Entity = as_entity(light);
     let graph = if let Some(graph) = graph { as_entity(graph) } else { Entity::null() };
@@ -39,14 +50,25 @@ pub fn p3d_shadow_generator(app: &mut Engine, cmds: &mut CommandsExchangeD3, sce
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_shadow_base_param(cmds: &mut CommandsExchangeD3, shadow: f64, bias: f64, normal_bias: f64, depthscale: f64) -> f64 {
-    let shadow: Entity = as_entity(shadow);
+    #[cfg(feature = "replay")]
+    return ;
 
     let val =  EShadowGeneratorParam::Bias(bias as f32);
+    let val1 =  EShadowGeneratorParam::NormalBias( normal_bias as f32);
+    let val2: EShadowGeneratorParam =  EShadowGeneratorParam::DepthScale( depthscale as f32);
+
+
+    #[cfg(feature = "record")]
+    cmds.record(ERecordCMD::ShadowParam(shadow, val));
+    #[cfg(feature = "record")]
+    cmds.record(ERecordCMD::ShadowParam(shadow, val1));
+    #[cfg(feature = "record")]
+    cmds.record(ERecordCMD::ShadowParam(shadow, val2));
+
+    let shadow: Entity = as_entity(shadow);
     CommandsExchangeD3::p3d_shadow_base_param(cmds, shadow, val);
-    let val =  EShadowGeneratorParam::NormalBias( normal_bias as f32);
-    CommandsExchangeD3::p3d_shadow_base_param(cmds, shadow, val);
-    let val =  EShadowGeneratorParam::DepthScale( depthscale as f32);
-    CommandsExchangeD3::p3d_shadow_base_param(cmds, shadow, val);
+    CommandsExchangeD3::p3d_shadow_base_param(cmds, shadow, val1);
+    CommandsExchangeD3::p3d_shadow_base_param(cmds, shadow, val2);
 
     as_f64(&shadow)
 }
@@ -54,13 +76,24 @@ pub fn p3d_shadow_base_param(cmds: &mut CommandsExchangeD3, shadow: f64, bias: f
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_shadow_frustum(cmds: &mut CommandsExchangeD3, shadow: f64, frustum_size: f64, minz: f64, maxz: f64) {
-    let shadow: Entity = as_entity(shadow);
+    #[cfg(feature = "replay")]
+    return ;
 
     let val = EShadowGeneratorParam::ShadowFrustumSize( frustum_size as f32);
+    let val1 = EShadowGeneratorParam::ShadowMinz( minz as f32);
+    let val2 = EShadowGeneratorParam::ShadowMaxz( maxz as f32);
+
+    #[cfg(feature = "record")]
+    cmds.record(ERecordCMD::ShadowParam(shadow, val));
+    #[cfg(feature = "record")]
+    cmds.record(ERecordCMD::ShadowParam(shadow, val1));
+    #[cfg(feature = "record")]
+    cmds.record(ERecordCMD::ShadowParam(shadow, val2));
+
+    let shadow: Entity = as_entity(shadow);
+
     CommandsExchangeD3::p3d_shadow_base_param(cmds, shadow, val);
-    let val = EShadowGeneratorParam::ShadowMinz( minz as f32);
-    CommandsExchangeD3::p3d_shadow_base_param(cmds, shadow, val);
-    let val = EShadowGeneratorParam::ShadowMaxz( maxz as f32);
-    CommandsExchangeD3::p3d_shadow_base_param(cmds, shadow, val);
+    CommandsExchangeD3::p3d_shadow_base_param(cmds, shadow, val1);
+    CommandsExchangeD3::p3d_shadow_base_param(cmds, shadow, val2);
 }
 

@@ -1,5 +1,5 @@
 use pi_ui_render::prelude::UiPlugin;
-pub use super::index::Gui;
+pub use pi_export_base::gui::Gui;
 pub use pi_export_base::export::{Engine, Atom};
 // pub use pi_ui_render::gui::Gui;
 use std::intrinsics::transmute;
@@ -39,11 +39,14 @@ pub fn create_gui(
 
 	#[cfg(feature="record")]
 	{
-		let debug: pi_ui_render::system::base::node::cmd_play::TraceOption = unsafe { transmute(debug as u8) };
+    use pi_bevy_render_plugin::PlayState;
+
+		let record = engine.world.get_single_res::<PlayState>().unwrap();
+		let debug = record.option;
 		engine.add_plugins(UiPlugin {cmd_trace: debug.clone(), font_type: FontType::Sdf2});
-		gui.record_option = debug;
-		if let pi_ui_render::system::base::node::cmd_play::TraceOption::Record = debug {
-			gui.commands.is_record = true;
+		*gui.record_option() = debug;
+		if let pi_bevy_render_plugin::cmd_play::TraceOption::Record = debug {
+			gui.commands_mut().is_record = true;
 			let com = engine.world.get_single_res_mut::<pi_ui_render::prelude::UserCommands>().unwrap();
             com.is_record = true;
 		}
@@ -91,13 +94,13 @@ pub fn create_fragment(gui: &mut Gui, arr: &mut [f64], count: u32, key: u32) {
 	let mut index: usize = 0;
 	let mut entitys = Vec::with_capacity(count as usize);
 	while index < count as usize {
-		let entity = gui.entitys.alloc_entity();
+		let entity = gui.entitys_mut().alloc_entity();
 		arr[index] = unsafe { transmute(entity) };
 		entitys.push(entity);
 		index = index + 1;
 	}
 	// log::warn!("entitys=============={:?}", entitys);
-	gui.commands
+	gui.commands_mut()
 		.fragment_commands
 		.push(FragmentCommand { key, entitys });
 }
