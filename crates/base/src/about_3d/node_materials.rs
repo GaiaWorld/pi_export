@@ -227,7 +227,7 @@ pub const VARYING_V4H               : u32 = 0b_1000_0000_0000_0000_0000_0000_000
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
-#[derive(Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct NodeMaterialBlock(pub(crate)  pi_atom::Atom, pub(crate) NodeMaterialBlockInfo);
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
@@ -263,7 +263,7 @@ impl NodeMaterialBlock {
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
-#[derive(Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct NodematerialIncludes(pub(crate) Vec<pi_atom::Atom>);
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
@@ -285,7 +285,7 @@ impl NodematerialIncludes {
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
-#[derive(Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct MaterialUniformDefines(pub(crate) MaterialValueBindDesc, pub(crate) Vec<UniformTexture2DDesc>);
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
@@ -328,7 +328,7 @@ impl P3DShaderMeta {
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
-#[derive(Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct P3DShaderVaryings(pub(crate) Vec<Varying>);
 impl P3DShaderVaryings {
     pub fn v0(&self) -> &Vec<Varying> {

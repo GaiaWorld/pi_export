@@ -335,17 +335,18 @@ pub fn p3d_uniform_target_animation(
     mat: f64,
     group: f64,
     key: &Atom,
-    curve_key: f64,
+    curve_key: &str,
 ) {
     #[cfg(feature = "replay")]
     return ;
 
     
     #[cfg(feature = "record")]
-    cmds.record(ERecordCMD::MaterialTargetAnimation(mat, group, key.deref().clone(), curve_key));
+    cmds.record(ERecordCMD::MaterialTargetAnimation(mat, group, key.deref().clone(), String::from(curve_key)));
 
     let mat = as_entity(mat);
     let group = as_entity(group);
+    let curve_key = pi_atom::Atom::from(curve_key).asset_u64();
     CommandsExchangeD3::p3d_uniform_target_animation(cmds, mat, group, key.deref(), curve_key);
     // cmds.material_valb.push(OpsUniformValB::targetanim(target, key.deref().clone(), group, curve));
 }

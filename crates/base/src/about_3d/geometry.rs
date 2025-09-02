@@ -95,7 +95,7 @@ pub fn p3d_vbmeta_custom_attr(meta: &mut VBMeta, key: &Atom, format: f64, code: 
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
-#[derive(Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct GeometryMeta(pub(crate) EGeometry, pub(crate) Option<(String, Option<f64>, Option<f64>, bool)>);
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]

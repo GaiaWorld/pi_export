@@ -11,7 +11,7 @@ use pi_trail_renderer::*;
 use pi_hash::XHashMap;
 use pi_curves::curve::frame::KeyFrameCurveValue;
 pub use super::engine::ActionSetScene3D;
-use super::{animation::{EAmountMode, EFillMode, ELoopMode}, as_entity, as_f64, cmd_call::_amountcalc, engine::{GLTFRes, GlobalState}, mesh::{GeometryMeta, VInstanceAttributes}, node_materials::{MaterialUniformDefines, NodeMaterialBlock, NodematerialIncludes, P3DShaderMeta, P3DShaderVaryings}, record::{ERecordCMD, ERecordMode, RRecordD3}};
+use super::{animation::{EAmountMode, EFillMode, ELoopMode}, as_entity, as_f64, cmd_call::_amountcalc, engine::{GLTFRes, GlobalState}, mesh::{GeometryMeta, VInstanceAttributes}, node_materials::{MaterialUniformDefines, NodeMaterialBlock, NodematerialIncludes, P3DShaderMeta, P3DShaderVaryings}, record::{ERecordCMD}};
 use super::animation::EAnimePropertyID;
 use super::animation::EAnimeCurve;
 use super::animation::curve;
@@ -536,7 +536,7 @@ impl CommandsExchangeD3 {
             ERecordCMD::PropertyTargetAnimation(curve_key, property, group, curve_target) => {
                 let group = Self::entity(replayentities, group);
                 let curve_target = Self::entity(replayentities, curve_target);
-                let curve_key: u64 = unsafe { transmute(curve_key) };
+                let curve_key: u64 = pi_atom::Atom::from(&curve_key).asset_u64();
                 CommandsExchangeD3::p3d_property_target_animation(cmds, curve_key, property, group, curve_target);
             },
             ERecordCMD::TRANSFORMNODE(scene, id) => {
@@ -646,7 +646,7 @@ impl CommandsExchangeD3 {
             ERecordCMD::MeshAttributeTargetAnim(target, group, key, curve_key) => {
                 let target = Self::entity(replayentities, target);
                 let group = Self::entity(replayentities, group);
-                let curve_key: u64 = unsafe { transmute(curve_key) };
+                let curve_key = pi_atom::Atom::from(&curve_key).asset_u64();
                 CommandsExchangeD3::p3d_attribute_target_animation(cmds, target, group, &key, curve_key);
             },
             ERecordCMD::MeshPoseMatrix(mesh, val) => {
@@ -681,7 +681,7 @@ impl CommandsExchangeD3 {
                 CommandsExchangeD3::p3d_material_uniform_mat(cmds, mat, &key, val);
             },
             ERecordCMD::MaterialUniformV0(mat, val) => {
-                let mat: Entity = Self::entity(replayentities, mat);    
+                let mat: Entity = Self::entity(replayentities, mat);
                 CommandsExchangeD3::p3d_material_uniform_value(cmds, mat, val);
             },
             ERecordCMD::MaterialUniformTex(mat, key, url,
@@ -723,9 +723,10 @@ impl CommandsExchangeD3 {
                     anisotropy_clamp, border_color, compare
                 );
             },
-            ERecordCMD::MaterialTargetAnimation(mat, group, key, curve_key) => {
-                let mat = Self::entity(replayentities, mat);
-                let group = Self::entity(replayentities, group);
+            ERecordCMD::MaterialTargetAnimation(mat0, group0, key, curve_key) => {
+                let mat = Self::entity(replayentities, mat0);
+                let group = Self::entity(replayentities, group0);
+                let curve_key = pi_atom::Atom::from(&curve_key).asset_u64();
                 CommandsExchangeD3::p3d_uniform_target_animation(cmds, mat, group, &key, curve_key);
             },
             ERecordCMD::ParticlesysState(entity, val) => {
@@ -932,8 +933,7 @@ impl CommandsExchangeD3 {
     ) {
         cmds.anime_dispose().push(OpsAnimationGroupDispose::ops(group));
     }
-    pub fn p3d_anime_curve_create<T: TTypeAnimeAssetMgr>(cmds: &mut T, key: f64, property: EAnimePropertyID, data: &[f32], mode: EAnimeCurve) -> bool {
-        let key: u64 = unsafe { transmute(key) };
+    pub fn p3d_anime_curve_create<T: TTypeAnimeAssetMgr>(cmds: &mut T, key: u64, property: EAnimePropertyID, data: &[f32], mode: EAnimeCurve) -> bool {
 
         match property {
             EAnimePropertyID::LocalPosition       => {
@@ -958,7 +958,9 @@ impl CommandsExchangeD3 {
             },
             EAnimePropertyID::MainColor           => {
                 let v = curve::<3, AnimatorableVec3>(data,  mode);
-                cmds.vec3s().insert(key, TypeFrameCurve(v)).is_ok()
+                let result = cmds.vec3s().insert(key, TypeFrameCurve(v)).is_ok();
+                log::error!("Curve Result: {:?}", (result, key));
+                result
             },
             EAnimePropertyID::MainTexUScale       => {
                 let v = curve::<1, AnimatorableFloat>(data,  mode);
@@ -1404,10 +1406,9 @@ impl CommandsExchangeD3 {
         target: Entity,
         group: Entity,
         key: &pi_atom::Atom,
-        curve_key: f64,
+        curve_key: u64,
     ) {
-        let curve: u64 = unsafe { transmute(curve_key) };
-        cmds.material_valb().push(OpsUniformValB::targetanim(target, key.clone(), group, curve));
+        cmds.material_valb().push(OpsUniformValB::targetanim(target, key.clone(), group, curve_key));
     }
     pub fn p3d_load_texture(cmds: &mut CommandsExchangeD3, url: &pi_atom::Atom, compressed: bool, isfile: bool, cancombine: bool) {
         let key = KeyImageTextureFrame { url: pi_atom::Atom::from(url.to_string()), cancombine, file: isfile, compressed };
@@ -1802,7 +1803,6 @@ pub fn commands_exchange_call(app: &mut Engine, param: &mut ActionSetScene3D, cm
         },
     }
 
-    log::error!("xxx Start");
     let state = param.state.get_mut(&mut app.world);
 
     if state.stateengine.active {
@@ -1867,8 +1867,6 @@ pub fn commands_exchange_call(app: &mut Engine, param: &mut ActionSetScene3D, cm
 
     let screenwithpostprocess = app.world.get_resource_mut::<pi_bevy_render_plugin::ScreenWithPostprocess>().unwrap();
     screenwithpostprocess.0 = cmds.screenwithpostprocess;
-
-    log::error!("xxx OK");
 
 }
 

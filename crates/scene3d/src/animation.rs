@@ -14,7 +14,7 @@ use pi_scene_context::prelude::*;
 use pi_slotmap::DefaultKey;
 use serde::{Serialize, Deserialize};
 pub use crate::engine::ActionSetScene3D;
-use crate::{as_entity, as_f64, as_f64_dk, record::{ERecordCMD, ERecordMode}};
+use crate::{as_entity, as_f64, as_f64_dk, record::{ERecordCMD}};
 pub use crate::commands::CommandsExchangeD3;
 pub use pi_export_base::about_3d::animation::*;
 use pi_3d::TActionSet;
@@ -50,17 +50,6 @@ pub fn p3d_animation_group(
     CommandsExchangeD3::p3d_animation_group(cmds, scene, id);
 
     as_f64(&id)
-}
-
-#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
-#[pi_js_export]
-/// 动画曲线ID
-pub fn p3d_animation_curve_id(
-    key: &Atom,
-) -> f64 {
-    let key = pi_atom::Atom::from(key.as_str());
-    let key = key.asset_u64();
-    unsafe { transmute(key) }
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
@@ -293,133 +282,6 @@ pub fn p3d_query_anime_events(
     index as f64
 }
 
-// fn curve_create(
-//     data: &[f32],
-//     mode: EAnimeCurve,
-//     n: usize,
-//     create: &Fn(&[f32], usize) -> FrameDataValue,
-// ) -> FrameDataValue {
-//     let vs = N; let vs2 = N * 2; let vs3 = N * 3;
-//     let design_frame_per_second = data[0] as FramePerSecond;
-
-//     let mut minidx = 0;
-//     let mut maxidx = 0;
-
-//     let mut curve = match mode {
-//         EAnimeCurve::FrameValues => {
-//             let mut curve = FrameCurve::<T>::curve_frame_values(design_frame_per_second);
-//             let head = 1;
-//             let step = 1 + vs;
-//             let frames = (data.len() - head) / step;
-//             for i in 0..frames {
-//                 let index = head + i * step;
-//                 let frame = data[index + 0] as FrameIndex;
-//                 // log::warn!("Frame {:?}, data: {:?}", frame, T::newn(data, index + 1));
-
-//                 // curve.curve_frame_values_frame(frame, T::newn(data, index + 1));
-//                 let (index, min, max) = curve_frame_index(&mut curve.frames, frame);
-//                 curve.values.insert(index, T::newn(data, index + 1));
-//                 minidx = min; maxidx = max;
-//             }
-//             curve
-//         },
-//         EAnimeCurve::FrameValuesStep => {
-//             let mut curve = FrameCurve::<T>::curve_frame_values(design_frame_per_second);
-//             let head = 1;
-//             let step = 1 + vs;
-//             let frames = (data.len() - head) / step;
-//             for i in 0..frames {
-//                 let index = head + i * step;
-//                 let frame = data[index + 0] as FrameIndex;
-
-//                 // curve.curve_frame_values_frame(frame, T::newn(data, index + 1));
-//                 let (index, min, max) = curve_frame_index(&mut curve.frames, frame);
-//                 curve.values.insert(index, T::newn(data, index + 1));
-//                 minidx = min; maxidx = max;
-//             }
-//             curve.call = interplate_frame_values_step;
-//             curve
-//         },
-//         EAnimeCurve::EasingCurve => {
-//             let frame_count = data[1] as FrameIndex;
-//             let mode = number_to_easingmode(data[2] as u8);
-//             let head = 3;
-//             let from = T::newn(data, head + 0);
-//             let scalar = T::newn(data, head + vs);
-//             let curve = FrameCurve::<T>::curve_easing(
-//                 from,
-//                 scalar,
-//                 frame_count,
-//                 design_frame_per_second, mode
-//             );
-//             curve
-//         },
-//         EAnimeCurve::MinMaxCurve => {
-//             let from = T::newn(data, 1);
-//             let to = T::newn(data, 1 + vs);
-//             let head = 1 + vs2;
-//             let mut curve = FrameCurve::<T>::curve_minmax_curve(from, to, design_frame_per_second);
-//             let step = 4;
-//             let frames = (data.len() - head) / step;
-//             for i in 0..frames {
-//                 let index = head + i * step;
-//                 let frame = data[index + 0] as FrameIndex;
-//                 let intangent  = data[index + 1] as f32;
-//                 let value = data[index + 2] as f32;
-//                 let outtangent = data[index + 3] as f32;
-
-//                 // curve.curve_minmax_curve_frame(frame, value, intangent, outtangent);
-//                 let (index, min, max) = curve_frame_index(&mut curve.frames, frame);
-//                 let keyframe = CurveFrameValue::new(value, [intangent, outtangent]);
-//                 curve.minmax_curve_values.insert(index, keyframe);
-//                 minidx = min; maxidx = max;
-//             }
-//             curve
-//         },
-//         EAnimeCurve::CubicBezierCurve => {
-//             let frame_count = data[1] as FrameIndex;
-//             let mut head = 2;
-//             let from = T::newn(data, head);
-//             let scalar = T::newn(data, head + vs);
-//             head = head + vs2;
-//             let x1 = data[head] as f32; let y1 = data[head + 1] as f32; let x2 = data[head + 2] as f32; let y2 = data[head + 3] as f32; 
-//             let curve = FrameCurve::<T>::curve_cubic_bezier(
-//                 from,
-//                 scalar,
-//                 frame_count,
-//                 design_frame_per_second,
-//                 x1 as f32, y1 as f32, x2 as f32, y2 as f32
-//             );
-//             curve
-//         },
-//         EAnimeCurve::GLTFCubicSpline => {
-//             let mut curve = FrameCurve::<T>::curve_cubic_spline(design_frame_per_second);
-//             let head = 1;
-//             let step = 1 + vs3;
-//             let frames = (data.len() - head) / step;
-//             for i in 0..frames {
-//                 let index = head + i * step;
-//                 let frame = data[index + 0] as FrameIndex;
-//                 let intangent = T::newn(data, index + 1);
-//                 let value = T::newn(data, index + 1 + vs);
-//                 let outtangent = T::newn(data, index + 1 + vs2);
-
-//                 // curve.curve_cubic_splice_frame(frame, value, intangent, outtangent);
-//                 let (index, min, max) = curve_frame_index(&mut curve.frames, frame);
-//                 let keyframe = CurveFrameValue::new(value, [intangent, outtangent]);
-//                 curve.cubic_spline_values.insert(index, keyframe);
-//                 minidx = min; maxidx = max;
-//             }
-//             curve
-//         },
-//     };
-
-//     curve.min_frame = minidx;
-//     curve.max_frame = maxidx;
-//     curve.frame_number = maxidx - minidx;
-//     curve
-// }
-
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 /// FrameCurve
@@ -429,14 +291,14 @@ pub fn p3d_query_anime_events(
 /// * `MinMaxCurve` data: [design_frame_per_second, (x, y, ..), (x, y, ..), (frame, f32, it, ot), (frame, f32, it, ot) ...]
 /// * `CubicBezierCurve` data: [design_frame_per_second, total_frame, (x, y, ..), (x, y, ..), (x1, y1, x2, y2)]
 /// * `GLTFCubicSpline` data: [design_frame_per_second, (frame, (x, y, ..), (x, y, ..), (x, y, ..)), ...]
-pub fn p3d_anime_curve_query(app: &mut Engine, param: &mut ActionSetScene3D, key: f64, property: EAnimePropertyID) -> bool {
+pub fn p3d_anime_curve_query(app: &mut Engine, param: &mut ActionSetScene3D, key: &str, property: EAnimePropertyID) -> bool {
     #[cfg(feature = "replay")]
     return false;
 
 	pi_export_base::export::await_last_frame(app);
     let resource = param.resource.get_mut(&mut app.world);
 
-    let key = unsafe { transmute(key) };
+    let key = pi_atom::Atom::from(key).asset_u64();
     let property = unsafe { transmute(property) };
 
     pi_gltf2_load::p3d_anime_curve_query(&resource.anime_assets, key, property)
@@ -444,7 +306,7 @@ pub fn p3d_anime_curve_query(app: &mut Engine, param: &mut ActionSetScene3D, key
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
-pub fn p3d_anime_curve_create(app: &mut Engine, param: &mut ActionSetScene3D, cmds: &mut CommandsExchangeD3, key: f64, property: EAnimePropertyID, data: &[f32], mode: EAnimeCurve) -> bool {
+pub fn p3d_anime_curve_create(app: &mut Engine, param: &mut ActionSetScene3D, cmds: &mut CommandsExchangeD3, key: &str, property: EAnimePropertyID, data: &[f32], mode: EAnimeCurve) -> bool {
     
     #[cfg(feature = "replay")]
     return false;
@@ -452,12 +314,12 @@ pub fn p3d_anime_curve_create(app: &mut Engine, param: &mut ActionSetScene3D, cm
     pi_export_base::export::await_last_frame(app);
 
     #[cfg(feature = "record")]
-    cmds.record2(ERecord3D::CreateAnimationCurve(key, property, data.to_vec(), mode));
+    cmds.record2(ERecord3D::CreateAnimationCurve(String::from(key), property, data.to_vec(), mode));
 
+    let key = pi_atom::Atom::from(key).asset_u64();
     let mut resource = param.resource.get_mut(&mut app.world);
     let result = CommandsExchangeD3::p3d_anime_curve_create(&mut resource.anime_assets, key, property, data, mode);
-    log::error!("Anim Curve: {:?}", result);
-result
+    result
 }
 
 
@@ -465,7 +327,7 @@ result
 #[pi_js_export]
 pub fn p3d_property_target_animation(
     cmds: &mut CommandsExchangeD3,
-    curve_key: f64,
+    curve_key: &str,
     property: EAnimePropertyID,
     group: f64,
     curve_target: f64,
@@ -474,10 +336,10 @@ pub fn p3d_property_target_animation(
     return false;
 
     #[cfg(feature = "record")]
-    cmds.record(ERecordCMD::PropertyTargetAnimation(curve_key, property, group, curve_target));
+    cmds.record(ERecordCMD::PropertyTargetAnimation(String::from(curve_key), property, group, curve_target));
 
     let group = as_entity(group);
     let curve_target = as_entity(curve_target);
-    let key: u64 = unsafe { transmute(curve_key) };
+    let key: u64 = pi_atom::Atom::from(curve_key).asset_u64();
     return CommandsExchangeD3::p3d_property_target_animation(cmds, key, property, group, curve_target);
 }

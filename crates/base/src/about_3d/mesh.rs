@@ -9,7 +9,7 @@ use js_proxy_gen_macro::pi_js_export;
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
-#[derive(Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct VInstanceAttributes(pub(crate) bool, pub(crate) Vec<CustomVertexAttribute>);
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]

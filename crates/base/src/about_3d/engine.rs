@@ -26,7 +26,7 @@ impl ImageRes {
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
-#[derive(Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct GLTFRes(pub(crate) Entity);
 impl GLTFRes {
     pub fn new(v: Entity) -> Self {

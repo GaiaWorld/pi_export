@@ -623,17 +623,17 @@ pub fn p3d_attribute_target_animation(
     abstructmesh: f64,
     group: f64,
     key: &Atom,
-    curve_key: f64,
+    curve_key: &str,
 ) {
     #[cfg(feature = "replay")]
     return ;
 
     #[cfg(feature = "record")]
-    cmds.record(ERecordCMD::MeshAttributeTargetAnim(abstructmesh, group, key.deref().clone(), curve_key));
+    cmds.record(ERecordCMD::MeshAttributeTargetAnim(abstructmesh, group, key.deref().clone(), String::from(curve_key)));
 
     let target = as_entity(abstructmesh);
     let group = as_entity(group);
-    let curve_key: u64 = unsafe { transmute(curve_key) };
+    let curve_key: u64 = pi_atom::Atom::from(curve_key).asset_u64();
     CommandsExchangeD3::p3d_attribute_target_animation(cmds, target, group, key.deref(), curve_key);
 }
 

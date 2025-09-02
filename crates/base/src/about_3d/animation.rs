@@ -11,7 +11,7 @@ use wasm_bindgen::prelude::*;
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
-#[derive(Clone, Copy, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 pub enum EAnimeCurve {
     FrameValues = 0x00,
     FrameValuesStep = 0x01,
@@ -23,7 +23,7 @@ pub enum EAnimeCurve {
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
-#[derive(Clone, Copy, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 pub enum EAnimePropertyID {
     LocalPosition       =  0,
     LocalRotation       =  1,
@@ -62,7 +62,7 @@ pub enum EAnimePropertyID {
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
-#[derive(Clone, Copy, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 pub enum ELoopMode {
     /// 不循环
     Not,
@@ -93,7 +93,7 @@ impl ELoopMode {
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
-#[derive(Clone, Copy, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 pub enum EAmountMode {
     None            ,
 
@@ -245,7 +245,7 @@ fn number_to_easingmode(val: u8) -> pi_curves::easing::EEasingMode {
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
-#[derive(Clone, Copy, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 pub enum EAnimationGroupListen {
     Start,
     End,
@@ -265,7 +265,7 @@ impl EAnimationGroupListen {
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
-#[derive(Clone, Copy, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 pub enum EFillMode {
     None = 0,
     Forwards = 1,

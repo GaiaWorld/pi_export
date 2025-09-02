@@ -365,8 +365,8 @@ pub fn set_custom_post(gui: &mut Gui, node_id: f64, post_id: Option<f64>) {
         Some(post_id) => unsafe { transmute::<f64, Entity>(post_id) },
         None => Entity::null(),
     } ;
-	gui.commands_mut().push_cmd(PostProcessCmd(
-        EntityKey(post),
+	gui.commands_mut().set_custom_post(PostProcessCmd(
+        post,
         node,
     ));
 }

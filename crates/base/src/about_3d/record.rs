@@ -1,4 +1,4 @@
-use std::ops::DerefMut;
+use std::{mem::transmute, ops::DerefMut};
 
 use super::{animation::{EAmountMode, EAnimationGroupListen, EAnimeCurve, EAnimePropertyID, EFillMode, ELoopMode}, as_entity, as_f64, engine::GLTFRes, mesh::{GeometryMeta, VInstanceAttributes}, node_materials::{MaterialUniformDefines, NodeMaterialBlock, NodematerialIncludes, P3DShaderVaryings}};
 use pi_3d::TActionSet;
@@ -14,23 +14,7 @@ use serde::{Serialize, Deserialize};
 use crate::{commands::CommandsExchangeD3, export::Engine};
 use pi_hash::XHashMap;
 
-#[derive(Default)]
-pub enum ERecordMode {
-    #[default]
-    None,
-    Record,
-    Replay,
-}
-
-
-#[derive(Default, Clone, Serialize, Deserialize)]
-pub struct RRecordD3 {
-    pub frame_index: usize,
-    pub commands: Vec<ERecordCMD>,
-    pub entities: Vec<f64>,
-}
-
-#[derive(Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum ERecordCMD {
     Dispose(f64)                       ,
     SceneDispose(f64)                 ,
@@ -49,7 +33,7 @@ pub enum ERecordCMD {
     AnimationGroupGoto(f64, f64)          ,
     AnimationGroupRestart(f64)       ,
     AnimationGroupDelete(f64)        ,
-    PropertyTargetAnimation(f64, EAnimePropertyID, f64, f64)     ,
+    PropertyTargetAnimation(String, EAnimePropertyID, f64, f64)     ,
     TRANSFORMNODE(f64, f64)                 ,
     TransformnodeParent(f64, f64)          ,
     TransformnodeSRT(f64, ETransformSRT)         ,
@@ -73,7 +57,7 @@ pub enum ERecordCMD {
     MeshRenderState(f64, ERenderState)                    ,
     MeshState(f64, EMeshStateModify)              ,
     MeshBoundingBox(f64, f64, f64, f64, f64, f64, f64)             ,
-    MeshAttributeTargetAnim(f64, f64, Atom, f64)    ,
+    MeshAttributeTargetAnim(f64, f64, Atom, String)    ,
     MeshPoseMatrix(f64, Vec<f32>)              ,
     LIGHT(f64, f64, f64)                         ,
     LightParam(f64, ELightModify)               ,
@@ -86,7 +70,7 @@ pub enum ERecordCMD {
     LoadTexture(Atom, bool, bool, bool)                  ,
     MaterialTexFromRendertarget(f64, Atom, Atom, f64, bool, f64, f64, f64, f64, f64, f64, f64, f64, Option<f64>),
     MaterialTexFromRenderer(f64, Atom, Atom, f64, bool, f64, f64, f64, f64, f64, f64, f64, f64, Option<f64>)    ,
-    MaterialTargetAnimation(f64, f64, Atom, f64)     ,
+    MaterialTargetAnimation(f64, f64, Atom, String)     ,
     PARTICLESYS(f64, f64, f64, f64, u64, Atom, Atom, Option<f64>)                   ,
     ParticlesysState(f64, ECPUParticleSystemState)             ,
     RenderSubgraph(f64, String)               ,
@@ -102,7 +86,7 @@ pub enum ERecordCMD {
     SkinUse(f64, f64)                      ,
 }
 
-#[derive(Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum ERecord3D {
     EngineState(bool)                  ,
     EngineDebug(bool)                  ,
@@ -113,7 +97,7 @@ pub enum ERecord3D {
     CreateImageLoad(KeyImageTextureFrame)             ,
     CreateRenderTarget(Option<f64>,f64,f64,f64,f64,f64,f64,f64)          ,
     DisposeRenderTarget(f64)         ,
-    CreateAnimationCurve(f64, EAnimePropertyID, Vec<f32>, EAnimeCurve)        ,
+    CreateAnimationCurve(String, EAnimePropertyID, Vec<f32>, EAnimeCurve)        ,
     MaterialRegist(String, MaterialUniformDefines, String, String, String, String, NodematerialIncludes, String, P3DShaderVaryings, Option<f64>)               ,
     NodeMaterialBlockRegist(NodeMaterialBlock)    ,
     RenderLinkDrawlist(f64, Vec<f64>)          ,
@@ -129,8 +113,10 @@ pub struct Records3D {
 }
 
 pub fn cmd_play_call_3d(world: &mut World, data: &Vec<u8>, replayentities: &XHashMap<Entity, Entity>) {
+    // return;
     match postcard::from_bytes::<Vec<ERecord3D>>(data) {
         Ok(mut val) => {
+            // log::error!("cmd_play_call_3d {:?}", &val);
             val.drain(..).for_each(|e| {
                 match e {
                     ERecord3D::EngineState(val) => world.get_resource_mut::<EngineCustomPlugins>().unwrap().active = val,
@@ -189,6 +175,8 @@ pub fn cmd_play_call_3d(world: &mut World, data: &Vec<u8>, replayentities: &XHas
                         }
                     },
                     ERecord3D::CreateAnimationCurve(key, property, data, mode) => {
+                        let key = pi_atom::Atom::from(&key).asset_u64();
+                        log::error!("Curve: {:?}", (key as u64, property, mode));
                         CommandsExchangeD3::p3d_anime_curve_create(world, key, property, &data, mode);
                     },
                     ERecord3D::MaterialRegist(key, uniforms, vs_define_code, fs_define_code, vs_code, fs_code, includes, instance_code, varyings, binds_defines_base) => {
