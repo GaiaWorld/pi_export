@@ -44,13 +44,15 @@ wgpu = { path = "../../../wgpu/wgpu" }
 log = "0.4"
 tracing = "0.1"
 
+pi_key_alloter = "=0.6.1"
+
 # 添加webgl feature
 # wgpu1 = { version = "0.19", package = "wgpu", default-features = false, features = ["glsl", "webgl"] }
 pi_render = { version = "0.3", registry = "yn", features=["webgl"] }
 pi_bevy_winit_window = {version = "0.3", registry = "yn"}
 pi_bevy_render_plugin = { version = "0.3", registry = "yn", features=["webgl"]}
 pi_bevy_log = {version = "0.2", registry = "yn"}
-pi_wgpu =  { version = "0.3", registry = "yn" }
+pi_wgpu =  { path = "../../../pi_wgpu" }
 # pi_wgpu =  {version = "0.3", registry = "yn", features = ["single_thread", "use_wgpu"]}
 pi_spatial = "0.6"
 pi_path_finding = "0.6"

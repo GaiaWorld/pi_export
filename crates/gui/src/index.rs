@@ -4,6 +4,7 @@ use std::{mem::transmute, sync::Arc};
 use std::any::Any;
 
 use pi_bevy_asset::ShareAssetMgr;
+use pi_export_base::as_entity;
 use pi_export_base::export::await_last_frame;
 use pi_export_base::gui::Gui;
 use pi_flex_layout::{prelude::CharNode, style::{PositionType, FlexWrap, FlexDirection, AlignContent, AlignItems, AlignSelf, JustifyContent, Display, Dimension}};

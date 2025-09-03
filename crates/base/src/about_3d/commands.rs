@@ -1,7 +1,7 @@
 use std::{mem::{replace, transmute}, ops::{Deref, Range}};
 
 use pi_3d::{ActionSets, ResourceSets, TActionSet};
-use pi_bevy_render_plugin::{PlayState, Records, RECORD_D3_COMMAND};
+use pi_bevy_render_plugin::{PlayState, Records, TraceOption, RECORD_D3_COMMAND};
 use pi_gltf2_load::{ResGLTFRecords, GLTF};
 use pi_scene_shell::prelude::*;
 pub use crate::export::Engine;
@@ -31,7 +31,6 @@ use js_proxy_gen_macro::pi_js_export;
 #[derive(Default)]
 pub struct CommandsExchangeD3 {
     pub(crate) recordframes: Vec<ERecord3D>,
-    pub(crate) replayrendertargetkey: XHashMap<Entity, Entity>,
 
     pub(crate) scene_create: ActionListSceneCreate,
     pub(crate) scene_options: ActionListSceneOption,
@@ -129,6 +128,8 @@ pub struct CommandsExchangeD3 {
     pub(crate) screenwithpostprocess: bool,
     pub(crate) gltfs: XHashMap<Entity, Handle<GLTF>>,
     pub(crate) disposegltfs: Vec<Entity>,
+
+    pub(crate) traceoption: TraceOption,
 }
 
 impl TActionSet for CommandsExchangeD3 {
@@ -443,10 +444,16 @@ impl CommandsExchangeD3 {
         world.get_resource_mut::<Records>().unwrap().record_create(as_entity(entity));
     }
     pub fn record2(&mut self, cmd: ERecord3D) {
-        self.recordframes.push(cmd);
+        match self.traceoption {
+            TraceOption::Record => self.recordframes.push(cmd),
+            _ => {}
+        }
     }
     pub fn record(&mut self, cmd: ERecordCMD) {
-        self.recordframes.push(ERecord3D::CMD(cmd));
+        match self.traceoption {
+            TraceOption::Record => self.recordframes.push(ERecord3D::CMD(cmd)),
+            _ => {}
+        }
     }
     pub fn read_record(&mut self) -> Vec<ERecord3D> {
         replace(&mut self.recordframes, vec![]) 
@@ -737,9 +744,10 @@ impl CommandsExchangeD3 {
                 let id_renderer = Self::entity(replayentities, id_renderer);
                 cmds.renderer_subgraph().push(OpsSubGraphCreate::ops(id_renderer, name));
             },
-            ERecordCMD::RENDER(viewer, id_renderer, name, pass_tag, transparent, recordinput, crossrender) => {
+            ERecordCMD::RENDER(viewer, idrenderer, name, pass_tag, transparent, recordinput, crossrender) => {
                 let viewer: Entity = Self::entity(replayentities, viewer);
-                let id_renderer: Entity = Self::entity(replayentities, id_renderer);
+                let id_renderer: Entity = Self::entity(replayentities, idrenderer);
+                log::error!("Render: {:?}", (as_entity(idrenderer), id_renderer));
                 CommandsExchangeD3::p3d_create_render(cmds, viewer, id_renderer, name, pass_tag, transparent, recordinput, crossrender);
             },
             ERecordCMD::RenderModify(renderer, val) => {
