@@ -1,7 +1,7 @@
 
 use js_proxy_gen_macro::pi_js_export;
 use pi_bevy_render_plugin::{PlayState, Records};
-use crate::asset::Engine;
+pub use crate::asset::Engine;
 #[cfg(target_arch = "wasm32")]
 use wasm_bindgen::prelude::wasm_bindgen;
 

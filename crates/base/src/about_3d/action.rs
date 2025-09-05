@@ -5,7 +5,7 @@ use js_proxy_gen_macro::pi_js_export;
 use pi_scene_shell::prelude::*;
 use pi_particle_system::{prelude::*};
 use pi_scene_context::{prelude::*};
-use crate::export::Engine;
+pub use crate::export::Engine;
 
 #[cfg(target_arch = "wasm32")]
 use wasm_bindgen::prelude::*;

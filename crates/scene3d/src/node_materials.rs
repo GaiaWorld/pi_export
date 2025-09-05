@@ -9,7 +9,7 @@ use pi_scene_shell::prelude::*;
 use pi_scene_context::prelude::*;
 use pi_node_materials::prelude::*;
 use serde::{Deserialize, Serialize};
-use crate::{constants::EngineConstants, mesh::CommandsExchangeD3, record::ERecordCMD};
+pub use crate::{constants::EngineConstants, mesh::CommandsExchangeD3, record::ERecordCMD};
 pub use crate::engine::ActionSetScene3D;
 pub use pi_export_base::{export::{Engine, Atom}, constants::*};
 pub use pi_export_base::about_3d::node_materials::*;

@@ -335,6 +335,18 @@ pub fn debug_info(engine: &mut Engine) -> Vec<f64> {
 pub fn active_gui(engine: &mut Engine, active: bool) {
     pi_ui_render::devtools::active_gui(&mut engine.world, active);
 }
+#[cfg(not(target_arch="wasm32"))]
+#[pi_js_export]
+pub fn start_gui_debug_server(engine: &mut Engine) {
+	pi_ui_render::devtools::start_server(engine.app_mut());
+}
+
+#[cfg(not(target_arch="wasm32"))]
+#[pi_js_export]
+pub fn request_right_key_element(x: f32, y: f32) {
+	pi_ui_render::devtools::request_right_key_element(x, y);
+}
+
 // #[allow(unused_attributes)]
 // #[pi_js_export]
 // pub fn overflow_clip(gui: &Gui) -> JsValue {

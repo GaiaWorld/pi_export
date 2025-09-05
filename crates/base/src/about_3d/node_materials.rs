@@ -6,7 +6,7 @@ use pi_assets::asset::Handle;
 use pi_scene_shell::prelude::*;
 use pi_node_materials::prelude::*;
 use serde::{Deserialize, Serialize};
-use crate::{export::{Atom}};
+pub use crate::{export::{Atom}};
 
 #[cfg(target_arch = "wasm32")]
 use wasm_bindgen::prelude::wasm_bindgen;

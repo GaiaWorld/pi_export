@@ -1,7 +1,7 @@
 use std::ops::{Range, Deref};
 
 use pi_scene_shell::prelude::*;
-use crate::export::{Atom};
+pub use crate::export::{Atom};
 use serde::{Deserialize, Serialize};
 
 use crate::about_3d::{constants::EngineConstants};
