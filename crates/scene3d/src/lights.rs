@@ -43,14 +43,13 @@ pub fn p3d_light_direction(cmds: &mut CommandsExchangeD3, light: f64, x: f64, y:
     #[cfg(feature = "replay")]
     return ;
 
-    let val = ELightModify::Directional( Vector3::new(x as f32, y as f32, z as f32) );
+    let val = ELightModify::Directional( x as f32, y as f32, z as f32 );
 
     #[cfg(feature = "record")]
     cmds.record(ERecordCMD::LightParam(light, val));
 
     let light: Entity = as_entity(light);
     CommandsExchangeD3::p3d_light_param(cmds, light, val);
-    // cmds.light_param.push(OpsLightParam::ops(light, ELightModify::Directional( Vector3::new(x as f32, y as f32, z as f32) )));
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
