@@ -32,6 +32,7 @@ pub fn get_record_len(engine: &mut Engine) -> u32 {
 	crate::export::await_last_frame(engine);
 	#[cfg(feature="record")]
 	{
+		log::error!("=========== get_record_len");
 		let records = engine.world.get_single_res_mut::<Records>().unwrap();
 		records.list.len() as u32
 	}

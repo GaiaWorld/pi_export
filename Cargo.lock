@@ -1612,7 +1612,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "cea14ef9355e3beab063703aa9dab15afd25f0667c341310c1e5274bb1d0da18"
 dependencies = [
  "libc",
- "windows-sys 0.59.0",
+ "windows-sys 0.52.0",
 ]
 
 [[package]]
@@ -3997,7 +3997,7 @@ dependencies = [
 
 [[package]]
 name = "pi_3d"
-version = "1.3.3"
+version = "1.3.4"
 dependencies = [
  "ahash",
  "bytemuck",
@@ -4023,6 +4023,7 @@ dependencies = [
  "pi_particle_system",
  "pi_pbr",
  "pi_render",
+ "pi_render_asset 0.1.1 (registry+http://ser.yinengyun.com:10082/tech/crates-io.git)",
  "pi_scene_context",
  "pi_scene_math",
  "pi_scene_shell",
@@ -4885,7 +4886,7 @@ dependencies = [
 
 [[package]]
 name = "pi_gltf2_load"
-version = "1.3.2"
+version = "1.3.3"
 dependencies = [
  "base64 0.21.7",
  "bytemuck",
@@ -5153,7 +5154,7 @@ checksum = "b8513169485f47a39f3d27ea458104ecdc080c154d78bfe23b0e295cb673397b"
 
 [[package]]
 name = "pi_particle_system"
-version = "1.3.2"
+version = "1.3.4"
 dependencies = [
  "bytemuck",
  "crossbeam",
@@ -5320,6 +5321,23 @@ dependencies = [
 ]
 
 [[package]]
+name = "pi_render_asset"
+version = "0.1.1"
+source = "registry+http://ser.yinengyun.com:10082/tech/crates-io.git"
+checksum = "4a5ff326002fc55dcd8eb9b98b8cefd0ab9938b8c723f2e50d17ba723a010247"
+dependencies = [
+ "derive-deref-rs",
+ "log",
+ "pi_assets",
+ "pi_atom",
+ "pi_futures",
+ "pi_hal",
+ "pi_key_alloter 0.6.1",
+ "pi_share 0.5.2",
+ "pi_wgpu",
+]
+
+[[package]]
 name = "pi_render_graph"
 version = "0.1.0"
 dependencies = [
@@ -5337,7 +5355,7 @@ dependencies = [
 
 [[package]]
 name = "pi_scene_context"
-version = "1.3.11"
+version = "1.3.12"
 dependencies = [
  "approx",
  "bytemuck",
@@ -5393,7 +5411,7 @@ dependencies = [
 
 [[package]]
 name = "pi_scene_shell"
-version = "1.3.7"
+version = "1.3.8"
 dependencies = [
  "approx",
  "bytemuck",
@@ -5654,7 +5672,7 @@ dependencies = [
  "pi_hash",
  "pi_key_alloter 0.6.1",
  "pi_null",
- "pi_render_asset",
+ "pi_render_asset 0.1.1",
  "pi_share 0.5.2",
  "pi_slotmap",
  "pi_wgpu",
@@ -6712,7 +6730,7 @@ dependencies = [
  "pi_map",
  "pi_null",
  "pi_print_any",
- "pi_render_asset",
+ "pi_render_asset 0.1.1",
  "pi_render_graph",
  "pi_share 0.5.2",
  "pi_slab",
@@ -6955,7 +6973,7 @@ dependencies = [
  "errno",
  "libc",
  "linux-raw-sys 0.4.15",
- "windows-sys 0.59.0",
+ "windows-sys 0.52.0",
 ]
 
 [[package]]
@@ -6968,7 +6986,7 @@ dependencies = [
  "errno",
  "libc",
  "linux-raw-sys 0.9.4",
- "windows-sys 0.59.0",
+ "windows-sys 0.52.0",
 ]
 
 [[package]]
@@ -7666,7 +7684,7 @@ dependencies = [
  "getrandom 0.3.3",
  "once_cell",
  "rustix 1.0.7",
- "windows-sys 0.59.0",
+ "windows-sys 0.52.0",
 ]
 
 [[package]]
@@ -8104,7 +8122,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "97fee6b57c6a41524a810daee9286c02d7752c4253064d0b05472833a438f675"
 dependencies = [
  "cfg-if",
- "rand 0.8.5",
+ "rand 0.3.23",
  "static_assertions",
 ]
 
@@ -8935,7 +8953,7 @@ version = "0.1.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "cf221c93e13a30d793f7645a0e7762c55d169dbb0a49671918a2319d289b10bb"
 dependencies = [
- "windows-sys 0.59.0",
+ "windows-sys 0.52.0",
 ]
 
 [[package]]
