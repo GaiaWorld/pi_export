@@ -445,6 +445,9 @@ impl CommandsExchangeD3 {
     pub fn record_create(world: &mut World, entity: f64) {
         world.get_resource_mut::<Records>().unwrap().record_create(as_entity(entity));
     }
+    pub fn traceoption(&mut self, val: TraceOption) {
+        self.traceoption = val;
+    }
     pub fn record2(&mut self, cmd: ERecord3D) {
         match self.traceoption {
             TraceOption::Record => self.recordframes.push(cmd),
@@ -1804,6 +1807,7 @@ pub fn commands_exchange_call(app: &mut Engine, param: &mut ActionSetScene3D, cm
             let records = app.world.get_resource_mut::<Records>().unwrap();
             match postcard::to_stdvec::<Vec<ERecord3D>>(&cmds.recordframes) {
                 Ok(data) => {
+                    log::error!("==========");
                     records.record(RECORD_D3_COMMAND, data);
                 }
                 Err(_) => {}
@@ -1885,5 +1889,6 @@ pub fn commands_exchange_call(app: &mut Engine, param: &mut ActionSetScene3D, cm
 pub fn p3d_commands_exchange(app: &mut Engine, param: &mut ActionSetScene3D, cmds: &mut CommandsExchangeD3) {
 	crate::export::await_last_frame(app);
 
+    cmds.traceoption = app.world.get_resource::<PlayState>().unwrap().option;
     commands_exchange_call(app, param, cmds);
 }

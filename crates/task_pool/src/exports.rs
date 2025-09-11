@@ -143,11 +143,13 @@ impl TaskPool {
 	}
 
 	/// 判断指定时间是否存在任务
+	#[pi_js_export]
 	pub fn has_cancel_timer(&self, mut timeout: f64) -> Option<bool> {
 		self.pool.get_cancel_timer().is_null(timeout as u64)
 	}
 
 	/// 判断指定时间内是否存在任务 
+	#[pi_js_export]
 	pub fn is_cancel_timer_ok(&mut self, mut timeout: f64) -> bool {
 		self.pool.get_cancel_timer_mut().is_ok(timeout as u64)
 	}

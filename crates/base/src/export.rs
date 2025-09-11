@@ -37,7 +37,7 @@ static mut FRAME_TIME: u32 = 16;
 #[cfg(feature = "pi_js_export")]
 pub fn set_fps(fps: u32){
 	println!("==========set fps: {}", fps);
-	unsafe { FRAME_TIME = 1000 / fps };
+	// unsafe { FRAME_TIME = 1000 / fps };
 }
 
 /// 初始化帧结束的回调，只能设置一次

@@ -1,7 +1,7 @@
 
 use js_proxy_gen_macro::pi_js_export;
 use pi_bevy_render_plugin::{PlayState, Records};
-use crate::asset::Engine;
+pub use crate::asset::Engine;
 #[cfg(target_arch = "wasm32")]
 use wasm_bindgen::prelude::wasm_bindgen;
 
@@ -32,6 +32,7 @@ pub fn get_record_len(engine: &mut Engine) -> u32 {
 	crate::export::await_last_frame(engine);
 	#[cfg(feature="record")]
 	{
+		log::error!("=========== get_record_len");
 		let records = engine.world.get_single_res_mut::<Records>().unwrap();
 		records.list.len() as u32
 	}

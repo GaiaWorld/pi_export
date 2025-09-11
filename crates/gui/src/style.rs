@@ -22,8 +22,7 @@ pub mod style_macro {
     };
     use smallvec::SmallVec;
     pub use pi_export_base::export::{Atom, Engine};
-    pub use crate::index::{OffsetDocument, Size};
-    pub use pi_export_base::gui::Gui;
+    pub use crate::index::{OffsetDocument, Size, Gui};
     use pi_ui_render::resource::animation_sheet::KeyFramesSheet;
     #[cfg(target_arch = "wasm32")]
     use wasm_bindgen::prelude::wasm_bindgen;
@@ -42,14 +41,16 @@ pub mod style_macro {
     #[allow(unused_attributes)]
     pub fn set_align_content(gui: &mut Gui, node_id: f64, v: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands_mut().set_style(node_id, AlignContentType(unsafe { transmute(v as u8) }));
+        gui.commands_mut()
+            .set_style(node_id, AlignContentType(unsafe { transmute(v as u8) }));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_align_content(gui: &mut Gui, node_id: f64, v: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands_mut().set_style(node_id, AlignContentType(unsafe { transmute(v as u8) }));
+        gui.commands_mut()
+            .set_style(node_id, AlignContentType(unsafe { transmute(v as u8) }));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
@@ -68,14 +69,16 @@ pub mod style_macro {
     #[allow(unused_attributes)]
     pub fn set_align_items(gui: &mut Gui, node_id: f64, v: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands_mut().set_style(node_id, AlignItemsType(unsafe { transmute(v as u8) }));
+        gui.commands_mut()
+            .set_style(node_id, AlignItemsType(unsafe { transmute(v as u8) }));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_align_items(gui: &mut Gui, node_id: f64, v: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands_mut().set_style(node_id, AlignItemsType(unsafe { transmute(v as u8) }));
+        gui.commands_mut()
+            .set_style(node_id, AlignItemsType(unsafe { transmute(v as u8) }));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
@@ -150,14 +153,16 @@ pub mod style_macro {
     #[allow(unused_attributes)]
     pub fn set_flex_wrap(gui: &mut Gui, node_id: f64, v: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands_mut().set_style(node_id, FlexWrapType(unsafe { transmute(v as u8) }));
+        gui.commands_mut()
+            .set_style(node_id, FlexWrapType(unsafe { transmute(v as u8) }));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_flex_wrap(gui: &mut Gui, node_id: f64, v: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands_mut().set_style(node_id, FlexWrapType(unsafe { transmute(v as u8) }));
+        gui.commands_mut()
+            .set_style(node_id, FlexWrapType(unsafe { transmute(v as u8) }));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
@@ -176,14 +181,16 @@ pub mod style_macro {
     #[allow(unused_attributes)]
     pub fn set_align_self(gui: &mut Gui, node_id: f64, v: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands_mut().set_style(node_id, AlignSelfType(unsafe { transmute(v as u8) }));
+        gui.commands_mut()
+            .set_style(node_id, AlignSelfType(unsafe { transmute(v as u8) }));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_align_self(gui: &mut Gui, node_id: f64, v: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands_mut().set_style(node_id, AlignSelfType(unsafe { transmute(v as u8) }));
+        gui.commands_mut()
+            .set_style(node_id, AlignSelfType(unsafe { transmute(v as u8) }));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
@@ -202,14 +209,16 @@ pub mod style_macro {
     #[allow(unused_attributes)]
     pub fn set_position_type(gui: &mut Gui, node_id: f64, v: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands_mut().set_style(node_id, PositionTypeType(unsafe { transmute(v as u8) }));
+        gui.commands_mut()
+            .set_style(node_id, PositionTypeType(unsafe { transmute(v as u8) }));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_position_type(gui: &mut Gui, node_id: f64, v: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands_mut().set_style(node_id, PositionTypeType(unsafe { transmute(v as u8) }));
+        gui.commands_mut()
+            .set_style(node_id, PositionTypeType(unsafe { transmute(v as u8) }));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
@@ -828,16 +837,20 @@ pub mod style_macro {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
         match unsafe { transmute(edge as u8) } {
             Edge::Top => {
-                gui.commands_mut().set_style(node_id, PaddingTopType(Dimension::Percent(v)))
+                gui.commands_mut()
+                    .set_style(node_id, PaddingTopType(Dimension::Percent(v)))
             }
             Edge::Right => {
-                gui.commands_mut().set_style(node_id, PaddingRightType(Dimension::Percent(v)))
+                gui.commands_mut()
+                    .set_style(node_id, PaddingRightType(Dimension::Percent(v)))
             }
             Edge::Bottom => {
-                gui.commands_mut().set_style(node_id, PaddingBottomType(Dimension::Percent(v)))
+                gui.commands_mut()
+                    .set_style(node_id, PaddingBottomType(Dimension::Percent(v)))
             }
             Edge::Left => {
-                gui.commands_mut().set_style(node_id, PaddingLeftType(Dimension::Percent(v)))
+                gui.commands_mut()
+                    .set_style(node_id, PaddingLeftType(Dimension::Percent(v)))
             }
             _ => return,
         };
@@ -849,16 +862,20 @@ pub mod style_macro {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
         match unsafe { transmute(edge as u8) } {
             Edge::Top => {
-                gui.commands_mut().set_style(node_id, PaddingTopType(Dimension::Percent(v)))
+                gui.commands_mut()
+                    .set_style(node_id, PaddingTopType(Dimension::Percent(v)))
             }
             Edge::Right => {
-                gui.commands_mut().set_style(node_id, PaddingRightType(Dimension::Percent(v)))
+                gui.commands_mut()
+                    .set_style(node_id, PaddingRightType(Dimension::Percent(v)))
             }
             Edge::Bottom => {
-                gui.commands_mut().set_style(node_id, PaddingBottomType(Dimension::Percent(v)))
+                gui.commands_mut()
+                    .set_style(node_id, PaddingBottomType(Dimension::Percent(v)))
             }
             Edge::Left => {
-                gui.commands_mut().set_style(node_id, PaddingLeftType(Dimension::Percent(v)))
+                gui.commands_mut()
+                    .set_style(node_id, PaddingLeftType(Dimension::Percent(v)))
             }
             _ => return,
         };
@@ -894,16 +911,20 @@ pub mod style_macro {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
         match unsafe { transmute(edge as u8) } {
             Edge::Top => {
-                gui.commands_mut().set_style(node_id, PaddingTopType(Dimension::Points(v)))
+                gui.commands_mut()
+                    .set_style(node_id, PaddingTopType(Dimension::Points(v)))
             }
             Edge::Right => {
-                gui.commands_mut().set_style(node_id, PaddingRightType(Dimension::Points(v)))
+                gui.commands_mut()
+                    .set_style(node_id, PaddingRightType(Dimension::Points(v)))
             }
             Edge::Bottom => {
-                gui.commands_mut().set_style(node_id, PaddingBottomType(Dimension::Points(v)))
+                gui.commands_mut()
+                    .set_style(node_id, PaddingBottomType(Dimension::Points(v)))
             }
             Edge::Left => {
-                gui.commands_mut().set_style(node_id, PaddingLeftType(Dimension::Points(v)))
+                gui.commands_mut()
+                    .set_style(node_id, PaddingLeftType(Dimension::Points(v)))
             }
             _ => return,
         };
@@ -915,16 +936,20 @@ pub mod style_macro {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
         match unsafe { transmute(edge as u8) } {
             Edge::Top => {
-                gui.commands_mut().set_style(node_id, PaddingTopType(Dimension::Points(v)))
+                gui.commands_mut()
+                    .set_style(node_id, PaddingTopType(Dimension::Points(v)))
             }
             Edge::Right => {
-                gui.commands_mut().set_style(node_id, PaddingRightType(Dimension::Points(v)))
+                gui.commands_mut()
+                    .set_style(node_id, PaddingRightType(Dimension::Points(v)))
             }
             Edge::Bottom => {
-                gui.commands_mut().set_style(node_id, PaddingBottomType(Dimension::Points(v)))
+                gui.commands_mut()
+                    .set_style(node_id, PaddingBottomType(Dimension::Points(v)))
             }
             Edge::Left => {
-                gui.commands_mut().set_style(node_id, PaddingLeftType(Dimension::Points(v)))
+                gui.commands_mut()
+                    .set_style(node_id, PaddingLeftType(Dimension::Points(v)))
             }
             _ => return,
         };
@@ -959,7 +984,9 @@ pub mod style_macro {
     pub fn set_padding_auto(gui: &mut Gui, node_id: f64, edge: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
         match unsafe { transmute(edge as u8) } {
-            Edge::Top => gui.commands_mut().set_style(node_id, PaddingTopType(Dimension::Auto)),
+            Edge::Top => {
+                gui.commands_mut().set_style(node_id, PaddingTopType(Dimension::Auto))
+            }
             Edge::Right => {
                 gui.commands_mut().set_style(node_id, PaddingRightType(Dimension::Auto))
             }
@@ -978,7 +1005,9 @@ pub mod style_macro {
     pub fn set_padding_auto(gui: &mut Gui, node_id: f64, edge: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
         match unsafe { transmute(edge as u8) } {
-            Edge::Top => gui.commands_mut().set_style(node_id, PaddingTopType(Dimension::Auto)),
+            Edge::Top => {
+                gui.commands_mut().set_style(node_id, PaddingTopType(Dimension::Auto))
+            }
             Edge::Right => {
                 gui.commands_mut().set_style(node_id, PaddingRightType(Dimension::Auto))
             }
@@ -1022,16 +1051,20 @@ pub mod style_macro {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
         match unsafe { transmute(edge as u8) } {
             Edge::Top => {
-                gui.commands_mut().set_style(node_id, MarginTopType(Dimension::Percent(v)))
+                gui.commands_mut()
+                    .set_style(node_id, MarginTopType(Dimension::Percent(v)))
             }
             Edge::Right => {
-                gui.commands_mut().set_style(node_id, MarginRightType(Dimension::Percent(v)))
+                gui.commands_mut()
+                    .set_style(node_id, MarginRightType(Dimension::Percent(v)))
             }
             Edge::Bottom => {
-                gui.commands_mut().set_style(node_id, MarginBottomType(Dimension::Percent(v)))
+                gui.commands_mut()
+                    .set_style(node_id, MarginBottomType(Dimension::Percent(v)))
             }
             Edge::Left => {
-                gui.commands_mut().set_style(node_id, MarginLeftType(Dimension::Percent(v)))
+                gui.commands_mut()
+                    .set_style(node_id, MarginLeftType(Dimension::Percent(v)))
             }
             _ => return,
         };
@@ -1043,16 +1076,20 @@ pub mod style_macro {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
         match unsafe { transmute(edge as u8) } {
             Edge::Top => {
-                gui.commands_mut().set_style(node_id, MarginTopType(Dimension::Percent(v)))
+                gui.commands_mut()
+                    .set_style(node_id, MarginTopType(Dimension::Percent(v)))
             }
             Edge::Right => {
-                gui.commands_mut().set_style(node_id, MarginRightType(Dimension::Percent(v)))
+                gui.commands_mut()
+                    .set_style(node_id, MarginRightType(Dimension::Percent(v)))
             }
             Edge::Bottom => {
-                gui.commands_mut().set_style(node_id, MarginBottomType(Dimension::Percent(v)))
+                gui.commands_mut()
+                    .set_style(node_id, MarginBottomType(Dimension::Percent(v)))
             }
             Edge::Left => {
-                gui.commands_mut().set_style(node_id, MarginLeftType(Dimension::Percent(v)))
+                gui.commands_mut()
+                    .set_style(node_id, MarginLeftType(Dimension::Percent(v)))
             }
             _ => return,
         };
@@ -1088,16 +1125,20 @@ pub mod style_macro {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
         match unsafe { transmute(edge as u8) } {
             Edge::Top => {
-                gui.commands_mut().set_style(node_id, MarginTopType(Dimension::Points(v)))
+                gui.commands_mut()
+                    .set_style(node_id, MarginTopType(Dimension::Points(v)))
             }
             Edge::Right => {
-                gui.commands_mut().set_style(node_id, MarginRightType(Dimension::Points(v)))
+                gui.commands_mut()
+                    .set_style(node_id, MarginRightType(Dimension::Points(v)))
             }
             Edge::Bottom => {
-                gui.commands_mut().set_style(node_id, MarginBottomType(Dimension::Points(v)))
+                gui.commands_mut()
+                    .set_style(node_id, MarginBottomType(Dimension::Points(v)))
             }
             Edge::Left => {
-                gui.commands_mut().set_style(node_id, MarginLeftType(Dimension::Points(v)))
+                gui.commands_mut()
+                    .set_style(node_id, MarginLeftType(Dimension::Points(v)))
             }
             _ => return,
         };
@@ -1109,16 +1150,20 @@ pub mod style_macro {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
         match unsafe { transmute(edge as u8) } {
             Edge::Top => {
-                gui.commands_mut().set_style(node_id, MarginTopType(Dimension::Points(v)))
+                gui.commands_mut()
+                    .set_style(node_id, MarginTopType(Dimension::Points(v)))
             }
             Edge::Right => {
-                gui.commands_mut().set_style(node_id, MarginRightType(Dimension::Points(v)))
+                gui.commands_mut()
+                    .set_style(node_id, MarginRightType(Dimension::Points(v)))
             }
             Edge::Bottom => {
-                gui.commands_mut().set_style(node_id, MarginBottomType(Dimension::Points(v)))
+                gui.commands_mut()
+                    .set_style(node_id, MarginBottomType(Dimension::Points(v)))
             }
             Edge::Left => {
-                gui.commands_mut().set_style(node_id, MarginLeftType(Dimension::Points(v)))
+                gui.commands_mut()
+                    .set_style(node_id, MarginLeftType(Dimension::Points(v)))
             }
             _ => return,
         };
@@ -1153,7 +1198,9 @@ pub mod style_macro {
     pub fn set_margin_auto(gui: &mut Gui, node_id: f64, edge: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
         match unsafe { transmute(edge as u8) } {
-            Edge::Top => gui.commands_mut().set_style(node_id, MarginTopType(Dimension::Auto)),
+            Edge::Top => {
+                gui.commands_mut().set_style(node_id, MarginTopType(Dimension::Auto))
+            }
             Edge::Right => {
                 gui.commands_mut().set_style(node_id, MarginRightType(Dimension::Auto))
             }
@@ -1172,7 +1219,9 @@ pub mod style_macro {
     pub fn set_margin_auto(gui: &mut Gui, node_id: f64, edge: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
         match unsafe { transmute(edge as u8) } {
-            Edge::Top => gui.commands_mut().set_style(node_id, MarginTopType(Dimension::Auto)),
+            Edge::Top => {
+                gui.commands_mut().set_style(node_id, MarginTopType(Dimension::Auto))
+            }
             Edge::Right => {
                 gui.commands_mut().set_style(node_id, MarginRightType(Dimension::Auto))
             }
@@ -1216,16 +1265,20 @@ pub mod style_macro {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
         match unsafe { transmute(edge as u8) } {
             Edge::Top => {
-                gui.commands_mut().set_style(node_id, BorderTopType(Dimension::Percent(v)))
+                gui.commands_mut()
+                    .set_style(node_id, BorderTopType(Dimension::Percent(v)))
             }
             Edge::Right => {
-                gui.commands_mut().set_style(node_id, BorderRightType(Dimension::Percent(v)))
+                gui.commands_mut()
+                    .set_style(node_id, BorderRightType(Dimension::Percent(v)))
             }
             Edge::Bottom => {
-                gui.commands_mut().set_style(node_id, BorderBottomType(Dimension::Percent(v)))
+                gui.commands_mut()
+                    .set_style(node_id, BorderBottomType(Dimension::Percent(v)))
             }
             Edge::Left => {
-                gui.commands_mut().set_style(node_id, BorderLeftType(Dimension::Percent(v)))
+                gui.commands_mut()
+                    .set_style(node_id, BorderLeftType(Dimension::Percent(v)))
             }
             _ => return,
         };
@@ -1237,16 +1290,20 @@ pub mod style_macro {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
         match unsafe { transmute(edge as u8) } {
             Edge::Top => {
-                gui.commands_mut().set_style(node_id, BorderTopType(Dimension::Percent(v)))
+                gui.commands_mut()
+                    .set_style(node_id, BorderTopType(Dimension::Percent(v)))
             }
             Edge::Right => {
-                gui.commands_mut().set_style(node_id, BorderRightType(Dimension::Percent(v)))
+                gui.commands_mut()
+                    .set_style(node_id, BorderRightType(Dimension::Percent(v)))
             }
             Edge::Bottom => {
-                gui.commands_mut().set_style(node_id, BorderBottomType(Dimension::Percent(v)))
+                gui.commands_mut()
+                    .set_style(node_id, BorderBottomType(Dimension::Percent(v)))
             }
             Edge::Left => {
-                gui.commands_mut().set_style(node_id, BorderLeftType(Dimension::Percent(v)))
+                gui.commands_mut()
+                    .set_style(node_id, BorderLeftType(Dimension::Percent(v)))
             }
             _ => return,
         };
@@ -1282,16 +1339,20 @@ pub mod style_macro {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
         match unsafe { transmute(edge as u8) } {
             Edge::Top => {
-                gui.commands_mut().set_style(node_id, BorderTopType(Dimension::Points(v)))
+                gui.commands_mut()
+                    .set_style(node_id, BorderTopType(Dimension::Points(v)))
             }
             Edge::Right => {
-                gui.commands_mut().set_style(node_id, BorderRightType(Dimension::Points(v)))
+                gui.commands_mut()
+                    .set_style(node_id, BorderRightType(Dimension::Points(v)))
             }
             Edge::Bottom => {
-                gui.commands_mut().set_style(node_id, BorderBottomType(Dimension::Points(v)))
+                gui.commands_mut()
+                    .set_style(node_id, BorderBottomType(Dimension::Points(v)))
             }
             Edge::Left => {
-                gui.commands_mut().set_style(node_id, BorderLeftType(Dimension::Points(v)))
+                gui.commands_mut()
+                    .set_style(node_id, BorderLeftType(Dimension::Points(v)))
             }
             _ => return,
         };
@@ -1303,16 +1364,20 @@ pub mod style_macro {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
         match unsafe { transmute(edge as u8) } {
             Edge::Top => {
-                gui.commands_mut().set_style(node_id, BorderTopType(Dimension::Points(v)))
+                gui.commands_mut()
+                    .set_style(node_id, BorderTopType(Dimension::Points(v)))
             }
             Edge::Right => {
-                gui.commands_mut().set_style(node_id, BorderRightType(Dimension::Points(v)))
+                gui.commands_mut()
+                    .set_style(node_id, BorderRightType(Dimension::Points(v)))
             }
             Edge::Bottom => {
-                gui.commands_mut().set_style(node_id, BorderBottomType(Dimension::Points(v)))
+                gui.commands_mut()
+                    .set_style(node_id, BorderBottomType(Dimension::Points(v)))
             }
             Edge::Left => {
-                gui.commands_mut().set_style(node_id, BorderLeftType(Dimension::Points(v)))
+                gui.commands_mut()
+                    .set_style(node_id, BorderLeftType(Dimension::Points(v)))
             }
             _ => return,
         };
@@ -1347,7 +1412,9 @@ pub mod style_macro {
     pub fn set_border_auto(gui: &mut Gui, node_id: f64, edge: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
         match unsafe { transmute(edge as u8) } {
-            Edge::Top => gui.commands_mut().set_style(node_id, BorderTopType(Dimension::Auto)),
+            Edge::Top => {
+                gui.commands_mut().set_style(node_id, BorderTopType(Dimension::Auto))
+            }
             Edge::Right => {
                 gui.commands_mut().set_style(node_id, BorderRightType(Dimension::Auto))
             }
@@ -1366,7 +1433,9 @@ pub mod style_macro {
     pub fn set_border_auto(gui: &mut Gui, node_id: f64, edge: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
         match unsafe { transmute(edge as u8) } {
-            Edge::Top => gui.commands_mut().set_style(node_id, BorderTopType(Dimension::Auto)),
+            Edge::Top => {
+                gui.commands_mut().set_style(node_id, BorderTopType(Dimension::Auto))
+            }
             Edge::Right => {
                 gui.commands_mut().set_style(node_id, BorderRightType(Dimension::Auto))
             }
@@ -1410,17 +1479,20 @@ pub mod style_macro {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
         match unsafe { transmute(edge as u8) } {
             Edge::Top => {
-                gui.commands_mut().set_style(node_id, PositionTopType(Dimension::Percent(v)))
+                gui.commands_mut()
+                    .set_style(node_id, PositionTopType(Dimension::Percent(v)))
             }
             Edge::Right => {
-                gui.commands_mut().set_style(node_id, PositionRightType(Dimension::Percent(v)))
+                gui.commands_mut()
+                    .set_style(node_id, PositionRightType(Dimension::Percent(v)))
             }
             Edge::Bottom => {
                 gui.commands_mut()
                     .set_style(node_id, PositionBottomType(Dimension::Percent(v)))
             }
             Edge::Left => {
-                gui.commands_mut().set_style(node_id, PositionLeftType(Dimension::Percent(v)))
+                gui.commands_mut()
+                    .set_style(node_id, PositionLeftType(Dimension::Percent(v)))
             }
             _ => return,
         };
@@ -1432,17 +1504,20 @@ pub mod style_macro {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
         match unsafe { transmute(edge as u8) } {
             Edge::Top => {
-                gui.commands_mut().set_style(node_id, PositionTopType(Dimension::Percent(v)))
+                gui.commands_mut()
+                    .set_style(node_id, PositionTopType(Dimension::Percent(v)))
             }
             Edge::Right => {
-                gui.commands_mut().set_style(node_id, PositionRightType(Dimension::Percent(v)))
+                gui.commands_mut()
+                    .set_style(node_id, PositionRightType(Dimension::Percent(v)))
             }
             Edge::Bottom => {
                 gui.commands_mut()
                     .set_style(node_id, PositionBottomType(Dimension::Percent(v)))
             }
             Edge::Left => {
-                gui.commands_mut().set_style(node_id, PositionLeftType(Dimension::Percent(v)))
+                gui.commands_mut()
+                    .set_style(node_id, PositionLeftType(Dimension::Percent(v)))
             }
             _ => return,
         };
@@ -1454,7 +1529,9 @@ pub mod style_macro {
         match unsafe { transmute(edge as u8) } {
             Edge::Top => gui.commands_mut().set_style(node_id, ResetPositionTopType),
             Edge::Right => gui.commands_mut().set_style(node_id, ResetPositionRightType),
-            Edge::Bottom => gui.commands_mut().set_style(node_id, ResetPositionBottomType),
+            Edge::Bottom => {
+                gui.commands_mut().set_style(node_id, ResetPositionBottomType)
+            }
             Edge::Left => gui.commands_mut().set_style(node_id, ResetPositionLeftType),
             _ => return,
         };
@@ -1467,7 +1544,9 @@ pub mod style_macro {
         match unsafe { transmute(edge as u8) } {
             Edge::Top => gui.commands_mut().set_style(node_id, ResetPositionTopType),
             Edge::Right => gui.commands_mut().set_style(node_id, ResetPositionRightType),
-            Edge::Bottom => gui.commands_mut().set_style(node_id, ResetPositionBottomType),
+            Edge::Bottom => {
+                gui.commands_mut().set_style(node_id, ResetPositionBottomType)
+            }
             Edge::Left => gui.commands_mut().set_style(node_id, ResetPositionLeftType),
             _ => return,
         };
@@ -1478,16 +1557,20 @@ pub mod style_macro {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
         match unsafe { transmute(edge as u8) } {
             Edge::Top => {
-                gui.commands_mut().set_style(node_id, PositionTopType(Dimension::Points(v)))
+                gui.commands_mut()
+                    .set_style(node_id, PositionTopType(Dimension::Points(v)))
             }
             Edge::Right => {
-                gui.commands_mut().set_style(node_id, PositionRightType(Dimension::Points(v)))
+                gui.commands_mut()
+                    .set_style(node_id, PositionRightType(Dimension::Points(v)))
             }
             Edge::Bottom => {
-                gui.commands_mut().set_style(node_id, PositionBottomType(Dimension::Points(v)))
+                gui.commands_mut()
+                    .set_style(node_id, PositionBottomType(Dimension::Points(v)))
             }
             Edge::Left => {
-                gui.commands_mut().set_style(node_id, PositionLeftType(Dimension::Points(v)))
+                gui.commands_mut()
+                    .set_style(node_id, PositionLeftType(Dimension::Points(v)))
             }
             _ => return,
         };
@@ -1499,16 +1582,20 @@ pub mod style_macro {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
         match unsafe { transmute(edge as u8) } {
             Edge::Top => {
-                gui.commands_mut().set_style(node_id, PositionTopType(Dimension::Points(v)))
+                gui.commands_mut()
+                    .set_style(node_id, PositionTopType(Dimension::Points(v)))
             }
             Edge::Right => {
-                gui.commands_mut().set_style(node_id, PositionRightType(Dimension::Points(v)))
+                gui.commands_mut()
+                    .set_style(node_id, PositionRightType(Dimension::Points(v)))
             }
             Edge::Bottom => {
-                gui.commands_mut().set_style(node_id, PositionBottomType(Dimension::Points(v)))
+                gui.commands_mut()
+                    .set_style(node_id, PositionBottomType(Dimension::Points(v)))
             }
             Edge::Left => {
-                gui.commands_mut().set_style(node_id, PositionLeftType(Dimension::Points(v)))
+                gui.commands_mut()
+                    .set_style(node_id, PositionLeftType(Dimension::Points(v)))
             }
             _ => return,
         };
@@ -1520,7 +1607,9 @@ pub mod style_macro {
         match unsafe { transmute(edge as u8) } {
             Edge::Top => gui.commands_mut().set_style(node_id, ResetPositionTopType),
             Edge::Right => gui.commands_mut().set_style(node_id, ResetPositionRightType),
-            Edge::Bottom => gui.commands_mut().set_style(node_id, ResetPositionBottomType),
+            Edge::Bottom => {
+                gui.commands_mut().set_style(node_id, ResetPositionBottomType)
+            }
             Edge::Left => gui.commands_mut().set_style(node_id, ResetPositionLeftType),
             _ => return,
         };
@@ -1533,7 +1622,9 @@ pub mod style_macro {
         match unsafe { transmute(edge as u8) } {
             Edge::Top => gui.commands_mut().set_style(node_id, ResetPositionTopType),
             Edge::Right => gui.commands_mut().set_style(node_id, ResetPositionRightType),
-            Edge::Bottom => gui.commands_mut().set_style(node_id, ResetPositionBottomType),
+            Edge::Bottom => {
+                gui.commands_mut().set_style(node_id, ResetPositionBottomType)
+            }
             Edge::Left => gui.commands_mut().set_style(node_id, ResetPositionLeftType),
             _ => return,
         };
@@ -1550,7 +1641,8 @@ pub mod style_macro {
                 gui.commands_mut().set_style(node_id, PositionRightType(Dimension::Auto))
             }
             Edge::Bottom => {
-                gui.commands_mut().set_style(node_id, PositionBottomType(Dimension::Auto))
+                gui.commands_mut()
+                    .set_style(node_id, PositionBottomType(Dimension::Auto))
             }
             Edge::Left => {
                 gui.commands_mut().set_style(node_id, PositionLeftType(Dimension::Auto))
@@ -1571,7 +1663,8 @@ pub mod style_macro {
                 gui.commands_mut().set_style(node_id, PositionRightType(Dimension::Auto))
             }
             Edge::Bottom => {
-                gui.commands_mut().set_style(node_id, PositionBottomType(Dimension::Auto))
+                gui.commands_mut()
+                    .set_style(node_id, PositionBottomType(Dimension::Auto))
             }
             Edge::Left => {
                 gui.commands_mut().set_style(node_id, PositionLeftType(Dimension::Auto))
@@ -1586,7 +1679,9 @@ pub mod style_macro {
         match unsafe { transmute(edge as u8) } {
             Edge::Top => gui.commands_mut().set_style(node_id, ResetPositionTopType),
             Edge::Right => gui.commands_mut().set_style(node_id, ResetPositionRightType),
-            Edge::Bottom => gui.commands_mut().set_style(node_id, ResetPositionBottomType),
+            Edge::Bottom => {
+                gui.commands_mut().set_style(node_id, ResetPositionBottomType)
+            }
             Edge::Left => gui.commands_mut().set_style(node_id, ResetPositionLeftType),
             _ => return,
         };
@@ -1599,7 +1694,9 @@ pub mod style_macro {
         match unsafe { transmute(edge as u8) } {
             Edge::Top => gui.commands_mut().set_style(node_id, ResetPositionTopType),
             Edge::Right => gui.commands_mut().set_style(node_id, ResetPositionRightType),
-            Edge::Bottom => gui.commands_mut().set_style(node_id, ResetPositionBottomType),
+            Edge::Bottom => {
+                gui.commands_mut().set_style(node_id, ResetPositionBottomType)
+            }
             Edge::Left => gui.commands_mut().set_style(node_id, ResetPositionLeftType),
             _ => return,
         };
@@ -1878,14 +1975,16 @@ pub mod style_macro {
     #[allow(unused_attributes)]
     pub fn set_object_fit(gui: &mut Gui, node_id: f64, v: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands_mut().set_style(node_id, ObjectFitType(unsafe { transmute(v as u8) }));
+        gui.commands_mut()
+            .set_style(node_id, ObjectFitType(unsafe { transmute(v as u8) }));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_object_fit(gui: &mut Gui, node_id: f64, v: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands_mut().set_style(node_id, ObjectFitType(unsafe { transmute(v as u8) }));
+        gui.commands_mut()
+            .set_style(node_id, ObjectFitType(unsafe { transmute(v as u8) }));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
@@ -2352,14 +2451,16 @@ pub mod style_macro {
     #[allow(unused_attributes)]
     pub fn set_display(gui: &mut Gui, node_id: f64, v: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands_mut().set_style(node_id, DisplayType(unsafe { transmute(v as u8) }));
+        gui.commands_mut()
+            .set_style(node_id, DisplayType(unsafe { transmute(v as u8) }));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_display(gui: &mut Gui, node_id: f64, v: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands_mut().set_style(node_id, DisplayType(unsafe { transmute(v as u8) }));
+        gui.commands_mut()
+            .set_style(node_id, DisplayType(unsafe { transmute(v as u8) }));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
@@ -2430,14 +2531,16 @@ pub mod style_macro {
     #[allow(unused_attributes)]
     pub fn set_blend_mode(gui: &mut Gui, node_id: f64, v: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands_mut().set_style(node_id, BlendModeType(unsafe { transmute(v as u8) }));
+        gui.commands_mut()
+            .set_style(node_id, BlendModeType(unsafe { transmute(v as u8) }));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_blend_mode(gui: &mut Gui, node_id: f64, v: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands_mut().set_style(node_id, BlendModeType(unsafe { transmute(v as u8) }));
+        gui.commands_mut()
+            .set_style(node_id, BlendModeType(unsafe { transmute(v as u8) }));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
@@ -2491,7 +2594,7 @@ pub mod style_macro {
                     match parse_as_image(&mut parse) {
                         Ok(r) => r,
                         Err(e) => {
-                            (/*ERROR*/);
+                            ();
                             return;
                         }
                     }
@@ -2512,7 +2615,7 @@ pub mod style_macro {
                     match parse_as_image(&mut parse) {
                         Ok(r) => r,
                         Err(e) => {
-                            (/*ERROR*/);
+                            ();
                             return;
                         }
                     }
@@ -3258,14 +3361,16 @@ pub mod style_macro {
     #[allow(unused_attributes)]
     pub fn set_line_height_percent(gui: &mut Gui, node_id: f64, value: f32) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands_mut().set_style(node_id, LineHeightType(LineHeight::Percent(value)));
+        gui.commands_mut()
+            .set_style(node_id, LineHeightType(LineHeight::Percent(value)));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_line_height_percent(gui: &mut Gui, node_id: f64, value: f32) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands_mut().set_style(node_id, LineHeightType(LineHeight::Percent(value)));
+        gui.commands_mut()
+            .set_style(node_id, LineHeightType(LineHeight::Percent(value)));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
@@ -3488,14 +3593,16 @@ pub mod style_macro {
     #[allow(unused_attributes)]
     pub fn set_white_space(gui: &mut Gui, node_id: f64, v: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands_mut().set_style(node_id, WhiteSpaceType(unsafe { transmute(v as u8) }));
+        gui.commands_mut()
+            .set_style(node_id, WhiteSpaceType(unsafe { transmute(v as u8) }));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_white_space(gui: &mut Gui, node_id: f64, v: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands_mut().set_style(node_id, WhiteSpaceType(unsafe { transmute(v as u8) }));
+        gui.commands_mut()
+            .set_style(node_id, WhiteSpaceType(unsafe { transmute(v as u8) }));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
@@ -3514,14 +3621,16 @@ pub mod style_macro {
     #[allow(unused_attributes)]
     pub fn set_font_style(gui: &mut Gui, node_id: f64, v: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands_mut().set_style(node_id, FontStyleType(unsafe { transmute(v as u8) }));
+        gui.commands_mut()
+            .set_style(node_id, FontStyleType(unsafe { transmute(v as u8) }));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_font_style(gui: &mut Gui, node_id: f64, v: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands_mut().set_style(node_id, FontStyleType(unsafe { transmute(v as u8) }));
+        gui.commands_mut()
+            .set_style(node_id, FontStyleType(unsafe { transmute(v as u8) }));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
@@ -3592,14 +3701,16 @@ pub mod style_macro {
     #[allow(unused_attributes)]
     pub fn set_font_size(gui: &mut Gui, node_id: f64, value: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands_mut().set_style(node_id, FontSizeType(FontSize::Length(value as usize)));
+        gui.commands_mut()
+            .set_style(node_id, FontSizeType(FontSize::Length(value as usize)));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_font_size(gui: &mut Gui, node_id: f64, value: f64) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands_mut().set_style(node_id, FontSizeType(FontSize::Length(value as usize)));
+        gui.commands_mut()
+            .set_style(node_id, FontSizeType(FontSize::Length(value as usize)));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
@@ -3693,7 +3804,7 @@ pub mod style_macro {
                     match BaseShape::parse(&mut parse) {
                         Ok(r) => r,
                         Err(e) => {
-                            (/*ERROR*/);
+                            ();
                             return;
                         }
                     }
@@ -3714,7 +3825,7 @@ pub mod style_macro {
                     match BaseShape::parse(&mut parse) {
                         Ok(r) => r,
                         Err(e) => {
-                            (/*ERROR*/);
+                            ();
                             return;
                         }
                     }
@@ -3977,13 +4088,16 @@ pub mod style_macro {
                 AnimationNameType({
                     let mut input = cssparser::ParserInput::new(value);
                     let mut parse = cssparser::Parser::new(&mut input);
-                    let value = if let Ok(value) = parse_comma_separated::<
-                        _,
-                        _,
-                    >(
-                        &mut parse,
-                        |input| Ok(pi_atom::Atom::from(input.expect_ident()?.as_ref())),
-                    ) {
+                    let value = if let Ok(value)
+                        = parse_comma_separated::<
+                            _,
+                            _,
+                        >(
+                            &mut parse,
+                            |input| Ok(
+                                pi_atom::Atom::from(input.expect_ident()?.as_ref()),
+                            ),
+                        ) {
                         value
                     } else {
                         Default::default()
@@ -4011,13 +4125,16 @@ pub mod style_macro {
                 AnimationNameType({
                     let mut input = cssparser::ParserInput::new(value);
                     let mut parse = cssparser::Parser::new(&mut input);
-                    let value = if let Ok(value) = parse_comma_separated::<
-                        _,
-                        _,
-                    >(
-                        &mut parse,
-                        |input| Ok(pi_atom::Atom::from(input.expect_ident()?.as_ref())),
-                    ) {
+                    let value = if let Ok(value)
+                        = parse_comma_separated::<
+                            _,
+                            _,
+                        >(
+                            &mut parse,
+                            |input| Ok(
+                                pi_atom::Atom::from(input.expect_ident()?.as_ref()),
+                            ),
+                        ) {
                         value
                     } else {
                         Default::default()
@@ -4132,14 +4249,16 @@ pub mod style_macro {
     #[allow(unused_attributes)]
     pub fn set_background_image(gui: &mut Gui, node_id: f64, image_hash: &Atom) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands_mut().set_style(node_id, BackgroundImageType((**image_hash).clone()));
+        gui.commands_mut()
+            .set_style(node_id, BackgroundImageType((**image_hash).clone()));
     }
     #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen]
     #[allow(unused_attributes)]
     pub fn set_background_image(gui: &mut Gui, node_id: f64, image_hash: &Atom) {
         let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-        gui.commands_mut().set_style(node_id, BackgroundImageType((**image_hash).clone()));
+        gui.commands_mut()
+            .set_style(node_id, BackgroundImageType((**image_hash).clone()));
     }
     #[cfg(feature = "pi_js_export")]
     #[allow(unused_attributes)]
@@ -4344,10 +4463,11 @@ pub mod style_macro {
                 AnimationTimingFunctionType({
                     let mut input = cssparser::ParserInput::new(value);
                     let mut parse = cssparser::Parser::new(&mut input);
-                    if let Ok(value) = parse_comma_separated(
-                        &mut parse,
-                        <AnimationTimingFunction as StyleParse>::parse,
-                    ) {
+                    if let Ok(value)
+                        = parse_comma_separated(
+                            &mut parse,
+                            <AnimationTimingFunction as StyleParse>::parse,
+                        ) {
                         value
                     } else {
                         Default::default()
@@ -4366,10 +4486,11 @@ pub mod style_macro {
                 AnimationTimingFunctionType({
                     let mut input = cssparser::ParserInput::new(value);
                     let mut parse = cssparser::Parser::new(&mut input);
-                    if let Ok(value) = parse_comma_separated(
-                        &mut parse,
-                        <AnimationTimingFunction as StyleParse>::parse,
-                    ) {
+                    if let Ok(value)
+                        = parse_comma_separated(
+                            &mut parse,
+                            <AnimationTimingFunction as StyleParse>::parse,
+                        ) {
                         value
                     } else {
                         Default::default()
@@ -4500,7 +4621,7 @@ pub mod style_macro {
                 None => Entity::null(),
             };
             gui.commands_mut()
-                .set_brush(
+                .push_cmd(
                     pi_ui_render::resource::CanvasCmd(
                         brush,
                         by_draw_list.unwrap_or(false),
@@ -4524,7 +4645,7 @@ pub mod style_macro {
                 None => Entity::null(),
             };
             gui.commands_mut()
-                .set_brush(
+                .push_cmd(
                     pi_ui_render::resource::CanvasCmd(
                         brush,
                         by_draw_list.unwrap_or(false),
@@ -4649,7 +4770,7 @@ pub mod style_macro {
                 gui.commands_mut().add_css_bin(pi_ui_render::resource::ExtendCssCmd(r));
             }
             Err(e) => {
-                (/*ERROR*/);
+                ();
                 return;
             }
         }
@@ -4662,7 +4783,7 @@ pub mod style_macro {
                 gui.commands_mut().add_css_bin(pi_ui_render::resource::ExtendCssCmd(r));
             }
             Err(e) => {
-                (/*ERROR*/);
+                ();
                 return;
             }
         }
@@ -4915,9 +5036,10 @@ pub mod style_macro {
         let node = unsafe { unsafe { transmute::<f64, Entity>(node) } };
         {
             pi_export_base::export::await_last_frame(engine);
-            if let Ok(is_show) = gui
-                .entitys()
-                .get_component_by_index::<IsShow>(node, gui.is_show_component())
+            if let Ok(is_show)
+                = gui
+                    .entitys()
+                    .get_component_by_index::<IsShow>(node, gui.is_show_component())
             {
                 is_show.get_enable()
             } else {
@@ -4931,9 +5053,10 @@ pub mod style_macro {
         let node = unsafe { unsafe { transmute::<f64, Entity>(node) } };
         {
             pi_export_base::export::await_last_frame(engine);
-            if let Ok(is_show) = gui
-                .entitys()
-                .get_component_by_index::<IsShow>(node, gui.is_show_component())
+            if let Ok(is_show)
+                = gui
+                    .entitys()
+                    .get_component_by_index::<IsShow>(node, gui.is_show_component())
             {
                 is_show.get_enable()
             } else {
@@ -4945,21 +5068,24 @@ pub mod style_macro {
     pub fn offset_top(gui: &mut Gui, engine: &Engine, node: f64) -> u32 {
         let node = unsafe { unsafe { transmute::<f64, Entity>(node) } };
         {
-            let mut r = 0.0;
-            if let Ok(parent) = gui
-                .entitys()
-                .get_component_by_index::<Up>(node, gui.up_component())
+            let mut r: f32 = 0.0;
+            if let Ok(parent)
+                = gui.entitys().get_component_by_index::<Up>(node, gui.up_component())
             {
-                if let Ok(parent_layout) = gui
-                    .entitys()
-                    .get_component_by_index::<LayoutResult>(node, gui.layout_component())
+                if let Ok(parent_layout)
+                    = gui
+                        .entitys()
+                        .get_component_by_index::<
+                            LayoutResult,
+                        >(node, gui.layout_component())
                 {
                     r += parent_layout.padding.top + parent_layout.border.top;
                 }
             }
-            if let Ok(layout) = gui
-                .entitys()
-                .get_component_by_index::<LayoutResult>(node, gui.layout_component())
+            if let Ok(layout)
+                = gui
+                    .entitys()
+                    .get_component_by_index::<LayoutResult>(node, gui.layout_component())
             {
                 r += layout.rect.top;
             }
@@ -4971,21 +5097,24 @@ pub mod style_macro {
     pub fn offset_top(gui: &mut Gui, engine: &Engine, node: f64) -> u32 {
         let node = unsafe { unsafe { transmute::<f64, Entity>(node) } };
         {
-            let mut r = 0.0;
-            if let Ok(parent) = gui
-                .entitys()
-                .get_component_by_index::<Up>(node, gui.up_component())
+            let mut r: f32 = 0.0;
+            if let Ok(parent)
+                = gui.entitys().get_component_by_index::<Up>(node, gui.up_component())
             {
-                if let Ok(parent_layout) = gui
-                    .entitys()
-                    .get_component_by_index::<LayoutResult>(node, gui.layout_component())
+                if let Ok(parent_layout)
+                    = gui
+                        .entitys()
+                        .get_component_by_index::<
+                            LayoutResult,
+                        >(node, gui.layout_component())
                 {
                     r += parent_layout.padding.top + parent_layout.border.top;
                 }
             }
-            if let Ok(layout) = gui
-                .entitys()
-                .get_component_by_index::<LayoutResult>(node, gui.layout_component())
+            if let Ok(layout)
+                = gui
+                    .entitys()
+                    .get_component_by_index::<LayoutResult>(node, gui.layout_component())
             {
                 r += layout.rect.top;
             }
@@ -4996,21 +5125,24 @@ pub mod style_macro {
     pub fn offset_left(gui: &mut Gui, engine: &Engine, node: f64) -> u32 {
         let node = unsafe { unsafe { transmute::<f64, Entity>(node) } };
         {
-            let mut r = 0.0;
-            if let Ok(parent) = gui
-                .entitys()
-                .get_component_by_index::<Up>(node, gui.up_component())
+            let mut r: f32 = 0.0;
+            if let Ok(parent)
+                = gui.entitys().get_component_by_index::<Up>(node, gui.up_component())
             {
-                if let Ok(parent_layout) = gui
-                    .entitys()
-                    .get_component_by_index::<LayoutResult>(node, gui.layout_component())
+                if let Ok(parent_layout)
+                    = gui
+                        .entitys()
+                        .get_component_by_index::<
+                            LayoutResult,
+                        >(node, gui.layout_component())
                 {
                     r += parent_layout.padding.left + parent_layout.border.left;
                 }
             }
-            if let Ok(layout) = gui
-                .entitys()
-                .get_component_by_index::<LayoutResult>(node, gui.layout_component())
+            if let Ok(layout)
+                = gui
+                    .entitys()
+                    .get_component_by_index::<LayoutResult>(node, gui.layout_component())
             {
                 r += layout.rect.left;
             }
@@ -5022,21 +5154,24 @@ pub mod style_macro {
     pub fn offset_left(gui: &mut Gui, engine: &Engine, node: f64) -> u32 {
         let node = unsafe { unsafe { transmute::<f64, Entity>(node) } };
         {
-            let mut r = 0.0;
-            if let Ok(parent) = gui
-                .entitys()
-                .get_component_by_index::<Up>(node, gui.up_component())
+            let mut r: f32 = 0.0;
+            if let Ok(parent)
+                = gui.entitys().get_component_by_index::<Up>(node, gui.up_component())
             {
-                if let Ok(parent_layout) = gui
-                    .entitys()
-                    .get_component_by_index::<LayoutResult>(node, gui.layout_component())
+                if let Ok(parent_layout)
+                    = gui
+                        .entitys()
+                        .get_component_by_index::<
+                            LayoutResult,
+                        >(node, gui.layout_component())
                 {
                     r += parent_layout.padding.left + parent_layout.border.left;
                 }
             }
-            if let Ok(layout) = gui
-                .entitys()
-                .get_component_by_index::<LayoutResult>(node, gui.layout_component())
+            if let Ok(layout)
+                = gui
+                    .entitys()
+                    .get_component_by_index::<LayoutResult>(node, gui.layout_component())
             {
                 r += layout.rect.left;
             }
@@ -5047,9 +5182,10 @@ pub mod style_macro {
     pub fn offset_width(gui: &mut Gui, engine: &Engine, node: f64) -> u32 {
         let node = unsafe { unsafe { transmute::<f64, Entity>(node) } };
         {
-            let r = if let Ok(layout) = gui
-                .entitys()
-                .get_component_by_index::<LayoutResult>(node, gui.layout_component())
+            let r = if let Ok(layout)
+                = gui
+                    .entitys()
+                    .get_component_by_index::<LayoutResult>(node, gui.layout_component())
             {
                 layout.rect.right - layout.rect.left
             } else {
@@ -5063,9 +5199,10 @@ pub mod style_macro {
     pub fn offset_width(gui: &mut Gui, engine: &Engine, node: f64) -> u32 {
         let node = unsafe { unsafe { transmute::<f64, Entity>(node) } };
         {
-            let r = if let Ok(layout) = gui
-                .entitys()
-                .get_component_by_index::<LayoutResult>(node, gui.layout_component())
+            let r = if let Ok(layout)
+                = gui
+                    .entitys()
+                    .get_component_by_index::<LayoutResult>(node, gui.layout_component())
             {
                 layout.rect.right - layout.rect.left
             } else {
@@ -5078,9 +5215,10 @@ pub mod style_macro {
     pub fn offset_height(gui: &mut Gui, engine: &Engine, node: f64) -> u32 {
         let node = unsafe { unsafe { transmute::<f64, Entity>(node) } };
         {
-            let r = if let Ok(layout) = gui
-                .entitys()
-                .get_component_by_index::<LayoutResult>(node, gui.layout_component())
+            let r = if let Ok(layout)
+                = gui
+                    .entitys()
+                    .get_component_by_index::<LayoutResult>(node, gui.layout_component())
             {
                 layout.rect.bottom - layout.rect.top
             } else {
@@ -5094,9 +5232,10 @@ pub mod style_macro {
     pub fn offset_height(gui: &mut Gui, engine: &Engine, node: f64) -> u32 {
         let node = unsafe { unsafe { transmute::<f64, Entity>(node) } };
         {
-            let r = if let Ok(layout) = gui
-                .entitys()
-                .get_component_by_index::<LayoutResult>(node, gui.layout_component())
+            let r = if let Ok(layout)
+                = gui
+                    .entitys()
+                    .get_component_by_index::<LayoutResult>(node, gui.layout_component())
             {
                 layout.rect.bottom - layout.rect.top
             } else {
@@ -5345,7 +5484,7 @@ pub mod style_macro {
             for (group_id, ty, count) in events.iter() {
                 match map.get(*group_id) {
                     Some(r) => {
-                        (/*ERROR*/);
+                        ();
                         arr[i] = r.0.index() as u32;
                         arr[i + 1] = r.0.data().version() as u32;
                         match &r.1 {
@@ -5391,7 +5530,7 @@ pub mod style_macro {
             for (group_id, ty, count) in events.iter() {
                 match map.get(*group_id) {
                     Some(r) => {
-                        (/*ERROR*/);
+                        ();
                         arr[i] = r.0.index() as u32;
                         arr[i + 1] = r.0.data().version() as u32;
                         match &r.1 {
@@ -5515,15 +5654,16 @@ pub mod style_macro {
         let mut animations = match parse_animation(&mut parse) {
             Ok(r) => r,
             Err(e) => {
-                (/*ERROR*/);
+                ();
                 return;
             }
         };
         animations.name.scope_hash = scope_hash as usize;
-        (/*ERROR*/);
+        ();
         if animations.name.value.len() > 0 {
             gui.commands_mut().set_style(node_id, AnimationNameType(animations.name));
-            gui.commands_mut().set_style(node_id, AnimationDurationType(animations.duration));
+            gui.commands_mut()
+                .set_style(node_id, AnimationDurationType(animations.duration));
             gui.commands_mut()
                 .set_style(
                     node_id,
@@ -5537,7 +5677,8 @@ pub mod style_macro {
             gui.commands_mut().set_style(node_id, AnimationDelayType(animations.delay));
             gui.commands_mut()
                 .set_style(node_id, AnimationDirectionType(animations.direction));
-            gui.commands_mut().set_style(node_id, AnimationFillModeType(animations.fill_mode));
+            gui.commands_mut()
+                .set_style(node_id, AnimationFillModeType(animations.fill_mode));
             gui.commands_mut()
                 .set_style(node_id, AnimationPlayStateType(animations.play_state));
         }

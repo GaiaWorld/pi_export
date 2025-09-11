@@ -8,7 +8,7 @@ use pi_scene_shell::prelude::*;
 use pi_export_base::constants::ContextConstants;
 pub use pi_export_base::constants::*;
 
-use crate::{as_dk, as_f64_dk, constants::EngineConstants, mesh::CommandsExchangeD3, record::ERecordCMD};
+pub use crate::{as_dk, as_f64_dk, constants::EngineConstants, mesh::CommandsExchangeD3, record::ERecordCMD};
 pub use crate::{as_entity, as_f64};
 #[cfg(target_arch = "wasm32")]
 use wasm_bindgen::prelude::wasm_bindgen;
