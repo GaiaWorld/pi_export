@@ -204,8 +204,10 @@ impl TActionSet for CommandsExchangeD3 {
 impl CommandsExchangeD3 {
     #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
     #[pi_js_export]
-    pub fn create() -> Self {
+    pub fn create(app: &Engine) -> Self {
         let mut result = Self::default();
+        result.traceoption = app.world.get_resource::<PlayState>().unwrap().option;
+        log::error!("traceoption {:?}", result.traceoption);
         result
     }
 }
@@ -747,7 +749,6 @@ impl CommandsExchangeD3 {
             ERecordCMD::RENDER(viewer, idrenderer, name, pass_tag, transparent, recordinput, crossrender) => {
                 let viewer: Entity = Self::entity(replayentities, viewer);
                 let id_renderer: Entity = Self::entity(replayentities, idrenderer);
-                log::error!("Render: {:?}", (as_entity(idrenderer), id_renderer));
                 CommandsExchangeD3::p3d_create_render(cmds, viewer, id_renderer, name, pass_tag, transparent, recordinput, crossrender);
             },
             ERecordCMD::RenderModify(renderer, val) => {

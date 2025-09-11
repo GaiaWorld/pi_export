@@ -5,6 +5,7 @@ use js_proxy_gen_macro::pi_js_export;
 use pi_scene_shell::prelude::*;
 use pi_particle_system::{prelude::*};
 use pi_scene_context::{prelude::*};
+use pi_trail_renderer::TrailBase;
 use crate::export::Engine;
 
 #[cfg(target_arch = "wasm32")]
@@ -49,11 +50,18 @@ pub struct _ActionSetScene3D {
     pub pass: QueryState<(&'static PassRendererID, &'static PassMaterialID), ()>,
     pub passactive: QueryState<(&'static PassBindGroups, &'static PassShader, &'static PassDraw), ()>,
     pub nodes: QueryState<(&'static SceneID, &'static Enable, &'static GlobalEnable, &'static Layer), ()>, // StateTransformQuery,
+    pub nodesscene: QueryState<(&'static Scene), ()>,
+    pub isonode: QueryState<(&'static LocalPosition, &'static LocalEulerAngles, &'static LocalRotationQuaternion), ()>,
+    pub scaling: QueryState<(&'static LocalScaling), ()>,
+    pub nodestransform: QueryState<(&'static TransformNode), ()>,
     pub nodesinstance: QueryState<(&'static InstanceMesh), ()>,
     pub nodesmesh: QueryState<(&'static Mesh), ()>,
     pub nodescamera: QueryState<(&'static Camera), ()>,
     pub nodesdirectlight: QueryState<(&'static DirectLight), ()>,
     pub nodespointlight: QueryState<(&'static PointLight), ()>,
+    pub nodestrail: QueryState<(&'static TrailBase), ()>,
+    pub nodesparticlesys: QueryState<(&'static ParticleIDs), ()>,
+    pub renders: QueryState<(&'static Renderer, &'static RendererEnable, &'static RendererParam), ()>,
     pub collider: QueryState<(&'static SceneColliderPool, &'static SceneBoundingPool), ()>,
     pub pickitems: QueryState<&'static GlobalEnable, ()>,
 }
@@ -104,6 +112,10 @@ impl ActionSetScene3D {
             model: app.world.query(),
             pass: app.world.query(),
             nodes: app.world.query(),
+            nodesscene: app.world.query(),
+            isonode: app.world.query(),
+            scaling: app.world.query(),
+            nodestransform: app.world.query(),
             animectxs: app.world.query(),
             passactive: app.world.query(),
             nodesinstance: app.world.query(),
@@ -111,6 +123,9 @@ impl ActionSetScene3D {
             nodescamera: app.world.query(),
             nodesdirectlight: app.world.query(),
             nodespointlight: app.world.query(),
+            nodestrail: app.world.query(),
+            nodesparticlesys: app.world.query(),
+            renders: app.world.query(),
             collider: app.world.query(),
             pickitems: app.world.query(),
             

@@ -45,13 +45,13 @@ debug = false
 # fixedbitset = { path = "../fixedbitset" }
 # pi_time = { path = "../pi_time" }
 # pi_path_finding = { path = "../pi_path_finding" }
-pi_flex_layout = { path = "../pi_flex_layout" }
+# pi_flex_layout = { path = "../pi_flex_layout" }
 # bevy = { path = "../bevy" }
 # pi_slotmap = { path = "../pi_slotmap" }
 # pi_slotmap_tree = { path = "../pi_slotmap_tree" }
 # pi_map = { path = "../pi_map" }
 # wgpu = { version = "25.0.*" }
-naga = { path = "../wgpu/naga"}
+# naga = { path = "../wgpu/naga"}
 # smallvec = {path = "../smallvec"}
 # pi_cache = {path = "../pi_cache"}
 # pi_assets = {path = "../pi_assets"}
@@ -60,6 +60,7 @@ naga = { path = "../wgpu/naga"}
 # pi_spatial ={path="../pi_spatial"}
 # wasm-bindgen = { path = "../wasm-bindgen" }
 # pi_polygon = { path = "../pi_polygon" }
+pi_hash = { path = "../pi_hash" }
 
 # pi_world                = { path = "../pi_world", features = ["single_thread", "rc"] }
 # pi_world_macros         = { path = "../pi_world/macros" }
@@ -93,6 +94,7 @@ render_utils            = { version = "0.2", registry = "yn", path = "../pi_rend
 render_core             = { version = "0.3", registry = "yn", path = "../pi_render/crates/render_core" }
 render_derive           = { version = "0.2", registry = "yn", path = "../pi_render/crates/render_derive" }
 render_compile          = { version = "0.3", registry = "yn", path = "../pi_render/crates/render_compile" }
+pi_render_asset         = { version = "0.1", registry = "yn", path = "../pi_render/crates/render_asset" }
 
 # pi_bevy
 pi_bevy_ecs_extend = { path = "../pi_bevy/crates/ecs_extend" }
@@ -111,15 +113,15 @@ pi_ui_render = { path = "../pi_ui_render" }
 
 # pi_postprocess ={path="../pi_postprocess"}
 
-pi_3d               = { path = "../pi_3d" }
-pi_node_materials   = { path = "../pi_3d/crates/node_materials" }
-pi_scene_context    = { path = "../pi_3d/crates/pi_scene_context" }
-unlit_material      = { path = "../pi_3d/crates/unlit_material" }
-pi_mesh_builder     = { path = "../pi_3d/crates/pi_mesh_builder" }
-pi_trail_renderer   = { path = "../pi_3d/crates/trail" }
-pi_gltf2_load       = { path = "../pi_3d/crates/gltf2" }
-pi_particle_system  = { path = "../pi_3d/crates/particle_system" }
-pi_scene_shell      = { path = "../pi_3d/crates/pi_scene_shell" }
+pi_3d               = { path = "../pi_3d_n" }
+pi_node_materials   = { path = "../pi_3d_n/crates/node_materials" }
+pi_scene_context    = { path = "../pi_3d_n/crates/pi_scene_context" }
+unlit_material      = { path = "../pi_3d_n/crates/unlit_material" }
+pi_mesh_builder     = { path = "../pi_3d_n/crates/pi_mesh_builder" }
+pi_trail_renderer   = { path = "../pi_3d_n/crates/trail" }
+pi_gltf2_load       = { path = "../pi_3d_n/crates/gltf2" }
+pi_particle_system  = { path = "../pi_3d_n/crates/particle_system" }
+pi_scene_shell      = { path = "../pi_3d_n/crates/pi_scene_shell" }
 
 # pi_gltf                 = { path = "../pi_gltf" }
 # pi_animation ={path="../pi_animation"}

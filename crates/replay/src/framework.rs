@@ -7,6 +7,7 @@ use pi_bevy_ecs_extend::system_param::res::OrInitSingleResMut;
 use pi_export_base::export::VertexBufferRefs;
 use pi_export_base::record::{self, cmd_play_call_3d};
 use pi_scene_context::pass::ResErrorRecord;
+use pi_ui_render::devtools::request_right_key_element;
 use pi_ui_render::resource::fragment::NodeTag;
 use pi_ui_render::resource::{RenderDirty, ShareFontSheet};
 use pi_world::prelude::{App, Entity, First, Insert, IntoSystemConfigs, Local, SingleResMut, SystemSet, World, WorldPluginExtent};
@@ -339,12 +340,32 @@ println!("===========   ===========");
     // 		}).unwrap();
     // 	}));
     // }
+    let mut last_x = 0.0;
+    let mut last_y = 0.0;
     let mut app = App::new();
     let mut is_init = false;
     event_loop.run(move |event, _, control_flow| {
         match event {
             Event::MainEventsCleared => {
                 window.request_redraw();
+            }
+            Event::WindowEvent {
+                event: WindowEvent::CursorMoved {  position,  ..},
+                ..
+            } => {
+                last_x = position.x as f32;
+                last_y = position.y as f32;
+            }
+            Event::WindowEvent {
+                event: WindowEvent::MouseInput {  state, button,  ..},
+                ..
+            } => {
+                if let pi_winit::event::ElementState::Released = state {
+                    if let pi_winit::event::MouseButton::Right = button {
+                        println!("============= request_right_key_element: {:?}", (last_x, last_y));
+                        request_right_key_element(last_x, last_y);
+                    }
+                }
             }
             Event::RedrawRequested(_) => {
                 if !is_init {
@@ -362,7 +383,7 @@ println!("===========   ===========");
                         render_dirty.0 = true;
                     }
                 }
-                log::error!("Run...");
+                // log::error!("Run...");
                 #[cfg(not(target_arch = "wasm32"))]
                 app.run();
 
@@ -409,7 +430,10 @@ println!("===========   ===========");
                 app.world.insert_single_res(RunState::MATRIX);
                 
                 #[cfg(not(target_arch = "wasm32"))]
-                pi_ui_render::devtools::start_server(&mut app); // 开启开发工具
+                {
+                app.add_plugins(pi_bevy_render_plugin::spector::PluginSpector); // 开启开发工具
+                app.add_plugins(pi_ui_render::devtools::PluginSpectorUI); // 开启开发工具
+                }
 
                 if let Some(play_option) = &play_option {
                     app.world.insert_single_res(play_option.clone());
@@ -499,6 +523,8 @@ println!("===========   ===========");
                     );
                     let records  = app.world.get_resource_mut::<Records>().unwrap();
                     records.palycalls.insert(RECORD_D3_COMMAND, cmd_play_call_3d);
+                    
+                    app.add_plugins(pi_3d::spector::PluginSpector3D); // 开启开发工具
                 }
             }
             Event::WindowEvent {
