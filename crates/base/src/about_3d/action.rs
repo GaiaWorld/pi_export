@@ -6,7 +6,7 @@ use pi_scene_shell::prelude::*;
 use pi_particle_system::{prelude::*};
 use pi_scene_context::{prelude::*};
 use pi_trail_renderer::TrailBase;
-use crate::export::Engine;
+pub use crate::export::Engine;
 
 #[cfg(target_arch = "wasm32")]
 use wasm_bindgen::prelude::*;
