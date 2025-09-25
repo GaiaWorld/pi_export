@@ -338,7 +338,8 @@ pub fn active_gui(engine: &mut Engine, active: bool) {
 #[cfg(not(target_arch="wasm32"))]
 #[pi_js_export]
 pub fn start_gui_debug_server(engine: &mut Engine) {
-	pi_ui_render::devtools::start_server(engine.app_mut());
+    log::error!("TODO: Not Impl pi_ui_render::devtools::start_server!");
+	// pi_ui_render::devtools::start_server(engine.app_mut());
 }
 
 #[cfg(not(target_arch="wasm32"))]

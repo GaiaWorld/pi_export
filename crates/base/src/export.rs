@@ -597,7 +597,8 @@ pub fn sys_vertex_buffer(
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[cfg(feature = "pi_js_export")]
 pub fn init_engine_3d(app: &mut Engine, spine: bool, param: &[u32]) {
-	use pi_bevy_render_plugin::FrameDataPrepare;
+use pi_3d::DisplayBoxs;
+use pi_bevy_render_plugin::FrameDataPrepare;
 use pi_bevy_render_plugin::GraphBuild;
 use pi_scene_shell::prelude::WorldResourceTemp;
 	use pi_scene_shell::prelude::AppResourceTemp;
@@ -619,6 +620,10 @@ use crate::record::Records3D;
 	app.insert_resource(engineplugins);
 
 	app.insert_resource(Records3D::default());
+
+	
+	#[cfg(target_arch = "wasm32")]
+	app.insert_resource(DisplayBoxs::default());
 
     pi_3d::PluginBundleDefault::add(app);
     app

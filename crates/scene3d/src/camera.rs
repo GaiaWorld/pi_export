@@ -185,3 +185,19 @@ pub fn p3d_viewer_force_include(cmds: &mut CommandsExchangeD3, viewer: f64, enti
     let entity: Entity = as_entity(entity);
     CommandsExchangeD3::p3d_viewer_force_include(cmds, viewer, entity, add);
 }
+
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
+pub fn p3d_camera_link(cmds: &mut CommandsExchangeD3, camera: f64, target: f64) {
+    #[cfg(feature = "replay")]
+    return ;
+
+    let val = ECameraModify::Link(as_entity(target));
+
+    #[cfg(feature = "record")]
+    cmds.record(ERecordCMD::CameraParam(camera, val));
+
+    let camera: Entity = as_entity(camera);
+
+    CommandsExchangeD3::p3d_camera_param(cmds, camera, val);
+}

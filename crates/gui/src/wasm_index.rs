@@ -94,6 +94,8 @@ pub fn create_gui(
 	#[cfg(not(feature="record"))]
     engine.app_mut().add_plugins(UiPlugin {font_type: FontType::Sdf2});
 
+    pi_ui_render::tools::init_showbox_pipeline(&mut engine.app_mut().world);
+    engine.app_mut().add_startup_system(pi_world::schedule::End, pi_ui_render::tools::init_show_box_node);
 	// if let Some(fun) = load_sdf_fun {
 	// 	pi_hal::font::sdf_brush::init_load_cb(std::rc::Rc::new(move|key: DefaultKey, font_family: usize, chars: &[char]| {
 	// 		let chars1 = js_sys::Uint32Array::from(unsafe {transmute::<_, &[u32]>(chars)});
