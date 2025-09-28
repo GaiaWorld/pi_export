@@ -439,8 +439,8 @@ pub fn fram_call(engine: &mut Engine, reset_state: bool) {
 			// bevy_ecs::system::CommandQueue::default().apply(&mut engine.world);
 			engine.run();
 
-			if unsafe { IS_CHANGED.load(Ordering::Relaxed) } {
-				unsafe { IS_CHANGED.store(false, Ordering::Relaxed) };
+			if IS_CHANGED.load(Ordering::Relaxed) {
+				IS_CHANGED.store(false, Ordering::Relaxed);
 				on_change(engine);
 			}
 			// *engine.world.get_single_res_mut::<FrameState>().unwrap() = FrameState::UnActive;

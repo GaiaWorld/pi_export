@@ -71,11 +71,12 @@ impl Example for ExampleCommonPlay {
             jemalloc: false,
             play_mod: PlayMod::Normal,
             render_debug: false,
+            cache_path: None
 		};
-        #[cfg(target_os = "android")]
+        // #[cfg(target_os = "android")]
         let config = include_str!("source/run_config.txt");
-        #[cfg(not(target_os = "android"))]
-        let config = std::fs::read_to_string(self.current_dir.join("crates/replay/examples/a_cmd_play/source/run_config.txt")).unwrap();
+        // #[cfg(not(target_os = "android"))]
+        // let config = std::fs::read_to_string(self.current_dir.join("/source/run_config.txt")).unwrap();
 		let r = config.split(";");
         for i in r {
             let mut r = i.split("=");
@@ -104,6 +105,12 @@ impl Example for ExampleCommonPlay {
                     };
                 } else if key == "render_debug" {
                     option.render_debug = value.trim().parse().unwrap();
+                }else if key == "cache_path" {
+                    let r = value.trim().to_string();
+                    println!("===========cache_path: {}", r);
+                    if !r.is_empty(){
+                        option.cache_path = Some(r);
+                    }
                 }
             }
         }
