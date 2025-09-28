@@ -590,8 +590,14 @@ impl CommandsExchangeD3 {
                 let graph = if let Some(graph) = graph { Self::entity(replayentities, graph) } else { Entity::null() };
                 CommandsExchangeD3::p3d_camera(cmds, scene, id, graph);
             },
-            ERecordCMD::CameraParam(camera, val) => {
+            ERecordCMD::CameraParam(camera, mut val) => {
                 let camera: Entity = Self::entity(replayentities, camera);
+                val = match val {
+                    ECameraModify::Link(val) => {
+                        ECameraModify::Link(Self::entity(replayentities, as_f64(&val)))
+                    },
+                    _ => val
+                };
                 CommandsExchangeD3::p3d_camera_param(cmds, camera, val);
             },
             ERecordCMD::CameraTarget(camera, x, y, z) => {
