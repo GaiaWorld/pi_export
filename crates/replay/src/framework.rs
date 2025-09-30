@@ -307,7 +307,8 @@ println!("===========   ===========");
     // let mut window_plugin = bevy_window::WindowPlugin::default();
 
 
-    let event_loop: EventLoop<()> = EventLoopBuilder::new().with_any_thread(true).build();//EventLoop::new();
+    // let event_loop: EventLoop<()> = EventLoopBuilder::new().with_any_thread(true).build();
+    let event_loop = EventLoop::new();
     #[cfg(not(target_arch = "wasm32"))]
     let window = Arc::new(pi_winit::window::Window::new(&event_loop).unwrap());
 
@@ -893,11 +894,16 @@ fn create_example(cache_path: String, version: String){
     let file_name = format!("test{}.rs",version);
     let path = Path::new(&cache_path).join("src");
     let r = std::fs::write(path.join(&file_name), format!("
-use pi_cmd_replay::framework::{{Example, Param, PlayMod}};
-use pi_cmd_replay::{{Size, UserCommands, TraceOption}};
+use crate::framework::{{Example, Param, PlayMod}};
+use pi_bevy_render_plugin::TraceOption;
+use pi_flex_layout::prelude::Size;
+use pi_ui_render::resource::UserCommands;
 
 #[test]
-fn test() {{ pi_cmd_replay::framework::start(ExampleCommonPlay) }}
+fn test() {{ 
+    let _ = std::env::set_current_dir(std::env::current_dir().unwrap().join(\"{}\"));
+    crate::framework::start(ExampleCommonPlay) 
+}}
 
 pub struct ExampleCommonPlay;
 
@@ -921,9 +927,9 @@ impl Example for ExampleCommonPlay {{
 
     fn record_option(&self) -> TraceOption {{ TraceOption::Play }}
 
-    fn play_option(&self) -> Option<pi_cmd_replay::framework::PlayOption> {{
-		Some(pi_cmd_replay::framework::PlayOption {{
-			play_path: Some(\"E:/app_new_gui/pi_render_cmd/1758793992743\".to_string()),
+    fn play_option(&self) -> Option<crate::framework::PlayOption> {{
+		Some(crate::framework::PlayOption {{
+			play_path: Some(\"./\".to_string()),
 			play_version: \"{}\".to_string(),
     		cmd_path: \"\".to_string(),
             max_index: 1,
@@ -936,7 +942,7 @@ impl Example for ExampleCommonPlay {{
             cache_path: None
 		}})
 	}}
-}}", version));
+}}", version, version));
     println!("create {}: {:?}", file_name, r);
     let mut file = std::fs::OpenOptions::new()
         .append(true)    // 追加模式

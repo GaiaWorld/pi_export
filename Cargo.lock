@@ -1427,7 +1427,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "cea14ef9355e3beab063703aa9dab15afd25f0667c341310c1e5274bb1d0da18"
 dependencies = [
  "libc",
- "windows-sys 0.52.0",
+ "windows-sys 0.59.0",
 ]
 
 [[package]]
@@ -4010,7 +4010,9 @@ dependencies = [
 
 [[package]]
 name = "pi_bevy_asset"
-version = "0.3.0"
+version = "0.3.1"
+source = "registry+http://ser.yinengyun.com:10082/tech/crates-io.git"
+checksum = "8c229d91ccafcda8662229b2c4a9e1ffdd9d90a6f9a3a6f6912ce36666f02443"
 dependencies = [
  "crossbeam",
  "derive_deref",
@@ -4028,7 +4030,9 @@ dependencies = [
 
 [[package]]
 name = "pi_bevy_ecs_extend"
-version = "0.3.1"
+version = "0.3.2"
+source = "registry+http://ser.yinengyun.com:10082/tech/crates-io.git"
+checksum = "d6e5a389623b7be401d6533a981994d90d4cc9c2d86570a2137453c13b36a1f8"
 dependencies = [
  "derive_deref",
  "fixedbitset 0.4.2",
@@ -4057,15 +4061,20 @@ dependencies = [
 
 [[package]]
 name = "pi_bevy_ecs_macro"
-version = "0.1.4"
+version = "0.1.3"
+source = "registry+http://ser.yinengyun.com:10082/tech/crates-io.git"
+checksum = "a5cd21dd5a4b4af0a23949e040ef4a66676583ad67f347fd55941d38d9190e77"
 dependencies = [
  "quote",
- "syn 2.0.101",
+ "syn 1.0.109",
+ "toml 0.5.11",
 ]
 
 [[package]]
 name = "pi_bevy_log"
-version = "0.2.0"
+version = "0.2.1"
+source = "registry+http://ser.yinengyun.com:10082/tech/crates-io.git"
+checksum = "c758fd5c8414ca2e20080d78f923fb78559ead6f505d90a6592be1841ea6b7c0"
 dependencies = [
  "android_log-sys",
  "console_error_panic_hook",
@@ -4081,7 +4090,9 @@ dependencies = [
 
 [[package]]
 name = "pi_bevy_post_process"
-version = "0.3.0"
+version = "0.3.1"
+source = "registry+http://ser.yinengyun.com:10082/tech/crates-io.git"
+checksum = "a01fd736f0570963b884df6a89e9c5a119803602eaf7d882043aab7179faf21a"
 dependencies = [
  "pi_assets",
  "pi_bevy_asset",
@@ -4095,7 +4106,9 @@ dependencies = [
 
 [[package]]
 name = "pi_bevy_render_plugin"
-version = "0.3.7"
+version = "0.3.8"
+source = "registry+http://ser.yinengyun.com:10082/tech/crates-io.git"
+checksum = "b90b36b1f93ce7a0cdef12f5f7eb9560c4b2881e0c999835acbccfe5ad2749e9"
 dependencies = [
  "ahash",
  "async-trait",
@@ -4151,7 +4164,9 @@ dependencies = [
 
 [[package]]
 name = "pi_bevy_window"
-version = "0.3.1"
+version = "0.3.2"
+source = "registry+http://ser.yinengyun.com:10082/tech/crates-io.git"
+checksum = "c71db1c94e0a85d2a98012dedd3ad1e845ae752fd6ee82efdde46fa5621cabb5"
 dependencies = [
  "log",
  "nalgebra",
@@ -4162,7 +4177,9 @@ dependencies = [
 
 [[package]]
 name = "pi_bevy_winit_window"
-version = "0.3.1"
+version = "0.3.2"
+source = "registry+http://ser.yinengyun.com:10082/tech/crates-io.git"
+checksum = "1601de0140e50f6d27b81cdfb517d8110ebe5d3d0406b4ec6b2c0478861e8660"
 dependencies = [
  "log",
  "nalgebra",
@@ -4797,6 +4814,8 @@ dependencies = [
 [[package]]
 name = "pi_hal"
 version = "0.3.3"
+source = "registry+http://ser.yinengyun.com:10082/tech/crates-io.git"
+checksum = "53effa7c4a49f17e1e46b9a904c00eeafabd99447104b1c7becf6070bdf74729"
 dependencies = [
  "ahash",
  "async-trait",
@@ -5151,14 +5170,18 @@ dependencies = [
 
 [[package]]
 name = "pi_render"
-version = "0.3.1"
+version = "0.3.2"
+source = "registry+http://ser.yinengyun.com:10082/tech/crates-io.git"
+checksum = "01a24abea90e7df0365e928c2f6fe990236817a63509a991f3d4c754e8d71550"
 dependencies = [
  "render_core",
 ]
 
 [[package]]
 name = "pi_render_asset"
-version = "0.1.1"
+version = "0.1.2"
+source = "registry+http://ser.yinengyun.com:10082/tech/crates-io.git"
+checksum = "c38b304ef9b0fca4a60cfa8c1d7d93ff21e60c66154db91e6db24f544e5e8554"
 dependencies = [
  "derive-deref-rs",
  "log",
@@ -5174,6 +5197,8 @@ dependencies = [
 [[package]]
 name = "pi_render_graph"
 version = "0.1.0"
+source = "registry+http://ser.yinengyun.com:10082/tech/crates-io.git"
+checksum = "48f00f3ffb9508eea58d02acae5226ce89e254f08c89bdc0955f23413fb3aac6"
 dependencies = [
  "log",
  "pi-async-rt",
@@ -5189,7 +5214,7 @@ dependencies = [
 
 [[package]]
 name = "pi_scene_context"
-version = "1.3.13"
+version = "1.3.14"
 dependencies = [
  "approx",
  "bytemuck",
@@ -5440,7 +5465,9 @@ dependencies = [
 
 [[package]]
 name = "pi_style"
-version = "0.3.1"
+version = "0.3.2"
+source = "registry+http://ser.yinengyun.com:10082/tech/crates-io.git"
+checksum = "567a361b879d713864bbb01010b486d6eb234853219f9eba8703cd14d7081c3c"
 dependencies = [
  "bitvec",
  "cssparser",
@@ -5468,7 +5495,9 @@ dependencies = [
 
 [[package]]
 name = "pi_target_alloc"
-version = "0.1.2"
+version = "0.1.3"
+source = "registry+http://ser.yinengyun.com:10082/tech/crates-io.git"
+checksum = "e19c5cc8bb82030b35b1fa46f435043f3067c93b18a404f8084c5319e08d0424"
 dependencies = [
  "derive-deref-rs",
  "guillotiere",
@@ -5585,7 +5614,9 @@ checksum = "dbaf7abc0904cab87ca08c61afa70581049affa856cec59fe77e0b8a83a37257"
 
 [[package]]
 name = "pi_ui_render"
-version = "0.2.27"
+version = "0.2.28"
+source = "registry+http://ser.yinengyun.com:10082/tech/crates-io.git"
+checksum = "661408cd8607332c7620bedc3f447298552911053b1c792852e4318ecf315e46"
 dependencies = [
  "ahash",
  "backtrace",
@@ -5663,7 +5694,9 @@ dependencies = [
 
 [[package]]
 name = "pi_ui_render_macros"
-version = "0.1.2"
+version = "0.1.3"
+source = "registry+http://ser.yinengyun.com:10082/tech/crates-io.git"
+checksum = "7ae66e020c83102dc35cdfcdb0d155582cd19396f60abd0605c8e8af3d8c8dc4"
 dependencies = [
  "lazy_static",
  "proc-macro2",
@@ -5757,6 +5790,8 @@ dependencies = [
 [[package]]
 name = "pi_wgpu"
 version = "0.3.2"
+source = "registry+http://ser.yinengyun.com:10082/tech/crates-io.git"
+checksum = "a01642a4acb75e0542aa91787c58c1319cb0e36e8a1420ef0bdeaec027bfb430"
 dependencies = [
  "bitflags 2.9.1",
  "codespan-reporting 0.11.1",
@@ -5791,7 +5826,9 @@ checksum = "5628d036b61ef2f4290d84bbd8f249608b9071cc739de25fd63b828861716b10"
 
 [[package]]
 name = "pi_window_renderer"
-version = "0.3.1"
+version = "0.3.2"
+source = "registry+http://ser.yinengyun.com:10082/tech/crates-io.git"
+checksum = "6e4803a96062dc04230d55ac81c0b1b93455d19d13fd9a82a1e61f757f30b117"
 dependencies = [
  "bytemuck",
  "crossbeam",
@@ -6476,7 +6513,9 @@ checksum = "2b15c43186be67a4fd63bee50d0303afffcef381492ebe2c5d87f324e1b8815c"
 
 [[package]]
 name = "render_compile"
-version = "0.3.0"
+version = "0.3.1"
+source = "registry+http://ser.yinengyun.com:10082/tech/crates-io.git"
+checksum = "1b26138fc8f0bad7ee5b960ff9bd04bfd36396c0d8f5a9eb73b9b566a30b7942"
 dependencies = [
  "Inflector",
  "log",
@@ -6492,7 +6531,9 @@ dependencies = [
 
 [[package]]
 name = "render_core"
-version = "0.3.4"
+version = "0.3.5"
+source = "registry+http://ser.yinengyun.com:10082/tech/crates-io.git"
+checksum = "27c2a0914898bcb5b9c426151378e4cf96af67e270ce2545283aaf0a37cdc72f"
 dependencies = [
  "ahash",
  "anyhow",
@@ -6552,7 +6593,9 @@ dependencies = [
 
 [[package]]
 name = "render_crevice"
-version = "0.3.0"
+version = "0.3.1"
+source = "registry+http://ser.yinengyun.com:10082/tech/crates-io.git"
+checksum = "46a5d254929d01fafe7d301bd858d77548a8ac08d90563c6c36cdd35da79bc11"
 dependencies = [
  "bytemuck",
  "mint",
@@ -6563,26 +6606,43 @@ dependencies = [
 [[package]]
 name = "render_crevice_derive"
 version = "0.1.0"
+source = "registry+http://ser.yinengyun.com:10082/tech/crates-io.git"
+checksum = "675b11bf7a822986ec75019194c20ae1032e48b8f96cb2c72460ed01de5fca06"
 dependencies = [
  "proc-macro2",
  "quote",
- "render_macro_utils",
+ "render_macro_utils 0.1.0",
  "syn 1.0.109",
 ]
 
 [[package]]
 name = "render_derive"
-version = "0.2.3"
+version = "0.2.4"
+source = "registry+http://ser.yinengyun.com:10082/tech/crates-io.git"
+checksum = "10f784e2f3ce3466600cee34a48fbb7f0eaa4e3255fdb69ef89b82d63001c003"
 dependencies = [
  "proc-macro2",
  "quote",
- "render_macro_utils",
+ "render_macro_utils 0.2.4",
  "syn 1.0.109",
 ]
 
 [[package]]
 name = "render_macro_utils"
-version = "0.2.3"
+version = "0.1.0"
+source = "registry+http://ser.yinengyun.com:10082/tech/crates-io.git"
+checksum = "a06ed9479fff9480840d74aeac95c4255a5a8b1c442466fb61a63eb1750cc16d"
+dependencies = [
+ "cargo-manifest",
+ "quote",
+ "syn 1.0.109",
+]
+
+[[package]]
+name = "render_macro_utils"
+version = "0.2.4"
+source = "registry+http://ser.yinengyun.com:10082/tech/crates-io.git"
+checksum = "8a3eb04c11b657c6719ef49263a01f9c57c19b05052b2c7af5e8db8dc6837065"
 dependencies = [
  "cargo-manifest",
  "quote",
@@ -6591,7 +6651,9 @@ dependencies = [
 
 [[package]]
 name = "render_utils"
-version = "0.2.3"
+version = "0.2.4"
+source = "registry+http://ser.yinengyun.com:10082/tech/crates-io.git"
+checksum = "8d6a8367eadf92781a2a3ff24317c13e2c2d28fb82e3e70cc682260e716ff964"
 dependencies = [
  "ahash",
  "render_derive",
@@ -6775,7 +6837,7 @@ dependencies = [
  "errno",
  "libc",
  "linux-raw-sys 0.4.15",
- "windows-sys 0.52.0",
+ "windows-sys 0.59.0",
 ]
 
 [[package]]
@@ -6788,7 +6850,7 @@ dependencies = [
  "errno",
  "libc",
  "linux-raw-sys 0.9.4",
- "windows-sys 0.52.0",
+ "windows-sys 0.59.0",
 ]
 
 [[package]]
@@ -7517,7 +7579,7 @@ dependencies = [
  "getrandom 0.3.3",
  "once_cell",
  "rustix 1.0.7",
- "windows-sys 0.52.0",
+ "windows-sys 0.59.0",
 ]
 
 [[package]]
@@ -7966,7 +8028,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "97fee6b57c6a41524a810daee9286c02d7752c4253064d0b05472833a438f675"
 dependencies = [
  "cfg-if",
- "rand 0.3.23",
+ "rand 0.8.5",
  "static_assertions",
 ]
 
@@ -8665,7 +8727,7 @@ version = "0.1.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "cf221c93e13a30d793f7645a0e7762c55d169dbb0a49671918a2319d289b10bb"
 dependencies = [
- "windows-sys 0.52.0",
+ "windows-sys 0.59.0",
 ]
 
 [[package]]
