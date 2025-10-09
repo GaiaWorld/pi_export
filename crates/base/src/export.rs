@@ -668,7 +668,7 @@ pub fn unbind_context(app: &mut Engine) {
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[cfg(feature = "pi_js_export")]
-pub fn set_pixel_ratio(app: &mut Engine, pixel_ratio: f32) {
+pub fn set_frame_pixel_ratio(app: &mut Engine, pixel_ratio: f32) {
 	use pi_bevy_render_plugin::system::PixelRatio;
 	{
 		if let Some(ratio) = app.world.get_single_res_mut::<PixelRatio>(){
