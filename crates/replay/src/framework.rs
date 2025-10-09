@@ -1,3 +1,4 @@
+use std::io::Write;
 use std::ops::{Deref, DerefMut};
 use std::path::Path;
 use std::{sync::Arc, time::Instant};
@@ -10,6 +11,7 @@ use pi_scene_context::pass::ResErrorRecord;
 use pi_ui_render::devtools::request_right_key_element;
 use pi_ui_render::resource::fragment::NodeTag;
 use pi_ui_render::resource::{RenderDirty, ShareFontSheet};
+use pi_winit::platform::windows::EventLoopBuilderExtWindows;
 use pi_world::prelude::{App, Entity, First, Insert, IntoSystemConfigs, Local, SingleResMut, SystemSet, World, WorldPluginExtent};
 
 use pi_async_rt::prelude::AsyncRuntime;
@@ -36,7 +38,7 @@ use pi_ui_render::{
 use pi_async_rt::rt::serial_local_compatible_wasm_runtime::{LocalTaskRunner, LocalTaskRuntime};
 use pi_ui_render::system::base::node::cmd_play::{CmdNodeCreate};
 use pi_winit::event::{Event, WindowEvent};
-use pi_winit::event_loop::{ControlFlow, EventLoop};
+use pi_winit::event_loop::{ControlFlow, EventLoop, EventLoopBuilder};
 use pi_world::single_res::SingleRes;
 use pi_world::system_params::SystemParam;
 
@@ -95,6 +97,7 @@ pub static mut RUNNER: std::cell::OnceCell<LocalTaskRunner<()>> = std::cell::Onc
 pub fn start<T: Example + Sync + Send + 'static>(example: T) {
     let play_option = example.play_option();
     let play_option1 = play_option.clone().unwrap_or_default();
+    let version = play_option1.play_version.clone();
 println!("===========   ===========");
     #[cfg(not(target_arch = "wasm32"))]
     {
@@ -107,6 +110,7 @@ println!("===========   ===========");
                     .bind_address("0.0.0.0") // 访问(localhost之外)外网用明确的本地ip（自身ip）
                     .build()
                     .unwrap();
+                let cache_path = play_option1.cache_path.clone();
                 init_load_cb(Arc::new(move |module: String, _: String, hash: String, path: Vec<Arg>| {
                     if module.ends_with("file") {
                         let httpc = httpc.clone();
@@ -115,10 +119,13 @@ println!("===========   ===========");
                             Arg::String(r) => r.clone(),
                             _ => return,
                         };
+                        let version = version.clone();
+                        let cache_path = cache_path.clone();
                         MULTI_MEDIA_RUNTIME
                             .spawn(async move {
                                 let mut result = Vec::new();
                                 let pp: String = url + "/" + path.as_str();
+                                println!("=========== url: {}", pp);
                                 match httpc
                                     .build_request(pp.as_str(), pi_async_httpc::AsyncHttpRequestMethod::Get)
                                     // .set_pairs(&[("login_type", "2"), ("user", "1694151132349ldxNJ")]) // 设置参数
@@ -130,7 +137,7 @@ println!("===========   ===========");
                                     }
                                     Ok(mut resp) => {
                                         // println!("!!!!!!request time: {:?}", now.elapsed());
-    
+                                        let version = version.clone();
                                         loop {
                                             match resp.get_body().await {
                                                 Err(e) => {
@@ -143,6 +150,19 @@ println!("===========   ===========");
                                                 }
                                                 Ok(None) => {
                                                     if resp.get_status() == 200 {
+                                                        // println!("http load file success,path: {:?}, size: {}, version: {}, cache_path: {:?}", path, result.len(), &version, cache_path);
+                                                        if let Some(cache_path) = &cache_path {
+                                                            let out_path =  Path::new(cache_path).join(&version).join(&path);
+                                                            let capy_data = result.clone();
+                                                            let _ = MULTI_MEDIA_RUNTIME
+                                                                .spawn(async move {
+                                                                    let res = std::fs::create_dir_all(out_path.parent().unwrap());
+                                                                    println!("create_dir_all res: {:?}", res);
+                                                                    let res = std::fs::write(out_path, capy_data);
+                                                                    println!("write res: {:?}", res);
+                                                                });
+                                                        }
+                                                       
                                                         on_load(hash.parse::<u64>().unwrap(), Ok(Share::new(result)));
                                                         log::debug!("load file success,path: {:?}", path);
                                                         // on_load(path.as_str(), result);
@@ -178,19 +198,32 @@ println!("===========   ===========");
                 init_load_cb(Arc::new(move |module: String, _: String, hash: String, path: Vec<Arg>| {
                     if module.ends_with("file") {
                         let dir = dir.clone();
-                        let path = match &path[0] {
+                        let mut path = match &path[0] {
                             Arg::String(r) => r.clone(),
                             _ => return,
                         };
                         MULTI_MEDIA_RUNTIME
                             .spawn(async move {
-                                if let Ok(file) = std::fs::read(Path::new(dir.as_str()).join(&path)) {
+                                let path = if path.ends_with(".gui_cmd") {
+                                    let p1 = Path::new(dir.as_str()).join("gui_cmd");
+                                    println!("===========P1: {:?}", p1);
+                                    if path.starts_with("/") {
+                                        path = path.replace("/", "");
+                                    }
+                                    let p2 = p1.join(path);
+                                    println!("===========P1: {:?}", p2);
+                                    p2
+                                } else {
+                                    Path::new(dir.as_str()).join(path)
+                                };
+                                
+                                if let Ok(file) = std::fs::read(&path) {
                                     on_load(hash.parse::<u64>().unwrap(), Ok(Share::new(file)));
-                                    log::debug!("load file success,path: {:?}", path);
+                                    log::info!("load file success,path: {:?}", path);
                                     // on_load(path.as_str(), file);
                                 } else {
                                     on_load(hash.parse::<u64>().unwrap(), Err(format!("not find file,path: {:?}", path)));
-                                    // log::warn!("not find file,path: {:?}", path);
+                                    log::error!("not find file,path: {:?}", path);
                                 }
                             })
                             .unwrap();
@@ -201,7 +234,7 @@ println!("===========   ===========");
             }
             _ => {
                 init_load_cb(Arc::new(move |module: String, _: String, hash: String, path: Vec<Arg>| {
-                    // println!("=========== module: {}, {}", module, hash);
+                    println!("=========== module: {}, {}", module, hash);
                     if module.ends_with("file") {
                         let path = match &path[0] {
                             Arg::String(r) => r.clone(),
@@ -226,7 +259,11 @@ println!("===========   ===========");
             }
         }
     }
-    
+    if let Some(cache_path) = &play_option1.cache_path{
+        if "url" == play_option1.play_way{
+            create_example(cache_path.clone(), play_option1.play_version.clone());
+        }
+    }
     // // let aa = pi_async_rt::rt::startup_global_time_loop(10);
     // // let current_dir = std::env::current_dir().unwrap();
     // #[cfg(not(target_arch = "wasm32"))]
@@ -270,6 +307,7 @@ println!("===========   ===========");
     // let mut window_plugin = bevy_window::WindowPlugin::default();
 
 
+    // let event_loop: EventLoop<()> = EventLoopBuilder::new().with_any_thread(true).build();
     let event_loop = EventLoop::new();
     #[cfg(not(target_arch = "wasm32"))]
     let window = Arc::new(pi_winit::window::Window::new(&event_loop).unwrap());
@@ -847,6 +885,7 @@ pub struct PlayOption {
     pub jemalloc: bool,
     pub play_mod: PlayMod,
     pub render_debug: bool,
+    pub cache_path: Option<String>
 }
 
 #[derive(Clone, Debug, Default, PartialEq, Eq)]
@@ -857,3 +896,68 @@ pub enum PlayMod {
 }
 
 pub const LOG_LEVEL: tracing::Level = tracing::Level::INFO;
+
+fn create_example(cache_path: String, version: String){
+    let file_name = format!("test{}.rs",version);
+    let path = Path::new(&cache_path).join("src");
+    let r = std::fs::write(path.join(&file_name), format!("
+use crate::framework::{{Example, Param, PlayMod}};
+use pi_bevy_render_plugin::TraceOption;
+use pi_flex_layout::prelude::Size;
+use pi_ui_render::resource::UserCommands;
+
+#[test]
+fn test() {{ 
+    let _ = std::env::set_current_dir(std::env::current_dir().unwrap().join(\"{}\"));
+    crate::framework::start(ExampleCommonPlay) 
+}}
+
+pub struct ExampleCommonPlay;
+
+impl Example for ExampleCommonPlay {{
+    fn get_init_size(&self) -> Option<Size<u32>> {{
+        // None表示使用默认值
+        // Some(Size {{ width: 1080, height: 2160 }})
+        #[cfg(not(target_os = \"android\"))]
+		let r = Some(Size {{ width: 669, height: 919 }});
+        #[cfg(target_os = \"android\")]
+        let r = None;
+        r
+        // None
+    }}
+
+    fn init(&mut self, mut _world: Param, size: (usize, usize)) {{   
+        println!(\"view_port:{{:?}}\", size);
+    }}
+
+    fn render(&mut self, _cmd: &mut UserCommands) {{  }}
+
+    fn record_option(&self) -> TraceOption {{ TraceOption::Play }}
+
+    fn play_option(&self) -> Option<crate::framework::PlayOption> {{
+		Some(crate::framework::PlayOption {{
+			play_path: Some(\"./\".to_string()),
+			play_version: \"{}\".to_string(),
+    		cmd_path: \"\".to_string(),
+            max_index: 1,
+            speed: 0.1,
+            play_url: None,
+            play_way: \"file\".to_string(),
+            jemalloc: false,
+            play_mod: PlayMod::Normal,
+            render_debug: true,
+            cache_path: None
+		}})
+	}}
+}}", version, version));
+    println!("create {}: {:?}", file_name, r);
+    let mut file = std::fs::OpenOptions::new()
+        .append(true)    // 追加模式
+        .create(true)    // 如果文件不存在则创建
+        .open(path.join("lib.rs")).unwrap();
+    let r = writeln!(file, "pub mod test{};", version);
+    // writeln!(file, "这是另一行内容")?;
+    // let mut r = std::fs::write(path.join("lib.rs"), format!("pub mod {};\n", file_name).as_bytes());
+    // let r = r.write(format!("pub mod {};\n", file_name).as_bytes());
+    println!("======= write libs: {:?}", r);
+}
