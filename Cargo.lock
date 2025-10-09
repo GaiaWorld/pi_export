@@ -4106,9 +4106,9 @@ dependencies = [
 
 [[package]]
 name = "pi_bevy_render_plugin"
-version = "0.3.8"
+version = "0.3.9"
 source = "registry+http://ser.yinengyun.com:10082/tech/crates-io.git"
-checksum = "b90b36b1f93ce7a0cdef12f5f7eb9560c4b2881e0c999835acbccfe5ad2749e9"
+checksum = "777d3d4e76f62be93c11b727e864cdf9a7365a5e157b1bba0d734e4f731c44ea"
 dependencies = [
  "ahash",
  "async-trait",
@@ -4456,9 +4456,9 @@ dependencies = [
 
 [[package]]
 name = "pi_egl"
-version = "0.2.2"
+version = "0.2.4"
 source = "registry+http://ser.yinengyun.com:10082/tech/crates-io.git"
-checksum = "7f49f259e7013af684606e671400df8ace0e7896c92d4c7b5c08bf4e0a74a076"
+checksum = "6ffa98b7e8623ee7bcb56db63fcc0c6ccf6b533020f89e8b21c0dbdfae8907e1"
 dependencies = [
  "gl_generator",
  "jni",
@@ -5789,9 +5789,9 @@ dependencies = [
 
 [[package]]
 name = "pi_wgpu"
-version = "0.3.2"
+version = "0.3.3"
 source = "registry+http://ser.yinengyun.com:10082/tech/crates-io.git"
-checksum = "a01642a4acb75e0542aa91787c58c1319cb0e36e8a1420ef0bdeaec027bfb430"
+checksum = "6ae29f99fef10f16491bd2bbe644cf208a9c24becb21aa39db9e53699a2a5ce3"
 dependencies = [
  "bitflags 2.9.1",
  "codespan-reporting 0.11.1",

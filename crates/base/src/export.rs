@@ -665,3 +665,19 @@ pub fn unbind_context(app: &mut Engine) {
 	let device = app.world.get_single_res_mut::<PiRenderDevice>().unwrap();
 	// device.unmake_current();
 }
+
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[cfg(feature = "pi_js_export")]
+pub fn set_pixel_ratio(app: &mut Engine, pixel_ratio: f32) {
+	use pi_bevy_render_plugin::system::PixelRatio;
+	{
+		if let Some(ratio) = app.world.get_single_res_mut::<PixelRatio>(){
+			ratio.0 = pixel_ratio.clamp(0.2, 1.0);
+			return;
+		}
+	}
+	
+	{
+		app.world.insert_single_res(PixelRatio(pixel_ratio.clamp(0.2, 1.0)));
+	}
+}
