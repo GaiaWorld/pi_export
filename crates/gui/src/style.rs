@@ -4613,7 +4613,7 @@ pub mod style_macro {
                 None => Entity::null(),
             };
             gui.commands_mut()
-                .push_cmd(
+                .set_brush(
                     pi_ui_render::resource::CanvasCmd(
                         brush,
                         by_draw_list.unwrap_or(false),
@@ -4637,7 +4637,7 @@ pub mod style_macro {
                 None => Entity::null(),
             };
             gui.commands_mut()
-                .push_cmd(
+                .set_brush(
                     pi_ui_render::resource::CanvasCmd(
                         brush,
                         by_draw_list.unwrap_or(false),

@@ -387,6 +387,11 @@ println!("===========   ===========");
                 #[cfg(not(target_arch = "wasm32"))]
                 app.run();
 
+                
+            let g = app.world.get_single_res::<pi_bevy_render_plugin::PiRenderGraph>().unwrap();
+	        g.dump_graphviz();
+            g.dump_toop_graphviz();
+
                 #[cfg(target_arch = "wasm32")]
                 {
                     // 资源运行时
@@ -521,6 +526,8 @@ println!("===========   ===========");
                         pi_world::schedule::PreUpdate,
                         sys_screen_with_postprocess.in_set(FrameDataPrepare).before(GraphBuild)
                     );
+
+                    app.add_system(pi_world::schedule::Update, pi_3d::sys_info_error);
                     let records  = app.world.get_resource_mut::<Records>().unwrap();
                     records.palycalls.insert(RECORD_D3_COMMAND, cmd_play_call_3d);
                     
