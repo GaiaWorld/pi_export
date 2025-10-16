@@ -298,10 +298,13 @@ pub fn p3d_anime_curve_query(app: &mut Engine, param: &mut ActionSetScene3D, key
 	pi_export_base::export::await_last_frame(app);
     let resource = param.resource.get_mut(&mut app.world);
 
-    let key = pi_atom::Atom::from(key).asset_u64();
+    let keyid = pi_atom::Atom::from(key).asset_u64();
     let property = unsafe { transmute(property) };
 
-    pi_gltf2_load::p3d_anime_curve_query(&resource.anime_assets, key, property)
+    let result = pi_gltf2_load::p3d_anime_curve_query(&resource.anime_assets, keyid, property);
+
+
+    result
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
@@ -316,9 +319,13 @@ pub fn p3d_anime_curve_create(app: &mut Engine, param: &mut ActionSetScene3D, cm
     #[cfg(feature = "record")]
     cmds.record2(ERecord3D::CreateAnimationCurve(String::from(key), property, data.to_vec(), mode));
 
-    let key = pi_atom::Atom::from(key).asset_u64();
+    let keyid = pi_atom::Atom::from(key).asset_u64();
     let mut resource = param.resource.get_mut(&mut app.world);
-    let result = CommandsExchangeD3::p3d_anime_curve_create(&mut resource.anime_assets, key, property, data, mode);
+    cmds.animcurves().push((keyid, property, data.to_vec(), mode));
+    let result = true;
+    // log::error!("Curve {:?}", (keyid, key));
+    // let result = CommandsExchangeD3::p3d_anime_curve_create(&mut resource.anime_assets, keyid, property, data, mode, cmds.animcurves());
+    // log::error!("create {:?}", (keyid, result, key));
     result
 }
 

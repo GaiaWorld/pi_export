@@ -2,6 +2,7 @@
 use js_proxy_gen_macro::pi_js_export;
 use pi_gltf2_load::TValue;
 use pi_curves::{curve::{curves::curve_frame_index, frame::{CurveFrameValue, FrameDataValue}, frame_curve::{frames::interplate_frame_values_step, FrameCurve}, FrameIndex, FramePerSecond}, easing::EEasingMode, steps::EStepMode};
+use pi_scene_context::prelude::*;
 use pi_scene_shell::prelude::*;
 use serde::{Serialize, Deserialize};
 
@@ -58,6 +59,41 @@ pub enum EAnimePropertyID {
 
     BoneOffset          = 100,
     IndicesRange        = 101,
+}
+
+
+pub enum EAnimeCurveTemp {
+    LocalPosition       (Result<Handle<TypeFrameCurve<LocalPosition                >>, TypeFrameCurve<LocalPosition          >>),
+    LocalRotation       (Result<Handle<TypeFrameCurve<LocalRotationQuaternion      >>, TypeFrameCurve<LocalRotationQuaternion>>),
+    LocalScaling        (Result<Handle<TypeFrameCurve<LocalScaling                 >>, TypeFrameCurve<LocalScaling           >>), 
+    MainTexUScale       (Result<Handle<TypeFrameCurve<AnimatorableFloat            >>, TypeFrameCurve<AnimatorableFloat      >>), 
+    MainTexVScale       (Result<Handle<TypeFrameCurve<AnimatorableFloat            >>, TypeFrameCurve<AnimatorableFloat      >>),
+    MainTexUOffset      (Result<Handle<TypeFrameCurve<AnimatorableFloat            >>, TypeFrameCurve<AnimatorableFloat      >>), 
+    MainTexVOffset      (Result<Handle<TypeFrameCurve<AnimatorableFloat            >>, TypeFrameCurve<AnimatorableFloat      >>),
+    Alpha               (Result<Handle<TypeFrameCurve<AnimatorableFloat            >>, TypeFrameCurve<AnimatorableFloat      >>), 
+    MainColor           (Result<Handle<TypeFrameCurve<AnimatorableVec3             >>, TypeFrameCurve<AnimatorableVec3       >>), 
+    CameraOrthSize      (Result<Handle<TypeFrameCurve<CameraOrthSize               >>, TypeFrameCurve<CameraOrthSize         >>), 
+    CameraFov           (Result<Handle<TypeFrameCurve<CameraFov                    >>, TypeFrameCurve<CameraFov              >>),
+    Enable              (Result<Handle<TypeFrameCurve<Enable                       >>, TypeFrameCurve<Enable                 >>),
+    LocalEulerAngles    (Result<Handle<TypeFrameCurve<LocalEulerAngles             >>, TypeFrameCurve<LocalEulerAngles       >>),
+    Intensity           (Result<Handle<TypeFrameCurve<AnimatorableFloat            >>, TypeFrameCurve<AnimatorableFloat      >>),
+    LightDiffuse        (Result<Handle<TypeFrameCurve<AnimatorableVec3             >>, TypeFrameCurve<AnimatorableVec3       >>),
+    AlphaCutoff         (Result<Handle<TypeFrameCurve<AnimatorableFloat            >>, TypeFrameCurve<AnimatorableFloat      >>),
+    CellId              (Result<Handle<TypeFrameCurve<AnimatorableFloat            >>, TypeFrameCurve<AnimatorableFloat      >>),
+    OpacityTexUScale    (Result<Handle<TypeFrameCurve<AnimatorableFloat            >>, TypeFrameCurve<AnimatorableFloat      >>),
+    OpacityTexVScale    (Result<Handle<TypeFrameCurve<AnimatorableFloat            >>, TypeFrameCurve<AnimatorableFloat      >>),
+    OpacityTexUOffset   (Result<Handle<TypeFrameCurve<AnimatorableFloat            >>, TypeFrameCurve<AnimatorableFloat      >>),
+    OpacityTexVOffset   (Result<Handle<TypeFrameCurve<AnimatorableFloat            >>, TypeFrameCurve<AnimatorableFloat      >>),
+    MaskCutoff          (Result<Handle<TypeFrameCurve<AnimatorableFloat            >>, TypeFrameCurve<AnimatorableFloat      >>),
+    MaskTexUScale       (Result<Handle<TypeFrameCurve<AnimatorableFloat            >>, TypeFrameCurve<AnimatorableFloat      >>),
+    MaskTexVScale       (Result<Handle<TypeFrameCurve<AnimatorableFloat            >>, TypeFrameCurve<AnimatorableFloat      >>),
+    MaskTexUOffset      (Result<Handle<TypeFrameCurve<AnimatorableFloat            >>, TypeFrameCurve<AnimatorableFloat      >>),
+    MaskTexVOffset      (Result<Handle<TypeFrameCurve<AnimatorableFloat            >>, TypeFrameCurve<AnimatorableFloat      >>),
+    MainTexTilloff      (Result<Handle<TypeFrameCurve<AnimatorableVec4             >>, TypeFrameCurve<AnimatorableVec4       >>),
+    MaskTexTilloff      (Result<Handle<TypeFrameCurve<AnimatorableVec4             >>, TypeFrameCurve<AnimatorableVec4       >>),
+    OpacityTexTilloff   (Result<Handle<TypeFrameCurve<AnimatorableVec4             >>, TypeFrameCurve<AnimatorableVec4       >>),
+    BoneOffset          (Result<Handle<TypeFrameCurve<AnimatorableUint             >>, TypeFrameCurve<AnimatorableUint       >>),
+    IndicesRange        (Result<Handle<TypeFrameCurve<IndiceRenderRange            >>, TypeFrameCurve<IndiceRenderRange      >>),
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]

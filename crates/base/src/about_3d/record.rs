@@ -176,8 +176,7 @@ pub fn cmd_play_call_3d(world: &mut World, data: &Vec<u8>, replayentities: &XHas
                     },
                     ERecord3D::CreateAnimationCurve(key, property, data, mode) => {
                         let key = pi_atom::Atom::from(&key).asset_u64();
-                        log::error!("Curve: {:?}", (key as u64, property, mode));
-                        CommandsExchangeD3::p3d_anime_curve_create(world, key, property, &data, mode);
+                        CommandsExchangeD3::p3d_anime_curve_create(world, key, property, &data, mode, &mut vec![]);
                     },
                     ERecord3D::MaterialRegist(key, uniforms, vs_define_code, fs_define_code, vs_code, fs_code, includes, instance_code, varyings, binds_defines_base) => {
                         CommandsExchangeD3::p3d_regist_material(world, key.as_ref(), &uniforms, vs_define_code.as_ref(), fs_define_code.as_ref(), vs_code.as_ref(), fs_code.as_ref(), &includes, instance_code.as_ref(), &varyings, binds_defines_base);
