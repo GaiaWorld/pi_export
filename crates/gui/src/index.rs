@@ -4,10 +4,12 @@ use std::{mem::transmute, sync::Arc};
 use std::any::Any;
 
 use pi_bevy_asset::ShareAssetMgr;
+use pi_bevy_render_plugin::PiRenderDevice;
 use pi_export_base::as_entity;
 use pi_export_base::export::await_last_frame;
 // use pi_export_base::gui::Gui;
 use pi_flex_layout::{prelude::CharNode, style::{PositionType, FlexWrap, FlexDirection, AlignContent, AlignItems, AlignSelf, JustifyContent, Display, Dimension}};
+use pi_render::renderer::texture_loader::texture_atlas::KeyAtlasDesc;
 use pi_render::rhi::asset::TextureRes;
 use pi_share::Share;
 use pi_slotmap::DefaultKey;
@@ -17,6 +19,7 @@ pub use pi_export_base::export::Engine;
 // pub use pi_export_system::blob::Blob;
 use pi_null::Null;
 use pi_ui_render::resource::PostProcessCmd;
+use pi_ui_render::system::base::draw_obj::image_texture_load::GuiTextureCombineAtlas2DMgr;
 use pi_ui_render::{
     components::{
         calc::{InPassId, IsShow, Quad, WorldMatrix, ZRange, EntityKey},
@@ -39,13 +42,25 @@ use pi_ui_render::system::res_load::ResSuccess;
 // pub use pi_export_system::blob::Blob;
 pub use pi_export_base::gui::*;
 pub use pi_export_base::export::Atom as Atom1;
-
+use pi_export_base::EngineConstants;
 
 #[cfg(target_arch = "wasm32")]
 use pi_async_rt::prelude::{LocalTaskRunner, LocalTaskRuntime};
 use pi_spatial::quad_helper::intersects;
 #[cfg(target_arch = "wasm32")]
 use wasm_bindgen::prelude::wasm_bindgen;
+
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
+pub fn ui_texture_combine_param(engine: &mut Engine, format: f64, maxlayer: f64, maxsize: f64, maxcount: f64) {
+	await_last_frame(engine);
+
+    let device = engine.world.get_single_res::<PiRenderDevice>().unwrap().0.clone();
+    let format = EngineConstants::texture_format(format);
+    let cmds = engine.world.get_single_res_mut::<GuiTextureCombineAtlas2DMgr>().unwrap();
+    cmds.0.append_desc(KeyAtlasDesc { format }, &device, maxlayer as u32, maxsize as u32, maxcount as usize);
+
+}
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
