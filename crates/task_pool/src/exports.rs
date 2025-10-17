@@ -58,7 +58,7 @@ impl TaskPool {
 	}
 
 	/// 修复队列状态
-	// #[pi_js_export]
+	#[pi_js_export]
 	pub fn repair_deque_state(&mut self, key: f64) {
 		let key = to_key(key);
 		if let Some(deque) = self.pool.get_deque(key) {
