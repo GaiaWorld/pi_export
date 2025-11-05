@@ -4,7 +4,9 @@ use pi_scene_shell::prelude::*;
 use pi_scene_context::prelude::*;
 use pi_scene_math::Vector3;
 
-use crate::{constants::EngineConstants, record::ERecordCMD};
+#[cfg(any(feature = "record", feature = "replay"))]
+use crate::{record::ERecordCMD};
+use crate::{constants::EngineConstants};
 pub use crate::commands::CommandsExchangeD3;
 use crate::{as_entity, as_f64};
 #[cfg(target_arch = "wasm32")]

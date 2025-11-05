@@ -4,6 +4,7 @@ use std::ops::Deref;
 use pi_scene_shell::prelude::*;
 use pi_scene_context::prelude::*;
 
+#[cfg(any(feature = "record", feature = "replay"))]
 use crate::record::ERecordCMD;
 use crate::{constants::EngineConstants};
 pub use crate::commands::CommandsExchangeD3;

@@ -6,7 +6,9 @@ use pi_scene_context::prelude::*;
 
 pub use pi_export_base::{export::{Engine, Atom}, constants::* };
 
-use crate::{as_dk, constants::EngineConstants, record::ERecordCMD};
+#[cfg(any(feature = "record", feature = "replay"))]
+use crate::{record::ERecordCMD};
+use crate::{as_dk, constants::EngineConstants};
 pub use crate::commands::CommandsExchangeD3;
 pub use crate::{as_entity, as_f64};
 #[cfg(target_arch = "wasm32")]

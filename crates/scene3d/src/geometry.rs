@@ -2,8 +2,8 @@
 use std::ops::{Range, Deref};
 
 use pi_export_base::export::VertexBufferRefs;
-#[cfg(feature = "record")]
-use pi_export_base::record::ERecord3D;
+#[cfg(any(feature = "record", feature = "replay"))]
+use pi_export_base::record::{ERecord3D, ERecordCMD};
 use pi_scene_shell::prelude::*;
 pub use pi_export_base::export::{Engine, Atom};
 use pi_scene_context::prelude::*;
@@ -15,7 +15,7 @@ use serde::{Deserialize, Serialize};
 
 pub use pi_export_base::about_3d::geometry::*;
 
-use crate::{constants::EngineConstants, record::ERecordCMD};
+use crate::{constants::EngineConstants};
 pub use crate::commands::CommandsExchangeD3;
 #[cfg(target_arch = "wasm32")]
 use wasm_bindgen::prelude::wasm_bindgen;

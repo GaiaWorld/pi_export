@@ -6,6 +6,7 @@ use pi_particle_system::prelude::{ECPUParticleSystemState, EParticleAttributeTyp
 use pi_render::asset::TAssetKeyU64;
 
 pub use crate::commands::CommandsExchangeD3;
+#[cfg(any(feature = "record", feature = "replay"))]
 use crate::record::ERecordCMD;
 pub use crate::{engine::{ActionSetScene3D, GLTFRes}, as_entity};
 

@@ -14,6 +14,7 @@ pub use pi_export_base::about_3d::mesh::*;
 
 use crate::constants::EngineConstants;
 pub use crate::commands::CommandsExchangeD3;
+#[cfg(any(feature = "record", feature = "replay"))]
 use crate::record::ERecordCMD;
 pub use crate::{as_entity, as_f64, geometry::GeometryMeta};
 #[cfg(target_arch = "wasm32")]

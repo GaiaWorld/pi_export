@@ -7,9 +7,16 @@ use nalgebra::Point2;
 use pi_flex_layout::prelude::Size;
 use pi_style::style::Aabb2;
 use pi_ui_render::resource::UserCommands;
+
+// use tracing::{info, instrument};
+// use tracing_subscriber::layer::SubscriberExt;
+// use tracing_tracy::TracyLayer;
 //
 #[cfg_attr(target_os = "android", ndk_glue::main(backtrace = "full"))]
-fn main() { pi_cmd_replay::framework::start(ExampleCommonPlay::new()) }
+fn main() { 
+    // brotli_decompressor::dictionary::init_brotli_dictionary(include_bytes!("./brotli_dictionary.bin").to_vec());
+    pi_cmd_replay::framework::start(ExampleCommonPlay::new()) 
+}
 
 #[test]
 // #[wasm_bindgen_test::wasm_bindgen_test]

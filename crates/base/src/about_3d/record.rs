@@ -14,6 +14,7 @@ use serde::{Serialize, Deserialize};
 use crate::{commands::CommandsExchangeD3, export::Engine};
 use pi_hash::XHashMap;
 
+#[cfg(any(feature = "record", feature = "replay"))]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum ERecordCMD {
     Dispose(f64)                       ,
@@ -86,6 +87,7 @@ pub enum ERecordCMD {
     SkinUse(f64, f64)                      ,
 }
 
+#[cfg(any(feature = "record", feature = "replay"))]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum ERecord3D {
     EngineState(bool)                  ,
@@ -112,6 +114,7 @@ pub struct Records3D {
     pub(crate) replayrendertargetkey: XHashMap<Entity, Entity>,
 }
 
+#[cfg(any(feature = "record", feature = "replay"))]
 pub fn cmd_play_call_3d(world: &mut World, data: &Vec<u8>, replayentities: &XHashMap<Entity, Entity>) {
     // return;
     match postcard::from_bytes::<Vec<ERecord3D>>(data) {
@@ -176,7 +179,7 @@ pub fn cmd_play_call_3d(world: &mut World, data: &Vec<u8>, replayentities: &XHas
                     },
                     ERecord3D::CreateAnimationCurve(key, property, data, mode) => {
                         let key = pi_atom::Atom::from(&key).asset_u64();
-                        CommandsExchangeD3::p3d_anime_curve_create(world, key, property, &data, mode, &mut vec![]);
+                        CommandsExchangeD3::p3d_anime_curve_create2(world, key, property, &data, mode);
                     },
                     ERecord3D::MaterialRegist(key, uniforms, vs_define_code, fs_define_code, vs_code, fs_code, includes, instance_code, varyings, binds_defines_base) => {
                         CommandsExchangeD3::p3d_regist_material(world, key.as_ref(), &uniforms, vs_define_code.as_ref(), fs_define_code.as_ref(), vs_code.as_ref(), fs_code.as_ref(), &includes, instance_code.as_ref(), &varyings, binds_defines_base);

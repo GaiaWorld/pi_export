@@ -66,33 +66,14 @@ pub enum EAnimeCurveTemp {
     LocalPosition       (Result<Handle<TypeFrameCurve<LocalPosition                >>, TypeFrameCurve<LocalPosition          >>),
     LocalRotation       (Result<Handle<TypeFrameCurve<LocalRotationQuaternion      >>, TypeFrameCurve<LocalRotationQuaternion>>),
     LocalScaling        (Result<Handle<TypeFrameCurve<LocalScaling                 >>, TypeFrameCurve<LocalScaling           >>), 
-    MainTexUScale       (Result<Handle<TypeFrameCurve<AnimatorableFloat            >>, TypeFrameCurve<AnimatorableFloat      >>), 
-    MainTexVScale       (Result<Handle<TypeFrameCurve<AnimatorableFloat            >>, TypeFrameCurve<AnimatorableFloat      >>),
-    MainTexUOffset      (Result<Handle<TypeFrameCurve<AnimatorableFloat            >>, TypeFrameCurve<AnimatorableFloat      >>), 
-    MainTexVOffset      (Result<Handle<TypeFrameCurve<AnimatorableFloat            >>, TypeFrameCurve<AnimatorableFloat      >>),
-    Alpha               (Result<Handle<TypeFrameCurve<AnimatorableFloat            >>, TypeFrameCurve<AnimatorableFloat      >>), 
-    MainColor           (Result<Handle<TypeFrameCurve<AnimatorableVec3             >>, TypeFrameCurve<AnimatorableVec3       >>), 
+    Float               (Result<Handle<TypeFrameCurve<AnimatorableFloat            >>, TypeFrameCurve<AnimatorableFloat      >>), 
     CameraOrthSize      (Result<Handle<TypeFrameCurve<CameraOrthSize               >>, TypeFrameCurve<CameraOrthSize         >>), 
     CameraFov           (Result<Handle<TypeFrameCurve<CameraFov                    >>, TypeFrameCurve<CameraFov              >>),
     Enable              (Result<Handle<TypeFrameCurve<Enable                       >>, TypeFrameCurve<Enable                 >>),
     LocalEulerAngles    (Result<Handle<TypeFrameCurve<LocalEulerAngles             >>, TypeFrameCurve<LocalEulerAngles       >>),
-    Intensity           (Result<Handle<TypeFrameCurve<AnimatorableFloat            >>, TypeFrameCurve<AnimatorableFloat      >>),
-    LightDiffuse        (Result<Handle<TypeFrameCurve<AnimatorableVec3             >>, TypeFrameCurve<AnimatorableVec3       >>),
-    AlphaCutoff         (Result<Handle<TypeFrameCurve<AnimatorableFloat            >>, TypeFrameCurve<AnimatorableFloat      >>),
-    CellId              (Result<Handle<TypeFrameCurve<AnimatorableFloat            >>, TypeFrameCurve<AnimatorableFloat      >>),
-    OpacityTexUScale    (Result<Handle<TypeFrameCurve<AnimatorableFloat            >>, TypeFrameCurve<AnimatorableFloat      >>),
-    OpacityTexVScale    (Result<Handle<TypeFrameCurve<AnimatorableFloat            >>, TypeFrameCurve<AnimatorableFloat      >>),
-    OpacityTexUOffset   (Result<Handle<TypeFrameCurve<AnimatorableFloat            >>, TypeFrameCurve<AnimatorableFloat      >>),
-    OpacityTexVOffset   (Result<Handle<TypeFrameCurve<AnimatorableFloat            >>, TypeFrameCurve<AnimatorableFloat      >>),
-    MaskCutoff          (Result<Handle<TypeFrameCurve<AnimatorableFloat            >>, TypeFrameCurve<AnimatorableFloat      >>),
-    MaskTexUScale       (Result<Handle<TypeFrameCurve<AnimatorableFloat            >>, TypeFrameCurve<AnimatorableFloat      >>),
-    MaskTexVScale       (Result<Handle<TypeFrameCurve<AnimatorableFloat            >>, TypeFrameCurve<AnimatorableFloat      >>),
-    MaskTexUOffset      (Result<Handle<TypeFrameCurve<AnimatorableFloat            >>, TypeFrameCurve<AnimatorableFloat      >>),
-    MaskTexVOffset      (Result<Handle<TypeFrameCurve<AnimatorableFloat            >>, TypeFrameCurve<AnimatorableFloat      >>),
-    MainTexTilloff      (Result<Handle<TypeFrameCurve<AnimatorableVec4             >>, TypeFrameCurve<AnimatorableVec4       >>),
-    MaskTexTilloff      (Result<Handle<TypeFrameCurve<AnimatorableVec4             >>, TypeFrameCurve<AnimatorableVec4       >>),
-    OpacityTexTilloff   (Result<Handle<TypeFrameCurve<AnimatorableVec4             >>, TypeFrameCurve<AnimatorableVec4       >>),
-    BoneOffset          (Result<Handle<TypeFrameCurve<AnimatorableUint             >>, TypeFrameCurve<AnimatorableUint       >>),
+    Vec3                (Result<Handle<TypeFrameCurve<AnimatorableVec3             >>, TypeFrameCurve<AnimatorableVec3       >>), 
+    Vec4                (Result<Handle<TypeFrameCurve<AnimatorableVec4             >>, TypeFrameCurve<AnimatorableVec4       >>),
+    Uint                (Result<Handle<TypeFrameCurve<AnimatorableUint             >>, TypeFrameCurve<AnimatorableUint       >>),
     IndicesRange        (Result<Handle<TypeFrameCurve<IndiceRenderRange            >>, TypeFrameCurve<IndiceRenderRange      >>),
 }
 
@@ -181,6 +162,7 @@ pub enum EAmountMode {
     CubicBezier     ,
 }
 
+#[inline(never)]
 fn number_to_easingmode(val: u8) -> pi_curves::easing::EEasingMode {
     match val {
         /*BackIn          = */ 0x01 => {
@@ -309,6 +291,28 @@ pub enum EFillMode {
     Both = 3,
 }
 
+#[inline]
+fn _curve_frame(
+    data: &[f32],
+    index: usize,
+    frames: &mut Vec<u16>,
+) -> (usize, u16, u16) {
+    let frame = data[index + 0] as FrameIndex;
+    curve_frame_index(frames, frame)
+}
+fn _curve_minmax(
+    data: &[f32],
+    index: usize,
+    frames: &mut Vec<u16>,
+) -> ((usize, u16, u16), CurveFrameValue<f32>) {
+    let frame = data[index + 0] as FrameIndex;
+    let intangent  = data[index + 1] as f32;
+    let value = data[index + 2] as f32;
+    let outtangent = data[index + 3] as f32;
+
+    let keyframe = CurveFrameValue::new(value, [intangent, outtangent]);
+    (curve_frame_index(frames, frame), keyframe)
+}
 pub fn curve<const N: usize, T: TValue<N> + FrameDataValue>(
     data: &[f32],
     mode: EAnimeCurve,
@@ -327,11 +331,7 @@ pub fn curve<const N: usize, T: TValue<N> + FrameDataValue>(
             let frames = (data.len() - head) / step;
             for i in 0..frames {
                 let index = head + i * step;
-                let frame = data[index + 0] as FrameIndex;
-                // log::warn!("Frame {:?}, data: {:?}", frame, T::newn(data, index + 1));
-
-                // curve.curve_frame_values_frame(frame, T::newn(data, index + 1));
-                let (idx, min, max) = curve_frame_index(&mut curve.frames, frame);
+                let (idx, min, max) = _curve_frame(data, index, &mut curve.frames);
                 curve.values.insert(idx, T::newn(data, index + 1));
                 minidx = min; maxidx = max;
             }
@@ -344,10 +344,7 @@ pub fn curve<const N: usize, T: TValue<N> + FrameDataValue>(
             let frames = (data.len() - head) / step;
             for i in 0..frames {
                 let index = head + i * step;
-                let frame = data[index + 0] as FrameIndex;
-
-                // curve.curve_frame_values_frame(frame, T::newn(data, index + 1));
-                let (idx, min, max) = curve_frame_index(&mut curve.frames, frame);
+                let (idx, min, max) = _curve_frame(data, index, &mut curve.frames);
                 curve.values.insert(idx, T::newn(data, index + 1));
                 minidx = min; maxidx = max;
             }
@@ -377,14 +374,7 @@ pub fn curve<const N: usize, T: TValue<N> + FrameDataValue>(
             let frames = (data.len() - head) / step;
             for i in 0..frames {
                 let index = head + i * step;
-                let frame = data[index + 0] as FrameIndex;
-                let intangent  = data[index + 1] as f32;
-                let value = data[index + 2] as f32;
-                let outtangent = data[index + 3] as f32;
-
-                // curve.curve_minmax_curve_frame(frame, value, intangent, outtangent);
-                let (idx, min, max) = curve_frame_index(&mut curve.frames, frame);
-                let keyframe = CurveFrameValue::new(value, [intangent, outtangent]);
+                let ((idx, min, max), keyframe) = _curve_minmax(data, index, &mut curve.frames);
                 curve.minmax_curve_values.insert(idx, keyframe);
                 minidx = min; maxidx = max;
             }
