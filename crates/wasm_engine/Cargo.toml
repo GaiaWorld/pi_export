@@ -46,6 +46,7 @@ pi_export_cache = { path = "../cache"}
 # wgpu = { path = "../../../wgpu/wgpu", features=["glsl", "webgl"] }
 # naga = { path = "../../../wgpu/naga", features=["glsl-in", "glsl-out", "compact"] }
 
+log = { version = "0.4" }
 # log = { version = "0.4", features = ["max_level_error"]}
 tracing = "0.1"
 
