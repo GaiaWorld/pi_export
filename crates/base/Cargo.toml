@@ -19,6 +19,7 @@ lazy_static = "1.5"
 pi_export_assets_mgr = {version = "0.1", registry = "yn", path = "../assets_mgr"}
 console_log = "1.0"
 crossbeam-channel = "0.5"
+# brotli-decompressor = { version = "5.0", path = "../rust-brotli-decompressor"}
 brotli-decompressor = "5.0"
 paste = "1.0"
 pi_atom = "0.6"

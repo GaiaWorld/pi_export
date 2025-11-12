@@ -1,6 +1,9 @@
 
 use std::ops::Deref;
 
+use pi_bevy_render_plugin::ShareFontSheet;
+use pi_export_base::{as_dk, as_f64_dk};
+use pi_render::font::FontId;
 use pi_scene_shell::prelude::*;
 use pi_scene_context::prelude::*;
 
@@ -275,5 +278,52 @@ pub fn p3d_mesh_bone_offset_arr(cmds: &mut CommandsExchangeD3, data: &[f64], len
         let instance: Entity = as_entity(data[i * size + 0]);
         CommandsExchangeD3::p3d_mesh_bone_offset(cmds, instance, val as u32);
         // cmds.mesh_valuestate.push(OpsAbstructMeshValueStateModify::ops(instance, EMeshValueStateModify::BoneOffset(val as u32)));
+    }
+}
+
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
+pub fn p3d_sdf_font_id(app: &mut Engine, cmds: &mut CommandsExchangeD3, fontname: &str, fontsize: f64, fontweight: f64) -> f64 {
+    #[cfg(feature = "replay")]
+    return ;
+
+
+    #[cfg(feature = "record")]
+    cmds.record(ERecordCMD::Font(fontname.to_string(), fontsize as usize, fontweight as usize));
+
+    let _fontname = pi_atom::Atom::from(fontname);
+    let _fontsize = fontsize as usize;
+    let _fontweight = fontweight as usize;
+
+    let fontsheet = app.world.get_resource_mut::<ShareFontSheet>().unwrap();
+    let fontid = fontsheet.borrow_mut().font_id(pi_render::font::Font::new(_fontname, _fontsize, _fontweight));
+    as_f64_dk(&fontid.0)
+}
+
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
+pub fn p3d_sdf_char_glyphid(app: &mut Engine, cmds: &mut CommandsExchangeD3, font: f64, char: &str, fontsize: f64, line_height: f64, scaleoffset: &mut [f32], uvtilloff: &mut [f32]) -> Option<f64> {
+    #[cfg(feature = "replay")]
+    return ;
+
+
+    let fontsheet = app.world.get_resource_mut::<ShareFontSheet>().unwrap();
+    let mut fsheet = fontsheet.borrow_mut();
+    let char = char.chars().next();
+    if let Some(char) = char {
+    let f = FontId(as_dk(&font));
+
+    #[cfg(feature = "record")]
+    cmds.record(ERecordCMD::FontChar(f.clone(), char.clone(), fontsize as f32, line_height as f32));
+
+    if let Some(id) = fsheet.glyph_id(f, char) {
+        fsheet.measure_width(f, char);
+        ShareFontSheet::char_calc(&mut fsheet, f, char, scaleoffset, uvtilloff, line_height as f32, fontsize as f32, 1., 32., 32., 1.);
+        Some(as_f64_dk(&id.0))
+    } else {
+        None
+    }
+    } else {
+        None
     }
 }

@@ -1417,8 +1417,8 @@ impl CommandsExchangeD3 {
                         anisotropy_clamp,
                         border_color,
                     ),
-                    url: EKeyTexture::ImageFrame(KeyImageTextureViewFrame::new(
-                        KeyImageTextureFrame { url: pi_atom::Atom::from(url.to_string()), cancombine, file: isfile, compressed },
+                    url: if isfile { EKeyTexture::ImageFrame(KeyImageTextureViewFrame::new(
+                        KeyImageTextureFrame { url: url.clone(), cancombine, file: isfile, compressed },
                         TextureViewDesc {
                             // aspect: wgpu::TextureAspect::All,
                             base_mip_level: 0,
@@ -1426,7 +1426,9 @@ impl CommandsExchangeD3 {
                             base_array_layer: 0,
                             array_layer_count: None,
                         }
-                    )),
+                    ))} else {
+                        EKeyTexture::Tex(url.clone())
+                    },
                     texture_sample: wgpu::TextureSampleType::Float { filterable: true },
                     sampler_bind_type: if filter { wgpu::SamplerBindingType::Filtering } else { wgpu::SamplerBindingType::NonFiltering },
                 }

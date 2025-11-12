@@ -13,6 +13,8 @@ use pi_world::world::{Entity, World};
 use serde::{Serialize, Deserialize};
 use crate::{commands::CommandsExchangeD3, export::Engine};
 use pi_hash::XHashMap;
+use pi_bevy_render_plugin::ShareFontSheet;
+use pi_render::font::FontId;
 
 #[cfg(any(feature = "record", feature = "replay"))]
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -106,11 +108,14 @@ pub enum ERecord3D {
     RenderScreenWithPostprocess(bool),
     CreateVertexBuffer(String, Vec<u8>)          ,
     CreateIndiceBuffer(String, Vec<u8>)          ,
+    FontId(String, usize, usize)          ,
+    FontChar(FontId, char, f32, f32)          ,
     CMD(ERecordCMD),
 }
 
 #[derive(Default, Clone, Resource)]
 pub struct Records3D {
+    a: FontId,
     pub(crate) replayrendertargetkey: XHashMap<Entity, Entity>,
 }
 
@@ -217,6 +222,20 @@ pub fn cmd_play_call_3d(world: &mut World, data: &Vec<u8>, replayentities: &XHas
                         let actions = world.get_resource_mut::<ActionListCustomBuffer>().unwrap();
                         let key = KeyVertexBuffer::from(key.as_str());
                         actions.push((key, data, true));
+                    },
+                    ERecord3D::FontId(key, fontsize, fontweight) => {
+                        let fontsheet = world.get_resource_mut::<ShareFontSheet>().unwrap();
+                        let fontid = fontsheet.borrow_mut().font_id(pi_render::font::Font::new(pi_atom::Atom::from(key), fontsize, fontweight));
+                    },
+                    ERecord3D::FontChar(f, char, fontsize, line_height) => {
+                        let mut scaleoffset = [f32;4];
+                        let mut uvtilloff = [f32;4];
+                        let fontsheet = world.get_resource_mut::<ShareFontSheet>().unwrap();
+                        let mut fsheet = fontsheet.borrow_mut();
+                        if let Some(id) = fsheet.glyph_id(f, char) {
+                            fsheet.measure_width(f, char);
+                            ShareFontSheet::char_calc(&mut fsheet, f, char, &mut scaleoffset, &mut uvtilloff, line_height, fontsize, 1., 32., 32., 1.);
+                        }
                     },
                     ERecord3D::CMD(cmd) => {
                         CommandsExchangeD3::replay(world, cmd, replayentities);
