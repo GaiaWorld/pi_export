@@ -32,28 +32,28 @@ pub fn create_gui(
 ) -> Gui {
     use pi_export_base::export::await_last_frame;
     use pi_render::font::FontType;
+    use pi_bevy_render_plugin::PlayState;
 
 	await_last_frame(engine);
 
     let mut gui = Gui::new(engine);
+	let record = engine.world.get_single_res::<PlayState>().unwrap();
+	let debug = record.option;
 
 	#[cfg(feature="record")]
 	{
-    use pi_bevy_render_plugin::PlayState;
 
-		let record = engine.world.get_single_res::<PlayState>().unwrap();
-		let debug = record.option;
-		engine.add_plugins(UiPlugin {cmd_trace: debug.clone(), font_type: FontType::Sdf2});
-		*gui.record_option() = debug;
-		if let pi_bevy_render_plugin::cmd_play::TraceOption::Record = debug {
-			gui.commands_mut().is_record = true;
-			let com = engine.world.get_single_res_mut::<pi_ui_render::prelude::UserCommands>().unwrap();
-            com.is_record = true;
-		}
+		// engine.add_plugins(UiPlugin {cmd_trace: debug.clone(), font_type: FontType::Sdf2});
+		// *gui.record_option() = debug;
+		// if let pi_bevy_render_plugin::cmd_play::TraceOption::Record = debug {
+		// 	gui.commands_mut().is_record = true;
+		// 	let com = engine.world.get_single_res_mut::<pi_ui_render::prelude::UserCommands>().unwrap();
+        //     com.is_record = true;
+		// }
 	}
 
 	#[cfg(not(feature="record"))]
-    engine.add_plugins(UiPlugin{ font_type: FontType::Sdf2 });
+    engine.add_plugins(UiPlugin{ cmd_trace: debug.clone(), font_type: FontType::Sdf2 });
 
 	// sdf
 	// let fun: Arc<dyn Fn(f64, f64, Vec<u8>, Option<Box<dyn FnOnce(Result<u32, String>) + Send + Sync + 'static>>) + Send + Sync + 'static>  = unsafe { transmute(load_sdf_fun)};

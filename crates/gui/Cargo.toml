@@ -6,8 +6,9 @@ edition = "2021"
 
 
 [features]
-default = ["pi_js_export", "record"]
+default = ["pi_js_export"]
 pi_js_export = []
+spector = ["pi_export_base/spector"]
 trace = ["pi_ui_render/trace"]
 record = ["pi_ui_render/debug"]
 

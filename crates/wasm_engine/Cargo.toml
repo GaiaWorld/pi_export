@@ -17,10 +17,11 @@ pi_js_export = []
 [dependencies]
 pi_hal = {version = "0.3", registry = "yn"}
 # pi_atom = {version = "0.6"}
-# pi_arr = { version = "=0.20", features = ["rc"]}
-pi_sdf = {version = "0.1", registry = "yn"}
+pi_arr = { version = "0.30", features = ["rc"]}
+pi_sdf = {version = "0.1.33", registry = "yn"}
 async-executor = "=1.6.0" #1.7.1bug
-pi_export_gui = { path = "../gui", default-features=false, features=["record"] }
+# pi_export_gui = { path = "../gui", default-features=false, features=["record"] }
+pi_export_gui = { path = "../gui", default-features=false }
 pi_export_task_pool = { path = "../task_pool" }
 # pi_export_astar = { path = "../astar"}
 # pi_export_base = { path = "../base", features = ["allow_not_run"]}
@@ -42,10 +43,14 @@ pi_export_cache = { path = "../cache"}
 # naga = { path = "../../../wgpu/naga", features=["glsl-in", "wgsl-in", "spv-in", "compact"] }
 # wgpu = { path = "../../../wgpu/wgpu" }
 
-log = "0.4"
+# wgpu = { path = "../../../wgpu/wgpu", features=["glsl", "webgl"] }
+# naga = { path = "../../../wgpu/naga", features=["glsl-in", "glsl-out", "compact"] }
+
+log = { version = "0.4" }
+# log = { version = "0.4", features = ["max_level_error"]}
 tracing = "0.1"
 
-# pi_key_alloter = "=0.6.1"
+pi_key_alloter = "=0.6.1"
 
 # 添加webgl feature
 # wgpu1 = { version = "0.19", package = "wgpu", default-features = false, features = ["glsl", "webgl"] }
@@ -89,10 +94,9 @@ wgpu1 = { version = "25.0.*", package = "wgpu", default-features = false, featur
 
 # # `wasm-opt` is on by default in for the release profile, but it can be
 # # disabled by setting it to `false`
-# [package.metadata.wasm-pack.profile.release]
-# # wasm-opt = ['-Oz']
-# wasm-opt = false
-# debug = false
+[package.metadata.wasm-pack.profile.release]
+wasm-opt = ['-Oz']
+debug = false
 # debug-assertions = false
 # overflow-checks = false
 # # strip = true

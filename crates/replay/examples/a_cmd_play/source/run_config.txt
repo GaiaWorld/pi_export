@@ -1,7 +1,7 @@
 play_path=D://0_js/0_direct_new/yszz/dst;
-play_url=http://192.168.35.124:81;
+play_url=http://192.168.35.193:81;
 play_way=url;
-play_version=1759989715941;
+play_version=1761100684328;
 max_index=1;
 speed=0.5;
 play_mod=repeat_last2;

@@ -9,9 +9,8 @@ license = "MIT OR Apache-2.0"
 keywords = [""]
 
 [features]
-default 				= ["pi_js_export", "record"]
+default 				= ["pi_js_export"]
 pi_js_export 			= []
-spector 			    = []
 record 			        = []
 
 [dependencies]

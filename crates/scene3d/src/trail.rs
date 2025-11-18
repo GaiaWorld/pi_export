@@ -3,6 +3,7 @@ use pi_trail_renderer::{OpsTrail, OpsTrailAgeControl};
 
 pub use crate::commands::CommandsExchangeD3;
 pub use crate::as_entity;
+#[cfg(any(feature = "record", feature = "replay"))]
 use crate::record::ERecordCMD;
 
 #[cfg(target_arch = "wasm32")]

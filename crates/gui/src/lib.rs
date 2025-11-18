@@ -84,6 +84,7 @@ use wasm_bindgen::prelude::wasm_bindgen;
 
 #[cfg(not(target_arch = "wasm32"))]
 pub mod native_index;
+#[cfg(feature = "spector")]
 pub mod debug;
 pub mod rr;
 // #[cfg(target_arch = "wasm32")]

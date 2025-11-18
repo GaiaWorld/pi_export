@@ -6,6 +6,7 @@ use pi_scene_shell::prelude::*;
 use crate::as_f64;
 pub use crate::commands::CommandsExchangeD3;
 pub use crate::as_entity;
+#[cfg(any(feature = "record", feature = "replay"))]
 use crate::record::ERecordCMD;
 
 #[cfg(target_arch = "wasm32")]

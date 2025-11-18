@@ -5,7 +5,9 @@ use pi_scene_context::prelude::*;
 use pi_slotmap::Key;
 
 pub use crate::commands::CommandsExchangeD3;
-use crate::{as_entity, as_f64, record::ERecordCMD};
+#[cfg(any(feature = "record", feature = "replay"))]
+use crate::{record::ERecordCMD};
+use crate::{as_entity, as_f64};
 #[cfg(target_arch = "wasm32")]
 use wasm_bindgen::prelude::wasm_bindgen;
 

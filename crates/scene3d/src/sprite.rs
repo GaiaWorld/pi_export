@@ -1,8 +1,8 @@
 
 use std::ops::Deref;
 
-#[cfg(feature = "record")]
-use pi_export_base::record::ERecord3D;
+#[cfg(any(feature = "record", feature = "replay"))]
+use pi_export_base::record::{ERecord3D, ERecordCMD};
 use pi_scene_context::pass::{ESkinBonesPerVertex, WorldResourceTemp};
 use pi_scene_context::prelude::*;
 use pi_scene_shell::prelude::*;
@@ -11,7 +11,6 @@ pub use pi_export_base::{export::{Engine, Atom}, constants::* };
 use crate::as_f64;
 pub use crate::commands::CommandsExchangeD3;
 pub use crate::as_entity;
-use crate::record::ERecordCMD;
 
 #[cfg(target_arch = "wasm32")]
 use wasm_bindgen::prelude::wasm_bindgen;

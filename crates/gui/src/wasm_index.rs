@@ -78,10 +78,10 @@ pub fn create_gui(
 	debug: f64,
 ) -> Gui {
     let mut gui = Gui::new(engine);
+	let debug: TraceOption = engine.world.get_single_res::<PlayState>().unwrap().option;
 
     #[cfg(feature="record")]
 	{
-		let debug: TraceOption = engine.world.get_single_res::<PlayState>().unwrap().option;
 		engine.app_mut().add_plugins(UiPlugin {cmd_trace: debug.clone(), font_type: FontType::Sdf2});
 		*gui.record_option() = debug;
         if let TraceOption::Record = debug {
@@ -92,7 +92,7 @@ pub fn create_gui(
 	}
 
 	#[cfg(not(feature="record"))]
-    engine.app_mut().add_plugins(UiPlugin {font_type: FontType::Sdf2});
+    engine.app_mut().add_plugins(UiPlugin {cmd_trace: debug.clone(), font_type: FontType::Sdf2});
 
     pi_ui_render::tools::init_showbox_pipeline(&mut engine.app_mut().world);
     engine.app_mut().add_startup_system(pi_world::schedule::End, pi_ui_render::tools::init_show_box_node);

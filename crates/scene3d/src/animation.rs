@@ -1,8 +1,8 @@
 
 use std::{mem::{replace, transmute}, fmt::Debug};
 use js_proxy_gen_macro::pi_js_export;
-#[cfg(feature = "record")]
-use pi_export_base::record::ERecord3D;
+#[cfg(any(feature = "record", feature = "replay"))]
+use pi_export_base::record::{ERecord3D, ERecordCMD};
 use pi_gltf2_load::TValue;
 pub use pi_export_base::export::Atom;
 
@@ -14,7 +14,7 @@ use pi_scene_context::prelude::*;
 use pi_slotmap::DefaultKey;
 use serde::{Serialize, Deserialize};
 pub use crate::engine::ActionSetScene3D;
-use crate::{as_entity, as_f64, as_f64_dk, record::{ERecordCMD}};
+use crate::{as_entity, as_f64, as_f64_dk};
 pub use crate::commands::CommandsExchangeD3;
 pub use pi_export_base::about_3d::animation::*;
 use pi_3d::TActionSet;

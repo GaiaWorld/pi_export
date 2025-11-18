@@ -199,6 +199,7 @@ impl Atom {
 #[cfg_attr(target_arch = "wasm32", wasm_bindgen)]
 #[cfg(feature = "pi_js_export")]
 pub fn set_log_filter(engine: &mut Engine, filter: &str) {
+	#[cfg(feature = "spector")]
 	if let Some(handle) = engine.app_mut().world.get_single_res_mut::<pi_bevy_log::LogFilterHandle>() {
 		if let Ok(filter_layer) = tracing_subscriber::EnvFilter::try_new(filter) {
 			let _ = handle.0.modify(|filter| *filter = filter_layer);
@@ -687,3 +688,10 @@ pub fn set_frame_pixel_ratio(app: &mut Engine, pixel_ratio: f32) {
 		app.world.insert_single_res(PixelRatio(pixel_ratio.clamp(0.2, 1.0)));
 	}
 }
+
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+pub fn init_brotli_dictionary(data: &[u8]) {
+	use brotli_decompressor::dictionary;
+	// dictionary::init_brotli_dictionary(data.to_vec());
+}
+

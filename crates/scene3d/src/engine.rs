@@ -2,8 +2,8 @@ use std::{mem::transmute, ops::{Deref, DerefMut}};
 
 // use default_render::SingleIDBaseDefaultMaterial;
 use pi_3d::PluginBundleDefault;
-#[cfg(feature = "record")]
-use pi_export_base::record::ERecord3D;
+#[cfg(any(feature = "record", feature = "replay"))]
+use pi_export_base::record::{ERecord3D, ERecordCMD};
 use pi_scene_shell::prelude::*;
 pub use pi_export_base::export::Engine;
 use pi_gltf2_load::{GLTF, PluginGLTF2Res, KeyGLTF};
@@ -18,7 +18,7 @@ use serde::{Deserialize, Serialize};
 
 pub use pi_export_base::about_3d::engine::*;
 
-use crate::{as_entity, as_f64, record::ERecordCMD};
+use crate::{as_entity, as_f64};
 pub use crate::commands::CommandsExchangeD3;
 #[cfg(target_arch = "wasm32")]
 use wasm_bindgen::prelude::wasm_bindgen;

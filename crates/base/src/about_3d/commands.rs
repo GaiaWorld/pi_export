@@ -13,12 +13,14 @@ use pi_trail_renderer::*;
 use pi_hash::XHashMap;
 use pi_curves::curve::frame::KeyFrameCurveValue;
 pub use super::engine::ActionSetScene3D;
-use super::{animation::{EAmountMode, EFillMode, ELoopMode}, as_entity, as_f64, cmd_call::_amountcalc, engine::{GLTFRes, GlobalState}, mesh::{GeometryMeta, VInstanceAttributes}, node_materials::{MaterialUniformDefines, NodeMaterialBlock, NodematerialIncludes, P3DShaderMeta, P3DShaderVaryings}, record::{ERecordCMD}};
+use super::{animation::{EAmountMode, EFillMode, ELoopMode}, as_entity, as_f64, cmd_call::_amountcalc, engine::{GLTFRes, GlobalState}, mesh::{GeometryMeta, VInstanceAttributes}, node_materials::{MaterialUniformDefines, NodeMaterialBlock, NodematerialIncludes, P3DShaderMeta, P3DShaderVaryings},};
+#[cfg(any(feature = "record", feature = "replay"))]
+use super::record::{ERecordCMD, ERecord3D};
 use super::animation::EAnimePropertyID;
 use super::animation::EAnimeCurve;
 use super::animation::curve;
 use super::constants::EngineConstants;
-use crate::{constants::ContextConstants, record::ERecord3D, EAnimeCurveTemp};
+use crate::{constants::ContextConstants, EAnimeCurveTemp};
 use pi_mesh_builder::{quad::QuadBuilder, cube::CubeBuilder};
 use pi_node_materials::prelude::NodeMaterialBuilder;
 use pi_node_materials::NodeMaterialBlocks;
@@ -36,6 +38,7 @@ enum AnimCurveTemp {
 #[pi_js_export]
 #[derive(Default)]
 pub struct CommandsExchangeD3 {
+    #[cfg(any(feature = "record", feature = "replay"))]
     pub(crate) recordframes: Vec<ERecord3D>,
 
     pub(crate) scene_create: ActionListSceneCreate,
@@ -462,27 +465,34 @@ impl CommandsExchangeD3 {
     pub fn rendertarget_f64(replayrendertargetkey: &XHashMap<Entity, Entity>, entity: f64) -> f64 {
         as_f64(&replayrendertargetkey.get(&as_entity(entity)).unwrap())
     }
+    #[cfg(feature = "record")]
     pub fn record_create(world: &mut World, entity: f64) {
         world.get_resource_mut::<Records>().unwrap().record_create(as_entity(entity));
     }
     pub fn traceoption(&mut self, val: TraceOption) {
         self.traceoption = val;
     }
+    #[cfg(feature = "record")]
     pub fn record2(&mut self, cmd: ERecord3D) {
         match self.traceoption {
             TraceOption::Record => self.recordframes.push(cmd),
             _ => {}
         }
     }
+    
+    #[cfg(any(feature = "record", feature = "replay"))]
     pub fn record(&mut self, cmd: ERecordCMD) {
         match self.traceoption {
             TraceOption::Record => self.recordframes.push(ERecord3D::CMD(cmd)),
             _ => {}
         }
     }
+    
+    #[cfg(any(feature = "record", feature = "replay"))]
     pub fn read_record(&mut self) -> Vec<ERecord3D> {
         replace(&mut self.recordframes, vec![]) 
     }
+    #[cfg(feature = "replay")]
     pub fn replay<T: TActionSet>(cmds: &mut T, cmd: ERecordCMD, replayentities: & XHashMap<Entity, Entity>) {
         match cmd {
             ERecordCMD::PARTICLESYS(scene, entity, trailmesh, trailgeo, key, color_attr_key, tilloff_attr_key, update_buffer_interval_frame) => {
@@ -1005,83 +1015,6 @@ impl CommandsExchangeD3 {
                 record.push(EAnimeCurveTemp::LocalEulerAngles(result));
 
             },
-            EAnimePropertyID::Alpha               => {
-                let v = curve::<1, AnimatorableFloat>(data,  mode);
-                let result = cmds.float().insert(key, TypeFrameCurve(v));
-                isok = result.is_ok();
-                record.push(EAnimeCurveTemp::Alpha(result));
-
-            },
-            EAnimePropertyID::MainColor           => {
-                let v = curve::<3, AnimatorableVec3>(data,  mode);
-                let result = cmds.vec3s().insert(key, TypeFrameCurve(v));
-                isok = result.is_ok();
-                record.push(EAnimeCurveTemp::MainColor(result));
-
-            },
-            EAnimePropertyID::MainTexUScale       => {
-                let v = curve::<1, AnimatorableFloat>(data,  mode);
-                let result = cmds.float().insert(key, TypeFrameCurve(v));
-                isok = result.is_ok();
-                record.push(EAnimeCurveTemp::MainTexUScale(result));
-
-            },
-            EAnimePropertyID::MainTexVScale       => {
-                let v = curve::<1, AnimatorableFloat>(data,  mode);
-                let result = cmds.float().insert(key, TypeFrameCurve(v));
-                isok = result.is_ok();
-                record.push(EAnimeCurveTemp::MainTexVScale(result));
-
-            },
-            EAnimePropertyID::MainTexUOffset      => {
-                let v = curve::<1, AnimatorableFloat>(data,  mode);
-                let result = cmds.float().insert(key, TypeFrameCurve(v));
-                isok = result.is_ok();
-                record.push(EAnimeCurveTemp::MainTexUOffset(result));
-
-            },
-            EAnimePropertyID::MainTexVOffset      => {
-                let v = curve::<1, AnimatorableFloat>(data,  mode);
-                let result = cmds.float().insert(key, TypeFrameCurve(v));
-                isok = result.is_ok();
-                record.push(EAnimeCurveTemp::MainTexVOffset(result));
-
-            },
-            EAnimePropertyID::OpacityTexUScale    => {
-                let v = curve::<1, AnimatorableFloat>(data,  mode);
-                let result = cmds.float().insert(key, TypeFrameCurve(v));
-                isok = result.is_ok();
-                record.push(EAnimeCurveTemp::OpacityTexUScale(result));
-
-            },
-            EAnimePropertyID::OpacityTexVScale    => {
-                let v = curve::<1, AnimatorableFloat>(data,  mode);
-                let result = cmds.float().insert(key, TypeFrameCurve(v));
-                isok = result.is_ok();
-                record.push(EAnimeCurveTemp::OpacityTexVScale(result));
-
-            },
-            EAnimePropertyID::OpacityTexUOffset   => {
-                let v = curve::<1, AnimatorableFloat>(data,  mode);
-                let result = cmds.float().insert(key, TypeFrameCurve(v));
-                isok = result.is_ok();
-                record.push(EAnimeCurveTemp::OpacityTexUOffset(result));
-
-            },
-            EAnimePropertyID::OpacityTexVOffset   => {
-                let v = curve::<1, AnimatorableFloat>(data,  mode);
-                let result = cmds.float().insert(key, TypeFrameCurve(v));
-                isok = result.is_ok();
-                record.push(EAnimeCurveTemp::OpacityTexVOffset(result));
-
-            },
-            EAnimePropertyID::AlphaCutoff         => {
-                let v = curve::<1, AnimatorableFloat>(data,  mode);
-                let result = cmds.float().insert(key, TypeFrameCurve(v));
-                isok = result.is_ok();
-                record.push(EAnimeCurveTemp::AlphaCutoff(result));
-
-            },
             EAnimePropertyID::CameraFov           => {
                 let v = curve::<1, CameraFov>(data,  mode);
                 let result = cmds.camerafov().insert(key, TypeFrameCurve(v));
@@ -1096,46 +1029,33 @@ impl CommandsExchangeD3 {
                 record.push(EAnimeCurveTemp::CameraOrthSize(result));
 
             },
-            EAnimePropertyID::LightDiffuse        => {
+            EAnimePropertyID::MainColor
+            | EAnimePropertyID::LightDiffuse        => {
                 let v = curve::<3, AnimatorableVec3>(data,  mode);
                 let result = cmds.vec3s().insert(key, TypeFrameCurve(v));
                 isok = result.is_ok();
-                record.push(EAnimeCurveTemp::LightDiffuse(result));
+                record.push(EAnimeCurveTemp::Vec3(result));
 
             },
-            EAnimePropertyID::MaskTexUScale       => {
+            EAnimePropertyID::Alpha
+            | EAnimePropertyID::MainTexUScale
+            | EAnimePropertyID::MainTexVScale
+            | EAnimePropertyID::MainTexUOffset
+            | EAnimePropertyID::MainTexVOffset
+            | EAnimePropertyID::OpacityTexUScale
+            | EAnimePropertyID::OpacityTexVScale
+            | EAnimePropertyID::OpacityTexUOffset
+            | EAnimePropertyID::OpacityTexVOffset
+            | EAnimePropertyID::AlphaCutoff
+            | EAnimePropertyID::MaskTexUScale
+            | EAnimePropertyID::MaskTexVScale
+            | EAnimePropertyID::MaskTexUOffset
+            | EAnimePropertyID::MaskTexVOffset
+            | EAnimePropertyID::MaskCutoff          => {
                 let v = curve::<1, AnimatorableFloat>(data,  mode);
                 let result = cmds.float().insert(key, TypeFrameCurve(v));
                 isok = result.is_ok();
-                record.push(EAnimeCurveTemp::MaskTexUScale(result));
-
-            },
-            EAnimePropertyID::MaskTexVScale       => {
-                let v = curve::<1, AnimatorableFloat>(data,  mode);
-                let result = cmds.float().insert(key, TypeFrameCurve(v));
-                isok = result.is_ok();
-                record.push(EAnimeCurveTemp::MaskTexVScale(result));
-
-            },
-            EAnimePropertyID::MaskTexUOffset      => {
-                let v = curve::<1, AnimatorableFloat>(data,  mode);
-                let result = cmds.float().insert(key, TypeFrameCurve(v));
-                isok = result.is_ok();
-                record.push(EAnimeCurveTemp::MaskTexUOffset(result));
-
-            },
-            EAnimePropertyID::MaskTexVOffset      => {
-                let v = curve::<1, AnimatorableFloat>(data,  mode);
-                let result = cmds.float().insert(key, TypeFrameCurve(v));
-                isok = result.is_ok();
-                record.push(EAnimeCurveTemp::MaskTexVOffset(result));
-
-            },
-            EAnimePropertyID::MaskCutoff          => {
-                let v = curve::<1, AnimatorableFloat>(data,  mode);
-                let result = cmds.float().insert(key, TypeFrameCurve(v));
-                isok = result.is_ok();
-                record.push(EAnimeCurveTemp::MaskCutoff(result));
+                record.push(EAnimeCurveTemp::Float(result));
 
             },
             EAnimePropertyID::Enable            => {
@@ -1149,7 +1069,7 @@ impl CommandsExchangeD3 {
                 let v = curve::<1, AnimatorableUint>(data,  mode);
                 let result = cmds.uints().insert(key, TypeFrameCurve(v));
                 isok = result.is_ok();
-                record.push(EAnimeCurveTemp::BoneOffset(result));
+                record.push(EAnimeCurveTemp::Uint(result));
 
             },
             EAnimePropertyID::IndicesRange        => {
@@ -1165,26 +1085,105 @@ impl CommandsExchangeD3 {
             EAnimePropertyID::CellId => {
                 isok =  false;
             },
-            EAnimePropertyID::MainTexTilloff        => {
+            EAnimePropertyID::MainTexTilloff
+            | EAnimePropertyID::MaskTexTilloff
+            | EAnimePropertyID::OpacityTexTilloff        => {
                 let v = curve::<4, AnimatorableVec4>(data,  mode);
                 let result = cmds.vec4s().insert(key, TypeFrameCurve(v));
                 isok = result.is_ok();
-                record.push(EAnimeCurveTemp::MainTexTilloff(result));
-            },
-            EAnimePropertyID::MaskTexTilloff        => {
-                let v = curve::<4, AnimatorableVec4>(data,  mode);
-                let result = cmds.vec4s().insert(key, TypeFrameCurve(v));
-                isok = result.is_ok();
-                record.push(EAnimeCurveTemp::MaskTexTilloff(result));
-            },
-            EAnimePropertyID::OpacityTexTilloff        => {
-                let v = curve::<4, AnimatorableVec4>(data,  mode);
-                let result = cmds.vec4s().insert(key, TypeFrameCurve(v));
-                isok = result.is_ok();
-                record.push(EAnimeCurveTemp::OpacityTexTilloff(result));
+                record.push(EAnimeCurveTemp::Vec4(result));
             },
         }
         isok
+    }
+    
+    pub fn p3d_anime_curve_create2(cmds: &mut World, key: u64, property: EAnimePropertyID, data: &[f32], mode: EAnimeCurve) -> bool {
+        match property {
+            EAnimePropertyID::LocalPosition       => {
+                let v = curve::<3, LocalPosition>(data,  mode);
+                let result = cmds.position().insert(key, TypeFrameCurve(v));
+                result.is_ok()
+            },
+            EAnimePropertyID::LocalScaling        => {
+                let v = curve::<3, LocalScaling>(data,  mode);
+                let result = cmds.scaling().insert(key, TypeFrameCurve(v));
+                result.is_ok()
+
+            },
+            EAnimePropertyID::LocalRotation    => {
+                let v = curve::<4, LocalRotationQuaternion>(data,  mode);
+                let result = cmds.quaternion().insert(key, TypeFrameCurve(v));
+                result.is_ok()
+            },
+            EAnimePropertyID::LocalEulerAngles    => {
+                let v = curve::<3, LocalEulerAngles>(data,  mode);
+                let result = cmds.euler().insert(key, TypeFrameCurve(v));
+                result.is_ok()
+            },
+            EAnimePropertyID::CameraFov           => {
+                let v = curve::<1, CameraFov>(data,  mode);
+                let result = cmds.camerafov().insert(key, TypeFrameCurve(v));
+                result.is_ok()
+            },
+            EAnimePropertyID::CameraOrthSize      => {
+                let v = curve::<1, CameraOrthSize>(data,  mode);
+                let result = cmds.camerasize().insert(key, TypeFrameCurve(v));
+                result.is_ok()
+            },
+            EAnimePropertyID::MainColor
+            | EAnimePropertyID::LightDiffuse        => {
+                let v = curve::<3, AnimatorableVec3>(data,  mode);
+                let result = cmds.vec3s().insert(key, TypeFrameCurve(v));
+                result.is_ok()
+            },
+            EAnimePropertyID::Alpha
+            | EAnimePropertyID::MainTexUScale
+            | EAnimePropertyID::MainTexVScale
+            | EAnimePropertyID::MainTexUOffset
+            | EAnimePropertyID::MainTexVOffset
+            | EAnimePropertyID::OpacityTexUScale
+            | EAnimePropertyID::OpacityTexVScale
+            | EAnimePropertyID::OpacityTexUOffset
+            | EAnimePropertyID::OpacityTexVOffset
+            | EAnimePropertyID::AlphaCutoff
+            | EAnimePropertyID::MaskTexUScale
+            | EAnimePropertyID::MaskTexVScale
+            | EAnimePropertyID::MaskTexUOffset
+            | EAnimePropertyID::MaskTexVOffset
+            | EAnimePropertyID::MaskCutoff          => {
+                let v = curve::<1, AnimatorableFloat>(data,  mode);
+                let result = cmds.float().insert(key, TypeFrameCurve(v));
+                result.is_ok()
+            },
+            EAnimePropertyID::Enable            => {
+                let v = curve::<1, Enable>(data,  mode);
+                let result = cmds.enable().insert(key, TypeFrameCurve(v));
+                result.is_ok()
+            },
+            EAnimePropertyID::BoneOffset          => {
+                let v = curve::<1, AnimatorableUint>(data,  mode);
+                let result = cmds.uints().insert(key, TypeFrameCurve(v));
+                result.is_ok()
+            },
+            EAnimePropertyID::IndicesRange        => {
+                let v = curve::<2, IndiceRenderRange>(data,  mode);
+                let result = cmds.indicerange_curves().insert(key, TypeFrameCurve(v));
+                result.is_ok()
+            },
+            EAnimePropertyID::Intensity => {
+                false
+            },
+            EAnimePropertyID::CellId => {
+                false
+            },
+            EAnimePropertyID::MainTexTilloff
+            | EAnimePropertyID::MaskTexTilloff
+            | EAnimePropertyID::OpacityTexTilloff        => {
+                let v = curve::<4, AnimatorableVec4>(data,  mode);
+                let result = cmds.vec4s().insert(key, TypeFrameCurve(v));
+                result.is_ok()
+            },
+        }
     }
     pub fn p3d_property_target_animation<T: TActionSet>(cmds: &mut T,
         key: u64,
@@ -1418,8 +1417,8 @@ impl CommandsExchangeD3 {
                         anisotropy_clamp,
                         border_color,
                     ),
-                    url: EKeyTexture::ImageFrame(KeyImageTextureViewFrame::new(
-                        KeyImageTextureFrame { url: pi_atom::Atom::from(url.to_string()), cancombine, file: isfile, compressed },
+                    url: if isfile { EKeyTexture::ImageFrame(KeyImageTextureViewFrame::new(
+                        KeyImageTextureFrame { url: url.clone(), cancombine, file: isfile, compressed },
                         TextureViewDesc {
                             // aspect: wgpu::TextureAspect::All,
                             base_mip_level: 0,
@@ -1427,7 +1426,9 @@ impl CommandsExchangeD3 {
                             base_array_layer: 0,
                             array_layer_count: None,
                         }
-                    )),
+                    ))} else {
+                        EKeyTexture::Tex(url.clone())
+                    },
                     texture_sample: wgpu::TextureSampleType::Float { filterable: true },
                     sampler_bind_type: if filter { wgpu::SamplerBindingType::Filtering } else { wgpu::SamplerBindingType::NonFiltering },
                 }
@@ -1917,6 +1918,8 @@ pub fn commands_exchange_call(app: &mut Engine, param: &mut ActionSetScene3D, cm
         pi_bevy_render_plugin::TraceOption::None => {},
         pi_bevy_render_plugin::TraceOption::Record => {
             let records = app.world.get_resource_mut::<Records>().unwrap();
+            #[cfg(any(feature = "record", feature = "replay"))]
+            {
             match postcard::to_stdvec::<Vec<ERecord3D>>(&cmds.recordframes) {
                 Ok(data) => {
                     log::error!("==========");
@@ -1925,6 +1928,7 @@ pub fn commands_exchange_call(app: &mut Engine, param: &mut ActionSetScene3D, cm
                 Err(_) => {}
             };
             cmds.recordframes.clear();
+            }
         },
     }
 

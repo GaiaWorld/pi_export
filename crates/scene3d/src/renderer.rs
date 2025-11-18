@@ -3,13 +3,12 @@ use std::mem::transmute;
 
 use js_proxy_gen_macro::pi_js_export;
 use pi_3d::TActionSet;
-#[cfg(feature = "record")]
-use pi_export_base::record::ERecord3D;
+#[cfg(any(feature = "record", feature = "replay"))]
+use pi_export_base::record::{ERecord3D, ERecordCMD};
 use pi_scene_shell::prelude::*;
 pub use pi_export_base::constants::*;
 use pi_scene_context::prelude::*;
 
-use crate::record::ERecordCMD;
 use crate::{as_dk, constants::EngineConstants};
 pub use crate::commands::CommandsExchangeD3;
 pub use crate::{as_entity, as_f64};
