@@ -17,7 +17,7 @@ pi_js_export = []
 [dependencies]
 pi_hal = {version = "0.3", registry = "yn"}
 # pi_atom = {version = "0.6"}
-pi_arr = { version = "=0.20", features = ["rc"]}
+# pi_arr = { version = "=0.20", features = ["rc"]}
 pi_sdf = {version = "0.1", registry = "yn"}
 async-executor = "=1.6.0" #1.7.1bug
 pi_export_gui = { path = "../gui", default-features=false, features=["record"] }
@@ -45,7 +45,7 @@ pi_export_cache = { path = "../cache"}
 log = "0.4"
 tracing = "0.1"
 
-pi_key_alloter = "=0.6.1"
+# pi_key_alloter = "=0.6.1"
 
 # 添加webgl feature
 # wgpu1 = { version = "0.19", package = "wgpu", default-features = false, features = ["glsl", "webgl"] }

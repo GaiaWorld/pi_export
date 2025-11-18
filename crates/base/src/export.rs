@@ -4,6 +4,8 @@ use std::{mem::transmute, sync::{atomic::{AtomicBool}, Arc, OnceLock}, thread, t
 
 use pi_scene_context::pass::ImageTextureFrame;
 use pi_share::{Share, ShareCell};
+// use pi_ui_render::devtools::PluginSpectorUI;
+// use  pi_bevy_render_plugin::spector::PluginSpector;
 use pi_world::prelude::{App, WorldPluginExtent};
 use derive_deref_rs::Deref;
 use pi_bevy_asset::{PiAssetPlugin, AssetConfig, AssetDesc};
@@ -356,6 +358,10 @@ pub fn create_engine_inner(
 		unsafe { transmute(trace_record_or_play as u8) }
 	} else { pi_bevy_render_plugin::cmd_play::TraceOption::None };
 	app.add_plugins(GlobalCmdTracePlugin { option: trace_record_or_play });
+	// #[cfg(not(target_arch="wasm32"))]
+	// app.add_plugins(PluginSpector);
+	// #[cfg(not(target_arch="wasm32"))]
+	// app.add_plugins(PluginSpectorUI);
 }
 
 // 在wasm目标上,返回渲染图的topo图

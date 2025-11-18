@@ -107,7 +107,7 @@ debug = false
 # pi_bevy_window = { path = "../pi_bevy/crates/window" }
 # pi_window_renderer = { path="../pi_bevy/crates/window_renderer" }
 
-# pi_ui_render = { path = "../pi_ui_render" }
+pi_ui_render = { path = "../pi_ui_render" }
 # pi_style = { path = "../pi_style-0.1" }
 # pi_style = { path = "../pi_style" }
 
