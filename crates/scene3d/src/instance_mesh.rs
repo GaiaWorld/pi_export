@@ -8,7 +8,7 @@ use pi_scene_shell::prelude::*;
 use pi_scene_context::prelude::*;
 
 #[cfg(any(feature = "record", feature = "replay"))]
-use crate::record::ERecordCMD;
+use crate::record::{ERecordCMD, ERecord3D};
 use crate::{constants::EngineConstants};
 pub use crate::commands::CommandsExchangeD3;
 pub use crate::{as_entity, as_f64};
@@ -289,7 +289,7 @@ pub fn p3d_sdf_font_id(app: &mut Engine, cmds: &mut CommandsExchangeD3, fontname
 
 
     #[cfg(feature = "record")]
-    cmds.record(ERecordCMD::Font(fontname.to_string(), fontsize as usize, fontweight as usize));
+    cmds.record2(ERecord3D::FontId(fontname.to_string(), fontsize as usize, fontweight as usize));
 
     let _fontname = pi_atom::Atom::from(fontname);
     let _fontsize = fontsize as usize;
@@ -314,7 +314,7 @@ pub fn p3d_sdf_char_glyphid(app: &mut Engine, cmds: &mut CommandsExchangeD3, fon
     let f = FontId(as_dk(&font));
 
     #[cfg(feature = "record")]
-    cmds.record(ERecordCMD::FontChar(f.clone(), char.clone(), fontsize as f32, line_height as f32));
+    cmds.record2(ERecord3D::FontChar(f.clone(), char.clone(), fontsize as f32, line_height as f32));
 
     if let Some(id) = fsheet.glyph_id(f, char) {
         fsheet.measure_width(f, char);

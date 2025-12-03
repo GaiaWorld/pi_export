@@ -119,7 +119,7 @@ pub struct Records3D {
     pub(crate) replayrendertargetkey: XHashMap<Entity, Entity>,
 }
 
-#[cfg(any(feature = "record", feature = "replay"))]
+#[cfg(feature = "replay")]
 pub fn cmd_play_call_3d(world: &mut World, data: &Vec<u8>, replayentities: &XHashMap<Entity, Entity>) {
     // return;
     match postcard::from_bytes::<Vec<ERecord3D>>(data) {
