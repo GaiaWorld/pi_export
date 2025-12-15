@@ -342,10 +342,7 @@ pub fn p3d_query_scene_state(app: &mut Engine, param: &mut ActionSetScene3D, ent
         }
     });
 
-    let mut count_animegroup = 0;
-    if let Ok(ctx) = param.animectxs.get(&app.app_mut().world, entity) {
-        count_animegroup += ctx.0.group_mgr.groups.len();
-    }
+    let count_animegroup = app.world.get_resource::<GlobalAnimationGroupsAmout>().unwrap().0.group_mgr.groups.len();
     
     result[0] = drawcalls as f32;
     result[1] = count_vertex as f32;
