@@ -4,7 +4,8 @@ use js_proxy_gen_macro::pi_js_export;
 use pi_atom::get_by_hash;
 use pi_atom::Atom;
 use pi_bevy_asset::ShareAssetMgr;
-use pi_render::rhi::asset::TextureRes;
+use pi_render::renderer::texture::ImageTextureFrame;
+
 use pi_style::style::ImageRepeat;
 use pi_ui_render::components::user::{BorderRadius, BorderImageSlice, BorderImageRepeat, BorderImageClip, Border, BackgroundImageClip};
 use pi_ui_render::components::user::{TextStyle, TextShadow, TextContent, Show, Position, Padding, MaskImageClip, Margin, Hsi, FlexContainer, BoxShadow};
@@ -304,7 +305,7 @@ pub struct TexInfo {
 pub fn texture_info(engine: &mut Engine) -> String {
     use pi_render::rhi::asset::AssetWithId;
     let mut res = Vec::new();
-    let info = engine.world.get_single_res::<ShareAssetMgr<AssetWithId<TextureRes>>>().unwrap();
+    let info = engine.world.get_single_res::<ShareAssetMgr<AssetWithId<ImageTextureFrame>>>().unwrap();
     
     for info in &info.account().used{
         res.push(TexInfo{ name: get_by_hash(info.name.clone().parse::<pi_atom::Usize>().unwrap()), size: info.size as f64, is_used: true,  timeout: info.remain_timeout as f64})

@@ -9,8 +9,9 @@ use pi_export_base::as_entity;
 use pi_export_base::export::await_last_frame;
 // use pi_export_base::gui::Gui;
 use pi_flex_layout::{prelude::CharNode, style::{PositionType, FlexWrap, FlexDirection, AlignContent, AlignItems, AlignSelf, JustifyContent, Display, Dimension}};
+use pi_render::renderer::texture::{ImageTextureFrame, KeyImageTextureFrame};
 use pi_render::renderer::texture_loader::texture_atlas::KeyAtlasDesc;
-use pi_render::rhi::asset::TextureRes;
+
 use pi_share::Share;
 use pi_slotmap::DefaultKey;
 #[cfg(debug_assertions)]
@@ -368,8 +369,16 @@ pub fn get_text_pos(gui: &mut Gui, engine: &mut Engine, node_id: f64, index: u32
 pub fn has_res(engine: &mut Engine, path: &Atom1) -> bool {
 	// 暂时只支持纹理资源访问
 	if path.ends_with(".png") || path.ends_with(".jpg") || path.ends_with(".jpeg") || path.ends_with(".ktx") || path.ends_with(".ktx2") {
-		let reses = engine.world.get_single_res_mut::<ShareAssetMgr<TextureRes>>().unwrap();
-		return reses.get(&path.str_hash()).is_some()
+		let reses = engine.world.get_single_res_mut::<ShareAssetMgr<ImageTextureFrame>>().unwrap();
+		let path = &(**path);
+		let key = KeyImageTextureFrame {
+				url: path.clone(),
+				file: true,
+				compressed: path.as_str().ends_with(".ktx"),
+				cancombine: true,
+			};
+
+		return reses.get(&key).is_some()
 	}
 	false
 }

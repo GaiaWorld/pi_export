@@ -11,7 +11,7 @@ use derive_deref_rs::Deref;
 use pi_bevy_asset::{PiAssetPlugin, AssetConfig, AssetDesc};
 use pi_bevy_post_process::PiPostProcessPlugin;
 use pi_hash::XHashMap;
-use pi_render::{asset::TAssetKeyU64, renderer::sampler::SamplerRes, rhi::{asset::{RenderRes, TextureRes}, bind_group::BindGroup, pipeline::RenderPipeline}};
+use pi_render::{asset::TAssetKeyU64, renderer::sampler::SamplerRes, rhi::{asset::{RenderRes}, bind_group::BindGroup, pipeline::RenderPipeline}};
 use pi_bevy_render_plugin::{FrameState, GlobalCmdTracePlugin, PiRenderPlugin};
 use pi_window_renderer::PluginWindowRender;
 use pi_bevy_render_plugin::PiRenderDevice;
@@ -513,7 +513,7 @@ pub fn parse_asset_config(asset_config: &str) -> AssetConfig {
 			"BUFFER" => asset_config.insert::<RenderRes<Buffer>>(desc),
 			"SAMPLER" => asset_config.insert::<SamplerRes>(desc),
 			"BIND_GROUP" => asset_config.insert::<RenderRes<BindGroup>>(desc),
-			"TEXTURE_RES" => asset_config.insert::<TextureRes>(desc),
+			"TEXTURE_RES" => asset_config.insert::<ImageTextureFrame>(desc),
 			"RENDER_PIPELINE" => asset_config.insert::<RenderRes<RenderPipeline>>(desc),
 			_ => {},
 		}
