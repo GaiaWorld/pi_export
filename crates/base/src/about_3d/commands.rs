@@ -715,9 +715,9 @@ impl CommandsExchangeD3 {
                 let light: Entity = Self::entity(replayentities, light);
                 CommandsExchangeD3::p3d_light_forceinclude(cmds, light, mesh_or_instance, val);
             },
-            ERecordCMD::MaterialShader(mat, shader, usematarray) => {
+            ERecordCMD::MaterialShader(mat, shader, usematarray, static_bind) => {
                 let mat: Entity = Self::entity(replayentities, mat);
-                CommandsExchangeD3::p3d_material_shader(cmds, mat, &shader, usematarray);
+                CommandsExchangeD3::p3d_material_shader(cmds, mat, &shader, usematarray, static_bind);
             },
             ERecordCMD::MaterialApply(mat, mesh, pass) => {
                 let mat: Entity = Self::entity(replayentities, mat);
@@ -1358,8 +1358,8 @@ impl CommandsExchangeD3 {
     pub fn p3d_light_forceinclude<T: TActionSet>(cmds: &mut T, light: Entity, mesh_or_instance: Entity, val: EMeshForceLighting) {
         cmds.forcelighting().push(OpsMeshForceLighting::ops(mesh_or_instance, light, val));
     }
-    pub fn p3d_material_shader<T: TActionSet>(cmds: &mut T, mat: Entity, shader: &pi_atom::Atom, usematarray: bool) {
-        cmds.material_create().push(OpsMaterialCreate::ops(mat, shader.as_str(), usematarray));
+    pub fn p3d_material_shader<T: TActionSet>(cmds: &mut T, mat: Entity, shader: &pi_atom::Atom, usematarray: bool, static_bind: bool) {
+        cmds.material_create().push(OpsMaterialCreate::ops(mat, shader.as_str(), usematarray, static_bind));
     }
     pub fn p3d_material_apply<T: TActionSet>(cmds: &mut T, mat: Entity, mesh: Entity, pass: f64) {
         let pass = EngineConstants::passtag(pass);

@@ -36,16 +36,20 @@ pub fn p3d_material(app: &mut Engine, cmds: &mut CommandsExchangeD3) -> f64 {
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
-pub fn p3d_material_shader(cmds: &mut CommandsExchangeD3, mat: f64, shader: &Atom, usematarray: bool) {
+pub fn p3d_material_shader(cmds: &mut CommandsExchangeD3, mat: f64, shader: &Atom, usematarray: bool, static_bind: Option<bool>) {
     #[cfg(feature = "replay")]
     return ;
 
+    let static_bind = match static_bind {
+        Some(static_bind) => { static_bind },
+        None => { false }
+    };
 
     #[cfg(feature = "record")]
-    cmds.record(ERecordCMD::MaterialShader(mat, shader.deref().clone(), usematarray));
+    cmds.record(ERecordCMD::MaterialShader(mat, shader.deref().clone(), usematarray, static_bind));
 
     let mat: Entity = as_entity(mat);
-    CommandsExchangeD3::p3d_material_shader(cmds, mat, shader.deref(), usematarray);
+    CommandsExchangeD3::p3d_material_shader(cmds, mat, shader.deref(), usematarray, static_bind);
     // cmds.material_create.push(OpsMaterialCreate::ops(mat, shader.as_str(), usematarray));
 }
 

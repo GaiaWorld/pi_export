@@ -65,7 +65,7 @@ pub enum ERecordCMD {
     LIGHT(f64, f64, f64)                         ,
     LightParam(f64, ELightModify)               ,
     MeshForceIndludInLight(f64, f64, EMeshForceLighting)        ,
-    MaterialShader(f64, Atom, bool)               ,
+    MaterialShader(f64, Atom, bool, bool)               ,
     MaterialApply(f64, f64, f64)                ,
     MaterialUniformMat4(f64, Atom, [f32;16])         ,
     MaterialUniformV0(f64, EUniformVal)         ,

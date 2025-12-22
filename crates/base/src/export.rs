@@ -692,6 +692,6 @@ pub fn set_frame_pixel_ratio(app: &mut Engine, pixel_ratio: f32) {
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 pub fn init_brotli_dictionary(data: &[u8]) {
 	use brotli_decompressor::dictionary;
-	// dictionary::init_brotli_dictionary(data.to_vec());
+	dictionary::init_brotli_dictionary(data.to_vec());
 }
 
