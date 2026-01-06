@@ -895,7 +895,7 @@ pub enum PlayMod {
     RepeatLast,
 }
 
-pub const LOG_LEVEL: tracing::Level = tracing::Level::INFO;
+pub const LOG_LEVEL: tracing::Level = tracing::Level::WARN;
 
 fn create_example(cache_path: String, version: String){
     let file_name = format!("test{}.rs",version);

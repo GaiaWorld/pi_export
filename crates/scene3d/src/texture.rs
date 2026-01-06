@@ -2,7 +2,7 @@ use std::{mem::transmute, ops::Deref};
 use pi_assets::asset::{Handle, Size};
 use pi_bevy_render_plugin::PiRenderDevice;
 use pi_hash::XHashMap;
-use pi_scene_context::pass::{DataTextureSubData, KeyAtlasDesc, KeyImageTextureFrame, TextureCombineCmds, WorldResourceTemp};
+use pi_scene_context::{pass::{DataTextureSubData, EKeyTexture, KeyAtlasDesc, KeyImageTextureFrame, KeyImageTextureViewFrame, TextureCombineCmds, TextureViewDesc, WorldResourceTemp}, prelude::ResTexturePlaceHolder};
 use pi_scene_shell::prelude::{ResImageTexture, KeyImageTexture};
 pub use pi_export_base::{export::{Engine, Atom}, constants::*};
 use pi_scene_shell::prelude::ResTextureCombineAtlas2DMgr;
@@ -172,5 +172,35 @@ pub fn p3d_texture_combine_param(app: &mut Engine, cmds: &mut CommandsExchangeD3
     // loader.test.push(String::from("assets/meigui_4.astc.ktx"));
     // loader.test.push(String::from("assets/citiehua_2.astc.ktx"));
     // loader.test.push(String::from("assets/citiehua_3.astc.ktx"));
+}
+
+
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
+pub fn p3d_texture_placeholder(app: &mut Engine, cmds: &mut CommandsExchangeD3, url: &str, placeholder: &str, cancombine: bool, compressed: bool) {
+    pi_export_base::export::await_last_frame(app);
+    let device = app.world.get_resource_mut::<ResTexturePlaceHolder>().unwrap();
+    device.insert(
+        EKeyTexture::ImageFrame(KeyImageTextureViewFrame::new(
+            KeyImageTextureFrame { url: pi_atom::Atom::from(url), cancombine, file: true, compressed },
+            TextureViewDesc {
+                // aspect: wgpu::TextureAspect::All,
+                base_mip_level: 0,
+                mip_level_count: None,
+                base_array_layer: 0,
+                array_layer_count: None,
+            }
+        )), 
+        EKeyTexture::ImageFrame(KeyImageTextureViewFrame::new(
+            KeyImageTextureFrame { url: pi_atom::Atom::from(placeholder), cancombine: false, file: true, compressed },
+            TextureViewDesc {
+                // aspect: wgpu::TextureAspect::All,
+                base_mip_level: 0,
+                mip_level_count: None,
+                base_array_layer: 0,
+                array_layer_count: None,
+            }
+        ))
+    );
 }
 

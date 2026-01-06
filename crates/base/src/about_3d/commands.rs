@@ -1922,7 +1922,7 @@ pub fn commands_exchange_call(app: &mut Engine, param: &mut ActionSetScene3D, cm
             {
             match postcard::to_stdvec::<Vec<ERecord3D>>(&cmds.recordframes) {
                 Ok(data) => {
-                    log::error!("==========");
+                    log::error!("==========3D {:?}", (data.len(), cmds.recordframes.len()));
                     records.record(RECORD_D3_COMMAND, data);
                 }
                 Err(_) => {}

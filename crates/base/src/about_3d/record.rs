@@ -124,7 +124,7 @@ pub fn cmd_play_call_3d(world: &mut World, data: &Vec<u8>, replayentities: &XHas
     // return;
     match postcard::from_bytes::<Vec<ERecord3D>>(data) {
         Ok(mut val) => {
-            // log::error!("cmd_play_call_3d {:?}", &val);
+            // log::error!("cmd_play_call_3d {:?}", (&val, data.len()));
             val.drain(..).for_each(|e| {
                 match e {
                     ERecord3D::EngineState(val) => world.get_resource_mut::<EngineCustomPlugins>().unwrap().active = val,
@@ -228,8 +228,8 @@ pub fn cmd_play_call_3d(world: &mut World, data: &Vec<u8>, replayentities: &XHas
                         let fontid = fontsheet.borrow_mut().font_id(pi_render::font::Font::new(pi_atom::Atom::from(key), fontsize, fontweight));
                     },
                     ERecord3D::FontChar(f, char, fontsize, line_height) => {
-                        let mut scaleoffset = [f32;4];
-                        let mut uvtilloff = [f32;4];
+                        let mut scaleoffset = [0f32,0.,0.,0.];
+                        let mut uvtilloff = [0f32,0.,0.,0.];
                         let fontsheet = world.get_resource_mut::<ShareFontSheet>().unwrap();
                         let mut fsheet = fontsheet.borrow_mut();
                         if let Some(id) = fsheet.glyph_id(f, char) {

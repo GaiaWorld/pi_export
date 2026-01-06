@@ -5,7 +5,7 @@ authors = ["suncy <suncy@gmail.com>"]
 edition = "2021"
 
 [features]
-default = ["pi_js_export", "wasm_bindgen", "replay", "pi_export_base/spector"]
+default = ["pi_js_export", "wasm_bindgen", "replay", "pi_export_base/spector", "pi_export_base/replay"]
 pi_js_export = []
 wasm_bindgen = ["pi_export_assets_mgr/wasm_bindgen"]
 allow_not_run = []
@@ -13,6 +13,7 @@ replay 			        = []
 # system_graph = [] # 提供接口，返回system的日程图
 
 [dependencies]
+env_logger          = "0.9"
 brotli-decompressor = "5.0"
 nalgebra = { version = "0.32", features = ["serde", "serde-serialize"] }
 pi_async_httpc = {version="0.6"}

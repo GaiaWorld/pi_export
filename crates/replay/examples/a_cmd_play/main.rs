@@ -14,6 +14,14 @@ use pi_ui_render::resource::UserCommands;
 //
 #[cfg_attr(target_os = "android", ndk_glue::main(backtrace = "full"))]
 fn main() { 
+    env_logger::Builder::from_env(env_logger::Env::default().default_filter_or("warn"))
+    .filter_module("hyper", log::LevelFilter::Off)
+    .filter_module("hyper::proto", log::LevelFilter::Off)
+    .filter_module("hyper::proto::h1::io", log::LevelFilter::Off)
+    .filter_module("hyper::proto::h1::conn", log::LevelFilter::Off)
+    .filter_module("hyper::proto::h1::decode", log::LevelFilter::Off)
+    
+    .init();
     // brotli_decompressor::dictionary::init_brotli_dictionary(include_bytes!("./brotli_dictionary.bin").to_vec());
     pi_cmd_replay::framework::start(ExampleCommonPlay::new()) 
 }

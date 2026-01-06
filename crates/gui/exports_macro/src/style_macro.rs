@@ -996,7 +996,7 @@ other_out_export!(
 			Some(brush) => unsafe { transmute::<f64, Entity>(brush) },
 			None => Entity::null(),
 		} ;
-		gui.commands_mut().push_cmd(pi_ui_render::resource::CanvasCmd(brush, by_draw_list.unwrap_or(false), node),);
+		gui.commands_mut().set_brush(pi_ui_render::resource::CanvasCmd(brush, by_draw_list.unwrap_or(false), node),);
 	},;;
 	node: f64, brush: Option<f64>,by_draw_list: Option<bool>,
 );
