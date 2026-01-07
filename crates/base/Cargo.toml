@@ -5,13 +5,13 @@ authors = ["suncy <suncy@gmail.com>"]
 edition = "2021"
 
 [features]
-default = ["pi_js_export", "wasm_bindgen", "pi_ui_render/debug"]
+default = ["pi_js_export", "wasm_bindgen"]
 pi_js_export = []
 wasm_bindgen = ["pi_export_assets_mgr/wasm_bindgen"]
 allow_not_run = []
 record 			        = ["pi_ui_render/debug"]
-replay 			        = []
-spector 			    = []
+replay 			        = ["pi_ui_render/debug"]
+spector 			    = ["pi_ui_render/debug"]
 # system_graph = [] # 提供接口，返回system的日程图
 
 [dependencies]

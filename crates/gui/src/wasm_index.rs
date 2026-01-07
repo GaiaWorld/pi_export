@@ -94,7 +94,9 @@ pub fn create_gui(
 	#[cfg(not(feature="record"))]
     engine.app_mut().add_plugins(UiPlugin {cmd_trace: debug.clone(), font_type: FontType::Sdf2});
 
+    #[cfg(feature = "spector")]
     pi_ui_render::tools::init_showbox_pipeline(&mut engine.app_mut().world);
+    #[cfg(feature = "spector")]
     engine.app_mut().add_startup_system(pi_world::schedule::End, pi_ui_render::tools::init_show_box_node);
 	// if let Some(fun) = load_sdf_fun {
 	// 	pi_hal::font::sdf_brush::init_load_cb(std::rc::Rc::new(move|key: DefaultKey, font_family: usize, chars: &[char]| {
