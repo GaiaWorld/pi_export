@@ -178,7 +178,7 @@ macro_rules! style_out_export {
 			#[allow(unused_attributes)]
 			pub fn [<set_ $attr_name>](gui: &mut Gui, node_id: f64, $($name_ref: &$ty_ref,)* $($name: $ty,)*) {
 				let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-				gui.commands.set_style(node_id, $last_ty($expr));
+				gui.commands_mut().set_style(node_id, $last_ty($expr));
 			}
 
 			#[cfg(target_arch="wasm32")]
@@ -186,7 +186,7 @@ macro_rules! style_out_export {
 			#[allow(unused_attributes)]
 			pub fn [<set_ $attr_name>](gui: &mut Gui, node_id: f64, $($name_ref: &$ty_ref,)* $($name: $ty,)*) {
 				let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-				gui.commands.set_style(node_id, $last_ty($expr));
+				gui.commands_mut().set_style(node_id, $last_ty($expr));
 			}
 
 			#[cfg(feature="pi_js_export")]
@@ -194,7 +194,7 @@ macro_rules! style_out_export {
 			#[allow(unused_attributes)]
 			pub fn [<reset_ $attr_name>](gui: &mut Gui, node_id: f64) {
 				let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-				gui.commands.set_style(node_id, [<Reset $last_ty>]);
+				gui.commands_mut().set_style(node_id, [<Reset $last_ty>]);
 			}
 
 			#[cfg(target_arch="wasm32")]
@@ -202,7 +202,7 @@ macro_rules! style_out_export {
 			#[allow(unused_attributes)]
 			pub fn [<reset_ $attr_name>](gui: &mut Gui, node_id: f64) {
 				let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-				gui.commands.set_style(node_id, [<Reset $last_ty>]);
+				gui.commands_mut().set_style(node_id, [<Reset $last_ty>]);
 			}
 
 		}
@@ -252,16 +252,16 @@ macro_rules! style_out_export {
 			pub fn [<set_ $attr_name>](gui: &mut Gui, node_id: f64, edge: f64, $($name_ref: &$ty_ref,)* $($name: $ty,)*) {
 				let node_id = unsafe { transmute::<f64, Entity>(node_id) };
 				match unsafe {transmute(edge as u8)} {
-					// Edge::All => gui.commands.set_style(node_id, [<$last_ty Type>]($last_ty(Rect {
+					// Edge::All => gui.commands_mut().set_style(node_id, [<$last_ty Type>]($last_ty(Rect {
 					// 	top: $expr,
 					// 	right: $expr,
 					// 	bottom: $expr,
 					// 	left: $expr,
 					// }))),
-					Edge::Top => gui.commands.set_style(node_id, [<$last_ty TopType>]($expr)),
-					Edge::Right => gui.commands.set_style(node_id, [<$last_ty RightType>]($expr)),
-					Edge::Bottom => gui.commands.set_style(node_id, [<$last_ty BottomType>]($expr)),
-					Edge::Left => gui.commands.set_style(node_id, [<$last_ty LeftType>]($expr)),
+					Edge::Top => gui.commands_mut().set_style(node_id, [<$last_ty TopType>]($expr)),
+					Edge::Right => gui.commands_mut().set_style(node_id, [<$last_ty RightType>]($expr)),
+					Edge::Bottom => gui.commands_mut().set_style(node_id, [<$last_ty BottomType>]($expr)),
+					Edge::Left => gui.commands_mut().set_style(node_id, [<$last_ty LeftType>]($expr)),
 					_ => return
 				};
 			}
@@ -272,16 +272,16 @@ macro_rules! style_out_export {
 			pub fn [<set_ $attr_name>](gui: &mut Gui, node_id: f64, edge: f64, $($name_ref: &$ty_ref,)* $($name: $ty,)*) {
 				let node_id = unsafe { transmute::<f64, Entity>(node_id) };
 				match unsafe {transmute(edge as u8)} {
-					// Edge::All => gui.commands.set_style(node_id, [<$last_ty Type>]($last_ty(Rect {
+					// Edge::All => gui.commands_mut().set_style(node_id, [<$last_ty Type>]($last_ty(Rect {
 					// 	top: $expr,
 					// 	right: $expr,
 					// 	bottom: $expr,
 					// 	left: $expr,
 					// }))),
-					Edge::Top => gui.commands.set_style(node_id, [<$last_ty TopType>]($expr)),
-					Edge::Right => gui.commands.set_style(node_id, [<$last_ty RightType>]($expr)),
-					Edge::Bottom => gui.commands.set_style(node_id, [<$last_ty BottomType>]($expr)),
-					Edge::Left => gui.commands.set_style(node_id, [<$last_ty LeftType>]($expr)),
+					Edge::Top => gui.commands_mut().set_style(node_id, [<$last_ty TopType>]($expr)),
+					Edge::Right => gui.commands_mut().set_style(node_id, [<$last_ty RightType>]($expr)),
+					Edge::Bottom => gui.commands_mut().set_style(node_id, [<$last_ty BottomType>]($expr)),
+					Edge::Left => gui.commands_mut().set_style(node_id, [<$last_ty LeftType>]($expr)),
 					_ => return
 				};
 			}
@@ -292,11 +292,11 @@ macro_rules! style_out_export {
 			pub fn [<reset_ $attr_name>](gui: &mut Gui, node_id: f64, edge: f64) {
 				let node_id = unsafe { transmute::<f64, Entity>(node_id) };
 				match unsafe {transmute(edge as u8)} {
-					// Edge::All => gui.commands.set_style(node_id, [<Reset $last_ty Type>]),
-					Edge::Top => gui.commands.set_style(node_id, [<Reset $last_ty TopType>]),
-					Edge::Right => gui.commands.set_style(node_id, [<Reset $last_ty RightType>]),
-					Edge::Bottom => gui.commands.set_style(node_id, [<Reset $last_ty BottomType>]),
-					Edge::Left => gui.commands.set_style(node_id, [<Reset $last_ty LeftType>]),
+					// Edge::All => gui.commands_mut().set_style(node_id, [<Reset $last_ty Type>]),
+					Edge::Top => gui.commands_mut().set_style(node_id, [<Reset $last_ty TopType>]),
+					Edge::Right => gui.commands_mut().set_style(node_id, [<Reset $last_ty RightType>]),
+					Edge::Bottom => gui.commands_mut().set_style(node_id, [<Reset $last_ty BottomType>]),
+					Edge::Left => gui.commands_mut().set_style(node_id, [<Reset $last_ty LeftType>]),
 					_ => return
 				};
 			}
@@ -307,11 +307,11 @@ macro_rules! style_out_export {
 			pub fn [<reset_ $attr_name>](gui: &mut Gui, node_id: f64, edge: f64) {
 				let node_id = unsafe { transmute::<f64, Entity>(node_id) };
 				match unsafe {transmute(edge as u8)} {
-					// Edge::All => gui.commands.set_style(node_id, [<Reset $last_ty Type>]),
-					Edge::Top => gui.commands.set_style(node_id, [<Reset $last_ty TopType>]),
-					Edge::Right => gui.commands.set_style(node_id, [<Reset $last_ty RightType>]),
-					Edge::Bottom => gui.commands.set_style(node_id, [<Reset $last_ty BottomType>]),
-					Edge::Left => gui.commands.set_style(node_id, [<Reset $last_ty LeftType>]),
+					// Edge::All => gui.commands_mut().set_style(node_id, [<Reset $last_ty Type>]),
+					Edge::Top => gui.commands_mut().set_style(node_id, [<Reset $last_ty TopType>]),
+					Edge::Right => gui.commands_mut().set_style(node_id, [<Reset $last_ty RightType>]),
+					Edge::Bottom => gui.commands_mut().set_style(node_id, [<Reset $last_ty BottomType>]),
+					Edge::Left => gui.commands_mut().set_style(node_id, [<Reset $last_ty LeftType>]),
 					_ => return
 				};
 			}
@@ -326,7 +326,7 @@ macro_rules! style_out_export {
 			#[allow(unused_attributes)]
 			pub fn [<set_ $attr_name>](gui: &mut Gui, node_id: f64, $($name_ref: &$ty_ref,)* $($name: $ty,)*) {
 				let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-				gui.commands.set_style(node_id, $last_ty($expr));
+				gui.commands_mut().set_style(node_id, $last_ty($expr));
 			}
 
 			#[cfg(target_arch="wasm32")]
@@ -334,7 +334,7 @@ macro_rules! style_out_export {
 			#[allow(unused_attributes)]
 			pub fn [<set_ $attr_name>](gui: &mut Gui, node_id: f64, $($name_ref: &$ty_ref,)* $($name: $ty,)*) {
 				let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-				gui.commands.set_style(node_id, $last_ty($expr));
+				gui.commands_mut().set_style(node_id, $last_ty($expr));
 			}
 
 			#[cfg(feature="pi_js_export")]
@@ -342,7 +342,7 @@ macro_rules! style_out_export {
 			#[allow(unused_attributes)]
 			pub fn [<reset_ $attr_name>](gui: &mut Gui, node_id: f64) {
 				let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-				gui.commands.set_style(node_id, [<Reset $last_ty>]);
+				gui.commands_mut().set_style(node_id, [<Reset $last_ty>]);
 			}
 
 			#[cfg(target_arch="wasm32")]
@@ -350,7 +350,7 @@ macro_rules! style_out_export {
 			#[allow(unused_attributes)]
 			pub fn [<reset_ $attr_name>](gui: &mut Gui, node_id: f64) {
 				let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-				gui.commands.set_style(node_id, [<Reset $last_ty>]);
+				gui.commands_mut().set_style(node_id, [<Reset $last_ty>]);
 			}
 		}
     };
@@ -684,8 +684,8 @@ style_out_export!(
 	text_align, 
 	{	
 		let v: TextAlign = unsafe {transmute(v as u8)};
-		gui.commands.set_style(node_id, TextAlignType(v));
-		gui.commands.set_style(node_id, JustifyContentType(match v {
+		gui.commands_mut().set_style(node_id, TextAlignType(v));
+		gui.commands_mut().set_style(node_id, JustifyContentType(match v {
 			TextAlign::Left => JustifyContent::FlexStart,
 			TextAlign::Right => JustifyContent::FlexEnd,
 			TextAlign::Center => JustifyContent::Center,
@@ -693,8 +693,8 @@ style_out_export!(
 		}));
 	},
 	{
-		gui.commands.set_style(node_id, ResetTextAlignType);
-		gui.commands.set_style(node_id, ResetJustifyContentType);
+		gui.commands_mut().set_style(node_id, ResetTextAlignType);
+		gui.commands_mut().set_style(node_id, ResetJustifyContentType);
 	},;
 	v: f64,
 );
@@ -704,16 +704,16 @@ style_out_export!(
 	vertical_align, 
 	{	
 		let v: VerticalAlign = unsafe {transmute(v as u8)};
-		gui.commands.set_style(node_id, VerticalAlignType(v));
-		gui.commands.set_style(node_id, AlignSelfType(match v {
+		gui.commands_mut().set_style(node_id, VerticalAlignType(v));
+		gui.commands_mut().set_style(node_id, AlignSelfType(match v {
 			VerticalAlign::Top => AlignSelf::FlexStart,
 			VerticalAlign::Bottom => AlignSelf::FlexEnd,
 			VerticalAlign::Middle => AlignSelf::Center,
 		}));
 	},
 	{
-		gui.commands.set_style(node_id, ResetVerticalAlignType);
-		gui.commands.set_style(node_id, ResetAlignSelfType);
+		gui.commands_mut().set_style(node_id, ResetVerticalAlignType);
+		gui.commands_mut().set_style(node_id, ResetAlignSelfType);
 	},;
 	v: f64,
 );
@@ -775,7 +775,7 @@ style_out_export!(@expr animation_name_str, AnimationNameType, {
 style_out_export!(
 	@owner 
 	runtime_animation, 
-	gui.commands.add_runtime_animation(node_id, animation, key_frames, scope_hash as usize),
+	gui.commands_mut().add_runtime_animation(node_id, animation, key_frames, scope_hash as usize),
 	{},;
 	animation: &str,
 	key_frames: &str,
@@ -908,7 +908,7 @@ style_out_export!(@expr animation_timing_function_str, AnimationTimingFunctionTy
 	}
 }, value: &str,;);
 
-other_out_export!(set_default_style, gui, {gui.commands.set_default_style_by_str(value, 0);},; value: &str,;);
+other_out_export!(set_default_style, gui, {gui.commands_mut().set_default_style_by_str(value, 0);},; value: &str,;);
 
 other_out_export!(set_style_str, gui, node, {gui.commands.set_style_str(node, value);},; value: &str,;);
 
@@ -916,7 +916,7 @@ other_out_export!(
     create_class_by_str,
     gui,
     {
-        gui.commands.add_css(css, scope_hash as usize);
+        gui.commands_mut().add_css(css, scope_hash as usize);
     },;
 	css: &str,
 	;
@@ -932,7 +932,7 @@ other_out_export!(
         for i in class_name.iter() {
             s.push(*i as usize);
         }
-        gui.commands.set_class(node, ClassName(s));
+        gui.commands_mut().set_class(node, ClassName(s));
     },;;
     class_name: Vec<u32>,
 );
@@ -943,8 +943,8 @@ other_out_export!(
 // pub fn create_node(gui: &mut Gui) -> f64 {
 //     use crate::components::NodeBundle;
 
-//     let entity = gui.entitys.reserve_entity();
-//     gui.commands.push_cmd(NodeCmd(NodeBundle::default(), entity));
+//     let entity = gui.entitys().reserve_entity();
+//     gui.commands_mut().push_cmd(NodeCmd(NodeBundle::default(), entity));
 //     // log::warn!("entity :{:?}", entity);
 //     unsafe { transmute(entity.to_bits()) }
 // }
@@ -959,12 +959,12 @@ other_out_export!(
 // 		let mut index = 0;
 // 		let mut entitys = Vec::with_capacity(count as usize);
 // 		while index < count {
-// 			let entity = gui.entitys.reserve_entity();
+// 			let entity = gui.entitys().reserve_entity();
 // 			arr.set_index(index, unsafe { transmute(entity.to_bits()) });
 // 			entitys.push(entity);
 // 			index = index + 1;
 // 		}
-// 		gui.commands
+// 		gui.commands_mut()
 // 			.fragment_commands.push(FragmentCommand {
 // 				key,
 // 				entitys
@@ -983,7 +983,7 @@ other_out_export!(
     gui,
     {
 		let root = unsafe { transmute::<f64, Entity>(root) };
-		gui.commands.set_view_port(root, pi_ui_render::components::user::Viewport(Aabb2::new(Point2::new(x as f32, y as f32), Point2::new(width as f32, height as f32))));
+		gui.commands_mut().set_view_port(root, pi_ui_render::components::user::Viewport(Aabb2::new(Point2::new(x as f32, y as f32), Point2::new(width as f32, height as f32))));
 	},;;
 	x: i32, y: i32, width: i32, height: i32, root: f64,
 );
@@ -998,7 +998,7 @@ other_out_export!(
 			Some(brush) => unsafe { transmute::<f64, Entity>(brush) },
 			None => Entity::null(),
 		} ;
-		gui.commands.push_cmd(pi_ui_render::resource::CanvasCmd(brush, by_draw_list.unwrap_or(false), node),);
+		gui.commands_mut().set_brush(pi_ui_render::resource::CanvasCmd(brush, by_draw_list.unwrap_or(false), node),);
 	},;;
 	node: f64, brush: Option<f64>,by_draw_list: Option<bool>,
 );
@@ -1009,7 +1009,7 @@ other_out_export!(
 	gui,
 	{
 		let node = unsafe { transmute::<f64, Entity>(node) };
-		gui.commands.push_cmd(NodeCmd(RadialWave(pi_postprocess::prelude::RadialWave {
+		gui.commands_mut().push_cmd(NodeCmd(RadialWave(pi_postprocess::prelude::RadialWave {
 			aspect_ratio,
 			start,
 			end,
@@ -1034,7 +1034,7 @@ other_out_export!(
     gui,
     {
 		let node = unsafe { transmute::<f64, Entity>(node) };
-		gui.commands.set_target_type(node, unsafe { transmute::<_, pi_ui_render::components::user::RenderTargetType>(target_ty) });
+		gui.commands_mut().set_target_type(node, unsafe { transmute::<_, pi_ui_render::components::user::RenderTargetType>(target_ty) });
 	},;;
 	node: f64, target_ty: u8,
 );
@@ -1043,7 +1043,7 @@ other_out_export!(
     set_clear_color,
     gui,
     {
-		gui.commands.set_clear_color(CgColor::new(r, g, b, a));
+		gui.commands_mut().set_clear_color(CgColor::new(r, g, b, a));
 	},;;
 	r: f32, g: f32, b: f32, a: f32,
 );
@@ -1054,7 +1054,7 @@ other_out_export!(
     gui,
     match postcard::from_bytes::<Vec<pi_style::style_parse::ClassMap>>(bin) {
 		Ok(r) => {
-			gui.commands.add_css_bin(pi_ui_render::resource::ExtendCssCmd(r));
+			gui.commands_mut().add_css_bin(pi_ui_render::resource::ExtendCssCmd(r));
 		}
 		Err(e) => {
 			log::warn!("deserialize_class_map error: {:?}, {:?}", e, bin);
@@ -1072,7 +1072,7 @@ other_out_export!(
     gui,
     {
 		let node: Entity = unsafe { transmute::<f64, Entity>(root) };
-    	gui.commands.set_render_dirty(node, pi_ui_render::resource::RenderDirty(true, true, true));
+    	gui.commands_mut().set_render_dirty(node, pi_ui_render::resource::RenderDirty(true, true, true));
 	},;;
 	root: f64,
 );
@@ -1300,7 +1300,7 @@ other_out_export!(
 	bool,
 	{
 		pi_export_base::export::await_last_frame(engine);
-		if let Ok(is_show) = gui.entitys.get_component_by_index::<IsShow>(node, gui.is_show_component) {
+		if let Ok(is_show) = gui.entitys().get_component_by_index::<IsShow>(node, gui.is_show_component()) {
 			is_show.get_enable()
 		} else {
 			false
@@ -1319,13 +1319,13 @@ other_out_export!(
 	node,
 	u32,
     {
-		let mut r = 0.0;
-		if let Ok(parent) = gui.entitys.get_component_by_index::<Up>(node, gui.up_component) {
-			if let Ok(parent_layout) = gui.entitys.get_component_by_index::<LayoutResult>(node, gui.layout_component) {
+		let mut r: f32 = 0.0;
+		if let Ok(parent) = gui.entitys().get_component_by_index::<Up>(node, gui.up_component()) {
+			if let Ok(parent_layout) = gui.entitys().get_component_by_index::<LayoutResult>(node, gui.layout_component()) {
 				r += parent_layout.padding.top + parent_layout.border.top;
 			}
 		}
-		if let Ok(layout) = gui.entitys.get_component_by_index::<LayoutResult>(node, gui.layout_component) {
+		if let Ok(layout) = gui.entitys().get_component_by_index::<LayoutResult>(node, gui.layout_component()) {
 			r += layout.rect.top;
 		}
 		r.round() as u32
@@ -1342,13 +1342,13 @@ other_out_export!(
 	node,
 	u32,
     {
-		let mut r = 0.0;
-		if let Ok(parent) = gui.entitys.get_component_by_index::<Up>(node, gui.up_component) {
-			if let Ok(parent_layout) = gui.entitys.get_component_by_index::<LayoutResult>(node, gui.layout_component) {
+		let mut r: f32 = 0.0;
+		if let Ok(parent) = gui.entitys().get_component_by_index::<Up>(node, gui.up_component()) {
+			if let Ok(parent_layout) = gui.entitys().get_component_by_index::<LayoutResult>(node, gui.layout_component()) {
 				r += parent_layout.padding.left + parent_layout.border.left;
 			}
 		}
-		if let Ok(layout) = gui.entitys.get_component_by_index::<LayoutResult>(node, gui.layout_component) {
+		if let Ok(layout) = gui.entitys().get_component_by_index::<LayoutResult>(node, gui.layout_component()) {
 			r += layout.rect.left;
 		}
 		r.round() as u32
@@ -1365,7 +1365,7 @@ other_out_export!(
 	node,
 	u32,
     {
-		let r = if let Ok(layout) = gui.entitys.get_component_by_index::<LayoutResult>(node, gui.layout_component) {
+		let r = if let Ok(layout) = gui.entitys().get_component_by_index::<LayoutResult>(node, gui.layout_component()) {
 			layout.rect.right - layout.rect.left
 		} else {
 			0.0
@@ -1384,7 +1384,7 @@ other_out_export!(
 	node,
 	u32,
     {
-		let r = if let Ok(layout) = gui.entitys.get_component_by_index::<LayoutResult>(node, gui.layout_component) {
+		let r = if let Ok(layout) = gui.entitys().get_component_by_index::<LayoutResult>(node, gui.layout_component()) {
 			layout.rect.bottom - layout.rect.top
 		} else {
 			0.0
@@ -1404,7 +1404,7 @@ other_out_export!(
 	String,
     {
 		pi_export_base::export::await_last_frame(engine);
-		let value = match gui.entitys.get_component_by_index::<ClassName>(node, gui.class_name_component){
+		let value = match gui.entitys().get_component_by_index::<ClassName>(node, gui.class_name_component()){
 			Ok(r) => Some(&r.0),
 			_ => None,
 		};
@@ -1423,7 +1423,7 @@ other_out_export!(
 	node,
 	String,
     {
-		let value = match gui.entitys.get_component_by_index::<Quad>(node, gui.quad_component) {
+		let value = match gui.entitys().get_component_by_index::<Quad>(node, gui.quad_component()) {
 			Ok(quad) => OffsetDocument {
 				left: quad.mins.x,
 				top: quad.mins.y,
@@ -1449,14 +1449,14 @@ other_out_export!(
 	node,
 	String,
     {
-		let mut cur_child = match gui.entitys.get_component_by_index::<Down>(node, gui.down_component) {
+		let mut cur_child = match gui.entitys().get_component_by_index::<Down>(node, gui.down_component()) {
 			Ok(down) => down.head(),
 			_ => return serde_json::to_string(&Size { width: 0.0, height: 0.0 }).unwrap(),
 		};
 	
 		let (mut left, mut right, mut top, mut bottom) = (std::f32::MAX, 0.0, std::f32::MAX, 0.0);
 		while !EntityKey(cur_child).is_null() {
-			let l = match gui.entitys.get_component_by_index::<LayoutResult>(cur_child, gui.layout_component) {
+			let l = match gui.entitys().get_component_by_index::<LayoutResult>(cur_child, gui.layout_component()) {
 				Ok(r) => r,
 				_ => break,
 			};
@@ -1475,7 +1475,7 @@ other_out_export!(
 				top = l.rect.top;
 			}
 	
-			cur_child = match gui.entitys.get_component_by_index::<Up>(cur_child, gui.up_component) {
+			cur_child = match gui.entitys().get_component_by_index::<Up>(cur_child, gui.up_component()) {
 				Ok(r) => r.next(),
 				_ => break,
 			};
@@ -1639,27 +1639,27 @@ fn set_animation_str_inner(gui: &mut Gui, node_id: f64, value: &str, scope_hash:
     animations.name.scope_hash = scope_hash as usize;
     log::debug!("set_animation_str: {:?}", animations);
     if animations.name.value.len() > 0 {
-        gui.commands.set_style(node_id, AnimationNameType(animations.name));
-        gui.commands.set_style(node_id, AnimationDurationType(animations.duration));
-        gui.commands.set_style(node_id, AnimationTimingFunctionType(animations.timing_function));
-        gui.commands.set_style(node_id, AnimationIterationCountType(animations.iteration_count));
-        gui.commands.set_style(node_id, AnimationDelayType(animations.delay));
-        gui.commands.set_style(node_id, AnimationDirectionType(animations.direction));
-        gui.commands.set_style(node_id, AnimationFillModeType(animations.fill_mode));
-        gui.commands.set_style(node_id, AnimationPlayStateType(animations.play_state));
+        gui.commands_mut().set_style(node_id, AnimationNameType(animations.name));
+        gui.commands_mut().set_style(node_id, AnimationDurationType(animations.duration));
+        gui.commands_mut().set_style(node_id, AnimationTimingFunctionType(animations.timing_function));
+        gui.commands_mut().set_style(node_id, AnimationIterationCountType(animations.iteration_count));
+        gui.commands_mut().set_style(node_id, AnimationDelayType(animations.delay));
+        gui.commands_mut().set_style(node_id, AnimationDirectionType(animations.direction));
+        gui.commands_mut().set_style(node_id, AnimationFillModeType(animations.fill_mode));
+        gui.commands_mut().set_style(node_id, AnimationPlayStateType(animations.play_state));
     }
 }
 
 #[inline]
 fn reset_animation_str_inner(gui: &mut Gui, node_id: f64) {
     let node_id = unsafe { transmute::<f64, Entity>(node_id) };
-    gui.commands.set_style(node_id, ResetAnimationNameType);
-    gui.commands.set_style(node_id, ResetAnimationDurationType);
-    gui.commands.set_style(node_id, ResetAnimationIterationCountType);
-    gui.commands.set_style(node_id, ResetAnimationDelayType);
-    gui.commands.set_style(node_id, ResetAnimationDirectionType);
-    gui.commands.set_style(node_id, ResetAnimationFillModeType);
-    gui.commands.set_style(node_id, ResetAnimationPlayStateType);
+    gui.commands_mut().set_style(node_id, ResetAnimationNameType);
+    gui.commands_mut().set_style(node_id, ResetAnimationDurationType);
+    gui.commands_mut().set_style(node_id, ResetAnimationIterationCountType);
+    gui.commands_mut().set_style(node_id, ResetAnimationDelayType);
+    gui.commands_mut().set_style(node_id, ResetAnimationDirectionType);
+    gui.commands_mut().set_style(node_id, ResetAnimationFillModeType);
+    gui.commands_mut().set_style(node_id, ResetAnimationPlayStateType);
 }
 
 

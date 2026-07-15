@@ -11,7 +11,7 @@ keywords = [""]
 [features]
 default 				= ["pi_js_export"]
 pi_js_export 			= []
-spector 			    = []
+record 			        = []
 
 [dependencies]
 wgpu                    = { version = "0.3", registry = "yn", package = "pi_wgpu" }

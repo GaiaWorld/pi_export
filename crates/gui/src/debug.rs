@@ -4,7 +4,8 @@ use js_proxy_gen_macro::pi_js_export;
 use pi_atom::get_by_hash;
 use pi_atom::Atom;
 use pi_bevy_asset::ShareAssetMgr;
-use pi_render::rhi::asset::TextureRes;
+use pi_render::renderer::texture::ImageTextureFrame;
+
 use pi_style::style::ImageRepeat;
 use pi_ui_render::components::user::{BorderRadius, BorderImageSlice, BorderImageRepeat, BorderImageClip, Border, BackgroundImageClip};
 use pi_ui_render::components::user::{TextStyle, TextShadow, TextContent, Show, Position, Padding, MaskImageClip, Margin, Hsi, FlexContainer, BoxShadow};
@@ -304,7 +305,7 @@ pub struct TexInfo {
 pub fn texture_info(engine: &mut Engine) -> String {
     use pi_render::rhi::asset::AssetWithId;
     let mut res = Vec::new();
-    let info = engine.world.get_single_res::<ShareAssetMgr<AssetWithId<TextureRes>>>().unwrap();
+    let info = engine.world.get_single_res::<ShareAssetMgr<AssetWithId<ImageTextureFrame>>>().unwrap();
     
     for info in &info.account().used{
         res.push(TexInfo{ name: get_by_hash(info.name.clone().parse::<pi_atom::Usize>().unwrap()), size: info.size as f64, is_used: true,  timeout: info.remain_timeout as f64})
@@ -335,6 +336,19 @@ pub fn debug_info(engine: &mut Engine) -> Vec<f64> {
 pub fn active_gui(engine: &mut Engine, active: bool) {
     pi_ui_render::devtools::active_gui(&mut engine.world, active);
 }
+#[cfg(not(target_arch="wasm32"))]
+#[pi_js_export]
+pub fn start_gui_debug_server(engine: &mut Engine) {
+    log::error!("TODO: Not Impl pi_ui_render::devtools::start_server!");
+	// pi_ui_render::devtools::start_server(engine.app_mut());
+}
+
+#[cfg(not(target_arch="wasm32"))]
+#[pi_js_export]
+pub fn request_right_key_element(x: f32, y: f32) {
+	pi_ui_render::devtools::request_right_key_element(x, y);
+}
+
 // #[allow(unused_attributes)]
 // #[pi_js_export]
 // pub fn overflow_clip(gui: &Gui) -> JsValue {

@@ -8,6 +8,7 @@ edition = "2021"
 [features]
 default = ["pi_js_export"]
 pi_js_export = []
+spector = ["pi_export_base/spector","pi_ui_render/debug"]
 trace = ["pi_ui_render/trace"]
 record = ["pi_ui_render/debug"]
 
@@ -36,7 +37,7 @@ log={version = "0.4"}
 # , features = ["release_max_level_warn", "max_level_warn"]
 smallvec={version = "1.8", features = ["serde"]}
 bitvec={version = "1.0", features = ["serde"]}
-cssparser = "0.29"
+cssparser = "0.34"
 pi_hash="0.1" 
 pi_atom={version="0.6", features = ["serde", "lookup_by_hash"]}
 pi_enum_default_macro="0.1"
@@ -105,5 +106,5 @@ vm_builtin = { git = "http://ser.yinengyun.com:10082/tech/pi_v8.git", branch = "
 v8 = { git = "http://ser.yinengyun.com:10082/tech/v8.git" }
 
 [dev-dependencies]
-font_kit = { registry = "yn", version = "=0.1.0" }
+# font_kit = { registry = "yn", version = "=0.1.0" }
 

@@ -1,10 +1,12 @@
 
-use std::{mem::transmute, ops::Deref};
+use std::{mem::transmute, ops::{Deref, DerefMut}};
 
 use pi_scene_shell::prelude::*;
 pub use pi_export_base::{export::{Engine, Atom}, constants::*};
 use pi_scene_context::prelude::*;
 
+#[cfg(any(feature = "record", feature = "replay"))]
+use crate::{record::ERecordCMD};
 use crate::{as_dk, constants::EngineConstants};
 pub use crate::commands::CommandsExchangeD3;
 pub use crate::{engine::ActionSetScene3D, as_entity, as_f64};
@@ -30,8 +32,14 @@ use js_proxy_gen_macro::pi_js_export;
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_scene(app: &mut Engine, cmds: &mut CommandsExchangeD3, cullingmode: f64, collidermode: f64, vals: &[i32]) -> f64 {
+    #[cfg(feature = "replay")]
+    return as_f64(&Entity::null());
+
 
     let scene: Entity = app.world.entities().reserve_entity();
+    
+    #[cfg(feature = "record")]
+    CommandsExchangeD3::record_create(&mut app.world, as_f64(&scene));
 
     let mut values = [0, 0, 0, 0, 0, 0, 0, 0, 0];
     let mut idx = 0;
@@ -42,6 +50,9 @@ pub fn p3d_scene(app: &mut Engine, cmds: &mut CommandsExchangeD3, cullingmode: f
         idx += 1;
     });
 
+    #[cfg(feature = "record")]
+    cmds.record(ERecordCMD::SCENE(as_f64(&scene), cullingmode, collidermode, values));
+
     CommandsExchangeD3::p3d_scene(cmds, scene, cullingmode, collidermode, values);
 
     as_f64(&scene)
@@ -50,34 +61,56 @@ pub fn p3d_scene(app: &mut Engine, cmds: &mut CommandsExchangeD3, cullingmode: f
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_scene_animation_enable(cmds: &mut CommandsExchangeD3, scene: f64, val: bool) {
-    let scene: Entity = as_entity(scene);
+    #[cfg(feature = "replay")]
+    return ;
+
 
     let val = ESceneOps::AnimEnable( val);
+
+    #[cfg(feature = "record")]
+    cmds.record(ERecordCMD::SceneOption(scene, val.clone()));
+
+    let scene: Entity = as_entity(scene);
     CommandsExchangeD3::p3d_scene_option(cmds, scene, val);
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_scene_time(cmds: &mut CommandsExchangeD3, scene: f64, val: f64) {
-    let scene: Entity = as_entity(scene);
+    #[cfg(feature = "replay")]
+    return ;
+
 
     let val = ESceneOps::Time( val as u64);
+
+    #[cfg(feature = "record")]
+    cmds.record(ERecordCMD::SceneOption(scene, val.clone()));
+
+    let scene: Entity = as_entity(scene);
     CommandsExchangeD3::p3d_scene_option(cmds, scene, val);
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_scene_fogcolor(cmds: &mut CommandsExchangeD3, scene: f64, r: f64, g: f64, b: f64) {
-    let scene: Entity = as_entity(scene);
+    #[cfg(feature = "replay")]
+    return ;
+
 
     let val = ESceneOps::FogColor( r as f32, g as f32, b as f32);
+
+    #[cfg(feature = "record")]
+    cmds.record(ERecordCMD::SceneOption(scene, val.clone()));
+
+    let scene: Entity = as_entity(scene);
     CommandsExchangeD3::p3d_scene_option(cmds, scene, val);
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_scene_fogparam(cmds: &mut CommandsExchangeD3, scene: f64, mode: f64, param0: f64, param1: f64, param2: f64) {
-    let scene: Entity = as_entity(scene);
+    #[cfg(feature = "replay")]
+    return ;
 
     let mode = mode as u8;
     let param = if mode == FogParam::EXP {
@@ -92,24 +125,44 @@ pub fn p3d_scene_fogparam(cmds: &mut CommandsExchangeD3, scene: f64, mode: f64, 
         FogParam::None
     };
     let val = ESceneOps::FogParam( param);
+
+    #[cfg(feature = "record")]
+    cmds.record(ERecordCMD::SceneOption(scene, val.clone()));
+
+    let scene: Entity = as_entity(scene);
+
     CommandsExchangeD3::p3d_scene_option(cmds, scene, val);
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_scene_ambientcolor(cmds: &mut CommandsExchangeD3, scene: f64, r: f64, g: f64, b: f64) {
-    let scene: Entity = as_entity(scene);
+    #[cfg(feature = "replay")]
+    return ;
+
 
     let val = ESceneOps::AmbientColor( r as f32, g as f32, b as f32);
+
+    #[cfg(feature = "record")]
+    cmds.record(ERecordCMD::SceneOption(scene, val.clone()));
+
+    let scene: Entity = as_entity(scene);
     CommandsExchangeD3::p3d_scene_option(cmds, scene, val);
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_scene_ambientintensity(cmds: &mut CommandsExchangeD3, scene: f64, val: f64) {
-    let scene: Entity = as_entity(scene);
+    #[cfg(feature = "replay")]
+    return ;
+
 
     let val = ESceneOps::AmbientIntensity( val as f32);
+
+    #[cfg(feature = "record")]
+    cmds.record(ERecordCMD::SceneOption(scene, val.clone()));
+
+    let scene: Entity = as_entity(scene);
     CommandsExchangeD3::p3d_scene_option(cmds, scene, val);
 }
 
@@ -118,18 +171,32 @@ pub fn p3d_scene_ambientintensity(cmds: &mut CommandsExchangeD3, scene: f64, val
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_layermask(cmds: &mut CommandsExchangeD3, node: f64, val: f64) {
+    #[cfg(feature = "replay")]
+    return ;
+
+
+    #[cfg(feature = "record")]
+    cmds.record(ERecordCMD::LAYERMASK(node, val));
+
     let node: Entity = as_entity(node);
 
-    cmds.mesh_layermask.push(OpsLayerMask::ops(node, val as u32));
+    CommandsExchangeD3::p3d_layermask(cmds, node, val as u32);
 }
 
 ///
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_scene_brdf_texture(cmds: &mut CommandsExchangeD3, scene: f64, url: &Atom, compressed: bool) {
-    let scene: Entity = as_entity(scene);
+    #[cfg(feature = "replay")]
+    return ;
+
 
     let val = ESceneOps::BRDF( url.deref().clone(), compressed);
+
+    #[cfg(feature = "record")]
+    cmds.record(ERecordCMD::SceneOption(scene, val.clone()));
+
+    let scene: Entity = as_entity(scene);
     CommandsExchangeD3::p3d_scene_option(cmds, scene, val);
 }
 
@@ -137,21 +204,26 @@ pub fn p3d_scene_brdf_texture(cmds: &mut CommandsExchangeD3, scene: f64, url: &A
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_scene_env_texture(cmds: &mut CommandsExchangeD3, scene: f64, url: &Atom, data_is_image: bool) {
+    #[cfg(feature = "replay")]
+    return ;
+
+    let val = ESceneOps::EnvTexture( Some(url.deref().clone()), data_is_image);
+
+    #[cfg(feature = "record")]
+    cmds.record(ERecordCMD::SceneOption(scene, val.clone()));
+
     let scene: Entity = as_entity(scene);
 
-    // if let Some(url) = url {
-    let val = ESceneOps::EnvTexture( Some(url.deref().clone()), data_is_image);
     CommandsExchangeD3::p3d_scene_option(cmds, scene, val);
-    // } else {
-    //     cmds.scene_env.push(OpsSceneEnvTexture::ops(scene, None, data_is_image));
-    // }
 }
 
 ///
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_scene_shadowmap(cmds: &mut CommandsExchangeD3, scene: f64, url: Option<f64>) {
-    let scene: Entity = as_entity(scene);
+    #[cfg(feature = "replay")]
+    return ;
+
 
     let val = if let Some(url) = url {
         let key = unsafe { transmute(url) };
@@ -159,6 +231,11 @@ pub fn p3d_scene_shadowmap(cmds: &mut CommandsExchangeD3, scene: f64, url: Optio
     } else {
         ESceneOps::ShadowMap( None)
     };
+
+    #[cfg(feature = "record")]
+    cmds.record(ERecordCMD::SceneOption(scene, val.clone()));
+
+    let scene: Entity = as_entity(scene);
     CommandsExchangeD3::p3d_scene_option(cmds, scene, val);
 }
 
@@ -166,9 +243,15 @@ pub fn p3d_scene_shadowmap(cmds: &mut CommandsExchangeD3, scene: f64, url: Optio
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_scene_boundingbox(cmds: &mut CommandsExchangeD3, scene: f64, display: bool, pass: f64) {
-    let scene: Entity = as_entity(scene);
+    #[cfg(feature = "replay")]
+    return ;
+
+    #[cfg(feature = "record")]
+    cmds.record(ERecordCMD::SceneBoundingbox(scene, display, pass));
+
     let pass = EngineConstants::passtag(pass);
 
+    let scene: Entity = as_entity(scene);
     CommandsExchangeD3::p3d_scene_boundingbox(cmds, scene, display, pass);
 }
 
@@ -179,12 +262,14 @@ pub fn p3d_collider(cmds: &mut CommandsExchangeD3, node: f64,
     maxx: f64, maxy: f64, maxz: f64,
     intersection_treshold: f64, alphaindex: Option<f64>
 ) {
+    #[cfg(feature = "replay")]
+    return ;
+
+    #[cfg(feature = "record")]
+    cmds.record(ERecordCMD::COLLIDER(node, minx, miny, minz, maxx, maxy, maxz, intersection_treshold, alphaindex));
+
     let node: Entity = as_entity(node);
     let alphaindex = if let Some(alphaindex) = alphaindex { alphaindex as i32 } else { i32::MIN };
-    // if (intersection_treshold + 0.2928932).abs() < 0.00001 {
-    //     log::error!("Collider: {:?}", (node, (minx as f32, miny as f32, minz as f32), (maxx as f32, maxy as f32, maxz as f32), intersection_treshold as f32, alphaindex));
-    // }
-
     CommandsExchangeD3::p3d_collider(cmds, node, minx as f32, miny as f32, minz as f32, maxx as f32, maxy as f32, maxz as f32, intersection_treshold as f32, alphaindex as i32);
     // cmds.scene_collider.push(OpsCollider::new(node, (minx as f32, miny as f32, minz as f32), (maxx as f32, maxy as f32, maxz as f32), intersection_treshold as f32, alphaindex));
 }
@@ -192,6 +277,9 @@ pub fn p3d_collider(cmds: &mut CommandsExchangeD3, node: f64,
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_create_pickingray(app: &mut Engine, param: &mut ActionSetScene3D, camera: f64, projectx: f64, projecty: f64, result: &mut [f32]) -> bool {
+    #[cfg(feature = "replay")]
+    return false;
+
 	pi_export_base::export::await_last_frame(app);
     param.vp_matrix.align();
     let camera: Entity = as_entity(camera);
@@ -213,13 +301,19 @@ pub fn p3d_create_pickingray(app: &mut Engine, param: &mut ActionSetScene3D, cam
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_scene_pick(app: &mut Engine, param: &mut ActionSetScene3D, scene: f64, viewer: f64, projectx: f64, projecty: f64, not_ray_bounding: bool, result: &mut [f64]) -> bool {
-	pi_export_base::export::await_last_frame(app);
+	
+    #[cfg(feature = "replay")]
+    return false;
+
+    pi_export_base::export::await_last_frame(app);
     let scene: Entity = as_entity(scene);
     let camera: Entity = as_entity(viewer);
 
     param.collider.align();
     param.vp_matrix.align();
     param.pickitems.align();
+
+    let param = param.deref_mut();
     if let (Ok((collider, bounding)), Ok(vp)) = (param.collider.get(&app.world, scene), param.vp_matrix.get(&app.world, camera)) {
         let ray = vp.ray(projectx as f32, projecty as f32);
         let picked = ray_cast_scene((collider, bounding), &ray, !not_ray_bounding, &param.pickitems.get_param(&app.world));

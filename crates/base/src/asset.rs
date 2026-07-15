@@ -125,37 +125,41 @@ pub fn sys_screen_with_postprocess(
     screenwithpostprocess.1 = screenfbo;
 }
 
-pub type ActionListCustomBuffer = pi_scene_shell::prelude::ActionList<(KeyVertexBuffer, Vec<u8>, bool, bool)>;
 
-pub fn sys_custom_buffer(
-    mut actions: ResMut<ActionListCustomBuffer>,
-    queue: Res<PiRenderQueue>,
-    mut vb_wait: ResMut<pi_scene_shell::prelude::VertexBufferDataMap3D>,
-    vb_mgr: Res<pi_scene_shell::prelude::ShareAssetMgr<pi_scene_shell::prelude::EVertexBufferRange>>,
-) {
-    actions.drain().for_each(|(key, data, isindices, isu32)| {
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
+pub fn onload_res_data(path: &Atom, data: &[u8]) {
+    // println!("======== onload_res_data: {:?}", path);
+	pi_hal::texture::insert_res_cache(*&path, data);
+}
 
-		let key_u64 = key.asset_u64();
-        if isindices {
-            if isu32 {
-                if let Some(buffer) = vb_mgr.get(&key_u64) {
-                    queue.write_buffer(buffer.buffer(), 0, &data);
-                } else {
-                    pi_scene_context::prelude::ActionVertexBuffer::create_indices(&mut vb_wait, key, data);
-                }
-            } else {
-                if let Some(buffer) = vb_mgr.get(&key_u64) {
-                    queue.write_buffer(buffer.buffer(), 0, &data);
-                } else {
-                    pi_scene_context::prelude::ActionVertexBuffer::create_indices(&mut vb_wait, key, data);
-                }
-            }
-        } else {
-            if let Some(buffer) = vb_mgr.get(&key_u64) {
-                queue.write_buffer(buffer.buffer(), 0, &data);
-            } else {
-                pi_scene_context::prelude::ActionVertexBuffer::create(&mut vb_wait, key, data);
-            }
-        }
-    });
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
+pub fn delete_res_data(path: &Atom) {
+	pi_hal::texture::remove_res_cache(*&path);
+}
+
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
+pub fn have_res_data(path: &Atom) -> bool {
+	let r = pi_hal::texture::have_cache(*&path);
+    // println!("======== have_res_data: {:?}", (r, path));
+    r
+}
+
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
+pub fn have_res_data_of_str(path: &str) -> bool {
+    let r = pi_hal::texture::have_cache(&&Atom::from_string(path.to_string()));
+    // println!("======== have_res_data_of_str: {:?}", (r, Atom::from_string(path.to_string())));
+	r
+}
+
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[pi_js_export]
+pub fn res_data_len(path: &Atom) ->String {
+    let mut res = Vec::new();
+    let map = pi_hal::texture::RES_MAP.read().unwrap();
+	let _ = map.iter().map(|(k, v)|res.push((k.as_str(), v.len())));
+    format!("{:?}", res)
 }

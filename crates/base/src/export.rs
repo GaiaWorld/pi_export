@@ -1,16 +1,18 @@
 
 
-use std::{cell::RefCell, mem::transmute, sync::{atomic::{AtomicBool, AtomicU64}, Arc, OnceLock}, thread, time::Duration};
+use std::{mem::transmute, sync::{atomic::{AtomicBool}, Arc, OnceLock}, thread, time::Duration};
 
 use pi_scene_context::pass::ImageTextureFrame;
 use pi_share::{Share, ShareCell};
+// use pi_ui_render::devtools::PluginSpectorUI;
+// use  pi_bevy_render_plugin::spector::PluginSpector;
 use pi_world::prelude::{App, WorldPluginExtent};
 use derive_deref_rs::Deref;
 use pi_bevy_asset::{PiAssetPlugin, AssetConfig, AssetDesc};
 use pi_bevy_post_process::PiPostProcessPlugin;
 use pi_hash::XHashMap;
-use pi_render::{asset::TAssetKeyU64, renderer::sampler::SamplerRes, rhi::{asset::{RenderRes, TextureRes}, bind_group::BindGroup, pipeline::RenderPipeline}};
-use pi_bevy_render_plugin::{system::FrameSender, FrameState, PiRenderPlugin};
+use pi_render::{asset::TAssetKeyU64, renderer::sampler::SamplerRes, rhi::{asset::{RenderRes}, bind_group::BindGroup, pipeline::RenderPipeline}};
+use pi_bevy_render_plugin::{FrameState, GlobalCmdTracePlugin, PiRenderPlugin};
 use pi_window_renderer::PluginWindowRender;
 use pi_bevy_render_plugin::PiRenderDevice;
 pub use pi_export_assets_mgr::exports::ResAllocator;
@@ -37,7 +39,7 @@ static mut FRAME_TIME: u32 = 16;
 #[cfg(feature = "pi_js_export")]
 pub fn set_fps(fps: u32){
 	println!("==========set fps: {}", fps);
-	unsafe { FRAME_TIME = 1000 / fps };
+	// unsafe { FRAME_TIME = 1000 / fps };
 }
 
 /// 初始化帧结束的回调，只能设置一次
@@ -161,9 +163,7 @@ pub struct Engine {
 
 #[cfg(target_arch="wasm32")]
 impl Engine {
-	pub fn new(app: App) -> Self { Self{
-		app,
-	} }
+	pub fn new(app: App) -> Self {Self{ app } }
 	pub fn app(&self) -> &App { &self.app }
 	pub fn app_mut(&mut self) -> &mut App { &mut self.app }
 }
@@ -199,6 +199,7 @@ impl Atom {
 #[cfg_attr(target_arch = "wasm32", wasm_bindgen)]
 #[cfg(feature = "pi_js_export")]
 pub fn set_log_filter(engine: &mut Engine, filter: &str) {
+	#[cfg(feature = "spector")]
 	if let Some(handle) = engine.app_mut().world.get_single_res_mut::<pi_bevy_log::LogFilterHandle>() {
 		if let Ok(filter_layer) = tracing_subscriber::EnvFilter::try_new(filter) {
 			let _ = handle.0.modify(|filter| *filter = filter_layer);
@@ -222,7 +223,9 @@ pub static mut RUNNER: OnceCell<LocalTaskRunner<()>> = OnceCell::new();
 /// width、height为physical_size
 #[cfg(target_arch = "wasm32")]
 #[wasm_bindgen]
-pub fn create_engine(canvas: web_sys::HtmlCanvasElement, width: u32, height: u32, asset_mgr: &ResAllocator, asset_total_capacity: u32, asset_config: &str, log_filter: Option<String>, log_level: u8, collect_interval: u32) -> Engine {
+pub fn create_engine(canvas: web_sys::HtmlCanvasElement, width: u32, height: u32, asset_mgr: &ResAllocator, asset_total_capacity: u32, asset_config: &str, log_filter: Option<String>, log_level: u8, collect_interval: u32,
+	trace_record_or_play: Option<f64>
+) -> Engine {
 	// 初始化运行时（全局localRuntime需要初始化）
 	let runner = LocalTaskRunner::new();
     let rt = runner.get_runtime();
@@ -280,6 +283,7 @@ pub fn create_engine(canvas: web_sys::HtmlCanvasElement, width: u32, height: u32
 		asset_config,
 		collect_interval as u64,
 		Some(asset_mgr.get_inner().clone()),
+		trace_record_or_play
 	);
     app.add_plugins(RuntimePlugin); // wasm需要主动推运行时
 
@@ -290,7 +294,9 @@ pub fn create_engine(canvas: web_sys::HtmlCanvasElement, width: u32, height: u32
 
 #[cfg(feature="pi_js_export")]
 #[cfg(not(target_arch = "wasm32"))]
-pub fn create_engine(window: &Arc<Window>, width: u32, height: u32, asset_mgr: &ResAllocator, asset_total_capacity: u32, asset_config: &str, collect_interval: u32) -> Engine {
+pub fn create_engine(window: &Arc<Window>, width: u32, height: u32, asset_mgr: &ResAllocator, asset_total_capacity: u32, asset_config: &str, collect_interval: u32,
+	trace_record_or_play: Option<f64>
+) -> Engine {
     use wgpu::Backend;
 
     let mut app = App::new();
@@ -314,6 +320,7 @@ pub fn create_engine(window: &Arc<Window>, width: u32, height: u32, asset_mgr: &
 		asset_config,
 		collect_interval as u64,
 		Some(asset_mgr.get_inner().clone()),
+		trace_record_or_play
 	);
 
     let engine = Engine::new(app);
@@ -328,6 +335,7 @@ pub fn create_engine_inner(
 	asset_config: &str,
 	collect_interval: u64,
 	asset_allotor: Option<Share<ShareCell<pi_assets::allocator::Allocator>>>,
+	trace_record_or_play: Option<f64>
 ) {
 	// let mut window_plugin = bevy_window::WindowPlugin::default();
 	// window_plugin.primary_window = None;
@@ -346,6 +354,15 @@ pub fn create_engine_inner(
 		.add_plugins(PiRenderPlugin {frame_init_state: FrameState::UnActive})
 		.add_plugins(PluginWindowRender)
 		.add_plugins(PiPostProcessPlugin);
+
+	let trace_record_or_play = if let Some(trace_record_or_play) = trace_record_or_play {
+		unsafe { transmute(trace_record_or_play as u8) }
+	} else { pi_bevy_render_plugin::cmd_play::TraceOption::None };
+	app.add_plugins(GlobalCmdTracePlugin { option: trace_record_or_play });
+	// #[cfg(not(target_arch="wasm32"))]
+	// app.add_plugins(PluginSpector);
+	// #[cfg(not(target_arch="wasm32"))]
+	// app.add_plugins(PluginSpectorUI);
 }
 
 // 在wasm目标上,返回渲染图的topo图
@@ -429,8 +446,8 @@ pub fn fram_call(engine: &mut Engine, reset_state: bool) {
 			// bevy_ecs::system::CommandQueue::default().apply(&mut engine.world);
 			engine.run();
 
-			if unsafe { IS_CHANGED.load(Ordering::Relaxed) } {
-				unsafe { IS_CHANGED.store(false, Ordering::Relaxed) };
+			if IS_CHANGED.load(Ordering::Relaxed) {
+				IS_CHANGED.store(false, Ordering::Relaxed);
 				on_change(engine);
 			}
 			// *engine.world.get_single_res_mut::<FrameState>().unwrap() = FrameState::UnActive;
@@ -496,7 +513,7 @@ pub fn parse_asset_config(asset_config: &str) -> AssetConfig {
 			"BUFFER" => asset_config.insert::<RenderRes<Buffer>>(desc),
 			"SAMPLER" => asset_config.insert::<SamplerRes>(desc),
 			"BIND_GROUP" => asset_config.insert::<RenderRes<BindGroup>>(desc),
-			"TEXTURE_RES" => asset_config.insert::<TextureRes>(desc),
+			"TEXTURE_RES" => asset_config.insert::<ImageTextureFrame>(desc),
 			"RENDER_PIPELINE" => asset_config.insert::<RenderRes<RenderPipeline>>(desc),
 			_ => {},
 		}
@@ -543,79 +560,6 @@ pub fn entity_from_number(index: u32, version: u32) -> f64 {
 	unsafe { transmute::<_, f64>( (version as u64) << 32 | index as u64) }
 }
 
-pub struct DataTextureSubData {
-	pub data: Option<Vec<u8>>,
-	pub dataoffset: u64,
-	pub xoffset: u32,
-	pub yoffset: u32,
-	pub width: u32,
-	pub height: u32,
-	pub aspect: Option<wgpu::TextureAspect>,
-	pub depth_or_array_layers: u32,
-}
-
-#[derive(pi_scene_shell::prelude::Resource, Default)]
-pub struct DataTextureCmds {
-    pub createdata: XHashMap<pi_atom::Atom, (DataTextureSubData, wgpu::TextureFormat, wgpu::TextureViewDimension, pi_scene_shell::prelude::KeyImageTextureFrame)>,
-    pub updatedata: XHashMap<pi_atom::Atom, Vec<DataTextureSubData>>,
-    pub record: XHashMap<pi_atom::Atom, pi_scene_shell::prelude::Handle<pi_scene_shell::prelude::ImageTextureFrame>>,
-}
-
-pub fn update_data_texture(
-    refs: &mut DataTextureCmds,
-    device: &pi_scene_shell::prelude::PiRenderDevice,
-    queue: &pi_scene_shell::prelude::PiRenderQueue,
-    imgtex_asset: &pi_scene_shell::prelude::ShareAssetMgr<pi_scene_shell::prelude::ImageTextureFrame>,
-) {
-    refs.createdata.drain().for_each(|(key, (data, format, dimension, texkey))| {
-        if let Some(res) = refs.record.get(&key) {
-			if res.texture().format != format || res.texture().view_dimension != dimension {
-				// 
-			} else {
-				if let Some(d) = &data.data {
-					let origin = wgpu::Origin3d { x: data.xoffset, y: data.yoffset, z: 0 };
-					ImageTextureFrame::update_sub(&res.texture().texture, &queue, origin, data.width, data.height, data.depth_or_array_layers, data.aspect, d, data.dataoffset);
-					// res.update(&queue, data.xoffset, data.yoffset, data.width, data.height, data.depth_or_array_layers, data.aspect, d, data.dataoffset);
-				}
-			}
-        } else {
-            if let Some(res) = imgtex_asset.get(&texkey) {
-				if res.texture().format != format || res.texture().view_dimension != dimension {
-					// 
-				} else {
-					if let Some(d) = &data.data {
-						let origin = wgpu::Origin3d { x: data.xoffset, y: data.yoffset, z: 0 };
-						ImageTextureFrame::update_sub(&res.texture().texture, &queue, origin, data.width, data.height, data.depth_or_array_layers, data.aspect, d, data.dataoffset);
-						// res.update(&queue, data.xoffset, data.yoffset, data.width, data.height, data.depth_or_array_layers, data.aspect, d, data.dataoffset);
-					}
-					refs.record.insert(key, res);
-				}
-            } else {
-				let d = if let Some(data) = &data.data {
-					Some(data.as_slice())
-				} else { None };
-                let texture = pi_scene_shell::prelude::ImageTextureFrame::create_data_texture(
-					&device, &queue, &texkey.url, data.width, data.height, format, dimension, true, 0, data.aspect, d, data.dataoffset
-				);
-                match imgtex_asset.insert(texkey, ImageTextureFrame::new(texture)) {
-                    Ok(data) => refs.record.insert(key, data),
-                    Err(_) => None,
-                };
-            }
-		}
-    });
-	refs.updatedata.drain().for_each(|(key, mut data)| {
-        if let Some(res) = refs.record.get(&key) {
-			data.drain(..).for_each(|data| {
-				if let Some(d) = &data.data {
-					let origin = wgpu::Origin3d { x: data.xoffset, y: data.yoffset, z: 0 };
-					ImageTextureFrame::update_sub(&res.texture().texture, &queue, origin, data.width, data.height, data.depth_or_array_layers, data.aspect, d, data.dataoffset);
-					// res.update(&queue, data.xoffset, data.yoffset, data.width, data.height, data.depth_or_array_layers, data.aspect, d, data.dataoffset);
-				}
-			});
-        }
-	});
-}
 
 #[derive(pi_scene_shell::prelude::Resource, Default)]
 pub struct VertexBufferRefs {
@@ -655,22 +599,21 @@ pub fn sys_vertex_buffer(
 			pi_scene_context::prelude::ActionVertexBuffer::create_indices(&mut vb_wait, key, data);
 		}
 	});
-    
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[cfg(feature = "pi_js_export")]
 pub fn init_engine_3d(app: &mut Engine, spine: bool, param: &[u32]) {
-	use pi_bevy_render_plugin::FrameDataPrepare;
+use pi_3d::DisplayBoxs;
+use pi_bevy_render_plugin::FrameDataPrepare;
 use pi_bevy_render_plugin::GraphBuild;
 use pi_scene_shell::prelude::WorldResourceTemp;
 	use pi_scene_shell::prelude::AppResourceTemp;
 	use pi_scene_shell::run_stage::EngineCustomPlugins;
 	use pi_world::prelude::IntoSystemConfigs;
 
-use crate::asset::sys_custom_buffer;
 use crate::asset::sys_screen_with_postprocess;
-use crate::asset::ActionListCustomBuffer;
+use crate::record::Records3D;
 
     if app.world.get_resource::<pi_scene_shell::prelude::AssetMgrConfigs>().is_none() {
         app.insert_resource(pi_scene_shell::prelude::AssetMgrConfigs::default());
@@ -682,6 +625,12 @@ use crate::asset::ActionListCustomBuffer;
 
 	let engineplugins = EngineCustomPlugins::new(param);
 	app.insert_resource(engineplugins);
+
+	app.insert_resource(Records3D::default());
+
+	
+	#[cfg(target_arch = "wasm32")]
+	app.insert_resource(DisplayBoxs::default());
 
     pi_3d::PluginBundleDefault::add(app);
     app
@@ -708,11 +657,6 @@ use crate::asset::ActionListCustomBuffer;
 		pi_world::schedule::PreUpdate,
 		sys_screen_with_postprocess.in_set(FrameDataPrepare).before(GraphBuild)
 	);
-	app.add_systems(
-		pi_scene_shell::run_stage::StageD3,
-		sys_custom_buffer.in_set(FrameDataPrepare).before(pi_scene_shell::run_stage::ERunStageChap::D3).before(pi_scene_shell::run_stage::ERunStageChap::Create)
-	);
-	app.insert_resource(ActionListCustomBuffer::default());
 }
 
 #[cfg(feature = "pi_js_export")]
@@ -728,3 +672,26 @@ pub fn unbind_context(app: &mut Engine) {
 	let device = app.world.get_single_res_mut::<PiRenderDevice>().unwrap();
 	// device.unmake_current();
 }
+
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+#[cfg(feature = "pi_js_export")]
+pub fn set_frame_pixel_ratio(app: &mut Engine, pixel_ratio: f32) {
+	use pi_bevy_render_plugin::system::PixelRatio;
+	{
+		if let Some(ratio) = app.world.get_single_res_mut::<PixelRatio>(){
+			ratio.0 = pixel_ratio.clamp(0.2, 1.0);
+			return;
+		}
+	}
+	
+	{
+		app.world.insert_single_res(PixelRatio(pixel_ratio.clamp(0.2, 1.0)));
+	}
+}
+
+#[cfg_attr(target_arch="wasm32", wasm_bindgen)]
+pub fn init_brotli_dictionary(data: &[u8]) {
+	use brotli_decompressor::dictionary;
+	dictionary::init_brotli_dictionary(data.to_vec());
+}
+

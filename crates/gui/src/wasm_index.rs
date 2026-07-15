@@ -32,10 +32,11 @@ use pi_style::{
 };
 use smallvec::SmallVec;
 use pi_slotmap::DefaultKey;
+use pi_bevy_render_plugin::cmd_play::{TraceOption, PlayState};
 
-pub use super::{index::Gui, ShareChromeWrite};
+pub use super::{ShareChromeWrite};
 use pi_export_play::as_value;
-// pub use pi_ui_render::gui::Gui;
+pub use pi_export_base::gui::Gui;
 pub use pi_export_base::export::{Engine, Atom};
 use cssparser::ParseError;
 use js_proxy_gen_macro::pi_js_export;
@@ -63,14 +64,6 @@ pub use winit::window::{Window, WindowBuilder};
 use pi_ui_render::resource::{animation_sheet::KeyFramesSheet, FragmentCommand};
 use pi_render::font::FontType;
 
-#[derive(Debug, Clone, Copy)]
-#[wasm_bindgen]
-pub enum TraceOption {
-	None,
-	Record,
-	Play,
-}
-
 #[wasm_bindgen]
 pub fn create_gui(
     context: JsValue,
@@ -82,25 +75,29 @@ pub fn create_gui(
     font_sheet: u32,
     cur_time: u32,
     animation_event_fun: Function,
-	debug: TraceOption,
+	debug: f64,
 ) -> Gui {
     let mut gui = Gui::new(engine);
+	let debug: TraceOption = engine.world.get_single_res::<PlayState>().unwrap().option;
 
     #[cfg(feature="record")]
 	{
-		let debug: pi_ui_render::system::base::node::cmd_play::TraceOption = unsafe { transmute(debug) };
 		engine.app_mut().add_plugins(UiPlugin {cmd_trace: debug.clone(), font_type: FontType::Sdf2});
-		gui.record_option = debug;
-        if let pi_ui_render::system::base::node::cmd_play::TraceOption::Record = debug {
-			gui.commands.is_record = true;
+		*gui.record_option() = debug;
+        if let TraceOption::Record = debug {
+			gui.commands_mut().is_record = true;
             let com = engine.world.get_single_res_mut::<pi_ui_render::prelude::UserCommands>().unwrap();
             com.is_record = true;
 		}
 	}
 
 	#[cfg(not(feature="record"))]
-    engine.app_mut().add_plugins(UiPlugin {font_type: FontType::Sdf2});
+    engine.app_mut().add_plugins(UiPlugin {cmd_trace: debug.clone(), font_type: FontType::Sdf2});
 
+    #[cfg(feature = "spector")]
+    pi_ui_render::tools::init_showbox_pipeline(&mut engine.app_mut().world);
+    #[cfg(feature = "spector")]
+    engine.app_mut().add_startup_system(pi_world::schedule::End, pi_ui_render::tools::init_show_box_node);
 	// if let Some(fun) = load_sdf_fun {
 	// 	pi_hal::font::sdf_brush::init_load_cb(std::rc::Rc::new(move|key: DefaultKey, font_family: usize, chars: &[char]| {
 	// 		let chars1 = js_sys::Uint32Array::from(unsafe {transmute::<_, &[u32]>(chars)});
@@ -116,17 +113,17 @@ pub fn create_fragment(gui: &mut Gui, mut arr: Float64Array, count: u32, key: u3
 	let mut index = 0;
 	let mut entitys = Vec::with_capacity(count as usize);
 	while index < count {
-		let entity = gui.entitys.alloc_entity();
+		let entity = gui.entitys_mut().alloc_entity();
 		#[cfg(feature="record")]
-        if let pi_ui_render::system::base::node::cmd_play::TraceOption::Record = gui.record_option {
-		    gui.node_cmd.0.push(entity);
+        if let TraceOption::Record = gui.record_option() {
+		    gui.node_cmd().0.push(entity);
         }
 
 		arr.set_index(index, unsafe { transmute(entity) });
 		entitys.push(entity);
 		index = index + 1;
 	}
-	gui.commands
+	gui.commands_mut()
 		.fragment_commands
 		.push(FragmentCommand { key, entitys });
 }

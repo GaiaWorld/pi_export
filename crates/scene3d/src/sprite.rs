@@ -1,6 +1,8 @@
 
 use std::ops::Deref;
 
+#[cfg(any(feature = "record", feature = "replay"))]
+use pi_export_base::record::{ERecord3D, ERecordCMD};
 use pi_scene_context::pass::{ESkinBonesPerVertex, WorldResourceTemp};
 use pi_scene_context::prelude::*;
 use pi_scene_shell::prelude::*;
@@ -17,11 +19,18 @@ use js_proxy_gen_macro::pi_js_export;
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_sprite(app: &mut Engine, cmds: &mut CommandsExchangeD3, source: f64, atlas: &Atom) -> f64 {
+    #[cfg(feature = "replay")]
+    return as_f64(&Entity::null());
 
     let id: Entity = app.world.entities().reserve_entity();
 
-    let source = as_entity(source);
+    #[cfg(feature = "record")]
+    CommandsExchangeD3::record_create(&mut app.world, as_f64(&id));
 
+    #[cfg(feature = "record")]
+    cmds.record(ERecordCMD::SPRITE(source, as_f64(&id), atlas.deref().clone()));
+
+    let source = as_entity(source);
     CommandsExchangeD3::p3d_sprite(cmds, source, id, atlas.deref());
 
     as_f64(&id)
@@ -30,28 +39,46 @@ pub fn p3d_sprite(app: &mut Engine, cmds: &mut CommandsExchangeD3, source: f64, 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_sprite_frame(cmds: &mut CommandsExchangeD3, sprite: f64, tilloffkey: &Atom, idxframe: f64) {
-    let sprite = as_entity(sprite);
+    #[cfg(feature = "replay")]
+    return ;
 
+    #[cfg(feature = "record")]
+    cmds.record(ERecordCMD::SpriteFrame(sprite, tilloffkey.deref().clone(), idxframe));
+
+    let sprite = as_entity(sprite);
     CommandsExchangeD3::p3d_sprite_frame(cmds, sprite, tilloffkey.deref(), idxframe);
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_sprite_frame_data(cmds: &mut CommandsExchangeD3, sprite: f64, tilloffkey: &Atom, data: &[u16]) {
-    let sprite = as_entity(sprite);
+    #[cfg(feature = "replay")]
+    return ;
+
     let data = [data[0], data[1], data[2], data[3], data[4], data[5], data[6], data[7], data[8], data[9],
         data[10], data[11], data[12], data[13],
     ];
 
+    #[cfg(feature = "record")]
+    cmds.record(ERecordCMD::SpriteFrameData(sprite, tilloffkey.deref().clone(), data.to_vec()));
+
+    let sprite = as_entity(sprite);
     CommandsExchangeD3::p3d_sprite_frame_data(cmds, sprite, tilloffkey.deref(), &data);
 }
 
 #[cfg_attr(target_arch="wasm32", wasm_bindgen)]
 #[pi_js_export]
 pub fn p3d_record_sprite_frame_data(cmds: &mut CommandsExchangeD3, data: &[u16]) -> f64 {
-    cmds.sprite_frames.1.push(SpriteFrame::from_data(data));
-    let result = cmds.sprite_frames.0;
-    cmds.sprite_frames.0 = cmds.sprite_frames.0 + 1;
+    #[cfg(feature = "replay")]
+    return ;
+
+    let sprite = SpriteFrame::from_data(data);
+
+    let result = CommandsExchangeD3::p3d_record_sprite_frame_data(cmds, sprite.clone());
+    
+    #[cfg(feature = "record")]
+    cmds.record2(ERecord3D::SpriteFrameDataRecord(result as u32, sprite.clone()));
+
     result as f64
 }
 

@@ -8,15 +8,16 @@ resolver="2"
 exclude = ["crates/gui/exports_macro"]
 
 [profile.release]
-# debug= true
-# strip = true
-# lto = true #这为LLVM提供了更多内联和修剪功能的机会。它不仅使.wasm尺寸更小，而且在运行时也更快！缺点是编译将花费更长的时间(在release编译脚本中设置了)
-opt-level = 3  # 默认情况下，对LLVM的优化通道进行了调整，以提高速度，而不是大小。我们可以通过修改以下
-# opt-level = "z" # 了更积极地优化尺寸，以进一步的潜在速度成本
+debug = false
+strip = true
+lto = true #这为LLVM提供了更多内联和修剪功能的机会。它不仅使.wasm尺寸更小，而且在运行时也更快！缺点是编译将花费更长的时间(在release编译脚本中设置了)
+# opt-level = 3  # 默认情况下，对LLVM的优化通道进行了调整，以提高速度，而不是大小。我们可以通过修改以下
+opt-level = "z" # 了更积极地优化尺寸，以进一步的潜在速度成本
 # 请注意，令人惊讶的是，opt-level = "s"有时二进制文件的大小可能小于opt-level = "z"。总是测量！
 panic = 'abort'
 codegen-units = 1
-# dwarf-debug-info = true
+dwarf-debug-info = true
+# inherits = "release"
 
 # # wasm-pack编译是，无法自主选择profile，这里不起作用，应该拷贝到profile.release
 # [profile.profiling]
@@ -45,13 +46,13 @@ debug = false
 # fixedbitset = { path = "../fixedbitset" }
 # pi_time = { path = "../pi_time" }
 # pi_path_finding = { path = "../pi_path_finding" }
-pi_flex_layout = { path = "../pi_flex_layout" }
+# pi_flex_layout = { path = "../pi_flex_layout" }
 # bevy = { path = "../bevy" }
 # pi_slotmap = { path = "../pi_slotmap" }
 # pi_slotmap_tree = { path = "../pi_slotmap_tree" }
 # pi_map = { path = "../pi_map" }
 # wgpu = { version = "25.0.*" }
-naga = { path = "../wgpu/naga"}
+# naga = { path = "../wgpu/naga"}
 # smallvec = {path = "../smallvec"}
 # pi_cache = {path = "../pi_cache"}
 # pi_assets = {path = "../pi_assets"}
@@ -60,8 +61,9 @@ naga = { path = "../wgpu/naga"}
 # pi_spatial ={path="../pi_spatial"}
 # wasm-bindgen = { path = "../wasm-bindgen" }
 # pi_polygon = { path = "../pi_polygon" }
+# pi_hash = { path = "../pi_hash" }
 
-# pi_world                = { path = "../pi_world", features = ["single_thread", "rc"] }
+pi_world                = { path = "../pi_world", features = ["single_thread", "rc"] }
 # pi_world_macros         = { path = "../pi_world/macros" }
 # pi_share = { path = "../pi_share" }
 # pi_world_macros = { path = "../pi_world/macros" }
@@ -79,8 +81,8 @@ naga = { path = "../wgpu/naga"}
 
 
 [patch.yn]
-pi_hal = { path = "../pi_hal" }
-pi_wgpu = { path = "../pi_wgpu" }
+# pi_hal = { path = "../pi_hal" }
+# pi_wgpu = { path = "../pi_wgpu" }
 # pi_glow = {path = "../pi_glow"}
 # pi_wgpu = { path = "../pi_wgpu" }
 # pi_bon_decode = {path = "../pi_bon_decode"}
@@ -88,28 +90,29 @@ pi_wgpu = { path = "../pi_wgpu" }
 # winit = {path = "../winit"}
 
 # pi_render
-pi_render               = { version = "0.3", registry = "yn", path = "../pi_render" }
-render_utils            = { version = "0.2", registry = "yn", path = "../pi_render/crates/render_utils" }
-render_core             = { version = "0.3", registry = "yn", path = "../pi_render/crates/render_core" }
-render_derive           = { version = "0.2", registry = "yn", path = "../pi_render/crates/render_derive" }
-render_compile          = { version = "0.3", registry = "yn", path = "../pi_render/crates/render_compile" }
+# pi_render               = { version = "0.3", registry = "yn", path = "../pi_render" }
+# render_utils            = { version = "0.2", registry = "yn", path = "../pi_render/crates/render_utils" }
+# render_core             = { version = "0.3", registry = "yn", path = "../pi_render/crates/render_core" }
+# render_derive           = { version = "0.2", registry = "yn", path = "../pi_render/crates/render_derive" }
+# render_compile          = { version = "0.3", registry = "yn", path = "../pi_render/crates/render_compile" }
+# pi_render_asset         = { version = "0.1", registry = "yn", path = "../pi_render/crates/render_asset" }
 
 # pi_bevy
-pi_bevy_ecs_extend = { path = "../pi_bevy/crates/ecs_extend" }
-pi_bevy_render_plugin = { path = "../pi_bevy/crates/render" }
-pi_bevy_asset = { path = "../pi_bevy/crates/asset" }
-pi_bevy_winit_window = { path = "../pi_bevy/crates/winit_window" }
-pi_bevy_log = { path = "../pi_bevy/crates/log" }
-pi_bevy_ecs_macro = { path = "../pi_bevy/crates/ecs_extend/macro" }
-pi_bevy_post_process = { path = "../pi_bevy/crates/post_process" }
-pi_bevy_window = { path = "../pi_bevy/crates/window" }
-pi_window_renderer = { path="../pi_bevy/crates/window_renderer" }
+# pi_bevy_ecs_extend = { path = "../pi_bevy/crates/ecs_extend" }
+# pi_bevy_render_plugin = { path = "../pi_bevy/crates/render" }
+# pi_bevy_asset = { path = "../pi_bevy/crates/asset" }
+# pi_bevy_winit_window = { path = "../pi_bevy/crates/winit_window" }
+# pi_bevy_log = { path = "../pi_bevy/crates/log" }
+# pi_bevy_ecs_macro = { path = "../pi_bevy/crates/ecs_extend/macro" }
+# pi_bevy_post_process = { path = "../pi_bevy/crates/post_process" }
+# pi_bevy_window = { path = "../pi_bevy/crates/window" }
+# pi_window_renderer = { path="../pi_bevy/crates/window_renderer" }
 
 pi_ui_render = { path = "../pi_ui_render" }
-# pi_style = { path = "../pi_style" }
+# pi_style = { path = "../pi_style-0.1" }
 # pi_style = { path = "../pi_style" }
 
-# pi_postprocess ={path="../pi_postprocess"}
+# pi_postprocess ={path="../pi_post_process"}
 
 pi_3d               = { path = "../pi_3d" }
 pi_node_materials   = { path = "../pi_3d/crates/node_materials" }
