@@ -4411,6 +4411,21 @@ pub mod style_macro {
         }
     }
     #[cfg(feature = "pi_js_export")]
+    pub fn set_style_str(gui: &mut Gui, node_id: f64, value: &str) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        {
+            gui.commands.set_style_str(node_id, value);
+        }
+    }
+    #[cfg(target_arch = "wasm32")]
+    #[wasm_bindgen]
+    pub fn set_style_str(gui: &mut Gui, node_id: f64, value: &str) {
+        let node_id = unsafe { transmute::<f64, Entity>(node_id) };
+        {
+            gui.commands.set_style_str(node_id, value);
+        }
+    }
+    #[cfg(feature = "pi_js_export")]
     pub fn create_class_by_str(gui: &mut Gui, css: &str, scope_hash: u32) {
         {
             gui.commands.add_css(css, scope_hash as usize);

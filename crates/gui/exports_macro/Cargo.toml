@@ -7,6 +7,7 @@ edition = "2021"
 [dependencies]
 paste = "1.0"
 # pi_export_macro = {path="../../macro"}
+quote = "1.0"
 tracing = "0.1"
 
 [features]

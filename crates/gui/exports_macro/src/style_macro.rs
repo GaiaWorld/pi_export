@@ -718,7 +718,7 @@ style_out_export!(
 	v: f64,
 );
 
-style_out_export!(@expr $attr_name, $last_ty, unsafe {transmute(v as u8)},; v: f64,);
+// style_out_export!(@expr $attr_name, $last_ty, unsafe {transmute(v as u8)},; v: f64,);
 
 style_out_export!(@expr text_stroke, TextStrokeType, Stroke {
 	width: NotNan::new(width).expect("stroke width is nan"),
@@ -909,6 +909,8 @@ style_out_export!(@expr animation_timing_function_str, AnimationTimingFunctionTy
 }, value: &str,;);
 
 other_out_export!(set_default_style, gui, {gui.commands.set_default_style_by_str(value, 0);},; value: &str,;);
+
+other_out_export!(set_style_str, gui, node, {gui.commands.set_style_str(node, value);},; value: &str,;);
 
 other_out_export!(
     create_class_by_str,
@@ -1367,7 +1369,7 @@ other_out_export!(
 			layout.rect.right - layout.rect.left
 		} else {
 			0.0
-		}
+		};
 		r.round() as u32
 	},;
 );
@@ -1375,7 +1377,7 @@ other_out_export!(
 // 返回值原类型为f32,这里之所以返回u32，是因为在iphonex以上的机型的浏览器上多次连续调用返回值为浮点数时，浏览器会自动刷新或白屏，原因未知
 // 节点布局高度
 other_out_export!(
-	@with_return_node, 
+	@with_return_node,
     offset_height,
     gui: &mut Gui,
 	engine: &Engine,;
@@ -1386,7 +1388,7 @@ other_out_export!(
 			layout.rect.bottom - layout.rect.top
 		} else {
 			0.0
-		}
+		};
 		r.round() as u32
 	},;
 );
