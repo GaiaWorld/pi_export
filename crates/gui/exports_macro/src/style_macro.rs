@@ -910,7 +910,7 @@ style_out_export!(@expr animation_timing_function_str, AnimationTimingFunctionTy
 
 other_out_export!(set_default_style, gui, {gui.commands_mut().set_default_style_by_str(value, 0);},; value: &str,;);
 
-other_out_export!(set_style_str, gui, node, {gui.commands.set_style_str(node, value);},; value: &str,;);
+other_out_export!(set_style_str, gui, node, {gui.commands_mut().set_style_str(node, value);},; value: &str,;);
 
 other_out_export!(
     create_class_by_str,
