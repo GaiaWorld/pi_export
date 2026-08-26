@@ -8,7 +8,7 @@ edition = "2018"
 crate-type = ["cdylib"]
 
 [features]
-default = ["pi_js_export"]
+default = ["pi_js_export", "pi_export_gui/spector", "pi_export_base/record", "pi_export_gui/record"]
 const_memory = []
 release = ["log/release_max_level_warn", "tracing/release_max_level_off"]
 trace = ["log/release_max_level_info", "tracing/release_max_level_info", "pi_bevy_log/tracing-chrome", "pi_bevy_render_plugin/trace", "pi_world/trace"]
@@ -95,7 +95,10 @@ wgpu1 = { version = "25.0.*", package = "wgpu", default-features = false, featur
 # # `wasm-opt` is on by default in for the release profile, but it can be
 # # disabled by setting it to `false`
 [package.metadata.wasm-pack.profile.release]
-wasm-opt = ['-Oz']
+wasm-opt = ['-Oz', '--enable-bulk-memory', '--enable-nontrapping-float-to-int', '--enable-sign-ext']
+
+[package.metadata.wasm-pack.profile.profiling]
+wasm-opt = ['-O', '--enable-bulk-memory', '--enable-nontrapping-float-to-int', '--enable-sign-ext']
 debug = false
 # debug-assertions = false
 # overflow-checks = false
