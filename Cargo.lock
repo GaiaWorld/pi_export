@@ -3958,9 +3958,9 @@ dependencies = [
 
 [[package]]
 name = "pi_animation"
-version = "0.2.2"
+version = "0.2.5"
 source = "registry+http://ser.yinengyun.com:10082/tech/crates-io.git"
-checksum = "6a4d57c3fbc13d174f7ea0425b21e8187c9d3f44f52af18de60131c2b54ba3ec"
+checksum = "8f807708fb54a1733799fe6a60c375b1e52b9239efa488eb68a0103a03717ad6"
 dependencies = [
  "log",
  "pi_curves",
@@ -5540,9 +5540,9 @@ dependencies = [
 
 [[package]]
 name = "pi_style"
-version = "0.3.2"
+version = "0.3.3"
 source = "registry+http://ser.yinengyun.com:10082/tech/crates-io.git"
-checksum = "567a361b879d713864bbb01010b486d6eb234853219f9eba8703cd14d7081c3c"
+checksum = "9a4f7098ae9f4197937d7cab90e7a798d166941da10db502cc89c68124a7111a"
 dependencies = [
  "bitvec",
  "cssparser",
@@ -8114,7 +8114,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "97fee6b57c6a41524a810daee9286c02d7752c4253064d0b05472833a438f675"
 dependencies = [
  "cfg-if",
- "rand 0.8.5",
+ "rand 0.7.3",
  "static_assertions",
 ]
 
