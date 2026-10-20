@@ -43,13 +43,13 @@ pub fn create_gui(
 	#[cfg(feature="record")]
 	{
 
-		// engine.add_plugins(UiPlugin {cmd_trace: debug.clone(), font_type: FontType::Sdf2});
-		// *gui.record_option() = debug;
-		// if let pi_bevy_render_plugin::cmd_play::TraceOption::Record = debug {
-		// 	gui.commands_mut().is_record = true;
-		// 	let com = engine.world.get_single_res_mut::<pi_ui_render::prelude::UserCommands>().unwrap();
-        //     com.is_record = true;
-		// }
+		engine.add_plugins(UiPlugin {cmd_trace: debug.clone(), font_type: FontType::Sdf2});
+		*gui.record_option() = debug;
+		if let pi_bevy_render_plugin::cmd_play::TraceOption::Record = debug {
+			gui.commands_mut().is_record = true;
+			let com = engine.world.get_single_res_mut::<pi_ui_render::prelude::UserCommands>().unwrap();
+            com.is_record = true;
+		}
 	}
 
 	#[cfg(not(feature="record"))]
@@ -95,6 +95,11 @@ pub fn create_fragment(gui: &mut Gui, arr: &mut [f64], count: u32, key: u32) {
 	let mut entitys = Vec::with_capacity(count as usize);
 	while index < count as usize {
 		let entity = gui.entitys_mut().alloc_entity();
+		#[cfg(feature="record")]
+        if let pi_bevy_render_plugin::TraceOption::Record = gui.record_option() {
+		    gui.node_cmd().0.push(entity);
+        }
+
 		arr[index] = unsafe { transmute(entity) };
 		entitys.push(entity);
 		index = index + 1;
